@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mantra Bloom — 咒語綻放</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@300;600&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-deep: #0a0908;
+      --bg-surface: #141210;
+      --text-primary: #f4f1eb;
+      --text-muted: #8a8580;
+      --accent-warm: #e8a87c;
+      --accent-coral: #e07a5f;
+      --accent-gold: #d4a373;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Noto Serif TC', serif;
+      background: var(--bg-deep);
+      color: var(--text-primary);
+      min-height: 100vh;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Grain overlay */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+      opacity: 0.04;
+      pointer-events: none;
+      z-index: 1000;
+    }
+
+    .container {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 2rem;
+    }
+
+    h1 {
+      font-size: 1.2rem;
+      font-weight: 300;
+      letter-spacing: 0.3em;
+      color: var(--text-muted);
+      margin-bottom: 3rem;
+      text-transform: uppercase;
+    }
+
+    .input-group {
+      position: relative;
+      width: 100%;
+      max-width: 400px;
+    }
+
+    input {
+      width: 100%;
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid var(--text-muted);
+      padding: 1rem 0.5rem;
+      font-family: 'Noto Serif TC', serif;
+      font-size: 1.5rem;
+      color: var(--text-primary);
+      text-align: center;
+      outline: none;
+      transition: border-color 0.3s ease;
+    }
+
+    input::placeholder {
+      color: var(--text-muted);
+      opacity: 0.5;
+    }
+
+    input:focus {
+      border-color: var(--accent-warm);
+    }
+
+    .bloom-canvas {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .petal {
+      position: absolute;
+      width: 8px;
+      height: 40px;
+      border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+      opacity: 0;
+      transform-origin: center bottom;
+      filter: blur(0.5px);
+    }
+
+    .petal.animate {
+      animation: bloom 2s ease-out forwards;
+    }
+
+    @keyframes bloom {
+      0% {
+        opacity: 0;
+        transform: translateY(0) scaleY(0) rotate(0deg);
+      }
+      30% {
+        opacity: 0.9;
+      }
+      100% {
+        opacity: 0.7;
+        transform: translateY(var(--y)) scaleY(1) rotate(var(--r));
+      }
+    }
+
+    .center-circle {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 20px;
+      height: 20px;
+      background: radial-gradient(circle, var(--accent-gold) 0%, var(--accent-coral) 100%);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      box-shadow: 0 0 30px var(--accent-warm);
+      opacity: 0;
+      transition: opacity 0.5s ease;
+    }
+
+    .center-circle.visible {
+      opacity: 1;
+    }
+
+    .hint {
+      position: fixed;
+      bottom: 2rem;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      letter-spacing: 0.1em;
+    }
+
+    .count {
+      position: fixed;
+      top: 2rem;
+      right: 2rem;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .count span {
+      color: var(--accent-warm);
+      font-size: 1.2rem;
+    }
+
+    @media (max-width: 768px) {
+      input {
+        font-size: 1.2rem;
+      }
+      h1 {
+        font-size: 1rem;
+        letter-spacing: 0.2em;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="bloom-canvas" id="canvas">
+    <div class="center-circle" id="center"></div>
+  </div>
+
+  <div class="container">
+    <h1>咒語綻放</h1>
+    <div class="input-group">
+      <input 
+        type="text" 
+        id="mantraInput" 
+        placeholder="輸入一句咒語..."
+        maxlength="20"
+        autocomplete="off"
+      >
+    </div>
+  </div>
+
+  <div class="count">bloom: <span id="bloomCount">0</span></div>
+  <div class="hint">enter to bloom</div>
+
+  <script>
+    const input = document.getElementById('mantraInput');
+    const canvas = document.getElementById('canvas');
+    const center = document.getElementById('center');
+    const countEl = document.getElementById('bloomCount');
+    
+    let bloomCount = parseInt(localStorage.getItem('mantraBloomCount') || '0');
+    countEl.textContent = bloomCount;
+
+    const colors = [
+      '#e8a87c', '#e07a5f', '#d4a373', '#c9ada7', '#f2e9e4',
+      '#9a8c98', '#c9ada7', '#e07a5f', '#e8a87c', '#f4a261'
+    ];
+
+    function createPetal(angle, delay, text) {
+      const petal = document.createElement('div');
+      petal.className = 'petal';
+      
+      const radius = 80 + Math.random() * 60;
+      const x = Math.cos(angle * Math.PI / 180) * radius;
+      const y = Math.sin(angle * Math.PI / 180) * radius - radius;
+      const rotation = angle + 90 + (Math.random() - 0.5) * 30;
+      
+      petal.style.cssText = `
+        left: 50%;
+        top: 50%;
+        background: linear-gradient(to top, ${colors[Math.floor(Math.random() * colors.length)]}, transparent);
+        transform: translate(-50%, -50%);
+        --y: ${y}px;
+        --r: ${rotation}deg;
+        animation-delay: ${delay}ms;
+      `;
+      
+      canvas.appendChild(petal);
+      
+      setTimeout(() => {
+        petal.classList.add('animate');
+      }, 10);
+      
+      setTimeout(() => {
+        petal.remove();
+      }, 4000);
+    }
+
+    function bloom(mantra) {
+      if (!mantra.trim()) return;
+      
+      bloomCount++;
+      localStorage.setItem('mantraBloomCount', bloomCount.toString());
+      countEl.textContent = bloomCount;
+      
+      center.classList.add('visible');
+      
+      const chars = mantra.split('');
+      const totalPetals = Math.max(12, chars.length * 4);
+      const angleStep = 360 / totalPetals;
+      
+      for (let i = 0; i < totalPetals; i++) {
+        const angle = i * angleStep + Math.random() * 20;
+        const delay = i * 30;
+        createPetal(angle, delay, chars[i % chars.length]);
+      }
+      
+      setTimeout(() => {
+        center.classList.remove('visible');
+      }, 2500);
+    }
+
+    input.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        bloom(input.value);
+        input.value = '';
+      }
+    });
+
+    // Keep focus
+    document.addEventListener('click', () => input.focus());
+  </script>
+</body>
+</html>

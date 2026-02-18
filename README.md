@@ -7,9 +7,9 @@
 *用一杯咖啡的時間，換一個讓世界多點樂趣的小玩具*
 
 ![License](https://img.shields.io/badge/license-MIT-green?style=for-the-badge&logo=mit)
-![Projects](https://img.shields.io/badge/專案數-7+-blue?style=for-the-badge)
-![Streak](https://img.shields.io/badge/連續-8天-orange?style=for-the-badge)
-![Coffee](https://img.shields.io/badge/消耗咖啡-☕☕☕☕-red?style=for-the-badge)
+![Projects](https://img.shields.io/badge/專案數-8+-blue?style=for-the-badge)
+![Streak](https://img.shields.io/badge/連續-9天-orange?style=for-the-badge)
+![Coffee](https://img.shields.io/badge/消耗咖啡-☕☕☕☕☕-red?style=for-the-badge)
 
 </div>
 
@@ -23,9 +23,9 @@
 
 | 預覽 | 日期 | 專案 | 描述 |
 |:---:|:---:|:---:|---|
+| 🎬 | 02/19 | 🌸 [Mantra Bloom](./2026-02-19/) | 咒語綻放 — 輸入咒語化為美麗花瓣 |
 | 🎬 | 02/18 | 🌌 [Mood Aurora](./2026-02-18/) | 情緒極光追蹤器 — 將心情化為夜空中的極光 |
 | 🎬 | 02/17 | 🌊 [Breath Wave](./2026-02-17/) | 療癒呼吸練習 — 跟著波浪深呼吸 |
-| 🎬 | 02/16 | ✨ [Gratitude Graffiti](./2026-02-16/) | 感恩塗鴉 — 把感謝寫在牆上 |
 
 ---
 
@@ -36,6 +36,7 @@
 
 | 日期 | 專案 | 描述 |
 |:---:|:---:|---|
+| 02/19 | 🌸 [Mantra Bloom](./2026-02-19/) | 咒語綻放 |
 | 02/18 | 🌌 [Mood Aurora](./2026-02-18/) | 情緒極光追蹤器 |
 | 02/17 | 🌊 [Breath Wave](./2026-02-17/) | 療癒呼吸練習 |
 | 02/16 | ✨ [Gratitude Graffiti](./2026-02-16/) | 感恩塗鴉 |
@@ -70,10 +71,10 @@
      ╔═══════════════════════════╗
      ║     Daily Lab Stats       ║
      ╠═══════════════════════════╣
-     ║  📦 總專案數: 7+          ║
-     ║  🔥 連續產出: 8 天        ║
+     ║  📦 總專案數: 8+          ║
+     ║  🔥 連續產出: 9 天        ║
      ║  ⏰ 平均產出時間: 3:00 AM  ║
-     ║  ☕ 消耗咖啡: 4 杯        ║
+     ║  ☕ 消耗咖啡: 5 杯         ║
      ║  🐛 Bug 數: 數不清        ║
      ╚═══════════════════════════╝
 ```
