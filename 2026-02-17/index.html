@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Breath Wave | 呼吸波浪</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400&family=Noto+Serif+TC:wght@300;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-deep: #0a0c10;
+      --bg-surface: #12151c;
+      --text-primary: #e8eaed;
+      --text-secondary: #6b7280;
+      --accent: #22d3ee;
+      --accent-glow: rgba(34, 211, 238, 0.3);
+      --wave-1: #22d3ee;
+      --wave-2: #06b6d4;
+      --wave-3: #0891b2;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Noto Serif TC', serif;
+      background: var(--bg-deep);
+      color: var(--text-primary);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Grain overlay */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+      opacity: 0.04;
+      pointer-events: none;
+      z-index: 100;
+    }
+
+    .container {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      width: 100%;
+      max-width: 600px;
+      padding: 2rem;
+    }
+
+    .title {
+      font-size: 1.5rem;
+      font-weight: 300;
+      letter-spacing: 0.2em;
+      color: var(--text-secondary);
+      margin-bottom: 3rem;
+      text-transform: uppercase;
+    }
+
+    .wave-container {
+      position: relative;
+      width: 280px;
+      height: 280px;
+      margin: 0 auto 3rem;
+    }
+
+    .wave {
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 200%;
+      height: 100%;
+      border-radius: 50% 50% 0 0;
+      opacity: 0.6;
+      transition: height 0.1s ease-out;
+    }
+
+    .wave-1 { background: var(--wave-1); }
+    .wave-2 { background: var(--wave-2); opacity: 0.4; }
+    .wave-3 { background: var(--wave-3); opacity: 0.25; }
+
+    .center-text {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 10;
+      text-align: center;
+    }
+
+    .phase {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.875rem;
+      font-weight: 300;
+      letter-spacing: 0.15em;
+      color: var(--accent);
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+    }
+
+    .countdown {
+      font-family: 'DM Mono', monospace;
+      font-size: 3rem;
+      font-weight: 400;
+      color: var(--text-primary);
+      line-height: 1;
+    }
+
+    .instruction {
+      font-size: 1rem;
+      font-weight: 300;
+      color: var(--text-secondary);
+      margin-top: 1rem;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+    }
+
+    .instruction.visible {
+      opacity: 1;
+    }
+
+    .controls {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.75rem;
+      font-weight: 400;
+      letter-spacing: 0.1em;
+      padding: 0.875rem 1.75rem;
+      border: 1px solid var(--text-secondary);
+      background: transparent;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+    }
+
+    .btn:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      box-shadow: 0 0 20px var(--accent-glow);
+    }
+
+    .btn.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: var(--bg-deep);
+    }
+
+    .pattern-selector {
+      margin-bottom: 2rem;
+      display: flex;
+      gap: 0.5rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .pattern-btn {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.7rem;
+      padding: 0.5rem 1rem;
+      border: 1px solid var(--text-secondary);
+      background: transparent;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .pattern-btn.active {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .stats {
+      margin-top: 2rem;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      display: flex;
+      gap: 2rem;
+      justify-content: center;
+    }
+
+    .stat-value {
+      color: var(--accent);
+    }
+
+    @media (max-width: 480px) {
+      .wave-container {
+        width: 220px;
+        height: 220px;
+      }
+      .countdown {
+        font-size: 2.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1 class="title">Breath Wave</h1>
+
+    <div class="pattern-selector">
+      <button class="pattern-btn active" data-ratio="4,4">4-4 平靜</button>
+      <button class="pattern-btn" data-ratio="4,7">4-7 放鬆</button>
+      <button class="pattern-btn" data-ratio="5,5">5-5 能量</button>
+    </div>
+
+    <div class="wave-container">
+      <div class="wave wave-1"></div>
+      <div class="wave wave-2"></div>
+      <div class="wave wave-3"></div>
+      <div class="center-text">
+        <div class="phase" id="phase">準備</div>
+        <div class="countdown" id="countdown">0</div>
+        <div class="instruction" id="instruction">點擊開始</div>
+      </div>
+    </div>
+
+    <div class="controls">
+      <button class="btn" id="startBtn">開始</button>
+      <button class="btn" id="stopBtn">停止</button>
+    </div>
+
+    <div class="stats">
+      <div>循環: <span class="stat-value" id="cycles">0</span></div>
+      <div>總分鐘: <span class="stat-value" id="minutes">0</span></div>
+    </div>
+  </div>
+
+  <script>
+    const phaseEl = document.getElementById('phase');
+    const countdownEl = document.getElementById('countdown');
+    const instructionEl = document.getElementById('instruction');
+    const startBtn = document.getElementById('startBtn');
+    const stopBtn = document.getElementById('stopBtn');
+    const waves = document.querySelectorAll('.wave');
+    const patternBtns = document.querySelectorAll('.pattern-btn');
+    const cyclesEl = document.getElementById('cycles');
+    const minutesEl = document.getElementById('minutes');
+
+    let isRunning = false;
+    let inhaleTime = 4;
+    let exhaleTime = 4;
+    let interval = null;
+    let cycles = 0;
+    let totalSeconds = 0;
+    let currentPhase = 'inhale';
+    let phaseTime = 0;
+
+    // Load stats from localStorage
+    const saved = localStorage.getItem('breathwave-stats');
+    if (saved) {
+      const data = JSON.parse(saved);
+      cycles = data.cycles || 0;
+      totalSeconds = data.totalSeconds || 0;
+      cyclesEl.textContent = cycles;
+      minutesEl.textContent = Math.floor(totalSeconds / 60);
+    }
+
+    function saveStats() {
+      localStorage.setItem('breathwave-stats', JSON.stringify({ cycles, totalSeconds }));
+    }
+
+    patternBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        if (isRunning) return;
+        patternBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const [inT, outT] = btn.dataset.ratio.split(',').map(Number);
+        inhaleTime = inT;
+        exhaleTime = outT;
+      });
+    });
+
+    function updateWaves(progress, isInhale) {
+      const maxHeight = 85;
+      const minHeight = 20;
+      
+      let height;
+      if (isInhale) {
+        height = minHeight + (maxHeight - minHeight) * progress;
+      } else {
+        height = maxHeight - (maxHeight - minHeight) * progress;
+      }
+
+      waves.forEach((wave, i) => {
+        const offset = i * 8;
+        wave.style.height = `${height + offset}%`;
+      });
+    }
+
+    function tick() {
+      phaseTime++;
+      totalSeconds++;
+      
+      const currentDuration = currentPhase === 'inhale' ? inhaleTime : exhaleTime;
+      const progress = Math.min(phaseTime / currentDuration, 1);
+      
+      updateWaves(progress, currentPhase === 'inhale');
+      countdownEl.textContent = currentDuration - phaseTime;
+
+      if (phaseTime >= currentDuration) {
+        if (currentPhase === 'inhale') {
+          currentPhase = 'exhale';
+          phaseEl.textContent = '吐氣';
+          instructionEl.textContent = '慢慢呼出';
+        } else {
+          currentPhase = 'inhale';
+          phaseEl.textContent = '吸氣';
+          instructionEl.textContent = '緩緩吸入';
+          cycles++;
+          cyclesEl.textContent = cycles;
+          saveStats();
+        }
+        phaseTime = 0;
+      }
+      
+      if (totalSeconds % 60 === 0) {
+        minutesEl.textContent = Math.floor(totalSeconds / 60);
+      }
+    }
+
+    startBtn.addEventListener('click', () => {
+      if (isRunning) return;
+      isRunning = true;
+      startBtn.classList.add('active');
+      stopBtn.classList.remove('active');
+      instructionEl.classList.add('visible');
+      
+      currentPhase = 'inhale';
+      phaseTime = 0;
+      phaseEl.textContent = '吸氣';
+      instructionEl.textContent = '緩緩吸入';
+      
+      interval = setInterval(tick, 1000);
+    });
+
+    stopBtn.addEventListener('click', () => {
+      if (!isRunning) return;
+      isRunning = false;
+      clearInterval(interval);
+      startBtn.classList.remove('active');
+      stopBtn.classList.add('active');
+      instructionEl.textContent = '點擊開始';
+      phaseEl.textContent = '結束';
+      countdownEl.textContent = '0';
+      
+      waves.forEach(wave => {
+        wave.style.height = '20%';
+      });
+    });
+  </script>
+</body>
+</html>

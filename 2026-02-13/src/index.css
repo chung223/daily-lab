@@ -1,0 +1,97 @@
+@import "tailwindcss";
+
+@theme {
+  --font-mono: "Space Mono", "JetBrains Mono", monospace;
+  --font-display: "Clash Display", "Space Grotesk", sans-serif;
+  
+  --color-oracle-bg: #050505;
+  --color-oracle-text: #e5e5e5;
+  --color-oracle-accent: #ff003c; /* Blood Red / Cyberpunk Red */
+  --color-oracle-accent-dim: #990024;
+  --color-oracle-surface: #111111;
+  --color-oracle-border: #333333;
+}
+
+:root {
+  color-scheme: dark;
+  --bg-primary: var(--color-oracle-bg);
+  --text-primary: var(--color-oracle-text);
+  --accent: var(--color-oracle-accent);
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: var(--accent);
+  color: black;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-oracle-surface);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-oracle-border);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent);
+}
+
+/* Glitch Effect Keyframes */
+@keyframes glitch-anim-1 {
+  0% { clip-path: inset(20% 0 80% 0); transform: translate(-2px, 1px); }
+  20% { clip-path: inset(60% 0 10% 0); transform: translate(2px, -1px); }
+  40% { clip-path: inset(40% 0 50% 0); transform: translate(-2px, 2px); }
+  60% { clip-path: inset(80% 0 5% 0); transform: translate(2px, -2px); }
+  80% { clip-path: inset(10% 0 60% 0); transform: translate(-1px, 1px); }
+  100% { clip-path: inset(30% 0 70% 0); transform: translate(1px, -1px); }
+}
+
+.glitch-text {
+  position: relative;
+  display: inline-block;
+}
+
+.glitch-text::before,
+.glitch-text::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--bg-primary);
+}
+
+.glitch-text::before {
+  left: 2px;
+  text-shadow: -1px 0 red;
+  clip-path: inset(0 0 0 0);
+  animation: glitch-anim-1 2s infinite linear alternate-reverse;
+}
+
+.glitch-text::after {
+  left: -2px;
+  text-shadow: -1px 0 cyan;
+  clip-path: inset(0 0 0 0);
+  animation: glitch-anim-1 3s infinite linear alternate-reverse;
+}
+
+/* Brutalist Border utilities */
+.border-brutal {
+  border: 1px solid var(--color-oracle-border);
+}
+.border-brutal:hover {
+  border-color: var(--accent);
+}
