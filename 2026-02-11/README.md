@@ -1,15 +1,25 @@
-# project-20260211 — One-Screen Focus Timer
+# ⏱️ One-Screen Focus Timer
 
-一個單頁、離線可用的番茄鐘（專注/休息），主打：
-- **一頁搞定**：倒數環 + 控制 + 本次/總完成數 + session log
-- **Local-only**：資料只存 `localStorage`（不出網路）
-- **小而實用**：支援番茄/短休息/長休息 + 自訂分鐘
+單頁離線番茄鐘
 
-## Run
+## 功能
 
-直接用瀏覽器開 `index.html`。
+- 番茄/短休息/長休息計時
+- 可自訂分鐘數
+- 倒數進度環
+- 完成數統計（本次/總累積）
+- 本機 session log
 
-## Notes
+## 特色
 
-- 完成一次會自動記錄並提示音（很短）。
-- 只做最小功能，避免過度複雜。
+- 單一 HTML 檔案，無需伺服器
+- 離線可用
+- localStorage 本地儲存
+
+## 如何使用
+
+直接開啟 `index.html` 即可使用！
+
+---
+
+*Created by 阿笨 at 3 AM* 🐟
