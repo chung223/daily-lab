@@ -1,424 +1,454 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Aurora Words — 極光語</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@300;500&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --bg-primary: #050810;
-      --bg-secondary: #0a0f1a;
-      --text-primary: #e8f0f5;
-      --text-secondary: #7a8a9a;
-      --aurora-1: #00ffa3;
-      --aurora-2: #00d4ff;
-      --aurora-3: #a855f7;
-      --aurora-4: #ff6b9d;
-      --accent: #00ffa3;
-    }
-
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      font-family: 'Noto Serif TC', serif;
-      background: var(--bg-primary);
-      color: var(--text-primary);
-      min-height: 100vh;
-      overflow: hidden;
-      position: relative;
-    }
-
-    /* Grain overlay */
-    .grain {
-      position: fixed;
-      inset: 0;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
-      opacity: 0.04;
-      pointer-events: none;
-      z-index: 100;
-    }
-
-    /* Aurora background layers */
-    .aurora-bg {
-      position: fixed;
-      inset: 0;
-      z-index: 0;
-      overflow: hidden;
-    }
-
-    .aurora-layer {
-      position: absolute;
-      width: 200%;
-      height: 60%;
-      left: -50%;
-      top: 20%;
-      border-radius: 50% 50% 0 0;
-      filter: blur(80px);
-      opacity: 0.3;
-      animation: aurora-drift 20s ease-in-out infinite;
-    }
-
-    .aurora-layer:nth-child(1) {
-      background: linear-gradient(90deg, var(--aurora-1), transparent, var(--aurora-2));
-      animation-delay: 0s;
-    }
-
-    .aurora-layer:nth-child(2) {
-      background: linear-gradient(90deg, var(--aurora-3), transparent, var(--aurora-1));
-      top: 30%;
-      animation-delay: -7s;
-      opacity: 0.25;
-    }
-
-    .aurora-layer:nth-child(3) {
-      background: linear-gradient(90deg, var(--aurora-2), transparent, var(--aurora-4));
-      top: 40%;
-      animation-delay: -14s;
-      opacity: 0.2;
-    }
-
-    @keyframes aurora-drift {
-      0%, 100% { transform: translateX(-10%) scaleY(1); }
-      50% { transform: translateX(10%) scaleY(1.1); }
-    }
-
-    /* Stars */
-    .stars {
-      position: fixed;
-      inset: 0;
-      z-index: 1;
-    }
-
-    .star {
-      position: absolute;
-      width: 2px;
-      height: 2px;
-      background: var(--text-primary);
-      border-radius: 50%;
-      opacity: 0.6;
-      animation: twinkle 3s ease-in-out infinite;
-    }
-
-    @keyframes twinkle {
-      0%, 100% { opacity: 0.3; }
-      50% { opacity: 0.8; }
-    }
-
-    /* Main container */
-    .container {
-      position: relative;
-      z-index: 10;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
-      padding: 2rem;
-    }
-
-    h1 {
-      font-size: clamp(2rem, 6vw, 3.5rem);
-      font-weight: 300;
-      letter-spacing: 0.15em;
-      margin-bottom: 0.5rem;
-      background: linear-gradient(135deg, var(--aurora-1), var(--aurora-2), var(--aurora-3));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      text-align: center;
-    }
-
-    .subtitle {
-      font-family: 'DM Mono', monospace;
-      font-size: 0.85rem;
-      color: var(--text-secondary);
-      margin-bottom: 3rem;
-      letter-spacing: 0.1em;
-    }
-
-    .input-wrapper {
-      position: relative;
-      width: 100%;
-      max-width: 500px;
-    }
-
-    input {
-      width: 100%;
-      padding: 1.2rem 1.5rem;
-      font-family: 'Noto Serif TC', serif;
-      font-size: 1.1rem;
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 12px;
-      color: var(--text-primary);
-      outline: none;
-      transition: all 0.3s ease;
-      backdrop-filter: blur(10px);
-    }
-
-    input::placeholder {
-      color: var(--text-secondary);
-      font-style: italic;
-    }
-
-    input:focus {
-      border-color: var(--accent);
-      box-shadow: 0 0 30px rgba(0, 255, 163, 0.1);
-    }
-
-    /* Floating words container */
-    .words-container {
-      position: fixed;
-      inset: 0;
-      z-index: 5;
-      pointer-events: none;
-    }
-
-    .floating-word {
-      position: absolute;
-      font-family: 'Noto Serif TC', serif;
-      font-size: 1.2rem;
-      font-weight: 300;
-      white-space: nowrap;
-      animation: float-up 8s ease-out forwards;
-      text-shadow: 0 0 20px currentColor;
-    }
-
-    @keyframes float-up {
-      0% {
-        opacity: 0;
-        transform: translateY(0) scale(0.8);
-      }
-      10% {
-        opacity: 1;
-        transform: translateY(-20px) scale(1);
-      }
-      100% {
-        opacity: 0;
-        transform: translateY(-400px) scale(0.9);
-      }
-    }
-
-    /* Word bank */
-    .word-bank {
-      position: fixed;
-      bottom: 2rem;
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 10;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-      justify-content: center;
-      max-width: 90vw;
-      padding: 1rem;
-      background: rgba(0, 0, 0, 0.3);
-      border-radius: 12px;
-      backdrop-filter: blur(10px);
-    }
-
-    .saved-word {
-      font-family: 'DM Mono', monospace;
-      font-size: 0.75rem;
-      padding: 0.4rem 0.8rem;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 20px;
-      color: var(--text-secondary);
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-
-    .saved-word:hover {
-      background: rgba(0, 255, 163, 0.1);
-      border-color: var(--accent);
-      color: var(--text-primary);
-    }
-
-    .saved-word.aurora-1 { color: var(--aurora-1); }
-    .saved-word.aurora-2 { color: var(--aurora-2); }
-    .saved-word.aurora-3 { color: var(--aurora-3); }
-    .saved-word.aurora-4 { color: var(--aurora-4); }
-
-    /* Counter */
-    .counter {
-      position: fixed;
-      top: 2rem;
-      right: 2rem;
-      font-family: 'DM Mono', monospace;
-      font-size: 0.8rem;
-      color: var(--text-secondary);
-      z-index: 10;
-    }
-
-    .counter span {
-      color: var(--accent);
-      font-size: 1.2rem;
-    }
-
-    /* Hint */
-    .hint {
-      position: fixed;
-      bottom: 6rem;
-      left: 50%;
-      transform: translateX(-50%);
-      font-family: 'DM Mono', monospace;
-      font-size: 0.7rem;
-      color: var(--text-secondary);
-      opacity: 0.6;
-      z-index: 10;
-    }
-
-    @media (max-width: 768px) {
-      .container { padding: 1rem; }
-      h1 { font-size: 2rem; }
-      .word-bank { bottom: 1rem; padding: 0.8rem; }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>✨ Z-Image 提示詞生成器</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Zen+Maru+Gothic:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --sky-blue: #7ec8e3;
+            --cloud-white: #f8f9fa;
+            --forest-green: #4a7c59;
+            --warm-yellow: #f4d03f;
+            --soft-pink: #ffb6c1;
+            --deep-blue: #2c3e50;
+            --text-dark: #2d3436;
+            --card-bg: rgba(255, 255, 255, 0.95);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Noto Sans TC', 'Zen Maru Gothic', sans-serif;
+            background: linear-gradient(180deg, #87ceeb 0%, #b8e0f0 30%, #d4e8f2 60%, #fff 100%);
+            min-height: 100vh;
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+        .clouds {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: 0; overflow: hidden;
+        }
+        .cloud {
+            position: absolute; background: rgba(255, 255, 255, 0.8);
+            border-radius: 50px; animation: float 20s infinite linear;
+        }
+        .cloud::before, .cloud::after {
+            content: ''; position: absolute; background: inherit; border-radius: 50%;
+        }
+        .cloud-1 { width: 120px; height: 40px; top: 10%; left: -120px; animation-duration: 25s; }
+        .cloud-1::before { width: 50px; height: 50px; top: -25px; left: 20px; }
+        .cloud-1::after { width: 40px; height: 40px; top: -15px; left: 60px; }
+        .cloud-2 { width: 100px; height: 35px; top: 25%; left: -100px; animation-delay: 10s; animation-duration: 30s; }
+        .cloud-2::before { width: 40px; height: 40px; top: -20px; left: 15px; }
+        .cloud-2::after { width: 35px; height: 35px; top: -12px; left: 50px; }
+        .cloud-3 { width: 80px; height: 30px; top: 15%; left: -80px; animation-delay: 5s; animation-duration: 20s; }
+        .cloud-3::before { width: 35px; height: 35px; top: -18px; left: 12px; }
+        .cloud-3::after { width: 28px; height: 28px; top: -10px; left: 40px; }
+        @keyframes float { from { transform: translateX(0); } to { transform: translateX(calc(100vw + 200px)); } }
+        header { position: relative; z-index: 10; text-align: center; padding: 40px 20px 20px; }
+        h1 { font-size: 2.5rem; color: var(--deep-blue); text-shadow: 2px 2px 0 rgba(255, 255, 255, 0.8); margin-bottom: 8px; }
+        .subtitle { color: var(--forest-green); font-size: 1.1rem; }
+        main { position: relative; z-index: 10; max-width: 900px; margin: 0 auto; padding: 20px; padding-bottom: 100px; }
+        .card {
+            background: var(--card-bg); border-radius: 24px; padding: 28px; margin-bottom: 24px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(255, 255, 255, 0.5) inset;
+            backdrop-filter: blur(10px);
+        }
+        .card-title { font-size: 1.3rem; color: var(--forest-green); margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+        .card-title::before { content: '✨'; }
+        label { display: block; font-weight: 500; margin-bottom: 8px; color: var(--deep-blue); }
+        input[type="text"], textarea, select {
+            width: 100%; padding: 14px 18px; border: 2px solid #e0e7ed; border-radius: 14px;
+            font-size: 1rem; font-family: inherit; transition: all 0.3s ease; background: white;
+        }
+        input[type="text"]:focus, textarea:focus, select:focus {
+            outline: none; border-color: var(--sky-blue); box-shadow: 0 0 0 4px rgba(126, 200, 227, 0.2);
+        }
+        textarea { min-height: 120px; resize: vertical; }
+        .select-wrapper { position: relative; }
+        .select-wrapper::after {
+            content: '▼'; position: absolute; right: 18px; top: 50%; transform: translateY(-50%);
+            font-size: 0.8rem; color: var(--forest-green); pointer-events: none;
+        }
+        select { appearance: none; cursor: pointer; }
+        .tags-container { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
+        .tag {
+            display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px;
+            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+            border: 2px solid transparent; border-radius: 20px; font-size: 0.9rem;
+            cursor: pointer; transition: all 0.2s ease; user-select: none;
+        }
+        .tag:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(74, 124, 89, 0.2); }
+        .tag.selected {
+            background: linear-gradient(135deg, var(--forest-green) 0%, #5d8a66 100%);
+            color: white; border-color: var(--forest-green);
+        }
+        .tag .icon { font-size: 1.1em; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        @media (max-width: 600px) { .grid-2 { grid-template-columns: 1fr; } }
+        .output-section { position: relative; }
+        .output-textarea {
+            background: #fafafa; font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.95rem; min-height: 180px; border: 2px dashed #ddd;
+        }
+        .btn-group { display: flex; gap: 12px; margin-top: 16px; flex-wrap: wrap; }
+        .btn {
+            padding: 14px 28px; border: none; border-radius: 14px; font-size: 1rem;
+            font-weight: 600; cursor: pointer; transition: all 0.3s ease; display: inline-flex; align-items: center; gap: 8px;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, var(--forest-green) 0%, #5d8a66 100%);
+            color: white; box-shadow: 0 4px 15px rgba(74, 124, 89, 0.3);
+        }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(74, 124, 89, 0.4); }
+        .btn-copy { background: linear-gradient(135deg, var(--sky-blue) 0%, #5ba3c6 100%); color: white; }
+        .btn-clear { background: linear-gradient(135deg, #ffb6c1 0%, #ff8fa3 100%); color: white; }
+        .info-box {
+            background: linear-gradient(135deg, #fff9e6 0%, #ffecb3 100%); border-radius: 14px;
+            padding: 16px 20px; margin-top: 16px; font-size: 0.95rem; border-left: 4px solid var(--warm-yellow);
+        }
+        .info-box strong { color: #d68910; }
+        .tips { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-top: 16px; }
+        .tip {
+            background: linear-gradient(135deg, #e8f4fd 0%, #d0ebf7 100%); padding: 12px 16px;
+            border-radius: 12px; font-size: 0.9rem;
+        }
+        .tip::before { content: '💡'; margin-right: 6px; }
+        .toast {
+            position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(100px);
+            background: var(--forest-green); color: white; padding: 14px 28px; border-radius: 30px;
+            font-weight: 500; box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2); z-index: 1000;
+            opacity: 0; transition: all 0.3s ease;
+        }
+        .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+        footer { position: relative; z-index: 10; text-align: center; padding: 20px; color: var(--deep-blue); font-size: 0.9rem; opacity: 0.8; }
+        @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
+        .generating {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%; animation: shimmer 1.5s infinite;
+        }
+        .nsfw-section { background: linear-gradient(135deg, #ffe8e8 0%, #fff0f0 100%); }
+    </style>
 </head>
 <body>
-  <div class="grain"></div>
-  
-  <div class="aurora-bg">
-    <div class="aurora-layer"></div>
-    <div class="aurora-layer"></div>
-    <div class="aurora-layer"></div>
-  </div>
-  
-  <div class="stars" id="stars"></div>
-  
-  <div class="words-container" id="words-container"></div>
-  
-  <div class="container">
-    <h1>極光語</h1>
-    <p class="subtitle">AURORA WORDS</p>
-    
-    <div class="input-wrapper">
-      <input 
-        type="text" 
-        id="word-input" 
-        placeholder="輸入一句話，讓它化為極光..." 
-        maxlength="20"
-        autocomplete="off"
-      >
+    <div class="clouds">
+        <div class="cloud cloud-1"></div>
+        <div class="cloud cloud-2"></div>
+        <div class="cloud cloud-3"></div>
     </div>
-  </div>
-  
-  <p class="hint">按下 Enter 釋放文字</p>
-  
-  <div class="word-bank" id="word-bank"></div>
-  
-  <div class="counter">
-    累積 <span id="count">0</span> 道極光
-  </div>
-
-  <script>
-    // Initialize stars
-    const starsContainer = document.getElementById('stars');
-    for (let i = 0; i < 80; i++) {
-      const star = document.createElement('div');
-      star.className = 'star';
-      star.style.left = Math.random() * 100 + '%';
-      star.style.top = Math.random() * 60 + '%';
-      star.style.animationDelay = Math.random() * 3 + 's';
-      star.style.width = (Math.random() * 2 + 1) + 'px';
-      star.style.height = star.style.width;
-      starsContainer.appendChild(star);
-    }
-
-    // Aurora colors
-    const auroraColors = [
-      'var(--aurora-1)',
-      'var(--aurora-2)',
-      'var(--aurora-3)',
-      'var(--aurora-4)'
-    ];
-
-    // LocalStorage keys
-    const STORAGE_KEY = 'aurora-words-saved';
-    const COUNT_KEY = 'aurora-words-count';
-
-    // Load saved data
-    let savedWords = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
-    let totalCount = parseInt(localStorage.getItem(COUNT_KEY) || '0');
-
-    // Render saved words
-    function renderWordBank() {
-      const bank = document.getElementById('word-bank');
-      bank.innerHTML = '';
-      savedWords.slice(-12).forEach((word, i) => {
-        const span = document.createElement('span');
-        span.className = `saved-word aurora-${(i % 4) + 1}`;
-        span.textContent = word;
-        span.onclick = () => releaseWord(word);
-        bank.appendChild(span);
-      });
-    }
-
-    // Update counter
-    function updateCounter() {
-      document.getElementById('count').textContent = totalCount;
-    }
-
-    // Release a floating word
-    function releaseWord(text) {
-      const container = document.getElementById('words-container');
-      const word = document.createElement('div');
-      word.className = 'floating-word';
-      word.textContent = text;
-      
-      // Random position and color
-      const x = Math.random() * 60 + 20;
-      const colorIndex = Math.floor(Math.random() * 4);
-      word.style.left = x + '%';
-      word.style.bottom = '20%';
-      word.style.color = auroraColors[colorIndex];
-      
-      container.appendChild(word);
-      
-      // Remove after animation
-      setTimeout(() => word.remove(), 8000);
-      
-      // Update count
-      totalCount++;
-      localStorage.setItem(COUNT_KEY, totalCount);
-      updateCounter();
-    }
-
-    // Handle input
-    const input = document.getElementById('word-input');
-    input.addEventListener('keypress', (e) => {
-      if (e.key === 'Enter' && input.value.trim()) {
-        const word = input.value.trim();
-        
-        // Save to localStorage if new
-        if (!savedWords.includes(word)) {
-          savedWords.push(word);
-          if (savedWords.length > 50) savedWords.shift();
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(savedWords));
-          renderWordBank();
+    <header>
+        <h1>✨ Z-Image 提示詞生成器</h1>
+        <p class="subtitle">宮崎駿風格 • 現代化設計 • 響應式</p>
+    </header>
+    <main>
+        <div class="card">
+            <h2 class="card-title">主體描述</h2>
+            <label for="subject">你想生成什麼？</label>
+            <input type="text" id="subject" placeholder="例如：一隻可愛的藍色小魚在海底世界優游">
+            <div style="margin-top: 20px;">
+                <label>或選擇預設類型：</label>
+                <div class="tags-container">
+                    <span class="tag" data-value="portrait" onclick="selectPreset(this)"><span class="icon">👤</span>人物肖像</span>
+                    <span class="tag" data-value="landscape" onclick="selectPreset(this)"><span class="icon">🏔️</span>風景場景</span>
+                    <span class="tag" data-value="creature" onclick="selectPreset(this)"><span class="icon">🐉</span>奇幻生物</span>
+                    <span class="tag" data-value="character" onclick="selectPreset(this)"><span class="icon">🎭</span>角色設計</span>
+                    <span class="tag" data-value="object" onclick="selectPreset(this)"><span class="icon">🎨</span>物品物件</span>
+                    <span class="tag" data-value="scene" onclick="selectPreset(this)"><span class="icon">🏰</span>場景氛圍</span>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <h2 class="card-title">藝術風格</h2>
+            <div class="grid-2">
+                <div>
+                    <label for="artStyle">主要風格</label>
+                    <div class="select-wrapper">
+                        <select id="artStyle">
+                            <option value="">選擇風格...</option>
+                            <optgroup label="動畫風格">
+                                <option value="吉卜力風格，細膩的手繪風格">吉卜力風格</option>
+                                <option value="迪士尼風格">迪士尼風格</option>
+                                <option value="皮克斯風格">皮克斯風格</option>
+                                <option value="新海誠風格，寫實風景">新海誠風格</option>
+                                <option value="日本動漫風格">日本動漫風</option>
+                            </optgroup>
+                            <optgroup label="藝術流派">
+                                <option value="水彩畫風格">水彩畫</option>
+                                <option value="油畫風格">油畫</option>
+                                <option value="浮世繪風格">浮世繪</option>
+                                <option value="賽博龐克風格">賽博龐克</option>
+                                <option value="蒸汽朋克風格">蒸汽朋克</option>
+                                <option value="極簡主義風格">極簡主義</option>
+                            </optgroup>
+                            <optgroup label="攝影風格">
+                                <option value="電影感攝影">電影感攝影</option>
+                                <option value="棚內攝影">棚內攝影</option>
+                                <option value="街頭攝影風格">街頭攝影</option>
+                                <option value="風景攝影風格">風景攝影</option>
+                            </optgroup>
+                        </select>
+                    </div>
+                </div>
+                <div>
+                    <label for="mood">情緒氛圍</label>
+                    <div class="select-wrapper">
+                        <select id="mood">
+                            <option value="">選擇氛圍...</option>
+                            <option value="溫馨浪漫的氛圍">溫馨浪漫 🌸</option>
+                            <option value="神秘奇幻的氛圍">神秘奇幻 ✨</option>
+                            <option value="歡樂活力的氛圍">歡樂活力 ☀️</option>
+                            <option value="憂鬱詩意的氛圍">憂鬱詩意 🌙</option>
+                            <option value="史詩壯闊的氛圍">史詩壯闊 🏔️</option>
+                            <option value="詭異不安的氛圍">詭異不安 🌑</option>
+                            <option value="清新自然的氛圍">清新自然 🍃</option>
+                            <option value="復古懷舊的氛圍">復古懷舊 📻</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <h2 class="card-title">環境與光線</h2>
+            <div class="grid-2">
+                <div>
+                    <label for="environment">場景環境</label>
+                    <div class="select-wrapper">
+                        <select id="environment">
+                            <option value="">選擇環境...</option>
+                            <option value="茂密的森林深處">🌲 森林深處</option>
+                            <option value="陽光普照的海岸沙灘">🏖️ 海岸沙灘</option>
+                            <option value="繁華的都市街道">🏙️ 繁華都市</option>
+                            <option value="古老的城堡">🏰 古老城堡</option>
+                            <option value="科幻風格的太空站">🚀 科幻太空站</option>
+                            <option value="夢境般的虛空">💫 夢境虛空</option>
+                            <option value="溫馨的小屋">🏠 溫馨小屋</option>
+                            <option value="神秘的水下世界">🌊 水下世界</option>
+                            <option value="飄浮的雲端天際">☁️ 雲端天際</option>
+                            <option value="廢棄的工廠廢墟">🏚️ 廢墟工廠</option>
+                        </select>
+                    </div>
+                </div>
+                <div>
+                    <label for="lighting">光線條件</label>
+                    <div class="select-wrapper">
+                        <select id="lighting">
+                            <option value="">選擇光線...</option>
+                            <option value="金色的陽光灑落">☀️ 金色陽光（黃昏）</option>
+                            <option value="柔和的晨光">🌅 柔和晨光</option>
+                            <option value="皎潔的月光">🌙 月光皎潔</option>
+                            <option value="霓虹絢麗的燈光">💜 霓虹絢麗</option>
+                            <option value="自然的天光">⛅ 自然天光</option>
+                            <option value="浪漫的星光">✨ 浪漫星光</option>
+                            <option value="戲劇性的陰影">🎬 戲劇性陰影</option>
+                            <option value="夢幻的柔光">💕 夢幻柔光</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <h2 class="card-title">視角與構圖</h2>
+            <div class="grid-2">
+                <div>
+                    <label for="camera">拍攝視角</label>
+                    <div class="select-wrapper">
+                        <select id="camera">
+                            <option value="">選擇視角...</option>
+                            <option value="特寫鏡頭">📸 特寫鏡頭</option>
+                            <option value="廣角鏡頭拍攝">🌆 廣角鏡頭</option>
+                            <option value="鳥瞰視角">🦅 鳥瞰視角</option>
+                            <option value="仰視角度拍攝">🏛️ 仰視視角</option>
+                            <option value="低角度拍攝">🎬 低角度拍攝</option>
+                            <option value="正面直視鏡頭">👁️ 正面直視</option>
+                            <option value="側光輪廓拍攝">🌟 側光輪廓</option>
+                        </select>
+                    </div>
+                </div>
+                <div>
+                    <label for="composition">構圖方式</label>
+                    <div class="select-wrapper">
+                        <select id="composition">
+                            <option value="">選擇構圖...</option>
+                            <option value="對稱構圖">⚖️ 對稱構圖</option>
+                            <option value="三分法構圖">📐 三分法構圖</option>
+                            <option value="引導線構圖">➡️ 引導線構圖</option>
+                            <option value="框架構圖">🖼️ 框架構圖</option>
+                            <option value="留白構圖">🍃 留白構圖</option>
+                            <option value="螺旋構圖">🌀 螺旋構圖</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <h2 class="card-title">進階選項</h2>
+            <label>品質標籤（可多選）</label>
+            <div class="tags-container">
+                <span class="tag" data-tag="high quality" onclick="toggleTag(this)"><span class="icon">💎</span>高畫質</span>
+                <span class="tag" data-tag="extremely detailed" onclick="toggleTag(this)"><span class="icon">🔍</span>極度精細</span>
+                <span class="tag" data-tag="8k resolution" onclick="toggleTag(this)"><span class="icon">🖥️</span>8K畫質</span>
+                <span class="tag" data-tag="masterpiece" onclick="toggleTag(this)"><span class="icon">🏆</span>大師級</span>
+                <span class="tag" data-tag="best quality" onclick="toggleTag(this)"><span class="icon">👑</span>最佳品質</span>
+                <span class="tag" data-tag="ultra detailed" onclick="toggleTag(this)"><span class="icon">💯</span>超級精細</span>
+                <span class="tag" data-tag="cinematic lighting" onclick="toggleTag(this)"><span class="icon">🎥</span>電影光效</span>
+                <span class="tag" data-tag="volumetric lighting" onclick="toggleTag(this)"><span class="icon">🌫️</span>體積光</span>
+            </div>
+            <div style="margin-top: 20px;">
+                <label>特別效果（可多選）</label>
+                <div class="tags-container">
+                    <span class="tag" data-tag="particles effect" onclick="toggleTag(this)"><span class="icon">✨</span>粒子效果</span>
+                    <span class="tag" data-tag="fireflies" onclick="toggleTag(this)"><span class="icon">🔥</span>螢火蟲</span>
+                    <span class="tag" data-tag="water droplets" onclick="toggleTag(this)"><span class="icon">💧</span>水滴</span>
+                    <span class="tag" data-tag="rainbow" onclick="toggleTag(this)">🌈彩虹</span>
+                    <span class="tag" data-tag="aurora borealis" onclick="toggleTag(this)"><span class="icon">🌌</span>極光</span>
+                    <span class="tag" data-tag="bokeh effect" onclick="toggleTag(this)"><span class="icon">📷</span>散景</span>
+                    <span class="tag" data-tag="motion blur" onclick="toggleTag(this)"><span class="icon">💨</span>動態模糊</span>
+                    <span class="tag" data-tag="lens flare" onclick="toggleTag(this)"><span class="icon">🌟</span>鏡頭光暈</span>
+                </div>
+            </div>
+            <div style="margin-top: 20px;">
+                <label>🏢 工作相關（可多選）</label>
+                <div class="tags-container">
+                    <span class="tag" data-tag="business meeting" onclick="toggleTag(this)"><span class="icon">📊</span>商務會議</span>
+                    <span class="tag" data-tag="office setting" onclick="toggleTag(this)"><span class="icon">🏢</span>辦公環境</span>
+                    <span class="tag" data-tag="presentation" onclick="toggleTag(this)"><span class="icon">📢</span>簡報演講</span>
+                    <span class="tag" data-tag="team collaboration" onclick="toggleTag(this)"><span class="icon">🤝</span>團隊合作</span>
+                    <span class="tag" data-tag="tech startup" onclick="toggleTag(this)"><span class="icon">💻</span>科技創業</span>
+                    <span class="tag" data-tag="data visualization" onclick="toggleTag(this)"><span class="icon">📈</span>數據視覺化</span>
+                    <span class="tag" data-tag="app interface" onclick="toggleTag(this)"><span class="icon">📱</span>應用介面</span>
+                    <span class="tag" data-tag="logo design" onclick="toggleTag(this)"><span class="icon">🎯</span>LOGO設計</span>
+                </div>
+            </div>
+            <div style="margin-top: 20px;">
+                <label>🏠 生活相關（可多選）</label>
+                <div class="tags-container">
+                    <span class="tag" data-tag="cozy home" onclick="toggleTag(this)"><span class="icon">🏡</span>溫馨家居</span>
+                    <span class="tag" data-tag="cooking" onclick="toggleTag(this)"><span class="icon">🍳</span>烹飪料理</span>
+                    <span class="tag" data-tag="garden" onclick="toggleTag(this)"><span class="icon">🌸</span>花園庭院</span>
+                    <span class="tag" data-tag="pet" onclick="toggleTag(this)"><span class="icon">🐕</span>寵物</span>
+                    <span class="tag" data-tag="travel" onclick="toggleTag(this)"><span class="icon">✈️</span>旅行</span>
+                    <span class="tag" data-tag="festival" onclick="toggleTag(this)"><span class="icon">🎉</span>節慶</span>
+                    <span class="tag" data-tag="meditation" onclick="toggleTag(this)"><span class="icon">🧘</span>冥想靜心</span>
+                    <span class="tag" data-tag="reading" onclick="toggleTag(this)"><span class="icon">📚</span>閱讀</span>
+                </div>
+            </div>
+        </div>
+        <div class="card nsfw-section">
+            <h2 class="card-title" style="color: #c0392b;">🔞 成人選項</h2>
+            <label>服裝風格（可多選）</label>
+            <div class="tags-container">
+                <span class="tag nsfw" data-tag="casual wear" onclick="toggleTag(this)">👕 休閒服</span>
+                <span class="tag nsfw" data-tag="formal wear" onclick="toggleTag(this)">👔 正裝</span>
+                <span class="tag nsfw" data-tag="swimsuit" onclick="toggleTag(this)">👙 泳裝</span>
+                <span class="tag nsfw" data-tag="underwear" onclick="toggleTag(this)">🩱 內衣</span>
+                <span class="tag nsfw" data-tag="lingerie" onclick="toggleTag(this)">💋 性感內衣</span>
+                <span class="tag nsfw" data-tag="artistic nude" onclick="toggleTag(this)">🌟 藝術裸露</span>
+            </div>
+            <div style="margin-top: 20px;">
+                <label>場景風格（可多選）</label>
+                <div class="tags-container">
+                    <span class="tag nsfw" data-tag="bedroom" onclick="toggleTag(this)">🛏️ 臥室</span>
+                    <span class="tag nsfw" data-tag="bathroom" onclick="toggleTag(this)">🛁 浴室</span>
+                    <span class="tag nsfw" data-tag="beach" onclick="toggleTag(this)">🏖️ 海灘</span>
+                    <span class="tag nsfw" data-tag="night club" onclick="toggleTag(this)">💃 夜店</span>
+                    <span class="tag nsfw" data-tag="romantic dinner" onclick="toggleTag(this)">🍷 浪漫晚餐</span>
+                </div>
+            </div>
+            <div class="info-box" style="margin-top: 20px;">
+                ⚠️ <strong>注意：</strong>Z-Image-Turbo 對成人內容較為寬鬆，但仍需遵守服務條款。請確保生成的內容合法合規。
+            </div>
+        </div>
+        <div class="card output-section">
+            <h2 class="card-title">✨ 生成的提示詞</h2>
+            <textarea id="output" class="output-textarea" placeholder="點擊「生成提示詞」按鈕，你的創意將在這裡呈現..."></textarea>
+            <div class="btn-group">
+                <button class="btn btn-primary" onclick="generatePrompt()">✨ 生成提示詞</button>
+                <button class="btn btn-copy" onclick="copyToClipboard()">📋 複製結果</button>
+                <button class="btn btn-clear" onclick="clearAll()">🗑️ 清除</button>
+            </div>
+            <div class="info-box">
+                💡 <strong>Z-Image 技巧：</strong>
+                <div class="tips">
+                    <div class="tip">越詳細的描述，結果越精確</div>
+                    <div class="tip">不需要 negative prompt</div>
+                    <div class="tip">可嵌入雙語文字</div>
+                    <div class="tip">建議 100-500 字</div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <footer>
+        <p>✨ 靈感來自宮崎駿的魔法世界 | Made with 💙 for Z-Image Users</p>
+    </footer>
+    <div class="toast" id="toast">已複製到剪貼簿！</div>
+    <script>
+        const presets = {
+            portrait: '一個年輕女性/男性，詳細的面部特徵，',
+            landscape: '壯麗的自然風景，',
+            creature: '奇幻生物，',
+            character: '完整的角色設計，',
+            object: '精緻的物品物件，',
+            scene: '氛圍感場景，'
+        };
+        let selectedTags = new Set();
+        function selectPreset(el) {
+            const value = el.dataset.value;
+            const input = document.getElementById('subject');
+            document.querySelectorAll('.tag[data-value]').forEach(tag => tag.classList.remove('selected'));
+            el.classList.add('selected');
+            if (presets[value]) input.value = presets[value];
         }
-        
-        releaseWord(word);
-        input.value = '';
-      }
-    });
-
-    // Click on saved words to re-release
-    document.querySelectorAll('.saved-word').forEach(el => {
-      el.addEventListener('click', () => releaseWord(el.textContent));
-    });
-
-    // Initial render
-    renderWordBank();
-    updateCounter();
-  </script>
+        function toggleTag(el) {
+            el.classList.toggle('selected');
+            const tag = el.dataset.tag;
+            if (selectedTags.has(tag)) selectedTags.delete(tag); else selectedTags.add(tag);
+        }
+        function generatePrompt() {
+            const parts = [];
+            const subject = document.getElementById('subject').value.trim();
+            if (subject) parts.push(subject);
+            const artStyle = document.getElementById('artStyle').value;
+            if (artStyle) parts.push(artStyle);
+            const mood = document.getElementById('mood').value;
+            if (mood) parts.push(mood);
+            const environment = document.getElementById('environment').value;
+            if (environment) parts.push(environment);
+            const lighting = document.getElementById('lighting').value;
+            if (lighting) parts.push(lighting);
+            const camera = document.getElementById('camera').value;
+            if (camera) parts.push(camera);
+            const composition = document.getElementById('composition').value;
+            if (composition) parts.push(composition);
+            if (selectedTags.size > 0) parts.push(Array.from(selectedTags).join(', '));
+            let result = parts.join(', ');
+            if (result && !result.endsWith('high quality') && !result.endsWith('detailed')) {
+                result += ', high quality, extremely detailed, masterpiece, best quality';
+            }
+            const output = document.getElementById('output');
+            output.value = result || '請至少填寫主體描述，或選擇預設類型';
+            output.classList.add('generating');
+            setTimeout(() => output.classList.remove('generating'), 500);
+        }
+        function copyToClipboard() {
+            const output = document.getElementById('output');
+            const text = output.value;
+            if (!text || text === '請至少填寫主體描述，或選擇預設類型') { showToast('沒有內容可複製！'); return; }
+            navigator.clipboard.writeText(text).then(() => showToast('已複製到剪貼簿！')).catch(() => showToast('複製失敗，請手動複製'));
+        }
+        function clearAll() {
+            ['subject', 'artStyle', 'mood', 'environment', 'lighting', 'camera', 'composition', 'output'].forEach(id => document.getElementById(id).value = '');
+            document.querySelectorAll('.tag.selected').forEach(tag => tag.classList.remove('selected'));
+            selectedTags.clear();
+            showToast('已清除所有內容！');
+        }
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2500);
+        }
+    </script>
 </body>
 </html>
