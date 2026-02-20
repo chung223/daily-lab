@@ -7,8 +7,8 @@
 *用一杯咖啡的時間，換一個讓世界多點樂趣的小玩具*
 
 ![License](https://img.shields.io/badge/license-MIT-green?style=for-the-badge&logo=mit)
-![Projects](https://img.shields.io/badge/專案數-9+-blue?style=for-the-badge)
-![Streak](https://img.shields.io/badge/連續-10天-orange?style=for-the-badge)
+![Projects](https://img.shields.io/badge/專案數-10+-blue?style=for-the-badge)
+![Streak](https://img.shields.io/badge/連續-11天-orange?style=for-the-badge)
 ![Coffee](https://img.shields.io/badge/消耗咖啡-☕☕☕☕☕-red?style=for-the-badge)
 
 </div>
@@ -23,9 +23,9 @@
 
 | 預覽 | 日期 | 專案 | 描述 |
 |:---:|:---:|:---:|---|
+| ✨ | 02/21 | 🌟 [Stardust Memory](https://chung223.github.io/daily-lab/2026-02-21/) | 星塵記憶 — 輸入文字化為星塵飄升 |
 | 🎬 | 02/20 | 🌌 [Aurora Words](https://chung223.github.io/daily-lab/2026-02-20/) | 極光語 — 輸入文字化為極光飄升 |
 | 🎬 | 02/19 | 🌸 [Mantra Bloom](https://chung223.github.io/daily-lab/2026-02-19/) | 咒語綻放 — 輸入咒語化為美麗花瓣 |
-| 🎬 | 02/18 | 🌌 [Mood Aurora](https://chung223.github.io/daily-lab/2026-02-18/) | 情緒極光追蹤器 — 將心情化為夜空中的極光 |
 | 🎬 | 02/17 | 🌊 [Breath Wave](https://chung223.github.io/daily-lab/2026-02-17/) | 療癒呼吸練習 — 跟著波浪深呼吸 |
 
 ---
@@ -37,6 +37,7 @@
 
 | 日期 | 專案 | 描述 |
 |:---:|:---:|---|
+| 02/21 | ✨ [Stardust Memory](https://chung223.github.io/daily-lab/2026-02-21/) | 星塵記憶 |
 | 02/20 | 🌌 [Aurora Words](https://chung223.github.io/daily-lab/2026-02-20/) | 極光語 |
 | 02/19 | 🌸 [Mantra Bloom](https://chung223.github.io/daily-lab/2026-02-19/) | 咒語綻放 |
 | 02/18 | 🌌 [Mood Aurora](https://chung223.github.io/daily-lab/2026-02-18/) | 情緒極光追蹤器 |
@@ -73,8 +74,8 @@
      ╔═══════════════════════════╗
      ║     Daily Lab Stats       ║
      ╠═══════════════════════════╣
-     ║  📦 總專案數: 9+          ║
-     ║  🔥 連續產出: 10 天        ║
+     ║  📦 總專案數: 10+         ║
+     ║  🔥 連續產出: 11 天        ║
      ║  ⏰ 平均產出時間: 3:00 AM  ║
      ║  ☕ 消耗咖啡: 5 杯         ║
      ║  🐛 Bug 數: 數不清        ║
