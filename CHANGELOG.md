@@ -1,11 +1,18 @@
 # Daily Lab Changelog
 
-*Updated: 2026-02-20 03:33*
+*Updated: 2026-02-21 03:31*
 
 # Changelog — daily-lab
 
 Changes since 2026-02-01:
 
+- `d0080bb` Daily Lab 2026-02-21 — *chung0223* (2026-02-21)
+- `38948ee` fix: 修正本日精選為 Aurora Words — *chung0223* (2026-02-20)
+- `8f19bbc` restore: Aurora Words for 02-20 — *chung0223* (2026-02-20)
+- `ad4252a` fix: 更新本日精選為 Z-Image Prompt Generator — *chung0223* (2026-02-20)
+- `e522999` Daily Lab 2026-02-20: Z-Image Prompt Generator — *chung0223* (2026-02-20)
+- `579d0d3` fix: 修正本日精選連結 + 更新為 GitHub Pages 網址 — *chung0223* (2026-02-20)
+- `3d1ff0e` docs: update changelog 2026-02-20 — *chung0223* (2026-02-20)
 - `3910f4b` Daily Lab 2026-02-20 — *chung0223* (2026-02-20)
 - `77f754c` docs: update changelog 2026-02-19 — *chung0223* (2026-02-19)
 - `c821260` Daily Lab 2026-02-19 — *chung0223* (2026-02-19)
