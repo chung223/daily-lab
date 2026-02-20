@@ -23,7 +23,6 @@
 
 | 預覽 | 日期 | 專案 | 描述 |
 |:---:|:---:|:---:|---|
-| 🎬 | 02/20 | 💬 [Z-Image Prompt Gen](https://chung223.github.io/daily-lab/2026-02-20/) | AI 提示詞生成器 |
 | 🎬 | 02/20 | 🌌 [Aurora Words](https://chung223.github.io/daily-lab/2026-02-20/) | 極光語 — 輸入文字化為極光飄升 |
 | 🎬 | 02/19 | 🌸 [Mantra Bloom](https://chung223.github.io/daily-lab/2026-02-19/) | 咒語綻放 — 輸入咒語化為美麗花瓣 |
 | 🎬 | 02/18 | 🌌 [Mood Aurora](https://chung223.github.io/daily-lab/2026-02-18/) | 情緒極光追蹤器 — 將心情化為夜空中的極光 |
