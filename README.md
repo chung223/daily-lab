@@ -17,16 +17,16 @@
 
 ## 🌟 本日精選
 
-<a href="./2026-02-18/">
-<img src="https://custom-icon-badges.demolab.com/badge/點此體驗-2026--02--18-ff6b6b?style=for-the-badge&logo=rocket" alt="Try Now">
+<a href="https://chung223.github.io/daily-lab/2026-02-20/">
+<img src="https://custom-icon-badges.demolab.com/badge/點此體驗-2026--02--20-ff6b6b?style=for-the-badge&logo=rocket" alt="Try Now">
 </a>
 
 | 預覽 | 日期 | 專案 | 描述 |
 |:---:|:---:|:---:|---|
-| 🎬 | 02/20 | 🌌 [Aurora Words](./2026-02-20/) | 極光語 — 輸入文字化為極光飄升 |
-| 🎬 | 02/19 | 🌸 [Mantra Bloom](./2026-02-19/) | 咒語綻放 — 輸入咒語化為美麗花瓣 |
-| 🎬 | 02/18 | 🌌 [Mood Aurora](./2026-02-18/) | 情緒極光追蹤器 — 將心情化為夜空中的極光 |
-| 🎬 | 02/17 | 🌊 [Breath Wave](./2026-02-17/) | 療癒呼吸練習 — 跟著波浪深呼吸 |
+| 🎬 | 02/20 | 🌌 [Aurora Words](https://chung223.github.io/daily-lab/2026-02-20/) | 極光語 — 輸入文字化為極光飄升 |
+| 🎬 | 02/19 | 🌸 [Mantra Bloom](https://chung223.github.io/daily-lab/2026-02-19/) | 咒語綻放 — 輸入咒語化為美麗花瓣 |
+| 🎬 | 02/18 | 🌌 [Mood Aurora](https://chung223.github.io/daily-lab/2026-02-18/) | 情緒極光追蹤器 — 將心情化為夜空中的極光 |
+| 🎬 | 02/17 | 🌊 [Breath Wave](https://chung223.github.io/daily-lab/2026-02-17/) | 療癒呼吸練習 — 跟著波浪深呼吸 |
 
 ---
 
@@ -37,11 +37,11 @@
 
 | 日期 | 專案 | 描述 |
 |:---:|:---:|---|
-| 02/20 | 🌌 [Aurora Words](./2026-02-20/) | 極光語 |
-| 02/19 | 🌸 [Mantra Bloom](./2026-02-19/) | 咒語綻放 |
-| 02/18 | 🌌 [Mood Aurora](./2026-02-18/) | 情緒極光追蹤器 |
-| 02/17 | 🌊 [Breath Wave](./2026-02-17/) | 療癒呼吸練習 |
-| 02/16 | ✨ [Gratitude Graffiti](./2026-02-16/) | 感恩塗鴉 |
+| 02/20 | 🌌 [Aurora Words](https://chung223.github.io/daily-lab/2026-02-20/) | 極光語 |
+| 02/19 | 🌸 [Mantra Bloom](https://chung223.github.io/daily-lab/2026-02-19/) | 咒語綻放 |
+| 02/18 | 🌌 [Mood Aurora](https://chung223.github.io/daily-lab/2026-02-18/) | 情緒極光追蹤器 |
+| 02/17 | 🌊 [Breath Wave](https://chung223.github.io/daily-lab/2026-02-17/) | 療癒呼吸練習 |
+| 02/16 | ✨ [Gratitude Graffiti](https://chung223.github.io/daily-lab/2026-02-16/) | 感恩塗鴉 |
 
 </details>
 
@@ -50,8 +50,8 @@
 
 | 日期 | 專案 | 描述 |
 |:---:|:---:|---|
-| 02/11 | ⏱️ [Focus Timer](./2026-02-11/) | 單頁離線番茄鐘 |
-| 02/14 | 🌙 [NightShift Planner](./2026-02-14/) | 夜班族工作節奏管理 |
+| 02/11 | ⏱️ [Focus Timer](https://chung223.github.io/daily-lab/2026-02-11/) | 單頁離線番茄鐘 |
+| 02/14 | 🌙 [NightShift Planner](https://chung223.github.io/daily-lab/2026-02-14/) | 夜班族工作節奏管理 |
 
 </details>
 
@@ -60,8 +60,8 @@
 
 | 日期 | 專案 | 描述 |
 |:---:|:---:|---|
-| 02/13 | 🔮 [Oracle 13](./2026-02-13/) | 十三號命運占卜機 |
-| 02/15 | 🔊 [Sound Bath](./2026-02-15/) | 聲音浴生成器 |
+| 02/13 | 🔮 [Oracle 13](https://chung223.github.io/daily-lab/2026-02-13/) | 十三號命運占卜機 |
+| 02/15 | 🔊 [Sound Bath](https://chung223.github.io/daily-lab/2026-02-15/) | 聲音浴生成器 |
 
 </details>
 
