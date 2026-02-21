@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>魂燈 | Spirit Lantern</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-deep: #0a0a0f;
+      --bg-mid: #12121a;
+      --accent-warm: #e8a87c;
+      --accent-gold: #f4d03f;
+      --accent-amber: #d4894a;
+      --text-primary: #e8e4df;
+      --text-muted: #8a8680;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Noto Serif TC', serif;
+      background: var(--bg-deep);
+      color: var(--text-primary);
+      min-height: 100vh;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* 三層背景 */
+    .bg-layer {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .bg-layer-1 {
+      background: 
+        radial-gradient(ellipse 80% 50% at 50% 100%, rgba(232, 168, 124, 0.08) 0%, transparent 60%),
+        var(--bg-deep);
+    }
+
+    .bg-layer-2 {
+      background: 
+        radial-gradient(circle 60% 40% at 20% 80%, rgba(244, 208, 63, 0.04) 0%, transparent 50%),
+        radial-gradient(circle 50% 30% at 80% 70%, rgba(212, 137, 74, 0.04) 0%, transparent 50%);
+    }
+
+    .bg-layer-3 {
+      background-image: 
+        radial-gradient(1px 1px at 10% 20%, rgba(255,255,255,0.15) 50%, transparent 100%),
+        radial-gradient(1px 1px at 30% 60%, rgba(255,255,255,0.1) 50%, transparent 100%),
+        radial-gradient(1.5px 1.5px at 50% 30%, rgba(255,255,255,0.12) 50%, transparent 100%),
+        radial-gradient(1px 1px at 70% 80%, rgba(255,255,255,0.08) 50%, transparent 100%),
+        radial-gradient(1.2px 1.2px at 85% 40%, rgba(255,255,255,0.1) 50%, transparent 100%),
+        radial-gradient(1px 1px at 25% 90%, rgba(255,255,255,0.06) 50%, transparent 100%),
+        radial-gradient(1.3px 1.3px at 60% 15%, rgba(255,255,255,0.09) 50%, transparent 100%);
+      animation: twinkle 8s ease-in-out infinite;
+    }
+
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.6; }
+      50% { opacity: 1; }
+    }
+
+    /* 顆粒感覆蓋 */
+    .noise-overlay {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 100;
+      opacity: 0.035;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    }
+
+    /* 主容器 */
+    .container {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 2rem;
+    }
+
+    h1 {
+      font-size: clamp(1.8rem, 5vw, 2.5rem);
+      font-weight: 600;
+      letter-spacing: 0.15em;
+      margin-bottom: 0.5rem;
+      text-shadow: 0 0 30px rgba(232, 168, 124, 0.3);
+      background: linear-gradient(135deg, var(--accent-warm), var(--accent-gold));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .subtitle {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      letter-spacing: 0.3em;
+      margin-bottom: 3rem;
+      text-transform: uppercase;
+    }
+
+    /* 輸入區域 */
+    .input-area {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+      width: 100%;
+      max-width: 500px;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 1rem 1.5rem;
+      font-family: 'Noto Serif TC', serif;
+      font-size: 1.1rem;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(232, 168, 124, 0.2);
+      border-radius: 2rem;
+      color: var(--text-primary);
+      text-align: center;
+      outline: none;
+      transition: all 0.3s ease;
+    }
+
+    input[type="text"]::placeholder {
+      color: var(--text-muted);
+      font-style: italic;
+    }
+
+    input[type="text"]:focus {
+      border-color: rgba(232, 168, 124, 0.5);
+      background: rgba(255, 255, 255, 0.05);
+      box-shadow: 0 0 20px rgba(232, 168, 124, 0.15);
+    }
+
+    .hint {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      letter-spacing: 0.1em;
+    }
+
+    /* 計數器 */
+    .counter {
+      position: fixed;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      font-family: 'DM Mono', monospace;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      letter-spacing: 0.15em;
+      z-index: 20;
+    }
+
+    .counter span {
+      color: var(--accent-warm);
+      font-weight: 400;
+    }
+
+    /* 燈籠容器 */
+    .lanterns-container {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 5;
+      overflow: hidden;
+    }
+
+    /* 燈籠樣式 */
+    .lantern {
+      position: absolute;
+      bottom: -100px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      animation: rise linear forwards;
+      opacity: 0;
+    }
+
+    @keyframes rise {
+      0% {
+        opacity: 0;
+        transform: translateX(-50%) translateY(0) scale(0.3);
+      }
+      10% {
+        opacity: 1;
+        transform: translateX(-50%) translateY(-20px) scale(0.8);
+      }
+      90% {
+        opacity: 0.9;
+      }
+      100% {
+        opacity: 0;
+        transform: translateX(-50%) translateY(-100vh) scale(1.2);
+      }
+    }
+
+    .lantern-body {
+      width: 40px;
+      height: 60px;
+      border-radius: 50% 50% 45% 45%;
+      background: linear-gradient(180deg, 
+        rgba(244, 208, 63, 0.9) 0%, 
+        rgba(232, 168, 124, 0.7) 50%,
+        rgba(212, 137, 74, 0.5) 100%);
+      box-shadow: 
+        0 0 20px rgba(244, 208, 63, 0.6),
+        0 0 40px rgba(232, 168, 124, 0.3),
+        inset 0 -10px 20px rgba(0,0,0,0.2);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .lantern-body::before {
+      content: '';
+      position: absolute;
+      top: 8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 6px;
+      height: 6px;
+      background: rgba(255,255,255,0.8);
+      border-radius: 50%;
+      box-shadow: 0 0 10px rgba(255,255,255,0.5);
+    }
+
+    .lantern-body::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 15px;
+      background: linear-gradient(180deg, transparent, rgba(0,0,0,0.3));
+    }
+
+    .lantern-text {
+      font-family: 'Noto Serif TC', serif;
+      font-size: 0.85rem;
+      color: var(--text-primary);
+      text-shadow: 0 0 10px rgba(232, 168, 124, 0.8);
+      margin-top: 0.5rem;
+      white-space: nowrap;
+      max-width: 150px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .lantern-string {
+      width: 2px;
+      height: 15px;
+      background: linear-gradient(180deg, rgba(139, 119, 101, 0.6), transparent);
+    }
+
+    /* 浮動微粒 */
+    .particle {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      background: rgba(244, 208, 63, 0.4);
+      border-radius: 50%;
+      animation: float-particle linear forwards;
+    }
+
+    @keyframes float-particle {
+      0% {
+        opacity: 0;
+        transform: translateY(0) scale(0);
+      }
+      20% {
+        opacity: 1;
+      }
+      100% {
+        opacity: 0;
+        transform: translateY(-80px) scale(1);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-layer bg-layer-1"></div>
+  <div class="bg-layer bg-layer-2"></div>
+  <div class="bg-layer bg-layer-3"></div>
+  <div class="noise-overlay"></div>
+  
+  <div class="lanterns-container" id="lanternsContainer"></div>
+
+  <div class="container">
+    <h1>魂燈</h1>
+    <p class="subtitle">Spirit Lantern</p>
+    
+    <div class="input-area">
+      <input type="text" id="textInput" placeholder="寫下你的思念或願望..." maxlength="20" autocomplete="off">
+      <p class="hint">按下 Enter 釋放一盞魂燈</p>
+    </div>
+  </div>
+
+  <div class="counter">
+    累計 <span id="countDisplay">0</span> 盞燈
+  </div>
+
+  <script>
+    const input = document.getElementById('textInput');
+    const container = document.getElementById('lanternsContainer');
+    const countDisplay = document.getElementById('countDisplay');
+
+    // 載入計數
+    let lanternCount = parseInt(localStorage.getItem('spiritLanternCount') || '0');
+    countDisplay.textContent = lanternCount;
+
+    // 輸入處理
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && input.value.trim()) {
+        releaseLantern(input.value.trim());
+        input.value = '';
+      }
+    });
+
+    // 釋放燈籠
+    function releaseLantern(text) {
+      lanternCount++;
+      localStorage.setItem('spiritLanternCount', lanternCount.toString());
+      countDisplay.textContent = lanternCount;
+
+      // 建立燈籠元素
+      const lantern = document.createElement('div');
+      lantern.className = 'lantern';
+      
+      // 隨機水平位置 (15% - 85%)
+      const randomX = 15 + Math.random() * 70;
+      lantern.style.left = `${randomX}%`;
+      
+      // 動畫時間 (8-15秒)
+      const duration = 8 + Math.random() * 7;
+      lantern.style.animationDuration = `${duration}s`;
+
+      // 燈籠內容
+      lantern.innerHTML = `
+        <div class="lantern-body"></div>
+        <div class="lantern-string"></div>
+        <div class="lantern-text">${escapeHtml(text)}</div>
+      `;
+
+      container.appendChild(lantern);
+
+      // 建立周圍微粒
+      createParticles(randomX);
+
+      // 動畫結束後移除
+      setTimeout(() => {
+        lantern.remove();
+      }, duration * 1000);
+    }
+
+    // 建立浮動微粒
+    function createParticles(xPos) {
+      const particleCount = 5 + Math.floor(Math.random() * 5);
+      
+      for (let i = 0; i < particleCount; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+        particle.style.left = `${xPos + (Math.random() - 0.5) * 20}%`;
+        particle.style.bottom = '10%';
+        particle.style.animationDuration = `${2 + Math.random() * 2}s`;
+        particle.style.animationDelay = `${Math.random() * 0.5}s`;
+        
+        container.appendChild(particle);
+        
+        setTimeout(() => particle.remove(), 4000);
+      }
+    }
+
+    // HTML 轉義
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    // 焦點時顯示提示
+    input.addEventListener('focus', () => {
+      document.querySelector('.hint').style.opacity = '1';
+    });
+
+    input.addEventListener('blur', () => {
+      document.querySelector('.hint').style.opacity = '0.6';
+    });
+  </script>
+</body>
+</html>
