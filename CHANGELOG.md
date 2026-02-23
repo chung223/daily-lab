@@ -1,11 +1,25 @@
 # Daily Lab Changelog
 
-*Updated: 2026-02-23 03:30*
+*Updated: 2026-02-24 03:30*
 
 # Changelog — daily-lab
 
 Changes since 2026-02-01:
 
+- `dad0266` fix: use relative paths, assets at root — *chung0223* (2026-02-24)
+- `72e85ec` fix: use absolute base path for GitHub Pages — *chung0223* (2026-02-24)
+- `519140d` fix: correct asset path to dist/assets — *chung0223* (2026-02-24)
+- `9969855` fix: remove duplicate assets folder — *chung0223* (2026-02-24)
+- `74fdfb9` trigger rebuild — *chung0223* (2026-02-24)
+- `8c308ad` feat: 增加20則躺平語錄 — *chung0223* (2026-02-24)
+- `f1224fe` fix: use built index.html instead of source — *chung0223* (2026-02-24)
+- `9547626` fix: rebuild with relative asset paths — *chung0223* (2026-02-24)
+- `01c7842` fix: exclude all node_modules in subdirectories — *chung0223* (2026-02-24)
+- `bcb9dc7` trigger rebuild — *chung0223* (2026-02-24)
+- `98fd644` fix: exclude node_modules from Jekyll build — *chung0223* (2026-02-24)
+- `eb4fbab` Daily Lab 2026-02-24 — *chung0223* (2026-02-24)
+- `c6bc5b2` Daily Lab 2026-02-23 — *chung0223* (2026-02-23)
+- `6fd5009` docs: update changelog 2026-02-23 — *chung0223* (2026-02-23)
 - `953e87b` docs: update changelog 2026-02-22 — *chung0223* (2026-02-22)
 - `c315f02` Daily Lab 2026-02-22 — *chung0223* (2026-02-22)
 - `e98b4b7` docs: update changelog 2026-02-21 — *chung0223* (2026-02-21)
