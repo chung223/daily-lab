@@ -1,15 +1,28 @@
 # Jekyll Configuration
+# 只建 2026-XX 的 dist 目錄
+include:
+  - "2026-*/dist"
+  - "*.html"
+  - "*.md"
+
+# 排除所有開發檔案
 exclude:
   - node_modules
+  - "2026-*/node_modules"
+  - "2026-*/src"
+  - "2026-*/public"
+  - "2026-*/package.json"
+  - "2026-*/package-lock.json"
+  - "2026-*/vite.config.ts"
+  - "2026-*/tsconfig*.json"
+  - "2026-*/eslint.config.js"
+  - "2026-*/.gitignore"
   - package.json
   - package-lock.json
   - vite.config.ts
   - tsconfig.json
   - tsconfig.*.json
   - eslint.config.js
-  - src
-  - public
-  - .gitignore
 
 # Build settings
 markdown: kramdown
