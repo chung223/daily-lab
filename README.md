@@ -7,8 +7,8 @@
 *用一杯咖啡的時間，換一個讓世界多點樂趣的小玩具*
 
 ![License](https://img.shields.io/badge/license-MIT-green?style=for-the-badge&logo=mit)
-![Projects](https://img.shields.io/badge/專案數-12+-blue?style=for-the-badge)
-![Streak](https://img.shields.io/badge/連續-13天-orange?style=for-the-badge)
+![Projects](https://img.shields.io/badge/專案數-13+-blue?style=for-the-badge)
+![Streak](https://img.shields.io/badge/連續-14天-orange?style=for-the-badge)
 ![Coffee](https://img.shields.io/badge/消耗咖啡-☕☕☕☕☕☕-red?style=for-the-badge)
 
 </div>
@@ -17,15 +17,15 @@
 
 ## 🌟 本日精選
 
-<a href="https://chung223.github.io/daily-lab/2026-02-20/">
-<img src="https://custom-icon-badges.demolab.com/badge/點此體驗-2026--02--20-ff6b6b?style=for-the-badge&logo=rocket" alt="Try Now">
+<a href="https://chung223.github.io/daily-lab/2026-02-24/">
+<img src="https://custom-icon-badges.demolab.com/badge/點此體驗-2026--02--24-ff6b6b?style=for-the-badge&logo=rocket" alt="Try Now">
 </a>
 
 | 預覽 | 日期 | 專案 | 描述 |
 |:---:|:---:|:---:|---|
-| 🪲 | 02/23 | ✨ [螢火蟲 Firefly](https://chung223.github.io/daily-lab/2026-02-23/) | 輸入文字化為螢火蟲緩緩升起 |
-| ✨ | 02/22 | 🏮 [魂燈 Spirit Lantern](https://chung223.github.io/daily-lab/2026-02-22/) | 輸入文字化為溫暖燈籠緩緩升起 |
-| ✨ | 02/21 | 🌟 [Stardust Memory](https://chung223.github.io/daily-lab/2026-02-21/) | 星塵記憶 — 輸入文字化為星塵飄升 |
+| 💩 | 02/24 | [廢文產生器](https://chung223.github.io/daily-lab/2026-02-24/) | 躺平語錄隨機產生器 |
+| 🪲 | 02/23 | [螢火蟲 Firefly](https://chung223.github.io/daily-lab/2026-02-23/) | 輸入文字化為螢火蟲緩緩升起 |
+| ✨ | 02/22 | [魂燈 Spirit Lantern](https://chung223.github.io/daily-lab/2026-02-22/) | 輸入文字化為溫暖燈籠緩緩升起 |
 
 ---
 
@@ -67,6 +67,15 @@
 
 </details>
 
+<details>
+<summary><b>💩 惡搞系</b> — 純粹整蠱</summary>
+
+| 日期 | 專案 | 描述 |
+|:---:|:---:|---|
+| 02/24 | 💩 [廢文產生器](https://chung223.github.io/daily-lab/2026-02-24/) | 躺平語錄隨機產生器 |
+
+</details>
+
 ---
 
 ## 📊 產出統計
@@ -75,8 +84,8 @@
      ╔═══════════════════════════╗
      ║     Daily Lab Stats       ║
      ╠═══════════════════════════╣
-     ║  📦 總專案數: 12+         ║
-     ║  🔥 連續產出: 13 天        ║
+     ║  📦 總專案數: 13+         ║
+     ║  🔥 連續產出: 14 天        ║
      ║  ⏰ 平均產出時間: 3:00 AM  ║
      ║  ☕ 消耗咖啡: 6 杯         ║
      ║  🐛 Bug 數: 數不清        ║
