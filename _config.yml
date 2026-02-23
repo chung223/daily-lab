@@ -1,0 +1,15 @@
+# Jekyll Configuration
+exclude:
+  - node_modules
+  - package.json
+  - package-lock.json
+  - vite.config.ts
+  - tsconfig.json
+  - tsconfig.*.json
+  - eslint.config.js
+  - src
+  - public
+  - .gitignore
+
+# Build settings
+markdown: kramdown
