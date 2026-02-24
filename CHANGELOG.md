@@ -1,11 +1,12 @@
 # Daily Lab Changelog
 
-*Updated: 2026-02-24 03:30*
+*Updated: 2026-02-25 03:30*
 
 # Changelog — daily-lab
 
 Changes since 2026-02-01:
 
+- `756de47` docs: update changelog 2026-02-24 — *chung0223* (2026-02-24)
 - `dad0266` fix: use relative paths, assets at root — *chung0223* (2026-02-24)
 - `72e85ec` fix: use absolute base path for GitHub Pages — *chung0223* (2026-02-24)
 - `519140d` fix: correct asset path to dist/assets — *chung0223* (2026-02-24)
