@@ -17,7 +17,6 @@ exclude:
   - "2026-*/tsconfig*.json"
   - "2026-*/eslint.config.js"
   - "2026-*/.gitignore"
-  - "2026-*/index.html"  # 只用 dist 裡的
   - package.json
   - package-lock.json
   - vite.config.ts
