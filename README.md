@@ -7,9 +7,9 @@
 *用一杯咖啡的時間，換一個讓世界多點樂趣的小玩具*
 
 ![License](https://img.shields.io/badge/license-MIT-green?style=for-the-badge&logo=mit)
-![Projects](https://img.shields.io/badge/專案數-16+-blue?style=for-the-badge)
+![Projects](https://img.shields.io/badge/專案數-17+-blue?style=for-the-badge)
 ![Streak](https://img.shields.io/badge/連續-17天-orange?style=for-the-badge)
-![Coffee](https://img.shields.io/badge/消耗咖啡-☕☕☕☕☕☕-red?style=for-the-badge)
+![Coffee](https://img.shields.io/badge/消耗咖啡-☕☕☕☕☕☕☕☕-red?style=for-the-badge)
 
 </div>
 
@@ -23,9 +23,9 @@
 
 | 預覽 | 日期 | 專案 | 描述 |
 |:---:|:---:|:---:|---|
+| ☯ | 02/28 | [易經六十四卦 I Ching](https://chung223.github.io/daily-lab/2026-02-28/) | 隨機抽取六十四卦 |
 | 🙏 | 02/27 | [今日偈語 Gatha](https://chung223.github.io/daily-lab/2026-02-27/) | 隨機抽取偈語智慧 |
 | 🌙 | 02/26 | [月影 Moon Shadow](https://chung223.github.io/daily-lab/2026-02-26/) | 輸入文字化為月亮影子 |
-| 🌊 | 02/25 | [漣漪 Ripple](https://chung223.github.io/daily-lab/2026-02-25/) | 輸入思緒化為水波漣漪 |
 
 ---
 
@@ -45,6 +45,7 @@
 
 | 日期 | 專案 | 描述 |
 |:---:|:---:|---|
+| 02/28 | ☯ [易經六十四卦 I Ching](https://chung223.github.io/daily-lab/2026-02-28/) | 隨機抽取六十四卦 |
 | 02/26 | 🌙 [月影 Moon Shadow](https://chung223.github.io/daily-lab/2026-02-26/) | 輸入文字化為月亮影子 |
 | 02/25 | 🌊 [漣漪 Ripple](https://chung223.github.io/daily-lab/2026-02-25/) | 輸入思緒化為水波漣漪 |
 | 02/23 | 🪲 [螢火蟲 Firefly](https://chung223.github.io/daily-lab/2026-02-23/) | 輸入文字化為螢火蟲 |
@@ -95,10 +96,10 @@
      ╔═══════════════════════════╗
      ║     Daily Lab Stats       ║
      ╠═══════════════════════════╣
-     ║  📦 總專案數: 16+         ║
-     ║  🔥 連續產出: 17 天        ║
+     ║  📦 總專案數: 17+         ║
+     ║  🔥 連續產出: 18 天        ║
      ║  ⏰ 平均產出時間: 3:00 AM  ║
-     ║  ☕ 消耗咖啡: 7 杯         ║
+     ║  ☕ 消耗咖啡: ☕☕☕☕☕☕☕☕         ║
      ║  🐛 Bug 數: 數不清        ║
      ╚═══════════════════════════╝
 ```

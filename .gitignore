@@ -1,9 +1,8 @@
 # Dependencies
 node_modules/
 
-# Build outputs
-dist/
-build/
+# Build outputs - 但保留每日專案的 dist
+!2026-*/dist/
 
 # IDE
 .idea/
