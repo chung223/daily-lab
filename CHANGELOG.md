@@ -1,11 +1,23 @@
 # Daily Lab Changelog
 
-*Updated: 2026-02-27 03:30*
+*Updated: 2026-02-28 03:30*
 
 # Changelog — daily-lab
 
 Changes since 2026-02-01:
 
+- `9ad1c4f` fix: add dist assets with dark mode — *chung0223* (2026-02-27)
+- `7cbf967` fix: force dark mode styling — *chung0223* (2026-02-27)
+- `a56639f` fix: correct asset paths to dist/ — *chung0223* (2026-02-27)
+- `5e0394c` fix: update index.html to point to dist assets — *chung0223* (2026-02-27)
+- `104cc35` fix: remove index.html exclusion — *chung0223* (2026-02-27)
+- `35bc6f0` fix: add index.html, update base path for GitHub Pages — *chung0223* (2026-02-27)
+- `b56d1bf` fix: ignore node_modules, remove from tracking — *chung0223* (2026-02-27)
+- `5e86353` add .nojekyll to disable Jekyll processing — *chung0223* (2026-02-27)
+- `5bf107d` remove source index.html, use dist only — *chung0223* (2026-02-27)
+- `a8cfb4b` fix: exclude source index.html, use dist only — *chung0223* (2026-02-27)
+- `c925e23` Daily Lab 2026-02-27 — *chung0223* (2026-02-27)
+- `c6ac13a` docs: update changelog 2026-02-27 — *chung0223* (2026-02-27)
 - `58777fe` Daily Lab 2026-02-26 — *chung0223* (2026-02-26)
 - `163217c` docs: update changelog 2026-02-26 — *chung0223* (2026-02-26)
 - `9468b0f` Daily Lab 2026-02-25 — *chung0223* (2026-02-25)
