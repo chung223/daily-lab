@@ -6,7 +6,7 @@
   <title>易經六十四卦 | I Ching Oracle</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;700&family=Ma+Shan+Zheng&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;700&family=ZCOOL+XiaoWei&display=swap" rel="stylesheet">
   <style>
     :root {
       --bg-dark: #0a0a0f;
@@ -16,6 +16,7 @@
       --gold-dark: #b8860b;
       --text: #e8e6e3;
       --text-muted: #8a8a8a;
+      --card-bg: #1a1a24;
     }
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
@@ -23,81 +24,36 @@
       background: var(--bg-dark);
       color: var(--text);
       min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 20px;
+      padding: 20px 15px;
       background-image: radial-gradient(ellipse at top, #1a1a2e 0%, transparent 50%), radial-gradient(ellipse at bottom, #0f0f1a 0%, transparent 50%);
     }
-    .container { max-width: 520px; width: 100%; text-align: center; }
-    .title {
-      font-family: 'Ma Shan Zheng', cursive;
-      font-size: 2.5rem;
-      color: var(--gold);
-      margin-bottom: 8px;
-      letter-spacing: 8px;
-      text-shadow: 0 0 30px rgba(212, 175, 55, 0.4);
-    }
-    .subtitle { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 30px; letter-spacing: 3px; }
-    .taiji {
-      width: 100px; height: 100px;
-      margin: 0 auto 30px;
-      cursor: pointer;
-      animation: float 3s ease-in-out infinite;
-      filter: drop-shadow(0 0 20px rgba(212, 175, 55, 0.6));
-    }
-    @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
-    .oracle-btn {
-      background: linear-gradient(135deg, var(--gold-dark), var(--gold));
-      color: var(--bg-dark);
-      border: none;
-      padding: 16px 48px;
-      font-size: 1.2rem;
-      font-family: 'Noto Serif TC', serif;
-      font-weight: 700;
-      letter-spacing: 4px;
-      cursor: pointer;
-      border-radius: 4px;
-      transition: all 0.3s ease;
-      box-shadow: 0 4px 25px rgba(212, 175, 55, 0.4);
-    }
-    .oracle-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 35px rgba(212, 175, 55, 0.6); }
-    .result {
-      display: none;
-      margin-top: 35px;
-      padding: 25px;
-      background: var(--bg-card);
-      border: 1px solid var(--gold-dark);
-      border-radius: 12px;
-      animation: fadeIn 0.6s ease;
-      text-align: left;
-    }
+    .container { max-width: 480px; margin: 0 auto; }
+    .title { font-family: 'ZCOOL XiaoWei', serif; font-size: 2rem; color: var(--gold); text-align: center; margin-bottom: 4px; letter-spacing: 6px; }
+    .subtitle { text-align: center; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 24px; letter-spacing: 2px; }
+    .taiji-box { text-align: center; margin-bottom: 24px; }
+    .taiji { width: 80px; height: 80px; cursor: pointer; animation: float 3s ease-in-out infinite; filter: drop-shadow(0 0 15px rgba(212,175,55,0.5)); }
+    @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
+    .oracle-btn { display: block; width: 100%; background: linear-gradient(135deg,var(--gold-dark),var(--gold)); color: var(--bg-dark); border: none; padding: 14px; font-size: 1.1rem; font-weight: 700; letter-spacing: 4px; cursor: pointer; border-radius: 6px; box-shadow: 0 4px 20px rgba(212,175,55,0.3); }
+    .oracle-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 25px rgba(212,175,55,0.5); }
+    .result { display: none; margin-top: 24px; animation: fadeIn 0.5s ease; }
     .result.show { display: block; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-    .hexagram-symbol {
-      text-align: center;
-      font-size: 2.8rem;
-      color: var(--gold);
-      margin-bottom: 8px;
-      line-height: 1.3;
-      font-family: monospace;
-      letter-spacing: 12px;
-    }
-    .hexagram-name { text-align: center; font-size: 1.6rem; color: var(--gold-light); margin-bottom: 6px; font-weight: 700; }
-    .hexagram-number { text-align: center; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 20px; }
-    .divider { width: 80px; height: 2px; background: linear-gradient(90deg, transparent, var(--gold), transparent); margin: 20px auto; }
-    .section { margin-bottom: 16px; }
-    .section-title { font-size: 0.85rem; color: var(--gold); margin-bottom: 6px; letter-spacing: 2px; font-weight: 700; }
-    .section-content { font-size: 0.95rem; line-height: 1.7; color: var(--text); }
-    .interpretation { background: rgba(212, 175, 55, 0.08); padding: 15px; border-radius: 8px; border-left: 3px solid var(--gold); }
-    .stats { margin-top: 30px; font-size: 0.85rem; color: var(--text-muted); }
-    .grain {
-      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      pointer-events: none; opacity: 0.025;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
-      z-index: 1000;
-    }
-    @media (max-width: 480px) { .title { font-size: 2rem; } .hexagram-symbol { font-size: 2rem; } .hexagram-name { font-size: 1.3rem; } }
+    @keyframes fadeIn { from{opacity:0;transform:translateY(15px)} to{opacity:1;transform:translateY(0)} }
+    .hex-header { text-align: center; padding: 20px; background: var(--card-bg); border-radius: 12px 12px 0 0; border: 1px solid var(--gold-dark); border-bottom: none; }
+    .hex-symbol { font-size: 2.2rem; color: var(--gold); line-height: 1.3; letter-spacing: 10px; font-family: monospace; }
+    .hex-name { font-size: 1.4rem; color: var(--gold-light); margin: 8px 0 4px; font-weight: 700; }
+    .hex-num { font-size: 0.8rem; color: var(--text-muted); }
+    .hex-body { background: var(--card-bg); border: 1px solid var(--gold-dark); border-top: none; border-radius: 0 0 12px 12px; padding: 18px; }
+    .section { margin-bottom: 14px; }
+    .section:last-child { margin-bottom: 0; }
+    .section-title { font-size: 0.75rem; color: var(--gold); margin-bottom: 6px; letter-spacing: 1px; font-weight: 700; }
+    .section-content { font-size: 0.9rem; line-height: 1.7; color: var(--text); }
+    .divider { height: 1px; background: linear-gradient(90deg,transparent,var(--gold-dark),transparent); margin: 14px 0; }
+    .category-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-top: 10px; }
+    .cat-card { background: rgba(212,175,55,0.06); padding: 10px; border-radius: 8px; text-align: center; }
+    .cat-title { font-size: 0.7rem; color: var(--gold); margin-bottom: 4px; }
+    .cat-text { font-size: 0.8rem; color: var(--text); line-height: 1.5; }
+    .stats { text-align: center; margin-top: 24px; font-size: 0.8rem; color: var(--text-muted); }
+    .grain { position: fixed; top:0; left:0; width:100%; height:100%; pointer-events:none; opacity:0.03; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseF='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect w='100%25' h='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); z-index: 100; }
   </style>
 </head>
 <body>
@@ -105,111 +61,128 @@
   <div class="container">
     <h1 class="title">易經六十四卦</h1>
     <p class="subtitle">I CHING ORACLE</p>
-    <svg class="taiji" viewBox="0 0 100 100" onclick="castOracle()">
-      <defs><linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#d4af37"/><stop offset="100%" style="stop-color:#b8860b"/></linearGradient></defs>
-      <circle cx="50" cy="50" r="48" fill="none" stroke="url(#goldGrad)" stroke-width="2"/>
-      <path d="M50 2 A48 48 0 0 1 50 98" fill="#d4af37" opacity="0.9"/>
-      <path d="M50 2 A48 48 0 0 0 50 98" fill="#1a1a2e" opacity="0.9"/>
-      <circle cx="50" cy="26" r="10" fill="#d4af37"/>
-      <circle cx="50" cy="74" r="10" fill="#1a1a2e" stroke="#d4af37" stroke-width="2"/>
-    </svg>
+    <div class="taiji-box">
+      <svg class="taiji" viewBox="0 0 100 100" onclick="castOracle()">
+        <defs><linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#d4af37"/><stop offset="100%" stop-color="#b8860b"/></linearGradient></defs>
+        <circle cx="50" cy="50" r="48" fill="none" stroke="url(#g)" stroke-width="2"/>
+        <path d="M50 2 A48 48 0 0 1 50 98" fill="#d4af37" opacity="0.9"/>
+        <path d="M50 2 A48 48 0 0 0 50 98" fill="#1a1a2e" opacity="0.9"/>
+        <circle cx="50" cy="26" r="10" fill="#d4af37"/>
+        <circle cx="50" cy="74" r="10" fill="#1a1a2e" stroke="#d4af37" stroke-width="2"/>
+      </svg>
+    </div>
     <button class="oracle-btn" onclick="castOracle()">擲筊求卦</button>
     <div class="result" id="result">
-      <div class="hexagram-symbol" id="symbol"></div>
-      <div class="hexagram-name" id="name"></div>
-      <div class="hexagram-number" id="number"></div>
-      <div class="divider"></div>
-      <div class="section"><div class="section-title">📜 卦辭</div><div class="section-content" id="judgement"></div></div>
-      <div class="section"><div class="section-title">🌊 象傳</div><div class="section-content" id="image"></div></div>
-      <div class="section interpretation"><div class="section-title">💡 白話解讀</div><div class="section-content" id="modern"></div></div>
-      <div class="section"><div class="section-title">🎯 今日建議</div><div class="section-content" id="advice"></div></div>
+      <div class="hex-header">
+        <div class="hex-symbol" id="symbol"></div>
+        <div class="hex-name" id="name"></div>
+        <div class="hex-num" id="number"></div>
+      </div>
+      <div class="hex-body">
+        <div class="section"><div class="section-title">📜 卦辭</div><div class="section-content" id="judge"></div></div>
+        <div class="divider"></div>
+        <div class="section"><div class="section-title">💡 綜合解讀</div><div class="section-content" id="modern"></div></div>
+        <div class="divider"></div>
+        <div class="section">
+          <div class="section-title">🎯 今日運勢</div>
+          <div class="category-grid">
+            <div class="cat-card"><div class="cat-title">💼 事業</div><div class="cat-text" id="career"></div></div>
+            <div class="cat-card"><div class="cat-title">💕 感情</div><div class="cat-text" id="love"></div></div>
+            <div class="cat-card"><div class="cat-title">🏥 健康</div><div class="cat-text" id="health"></div></div>
+          </div>
+        </div>
+        <div class="divider"></div>
+        <div class="section"><div class="section-title">✨ 建議</div><div class="section-content" id="advice"></div></div>
+      </div>
     </div>
     <div class="stats">已累計占卜 <span id="count">0</span> 次</div>
   </div>
   <script>
-    const hexagrams = [
-      {n:1,name:"乾為天",jud:"元亨利貞",img:"象曰：天行健，君子以自強不息。",modern:"象徵無限的創造力與積極進取的精神。代表純陽、開始、領導、創造力。問事業表示蒸蒸日上，問財運表示有大收獲，問感情表示主動出擊。",advice:"保持積極進取的心態，勇於行動。但純陽之卦，過剛易折，需懂得適可而止。",s:"☰☰"},
-      {n:2,name:"坤為地",jud:"元亨，利牝馬之貞",img:"象曰：地勢坤，君子以厚德載物。",modern:"代表柔順、包容、承載、順從。大地之德，養育萬物。問事宜順勢而為，問合作則需有耐心。",advice:"保持柔順與耐心，不要過度強求。學會等待時機，以退為進。",s:"☷☷"},
-      {n:3,name:"水雷屯",jud:"元亨利貞，勿用有攸往，利建侯",img:"象曰：雲雷屯，君子以經綸。",modern:"萬物初生之時，充滿困難與阻力。如幼苗破土，需要時間與養分。代表艱難的開端，但前景光明。",advice:"目前正是積累階段，不宜冒進。專注建立基礎實力，時機成熟自然好轉。",s:"☵☳"},
-      {n:4,name:"山水蒙",jud:"亨，匪我求童蒙，童蒙求我",img:"象曰：山下出泉，蒙。君子以果行育德。",modern:"象徵蒙昧未開，需要啟蒙教育。代表需要學習新事物，或接受他人指導。",advice:"保持虛心學習的態度。主動請教有經驗的人，會讓你進步更快。",s:"☶☵"},
-      {n:5,name:"水天需",jud:"有孚，光亨，貞吉，利涉大川",img:"象曰：雲上於天，需。君子以飲食宴樂。",modern:"代表等待時機。在等待中保持信心與誠信，時機成熟則可行動。",advice:"現在需要耐心等待。不要急於行動，保持誠信，好運將至。",s:"☵☰"},
-      {n:6,name:"天水讼",jud:"有孚窒惕，中吉，終凶",img:"象曰：天與水違行，讼。君子以作事謀始。",modern:"代表爭執、訴訟。與人意見不合，需要協調解決。",advice:"盡量避免衝突升級。冷靜溝通，尋求第三方調解為佳。",s:"☰☵"},
-      {n:7,name:"地水師",jud:"貞丈人吉，无咎",img:"象曰：地中有水，師。君子以容民畜眾。",modern:"代表群眾力量、團隊作戰。需要有經驗的領袖帶領才能成功。",advice:"尋找有經驗的人指導。團結可置信賴的人，共同面對挑戰。",s:"☷☵"},
-      {n:8,name:"水地比",jud:"吉，原筮元永貞，无咎",img:"象曰：地上有水，比。先王以建萬國，親諸侯。",modern:"代表親密合作、互相依附。與人親近、獲得支持的好兆頭。",advice:"主動與人親近，建立良好關係。會獲得他人的支持與幫助。",s:"☵☷"},
-      {n:9,name:"風天小畜",jud:"亨，密雲不雨，自我西郊",img:"象曰：風上於天，小畜。君子以懿文德。",modern:"代表小有積蓄，但尚未完全成熟。如密雲將雨而未下。",advice:"積累階段，需要更多耐心。小的成就已經顯現，但大收獲還需要時間。",s:"☴☰"},
-      {n:10,name:"天澤履",jud:"履虎尾，不咥人，亨",img:"象曰：上天下澤，履。君子以辨上下，定民志。",modern:"代表謹慎行動。如踩老虎尾巴而不被咬，需要步步為營。",advice:"謹慎行事，低調前進。不要過度張揚，以免招致麻煩。",s:"☰☱"},
-      {n:11,name:"地天泰",jud:"小往大來，吉亨",img:"象曰：天地交泰，后以財成天地之道。",modern:"代表通泰、吉祥。天地相交，萬物生成。問什麼都順利。",advice:"運勢極佳！各方面都很順利。把握機會，可以有大發展。",s:"☷☰"},
-      {n:12,name:"天地否",jud:"否之匪人，不利君子貞",img:"象曰：天地不交，否。君子以儉德辟難。",modern:"代表閉塞、不通。運勢下滑，需要低調蟄伏。",advice:"運勢不佳，宜靜不宜動。保持低調，避免衝突。",s:"☰☷"},
-      {n:13,name:"天火同人",jud:"同人於野，亨，利涉大川",img:"象曰：天與火，同人。君子以類族辨物。",modern:"代表與人同心，合作共事。適合團隊合作或合夥。",advice:"與人合作可成大事。尋找志同道合的夥伴，共同發展。",s:"☰☲"},
-      {n:14,name:"火天大有",jud:"元亨",img:"象曰：火在天上，大有。君子以遏惡揚善。",modern:"代表大豐收、大富有。萬物都受惠於太陽之光照耀。",advice:"大吉之卦！事業財運皆可期待。但要記得分享與回饋。",s:"☲☰"},
-      {n:15,name:"地山謙",jud:"亨，君子有終",img:"象曰：地中有山，謙。君子以裒多益寡。",modern:"代表謙遜有德。雖然有實力但保持低調，會得到尊重。",advice:"保持謙虛的態度。滿招損，謙受益，低調行事會讓你更順利。",s:"☷☶"},
-      {n:16,name:"雷地豫",jud:"利建侯行師",img:"象曰：雷出地奮，豫。先王以作樂崇德。",modern:"代表歡悅、喜悅。萬物振發，氣氛愉悅。",advice:"享受當下的好時光。適合慶祝、與人同樂。",s:"☳☷"},
-      {n:17,name:"澤雷隨",jud:"元亨利貞，无咎",img:"象曰：澤中有雷，隨。君子以嚮晦入宴息。",modern:"代表追隨、順勢而為。適合跟隨有經驗的人或趨勢。",advice:"順勢而為，不要逆流而上。跟隨正確的方向會更順利。",s:"☱☳"},
-      {n:18,name:"山風蠱",jud:"元亨，利涉大川",img:"象曰：山下有風，蠱。君子以振民育德。",modern:"代表問題、弊病需要整治。經過整頓後可重新出發。",advice:"需要解決長期的問題。現在是整頓、改革的好時機。",s:"☶☴"},
-      {n:19,name:"地澤臨",jud:"元亨利貞，至於八月有凶",img:"象曰：澤上有地，臨。君子以教思无窮。",modern:"代表監臨、督導。居高臨下，適合指導他人或被指導。",advice:"或許該扮演更主動的角色。適合指導後進或承擔更多責任。",s:"☷☱"},
-      {n:20,name:"風地觀",jud:"盥而不荐，有孚颙若",img:"象曰：風行地上，觀。先王以省方觀民設教。",modern:"代表觀察、審視。萬物都在被觀察中，需要謹言慎行。",advice:"保持觀察者的姿態。多看少說，了解情況再決定。",s:"☴☷"},
-      {n:21,name:"火雷噬嗑",jud:"亨，利用獄",img:"象曰：雷電噬嗑。先王以明罰敕法。",modern:"代表法律、刑罰。問題需要強制解決，或需公正裁決。",advice:"面對問題要果斷解決。有時需要堅持原則，不能妥協。",s:"☲☳"},
-      {n:22,name:"山火賁",jud:"亨，小利有攸往",img:"象曰：山下有火，賁。君子以明庶政。",modern:"代表裝飾、修飾。外在看起來不錯，但內在實力待加強。",advice:"現在適合包裝、宣傳自己。但別忘了充實內在實力。",s:"☶☲"},
-      {n:23,name:"山地剝",jud:"不利有攸往",img:"象曰：山附於地，剝。上以厚下安宅。",modern:"代表剝落、衰退。運勢正在下滑，需要保守以對。",advice:"保持低調，不要冒進。這個階段主要是保存實力。",s:"☷☶"},
-      {n:24,name:"地雷復",jud:"亨，出入无疾，朋來无咎",img:"象曰：雷在地中，復。先王以冬至日閉關。",modern:"代表復歸、恢復。陰極生陽，壞運已到盡頭，好運將至。",advice:"黎明前的黑暗即將過去！保持信心，好運很快就來。",s:"☷☳"},
-      {n:25,name:"天雷无妄",jud:"元亨利貞，其匪正有眚",img:"象曰：天下雷行，物與无妄。先王以茂對時育萬物。",modern:"代表不妄為、順其自然。不要有僥倖心理，要腳踏實地。",advice:"順其自然，不要投機取巧。老老實實做事最安全。",s:"☰☳"},
-      {n:26,name:"天山大畜",jud:"利貞，不家食吉，利涉大川",img:"象曰：天在山中，大畜。君子以多識前言往行。",modern:"代表大的積蓄與修養。如山中容納萬物，需要累積。",advice:"持續累積實力與知識。這是儲備能量的階段。",s:"☶☰"},
-      {n:27,name:"山雷頤",jud:"貞吉，利涉大川",img:"象曰：山下有雷，頤。君子以慎言語，節飲食。",modern:"代表養生、颐养。需要注意保養身體與修養品德。",advice:"注意身體健康，修養身心。現在是調養身心的好時機。",s:"☶☳"},
-      {n:28,name:"澤風大過",jud:"棟橈，利有攸往，亨",img:"象曰：澤滅木，大過。君子以獨立不懼。",modern:"代表過度、極端。負荷過重，需要找到平衡。",advice:"不要把自己逼太緊。適時放鬆，別讓壓力壓垮了。",s:"☱☴"},
-      {n:29,name:"坎為水",jud:"習坎，有孚，維心亨，行有尚",img:"象曰：水洊至，習坎。君子以常德行。",modern:"代表險陷、重重困難。如水流坑窪，需要小心謹慎。",advice:"謹慎行事，避免冒險。保持誠信，終能脫困。",s:"☵☵"},
-      {n:30,name:"離為火",jud:"利貞，亨，畜牝牛吉",img:"象曰：明兩作，離。大人以繼明照于四方。",modern:"代表光明、美麗。依附正道則吉祥。",advice:"保持光明正大。運勢不錯，但要走正道才會持續順利。",s:"☲☲"},
-      {n:31,name:"澤山鹹",jud:"亨利貞，取女吉",img:"象曰：山上有澤，鹹。君子以虛受人。",modern:"代表感應、相互作用。適合建立感情或合作關係。",advice:"敞開心扉，接受他人。感情與人際關係會有新發展。",s:"☱☶"},
-      {n:32,name:"雷風恆",jud:"亨无咎，利貞，利有攸往",img:"象曰：雷風相與，恆。君子以立不易方。",modern:"代表恆久、穩定。需要持續努力，保持恆心。",advice:"保持恆心，不要半途而廢。持續努力會有成果。",s:"☳☴"},
-      {n:33,name:"天山遯",jud:"亨，小利貞",img:"象曰：天下有山，遯。君子以遠小人。",modern:"代表退避、隱退。形勢不利時，適時退讓是智慧。",advice:"該退則退。保存實力，等待更好的時機再出發。",s:"☰☶"},
-      {n:34,name:"雷天大壯",jud:"利貞",img:"象曰：雷在天上，大壯。君子以非禮勿履。",modern:"代表強盛、壯大。陽氣旺盛，適合大力發展。",advice:"運勢很強！可以把握機會大力發展，但別太囂張。",s:"☳☰"},
-      {n:35,name:"火地晉",jud:"康侯用錫馬蕃庶，晝日三接",img:"象曰：明出地上，晉。君子以自昭明德。",modern:"代表晉升、進步。光明在地上，前途光明。",advice:"事業上有晉升或進步的機會！把握機會表現自己。",s:"☲☷"},
-      {n:36,name:"地火明夷",jud:"利艱貞",img:"象曰：明入地中，明夷。君子以蒞眾用晦而明。",modern:"代表昏暗、受傷。光明被埋沒，需要韜光養晦。",advice:"低調行事，避免鋒芒畢露。這個階段要懂得隱藏實力。",s:"☷☲"},
-      {n:37,name:"風火家人",jud:"利女貞",img:"象曰：風自火出，家人。君子以言有物而行有恆。",modern:"代表家庭、齊家。適合處理家庭事務或穩定後方。",advice:"多關注家庭。家庭和睦是一切成功的基礎。",s:"☴☲"},
-      {n:38,name:"火澤睽",jud:"小事吉",img:"象曰：上火下澤，睽。君子以同而異。",modern:"代表乖離、意見不合。萬物不暢，需要求同存異。",advice:"與人相處有摩擦。保持開放態度，理解和尊重差異。",s:"☲☱"},
-      {n:39,name:"水山蹇",jud:"利西南，不利東北，利見大人",img:"象曰：山上有水，蹇。君子以反身修德。",modern:"代表艱難、阻礙。山高水深，前進困難。",advice:"遇到阻礙了。這是檢視自身問題、儲備能量的時候。",s:"☵☶"},
-      {n:40,name:"雷水解",jud:"利西南，无所往，其來復吉",img:"象曰：雷雨作，解。君子以赦過宥罪。",modern:"代表解除、苦難過去。雷雨過後，萬物生長。",advice:"困難即將過去！是時候放下包袱，重新出發了。",s:"☳☵"},
-      {n:41,name:"山澤損",jud:"有孚，元吉，无咎可貞，利有攸往",img:"象曰：山下有澤，損。君子以懲忿窒慾。",modern:"代表減少、損失。但損失是為了更好的獲得。",advice:"或許有些損失，但這是必要的代價。之後會有收獲。",s:"☶☱"},
-      {n:42,name:"風雷益",jud:"利有攸往，利涉大川",img:"象曰：風雷益。君子以見善則遷，有過則改。",modern:"代表增益，好處越來越多。分享越多，獲得越多。",advice:"好運連連！適合分享與奉獻，會帶來更多好運。",s:"☴☳"},
-      {n:43,name:"澤天夬",jud:"揚于王庭，孚號有厲，告自邑，不利即戎",img:"象曰：澤上於天，夬。君子以施祿及下。",modern:"代表決斷、決定。需要果斷處理，不能拖延。",advice:"該做決定了。果斷出擊，不要猶豫不決。",s:"☱☰"},
-      {n:44,name:"天風姤",jud:"女壯，勿用取女",img:"象曰：天下有風，姤。后以施命誥四方。",modern:"代表相遇、機會。天下有風，萬物相遇。",advice:"有新機會或新緣分出現。保持開放，機會會自己找上門。",s:"☰☴"},
-      {n:45,name:"澤地萃",jud:"亨，王假有廟，利見大人，亨利貞",img:"象曰：澤上於地，萃。君子以除戎器。",modern:"代表聚集、匯聚。如水匯於地上，萬物萃聚。",advice:"人氣聚集時。適合團隊合作，或與重要人物建立關係。",s:"☱☷"},
-      {n:46,name:"地風升",jud:"元亨，用見大人，勿恤，南征吉",img:"象曰：地中木升。君子以順德積小以高大。",modern:"代表上升、提升。如木生地中，逐漸長高。",advice:"穩步上升中！保持當前的好態勢，逐步前進。",s:"☷☴"},
-      {n:47,name:"澤水困",jud:"亨，貞大人吉，无咎，有言不信",img:"象曰：澤無水，困。君子以致命遂志。",modern:"代表困窘、受限。如澤無水，萬物枯槁。",advice:"目前處境困難。但意志要堅定，總會有出路。",s:"☱☵"},
-      {n:48,name:"水風井",jud:"改邑不改井，无喪无得，往來井井",img:"象曰：木上有水，井。君子以勞民勸相。",modern:"代表修養、蓄積。如井水取之不盡，需要時間累積。",advice:"這是蓄積能量的階段。耐心修煉，實力會越來越強。",s:"☵☴"},
-      {n:49,name:"澤火革",jud:"己日乃孚，元亨利貞，悔亡",img:"象曰：澤中有火，革。君子以治曆明時。",modern:"代表改革、變革。時機成熟，需要改變舊有方式。",advice:"是時候做出改變了！破舊立新，會有好的發展。",s:"☱☲"},
-      {n:50,name:"火鼎鼎",jud:"吉",img:"象曰：木上有火鼎。君子以正位凝命。",modern:"代表穩定、權威。如鼎之莊重，需要堅守正道。",advice:"保持穩定與秩序。堅守崗位，聲望會逐漸提升。",s:"☲☱"},
-      {n:51,name:"震為雷",jud:"亨，震來虩虩，笑言啞啞",img:"象曰：洊雷，震。君子以恐懼修省。",modern:"代表震動、震驚。雷聲震動，萬物驚醒。",advice:"有震動或驚變。保持冷靜，危機也是轉機。",s:"☳☳"},
-      {n:52,name:"艮為山",jud:"艮其背，不獲其身，行其庭，不見其人",img:"象曰：兼山，艮。君子以思不出其位。",modern:"代表停止、靜止。如山不動，萬物靜止。",advice:"該停下來休息了。靜心養性，不要過度勞累。",s:"☶☶"},
-      {n:53,name:"風山漸",jud:"女歸吉，利貞",img:"象曰：山上有木，漸。君子以居賢德善俗。",modern:"代表漸進、逐步前進。如木在山上，逐漸成長。",advice:"按部就班，循序漸進。不用急，穩步前進就好。",s:"☴☶"},
-      {n:54,name:"雷澤歸妹",jud:"征凶，无攸利",img:"象曰：澤上有雷，歸妹。君子以永終知敝。",modern:"代表歸宿、嫁娶。但出發點不正則結果不好。",advice:"關係確定要謹慎。確保雙方都是真心，否則易有問題。",s:"☳☱"},
-      {n:55,name:"雷火豐",jud:"亨，王假之，勿憂，宜日中",img:"象曰：雷電皆至，豐。君子以折獄致刑。",modern:"代表豐盛、盛大。如雷電交加，聲勢浩大。",advice:"運勢巔峰！把握當下，這是你最耀眼的時候。",s:"☳☲"},
-      {n:56,name:"火山旅",jud:"小亨，旅貞吉",img:"象曰：山上有火，旅。君子以明慎用刑。",modern:"代表羈旅、在外。如火在山上，無法久居。",advice:"可能需要離開舒適區。變動中保持謹慎與智慧。",s:"☶☲"},
-      {n:57,name:"巽為風",jud:"小亨，利有攸往，利見大人",img:"象曰：隨風，巽。君子以申命行事。",modern:"代表順從、傳播。如風無孔不入，適合傳達命令。",advice:"順勢而為。配合趨勢做事，會更順利。",s:"☴☴"},
-      {n:58,name:"兌為澤",jud:"亨，利貞",img:"象曰：麗澤，兌。君子以朋友講習。",modern:"代表喜悅、愉快。如兩澤相連，水潤萬物。",advice:"心情愉快！與人交流會帶來更多快樂。",s:"☱☱"},
-      {n:59,name:"風水渙",jud:"亨，王假有廟，利涉大川，利貞",img:"象曰：風行水上，渙。先王以享于帝立廟。",modern:"代表渙散、分散。但分散也是另一種重組的開始。",advice:"可能會有分離或重組。塞翁失馬，焉知非福。",s:"☴☵"},
-      {n:60,name:"水澤節",jud:"亨，苦節不可貞",img:"象曰：澤上有水，節。君子以制數度議德行。",modern:"代表節制、節度。需要有紀律，不能過度放縱。",advice:"凡事要有節制。過度放縱會招來麻煩。",s:"☵☱"},
-      {n:61,name:"風澤中孚",jud:"豚魚吉，利涉大川，利貞",img:"象曰：澤上有風，中孚。君子以議獄緩死。",modern:"代表誠信、真心。如風吹澤水，真誠動人。",advice:"保持誠信。真心待人，會獲得他人的信任與支持。",s:"☴☱"},
-      {n:62,name:"雷山小過",jud:"小事吉，大事不可",img:"象曰：山上有雷，小過。君子以行過乎恭。",modern:"代表小有過度。可以做小事，大事則要謹慎。",advice:"小打小鬧可以，大動作要避免。保持低調為佳。",s:"☳☶"},
-      {n:63,name:"水火既濟",jud:"亨小利貞，初吉終亂",img:"象曰：水在火上，既濟。君子以思患而豫防之。",modern:"代表成功、完成。但成功後要防範問題再生。",advice:"事情接近完成！最後關頭要謹慎，防範問題復發。",s:"☵☲"},
-      {n:64,name:"火水未濟",jud:"亨，小狐汔濟，濡其尾，无攸利",img:"象曰：火在水上，未濟。君子以慎辨物居方。",modern:"代表未完成、還差一步。如小狐過河，差一點就成功。",advice:"就差最後一步！堅持下去，不要半途而廢。",s:"☲☵"}
+    const h=[
+      {n:1,name:"乾為天",j:"元亨利貞",m:"象徵無限的創造力與積極進取。代表純陽、開創、領導。",c:"事業蒸蒸日上，可主動出擊把握機會",l:"單身者有貴人介紹，已有對象則穩定發展",h:"精力充沛，但注意過度勞累",a:"保持積極但別過剛，適時收斂鋒芒",s:"☰☰"},
+      {n:2,name:"坤為地",j:"元亨，利牝馬之貞",m:"代表柔順、包容、承載。大地之德養育萬物。",c:"順勢而為，不要過度強出頭",l:"保持柔順姿態，單身可等待緣分",h:"注意腸胃保健",a:"以退為進，耐心等待時機",s:"☷☷"},
+      {n:3,name:"水雷屯",j:"元亨利貞，勿用有攸往",m:"萬物初生，充滿困難但前景光明。",c:"先蹲低才能跳高，目前是學習階段",l:"還不是表白時機，先觀察對方",h:"季節交替注意感冒",a:"穩紮穩打，建立基礎實力",s:"☵☳"},
+      {n:4,name:"山水蒙",j:"亨，匪我求童蒙，童蒙求我",m:"需要啟蒙教育，代表虛心學習。",c:"保持學習心態，不懂就問",l:"可以主動認識新朋友",h:"適度運動保持活力",a:"虛心請教有經驗的人",s:"☶☵"},
+      {n:5,name:"水天需",j:"有孚，光亨，貞吉",m:"等待時機，保持信心與誠信。",c:"耐心等待，好機會即將來臨",l:"暗戀者保持耐心，對方會主動",h:"睡眠要充足",a:"不要急躁，時機成熟自然成",s:"☵☰"},
+      {n:6,name:"天水讼",j:"有孚窒惕，中吉終凶",m:"代表爭執，需要冷靜溝通。",c:"避免與人正面衝突",l:"有誤會要說開，冷戰對感情有害",h:"注意情緒波動影響血壓",a:"退一步海闊天空",s:"☰☵"},
+      {n:7,name:"地水師",j:"貞丈人吉，无咎",m:"代表群眾力量，需要領袖帶領。",c:"團隊合作比單打獨鬥好",l:"透過共同朋友認識新對象",h:"適度運動提升免疫力",a:"尋找有經驗的人指導",s:"☷☵"},
+      {n:8,name:"水地比",j:"吉，原筮元永貞",m:"代表親密合作，獲得支持。",c:"人脈為你帶來機會",l:"主動出擊建立關係",h:"多補充水分",a:"廣結善緣，好運會來",s:"☵☷"},
+      {n:9,name:"風天小畜",j:"亨，密雲不雨",m:"小有積蓄，還需等待成熟。",c:"小成就是開始，大收獲在後頭",l:"慢慢相處不要急",h:"注意腸胃",a:"保持積累，時機成熟自然好",s:"☴☰"},
+      {n:10,name:"天澤履",j:"履虎尾，不咥人，亨",m:"謹慎行動，步步為營。",c:"低調行事，避免樹敵",l:"相處要謹慎不要太急",h:"注意腳部",a:"步步為營，不急躁",s:"☰☱"},
+      {n:11,name:"地天泰",j:"小往大來，吉亨",m:"通泰吉祥，萬物生成。",c:"運勢極佳，把握機會大力發展",l:"曖昧可以轉正了",h:"健康良好",a:"把握當下，全面順利",s:"☷☰"},
+      {n:12,name:"天地否",j:"否之匪人，不利君子貞",m:"閉塞不通，運勢下滑。",c:"宜靜不宜動，低調蟄伏",l:"單身者保持低調",h:"注意保暖不要感冒",a:"保持低調，等待轉機",s:"☰☷"},
+      {n:13,name:"天火同人",j:"同人於野，亨",m:"與人同心，適合合作。",c:"團隊合作可成大事",l:"表白的好時機",h:"注意用眼過度",a:"找志同道合的夥伴",s:"☰☲"},
+      {n:14,name:"火天大有",j:"元亨",m:"大豐收，大富有。",c:"事業高峰，收獲滿滿",l:"感情穩定或將步入禮堂",h:"注意心臟負擔",a:"記得分享與回饋",s:"☲☰"},
+      {n:15,name:"地山謙",j:"亨，君子有終",m:"謙遜有德，低調獲尊重。",c:"保持謙虛會更順利",l:"真誠態度打動對方",h:"適度休息",a:"滿招損，謙受益",s:"☷☶"},
+      {n:16,name:"雷地豫",j:"利建侯行師",m:"歡悅喜悅，氣氛愉悅。",c:"適合慶祝與團體活動",l:"享受約會的快樂時光",h:"運動要注意熱身",a:"把握當下盡情玩樂",s:"☳☷"},
+      {n:17,name:"澤雷隨",j:"元亨利貞，无咎",m:"順勢而為，跟隨趨勢。",c:"跟隨有經驗的人",l:"可以考慮長期關係",h:"注意膝蓋",a:"順勢而為不要逆流",s:"☱☳"},
+      {n:18,name:"山風蠱",j:"元亨，利涉大川",m:"需要整治問題，重新出發。",c:"處理積壓許久的問題",l:"整理思緒重新出發",h:"肝臟保健",a:"是時候整頓改革了",s:"☶☴"},
+      {n:19,name:"地澤臨",j:"元亨利貞",m:"監臨督導，適合指導他人。",c:"扮演更主動的角色",l:"主導約會安排",h:"注意腸胃",a:"承擔更多責任",s:"☷☱"},
+      {n:20,name:"風地觀",j:"盥而不荐，有孚颙若",m:"觀察審視，多看少說。",c:"多觀察了解情況再決定",l:"多了解對方再進一步",h:"注意視力",a:"保持觀察者姿態",s:"☴☷"},
+      {n:21,name:"火雷噬嗑",j:"亨，利用獄",m:"果斷解決問題。",c:"該處理的趕快處理",l:"有話直說不要拐彎抹角",h:"注意牙齒",a:"果斷出擊不拖延",s:"☲☳"},
+      {n:22,name:"山火賁",j:"亨，小利有攸往",m:"裝飾修飾，內外兼顧。",c:"外在包裝很重要",l:"打扮一下提升魅力",h:"注意皮膚",a:"內外兼修",s:"☶☲"},
+      {n:23,name:"山地剝",j:"不利有攸往",m:"剝落衰退，保存實力。",c:"不要冒進保持低調",l:"單身者暫時觀望",h:"免疫力下降注意保暖",a:"保存實力等待轉機",s:"☷☶"},
+      {n:24,name:"地雷復",j:"亨，出入无疾",m:"復歸恢復，壞運到盡頭。",c:"黎明前的黑暗即將過去",l:"舊情可能復燃",h:"恢復期注意調養",a:"保持信心好運快來",s:"☷☳"},
+      {n:25,name:"天雷无妄",j:"元亨利貞",m:"順其自然，不要僥倖。",c:"腳踏實地最安全",l:"真心對待不要玩花招",h:"注意意外",a:"老老實實做事",s:"☰☳"},
+      {n:26,name:"天山大畜",j:"利貞，不家食吉",m:"大蓄積，不斷學習。",c:"持續累積實力",l:"慢慢相處日久生情",h:"注意腸胃",a:"多學習充實自己",s:"☶☰"},
+      {n:27,name:"山雷頤",j:"貞吉，利涉大川",m:"養生頤養，注意修養。",c:"修身養性低調行事",l:"穩定發展為主",h:"注意口腔與腸胃",a:"保養身心不過勞",s:"☶☳"},
+      {n:28,name:"澤風大過",j:"棟橈，利有攸往",m:"負荷過重，需要平衡。",c:"不要把自己逼太緊",l:"不要給對方太大壓力",h:"壓力大要注意心臟",a:"適時放鬆休息",s:"☱☴"},
+      {n:29,name:"坎為水",j:"習坎，有孚",m:"險陷重重，小心謹慎。",c:"謹慎避免冒險",l:"小心應對避免誤會",h:"注意泌尿系統",a:"保持誠信度過難關",s:"☵☵"},
+      {n:30,name:"離為火",j:"利貞，亨",m:"光明美麗，正道吉祥。",c:"走正道運勢好",l:"光明正大追求",h:"注意情緒波動",a:"保持正直善良",s:"☲☲"},
+      {n:31,name:"澤山鹹",j:"亨利貞，取女吉",m:"感應互動，適合建立關係。",c:"適合團隊合作",l:"表白的好時機",h:"注意關節",a:"敞開心扉接受他人",s:"☱☶"},
+      {n:32,name:"雷風恆",j:"亨无咎，利貞",m:"恆久穩定，持續努力。",c:"保持恆心不要放棄",l:"穩定發展感情",h:"注意筋骨",a:"持續努力必有收獲",s:"☳☴"},
+      {n:33,name:"天山遯",j:"亨，小利貞",m:"退避隱退，適時讓步。",c:"該退則退保存實力",l:"退一步海闊天空",h:"注意呼吸系統",a:"退讓是智慧",s:"☰☶"},
+      {n:34,name:"雷天大壯",j:"利貞",m:"強盛壯大，氣勢強。",c:"運勢強可以大力發展",l:"積極主動追求",h:"注意肝火旺盛",a:"但別太囂張",s:"☳☰"},
+      {n:35,name:"火地晉",j:"康侯用錫馬蕃庶",m:"晉升進步，前途光明。",c:"有晉升機會好好把握",l:"準備公開戀情",h:"睡眠要充足",a:"表現自己爭取機會",s:"☲☷"},
+      {n:36,name:"地火明夷",j:"利艱貞",m:"昏暗受傷，韜光養晦。",c:"低調隱藏實力",l:"保持低調不要張揚",h:"注意視力保護",a:"隱藏實力等待時機",s:"☷☲"},
+      {n:37,name:"風火家人",j:"利女貞",m:"家庭齊家，穩定後方。",c:"家庭和事業要平衡",l:"考慮結婚見家長",h:"注意腸胃",a:"多關心家人",s:"☴☲"},
+      {n:38,name:"火澤睽",j:"小事吉",m:"乖離不合，需要包容。",c:"與同事相處有摩擦",l:"尊重差異求同存異",h:"注意肝臟",a:"保持開放態度",s:"☲☱"},
+      {n:39,name:"水山蹇",j:"利西南，不利東北",m:"艱難阻礙，檢視自身。",c:"遇到阻礙是調整期",l:"困難時更要看清對方",h:"注意腳踝",a:"檢視問題儲備能量",s:"☵☶"},
+      {n:40,name:"雷水解",j:"利西南，无所往",m:"解除苦難，重新出發。",c:"困難過去了!",l:"解開誤會重新開始",h:"注意泌尿系統",a:"放下包袱重新出發",s:"☳☵"},
+      {n:41,name:"山澤損",j:"有孚，元吉",m:"減少損失，代價換收獲。",c:"有失有得看開點",l:"不要太計較付出",h:"注意腸胃",a:"損失是必要代價",s:"☶☱"},
+      {n:42,name:"風雷益",j:"利有攸往，利涉大川",m:"增益好處，分享越多越多。",c:"好運連連分享出去",l:"付出會獲得回報",h:"注意肝臟",a:"分享帶來更多好運",s:"☴☳"},
+      {n:43,name:"澤天夬",j:"揚于王庭，孚號",m:"決斷果斷，該做決定。",c:"該做決定了",l:"果斷表明心意",h:"注意情緒",a:"不要猶豫不決",s:"☱☰"},
+      {n:44,name:"天風姤",j:"女壯，勿用取女",m:"相遇機會，新緣分到。",c:"有新機會出現",l:"有新桃花運!",h:"注意皮膚",a:"保持開放迎接機會",s:"☰☴"},
+      {n:45,name:"澤地萃",j:"亨，王假有廟",m:"聚集人氣，適合團隊。",c:"人脈匯聚時",l:"和人組隊追對象",h:"注意口腔",a:"團結力量大",s:"☱☷"},
+      {n:46,name:"地風升",j:"元亨，用見大人",m:"上升提升，穩步前進。",c:"穩步上升中",l:"慢慢升溫中",h:"注意骨骼",a:"逐步前進不急躁",s:"☷☴"},
+      {n:47,name:"澤水困",j:"亨，貞大人吉",m:"困窘受限，意志要堅。",c:"目前處境困難",l:"艱困時見真情",h:"注意情緒壓力",a:"意志要堅定",s:"☱☵"},
+      {n:48,name:"水風井",j:"改邑不改井",m:"修養蓄積，累積實力。",c:"這是蓄積期",l:"提升自己再出發",h:"注意泌尿系統",a:"耐心修煉實力",s:"☵☴"},
+      {n:49,name:"澤火革",j:"己日乃孚，元亨利貞",m:"改革變革，破舊立新。",c:"是時候改變了!",l:"改變相處模式",h:"注意心臟",a:"破舊立新求發展",s:"☱☲"},
+      {n:50,name:"火鼎鼎",j:"吉",m:"穩定權威，堅守正道。",c:"保持穩定聲望上升",l:"穩定發展為主",h:"注意火氣",a:"堅守崗位",s:"☲☱"},
+      {n:51,name:"震為雷",j:"亨，震來虩虩",m:"震動震驚，有變化。",c:"有變化要面對",l:"突然的變化要處理",h:"注意心臟",a:"冷靜應對變化",s:"☳☳"},
+      {n:52,name:"艮為山",j:"艮其背，不獲其身",m:"停止靜止，該休息了。",c:"該停下來休息",l:"先冷靜一下",h:"需要充分休息",a:"靜心養性",s:"☶☶"},
+      {n:53,name:"風山漸",j:"女歸吉，利貞",m:"漸進有序，逐步前進。",c:"按部就班循序漸進",l:"慢慢來不要急",h:"注意腸胃",a:"穩步前進不著急",s:"☴☶"},
+      {n:54,name:"雷澤歸妹",j:"征凶，无攸利",m:"嫁娶归宿，谨慎选择。",c:"重大決定要謹慎",l:"確認對方真心",h:"注意腎臟",a:"確認後再決定",s:"☳☱"},
+      {n:55,name:"雷火豐",j:"亨，王假之",m:"豐盛巅峰，最耀眼時。",c:"運勢巔峰!",l:"把握當下最美好",h:"注意心臟負擔",a:"這是你最耀眼的時候",s:"☳☲"},
+      {n:56,name:"火山旅",j:"小亨，旅貞吉",m:"羈旅在外，變動時期。",c:"可能需要離開舒適區",l:"遠距離考量",h:"注意旅途安全",a:"變動中保持智慧",s:"☶☲"},
+      {n:57,name:"巽為風",j:"小亨，利有攸往",m:"順勢傳播，配合趨勢。",c:"順勢而為",l:"配合對方步調",h:"注意呼吸系統",a:"順勢行事",s:"☴☴"},
+      {n:58,name:"兌為澤",j:"亨，利貞",m:"喜悅愉快，心情好。",c:"適合社交與合作",l:"約會進展順利",h:"注意口腔",a:"保持愉快心情",s:"☱☱"},
+      {n:59,name:"風水渙",j:"亨，王假有廟",m:"渙散重組，分離重逢。",c:"可能有人事變動",l:"舊朋友可能重逢",h:"注意情緒",a:"塞翁失馬焉知非福",s:"☴☵"},
+      {n:60,name:"水澤節",j:"亨，苦節不可貞",m:"節制有度，不能過度。",c:"凡事要有節制",l:"不要投入太深",h:"注意泌尿系統",a:"適度節制",s:"☵☱"},
+      {n:61,name:"風澤中孚",j:"豚魚吉，利涉大川",m:"誠信真心，打動人心。",c:"以誠信獲信任",l:"真心打動對方",h:"注意睡眠",a:"保持誠信",s:"☴☱"},
+      {n:62,name:"雷山小過",j:"小事吉，大事不可",m:"小過度，小動作可以。",c:"小動作可以大動作避免",l:"小驚喜可以大行動避免",h:"注意骨骼",a:"保持低調",s:"☳☶"},
+      {n:63,name:"水火既濟",j:"亨小利貞，初吉終亂",m:"成功完成，要防問題。",c:"接近完成!",l:"穩定下來",h:"注意最後階段",a:"防範問題復發",s:"☵☲"},
+      {n:64,name:"火水未濟",j:"亨，小狐汔濟",m:"未完成，就差一步。",c:"就差最後一步!",l:"就差最後一步",h:"注意腎臟",a:"堅持到最後",s:"☲☵"}
     ];
-    function getCount(){return parseInt(localStorage.getItem('iching_count')||'0');}
-    function setCount(n){localStorage.setItem('iching_count',n.toString());document.getElementById('count').textContent=n;}
+    function getC(){return parseInt(localStorage.getItem('ic')||'0');}
+    function setC(n){localStorage.setItem('ic',n.toString());document.getElementById('count').textContent=n;}
     function castOracle(){
-      const r=document.getElementById('result');r.classList.remove('show');
-      setTimeout(()=>{
-        const idx=Math.floor(Math.random()*64),h=hexagrams[idx];
-        document.getElementById('symbol').textContent=h.s;
-        document.getElementById('name').textContent=h.name;
-        document.getElementById('number').textContent='第'+h.n+'卦 / 六十四卦之'+h.n;
-        document.getElementById('judgement').textContent=h.jud;
-        document.getElementById('image').textContent=h.img;
-        document.getElementById('modern').textContent=h.modern;
-        document.getElementById('advice').textContent=h.advice;
-        setCount(getCount()+1);r.classList.add('show');
+      var r=document.getElementById('result');r.classList.remove('show');
+      setTimeout(function(){
+        var idx=Math.floor(Math.random()*64),x=h[idx];
+        document.getElementById('symbol').textContent=x.s;
+        document.getElementById('name').textContent=x.name;
+        document.getElementById('number').textContent='第'+x.n+'卦 / 六十四卦之'+x.n;
+        document.getElementById('judge').textContent=x.j;
+        document.getElementById('modern').textContent=x.m;
+        document.getElementById('career').textContent=x.c;
+        document.getElementById('love').textContent=x.l;
+        document.getElementById('health').textContent=x.h;
+        document.getElementById('advice').textContent=x.a;
+        setC(getC()+1);r.classList.add('show');
       },300);
     }
-    document.getElementById('count').textContent=getCount();
+    document.getElementById('count').textContent=getC();
   </script>
 </body>
 </html>
