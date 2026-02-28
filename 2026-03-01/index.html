@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>心願存錢筒 | Wish Jar</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Noto+Sans+TC:wght@300;400;500;700&family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-primary: #0d0d1a;
+      --bg-secondary: #151528;
+      --gold: #ffd700;
+      --gold-light: #ffe566;
+      --gold-dark: #b8860b;
+      --orange: #ff9f43;
+      --glass: rgba(255, 255, 255, 0.08);
+      --glass-border: rgba(255, 215, 0, 0.2);
+      --text: #f5f5f5;
+      --text-muted: #a0a0b0;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Noto Sans TC', 'Quicksand', sans-serif;
+      background: var(--bg-primary);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* 星空背景 */
+    .stars {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .star {
+      position: absolute;
+      background: white;
+      border-radius: 50%;
+      animation: twinkle 3s ease-in-out infinite;
+    }
+
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.3; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.2); }
+    }
+
+    /* 顆粒感 */
+    .grain {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1000;
+      opacity: 0.04;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    }
+
+    .container {
+      position: relative;
+      z-index: 1;
+      max-width: 480px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* 標題 */
+    .header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .title {
+      font-family: 'Cinzel Decorative', serif;
+      font-size: 2rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--gold) 0%, var(--orange) 50%, var(--gold-light) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-shadow: 0 0 40px rgba(255, 215, 0, 0.3);
+      margin-bottom: 0.5rem;
+    }
+
+    .subtitle {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      font-weight: 300;
+    }
+
+    /* 玻璃罐子 */
+    .jar-container {
+      position: relative;
+      width: 200px;
+      height: 280px;
+      margin: 1rem auto 2rem;
+    }
+
+    .jar {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: var(--glass);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 2px solid var(--glass-border);
+      border-radius: 30px 30px 50px 50px;
+      box-shadow: 
+        0 0 30px rgba(255, 215, 0, 0.1),
+        inset 0 0 60px rgba(255, 255, 255, 0.05),
+        0 20px 60px rgba(0, 0, 0, 0.4);
+      overflow: hidden;
+      transition: all 0.5s ease;
+    }
+
+    .jar.glow {
+      box-shadow: 
+        0 0 60px rgba(255, 215, 0, 0.4),
+        inset 0 0 60px rgba(255, 255, 255, 0.1),
+        0 20px 60px rgba(0, 0, 0, 0.4);
+      border-color: var(--gold);
+    }
+
+    /* 罐子內的硬幣 */
+    .coins-container {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 120px;
+      height: 180px;
+      overflow: hidden;
+    }
+
+    .coin {
+      position: absolute;
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, var(--gold-light) 0%, var(--gold) 50%, var(--gold-dark) 100%);
+      border-radius: 50%;
+      box-shadow: 
+        0 2px 8px rgba(0, 0, 0, 0.3),
+        inset 0 2px 4px rgba(255, 255, 255, 0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--gold-dark);
+      animation: coinGlow 2s ease-in-out infinite;
+    }
+
+    @keyframes coinGlow {
+      0%, 100% { box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3), 0 0 10px rgba(255, 215, 0, 0.3); }
+      50% { box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3), 0 0 20px rgba(255, 215, 0, 0.6); }
+    }
+
+    /* 輸入表單 */
+    .form-card {
+      background: var(--glass);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--glass-border);
+      border-radius: 20px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .input-group {
+      margin-bottom: 1rem;
+    }
+
+    .input-group:last-of-type {
+      margin-bottom: 0;
+    }
+
+    label {
+      display: block;
+      font-size: 0.85rem;
+      color: var(--gold);
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+    }
+
+    input {
+      width: 100%;
+      padding: 0.8rem 1rem;
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(255, 215, 0, 0.2);
+      border-radius: 12px;
+      color: var(--text);
+      font-size: 1rem;
+      font-family: inherit;
+      transition: all 0.3s ease;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: var(--gold);
+      box-shadow: 0 0 20px rgba(255, 215, 0, 0.2);
+    }
+
+    input::placeholder {
+      color: var(--text-muted);
+    }
+
+    /* 按鈕 */
+    .btn {
+      width: 100%;
+      padding: 1rem;
+      border: none;
+      border-radius: 14px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-family: inherit;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--gold) 0%, var(--orange) 100%);
+      color: var(--bg-primary);
+      box-shadow: 0 4px 20px rgba(255, 215, 0, 0.3);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(255, 215, 0, 0.4);
+    }
+
+    .btn-primary:active {
+      transform: translateY(0);
+    }
+
+    /* 結果區域 */
+    .result {
+      background: var(--glass);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--glass-border);
+      border-radius: 20px;
+      padding: 1.5rem;
+      text-align: center;
+      margin-bottom: 1.5rem;
+      display: none;
+    }
+
+    .result.show {
+      display: block;
+      animation: fadeIn 0.5s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .result-days {
+      font-size: 3rem;
+      font-weight: 700;
+      font-family: 'Cinzel Decorative', serif;
+      background: linear-gradient(135deg, var(--gold) 0%, var(--orange) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 0.5rem;
+    }
+
+    .result-label {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    .result-target {
+      color: var(--gold);
+      font-weight: 500;
+      margin-top: 0.5rem;
+    }
+
+    /* 硬幣動畫 */
+    .coin-animation {
+      position: fixed;
+      pointer-events: none;
+      z-index: 100;
+      font-size: 2rem;
+    }
+
+    @keyframes dropCoin {
+      0% {
+        transform: translate(-50%, -50vh) rotate(0deg);
+        opacity: 1;
+      }
+      70% {
+        opacity: 1;
+      }
+      100% {
+        transform: translate(-50%, 50vh) rotate(720deg);
+        opacity: 0;
+      }
+    }
+
+    /* 歷史記錄 */
+    .history {
+      margin-top: auto;
+    }
+
+    .history-title {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 1rem;
+      text-align: center;
+      font-weight: 300;
+    }
+
+    .history-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+
+    .history-item {
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(255, 215, 0, 0.1);
+      border-radius: 12px;
+      padding: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .history-item-name {
+      font-weight: 500;
+      color: var(--gold);
+    }
+
+    .history-item-days {
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+
+    /* 煙火效果 */
+    .firework {
+      position: fixed;
+      pointer-events: none;
+      z-index: 200;
+    }
+
+    .firework-particle {
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      background: var(--gold);
+      border-radius: 50%;
+      animation: firework 1s ease-out forwards;
+    }
+
+    @keyframes firework {
+      0% {
+        transform: translate(0, 0) scale(1);
+        opacity: 1;
+      }
+      100% {
+        transform: translate(var(--tx), var(--ty)) scale(0);
+        opacity: 0;
+      }
+    }
+
+    /* 滾動條 */
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--gold-dark);
+      border-radius: 3px;
+    }
+
+    /* 響應式 */
+    @media (max-width: 480px) {
+      .title {
+        font-size: 1.6rem;
+      }
+      
+      .jar-container {
+        width: 160px;
+        height: 240px;
+      }
+      
+      .coins-container {
+        width: 100px;
+        height: 150px;
+      }
+      
+      .coin {
+        width: 34px;
+        height: 34px;
+        font-size: 1rem;
+      }
+      
+      .result-days {
+        font-size: 2.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- 星空背景 -->
+  <div class="stars" id="stars"></div>
+  <div class="grain"></div>
+
+  <div class="container">
+    <header class="header">
+      <h1 class="title">✨ 心願存錢筒</h1>
+      <p class="subtitle">設定目標，讓硬幣為你見證奇蹟</p>
+    </header>
+
+    <!-- 玻璃罐子 -->
+    <div class="jar-container">
+      <div class="jar" id="jar">
+        <div class="coins-container" id="coinsContainer"></div>
+      </div>
+    </div>
+
+    <!-- 輸入表單 -->
+    <div class="form-card">
+      <div class="input-group">
+        <label for="wishName">🎯 心願名稱</label>
+        <input type="text" id="wishName" placeholder="例如：去日本旅行">
+      </div>
+      <div class="input-group">
+        <label for="targetAmount">💰 目標金額</label>
+        <input type="number" id="targetAmount" placeholder="多少錢？">
+      </div>
+      <div class="input-group">
+        <label for="dailyAmount">📅 每日儲蓄</label>
+        <input type="number" id="dailyAmount" placeholder="每天存多少？">
+      </div>
+      <button class="btn btn-primary" id="calculateBtn">開始存錢旅程</button>
+    </div>
+
+    <!-- 結果 -->
+    <div class="result" id="result">
+      <div class="result-days" id="daysDisplay">0</div>
+      <div class="result-label">天後達成心願</div>
+      <div class="result-target" id="targetDisplay"></div>
+    </div>
+
+    <!-- 歷史記錄 -->
+    <div class="history" id="historySection">
+      <div class="history-title">📜 過往心願</div>
+      <div class="history-list" id="historyList"></div>
+    </div>
+  </div>
+
+  <script>
+    // DOM 元素
+    const wishNameInput = document.getElementById('wishName');
+    const targetAmountInput = document.getElementById('targetAmount');
+    const dailyAmountInput = document.getElementById('dailyAmount');
+    const calculateBtn = document.getElementById('calculateBtn');
+    const resultDiv = document.getElementById('result');
+    const daysDisplay = document.getElementById('daysDisplay');
+    const targetDisplay = document.getElementById('targetDisplay');
+    const jar = document.getElementById('jar');
+    const coinsContainer = document.getElementById('coinsContainer');
+    const historyList = document.getElementById('historyList');
+    const starsContainer = document.getElementById('stars');
+
+    // 生成星空
+    function createStars() {
+      for (let i = 0; i < 80; i++) {
+        const star = document.createElement('div');
+        star.className = 'star';
+        star.style.left = Math.random() * 100 + '%';
+        star.style.top = Math.random() * 100 + '%';
+        star.style.width = Math.random() * 2 + 1 + 'px';
+        star.style.height = star.style.width;
+        star.style.animationDelay = Math.random() * 3 + 's';
+        star.style.animationDuration = Math.random() * 2 + 2 + 's';
+        starsContainer.appendChild(star);
+      }
+    }
+
+    // 載入硬幣
+    function loadCoins(count) {
+      coinsContainer.innerHTML = '';
+      const positions = [];
+      
+      for (let i = 0; i < Math.min(count, 15); i++) {
+        const coin = document.createElement('div');
+        coin.className = 'coin';
+        coin.textContent = '💰';
+        
+        // 隨機位置（避免重疊）
+        let x, y, attempts = 0;
+        do {
+          x = Math.random() * 80 + 10;
+          y = Math.random() * 140 + 20;
+          attempts++;
+        } while (attempts < 20 && positions.some(p => Math.abs(p.x - x) < 15 && Math.abs(p.y - y) < 15));
+        
+        positions.push({x, y});
+        coin.style.left = x + 'px';
+        coin.style.bottom = y + 'px';
+        coin.style.animationDelay = Math.random() * 2 + 's';
+        
+        coinsContainer.appendChild(coin);
+      }
+    }
+
+    // 硬幣投入動畫
+    function animateCoinDrop() {
+      for (let i = 0; i < 5; i++) {
+        setTimeout(() => {
+          const coin = document.createElement('div');
+          coin.className = 'coin-animation';
+          coin.textContent = '💰';
+          coin.style.left = (Math.random() * 40 + 30) + '%';
+          coin.style.top = '20%';
+          coin.style.animation = `dropCoin ${0.8 + Math.random() * 0.4}s ease-in forwards`;
+          document.body.appendChild(coin);
+          
+          setTimeout(() => coin.remove(), 1200);
+        }, i * 150);
+      }
+    }
+
+    // 煙火效果
+    function createFirework(x, y) {
+      const colors = ['#ffd700', '#ff9f43', '#ffe566', '#fff'];
+      
+      for (let i = 0; i < 30; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'firework-particle';
+        
+        const angle = (i / 30) * Math.PI * 2;
+        const distance = 50 + Math.random() * 80;
+        const tx = Math.cos(angle) * distance;
+        const ty = Math.sin(angle) * distance;
+        
+        particle.style.left = x + 'px';
+        particle.style.top = y + 'px';
+        particle.style.setProperty('--tx', tx + 'px');
+        particle.style.setProperty('--ty', ty + 'px');
+        particle.style.background = colors[Math.floor(Math.random() * colors.length)];
+        particle.style.animationDuration = (0.5 + Math.random() * 0.5) + 's';
+        
+        document.body.appendChild(particle);
+        setTimeout(() => particle.remove(), 1000);
+      }
+    }
+
+    // 計算並顯示結果
+    function calculate() {
+      const wishName = wishNameInput.value.trim();
+      const targetAmount = parseFloat(targetAmountInput.value);
+      const dailyAmount = parseFloat(dailyAmountInput.value);
+
+      if (!wishName || !targetAmount || !dailyAmount || dailyAmount <= 0) {
+        alert('請完整填寫所有欄位，且每日儲蓄需大於 0');
+        return;
+      }
+
+      const days = Math.ceil(targetAmount / dailyAmount);
+      
+      // 顯示結果
+      daysDisplay.textContent = days;
+      targetDisplay.textContent = `💎 ${wishName} — NT$ ${targetAmount.toLocaleString()}`;
+      resultDiv.classList.add('show');
+      
+      // 硬幣投入動畫
+      animateCoinDrop();
+      
+      // 罐子發光
+      setTimeout(() => {
+        jar.classList.add('glow');
+        createFirework(window.innerWidth / 2, window.innerHeight / 3);
+      }, 600);
+
+      // 顯示對應數量的硬幣
+      loadCoins(Math.min(Math.floor(targetAmount / dailyAmount), 30));
+
+      // 儲存到歷史
+      saveToHistory(wishName, targetAmount, dailyAmount, days);
+    }
+
+    // localStorage 操作
+    function saveToHistory(name, target, daily, days) {
+      const history = JSON.parse(localStorage.getItem('wishJarHistory') || '[]');
+      
+      // 檢查是否已存在
+      const existing = history.findIndex(h => h.name === name);
+      if (existing >= 0) {
+        history[existing] = { name, target, daily, days, date: new Date().toISOString() };
+      } else {
+        history.unshift({ name, target, daily, days, date: new Date().toISOString() });
+      }
+      
+      // 只保留最近的 10 筆
+      if (history.length > 10) history.pop();
+      
+      localStorage.setItem('wishJarHistory', JSON.stringify(history));
+      renderHistory();
+    }
+
+    function renderHistory() {
+      const history = JSON.parse(localStorage.getItem('wishJarHistory') || '[]');
+      
+      if (history.length === 0) {
+        historyList.innerHTML = '<div style="text-align: center; color: var(--text-muted); padding: 1rem;">還沒有心願記錄</div>';
+        return;
+      }
+      
+      historyList.innerHTML = history.map(h => `
+        <div class="history-item">
+          <div>
+            <div class="history-item-name">${h.name}</div>
+            <div class="history-item-days">NT$ ${h.target.toLocaleString()} · 每日 ${h.daily}</div>
+          </div>
+          <div style="text-align: right;">
+            <div style="font-size: 1.2rem; font-weight: 700; color: var(--gold);">${h.days}</div>
+            <div style="font-size: 0.7rem; color: var(--text-muted);">天</div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // 初始化
+    createStars();
+    renderHistory();
+    
+    // 事件監聽
+    calculateBtn.addEventListener('click', calculate);
+    
+    // Enter 鍵支持
+    [wishNameInput, targetAmountInput, dailyAmountInput].forEach(input => {
+      input.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') calculate();
+      });
+    });
+  </script>
+</body>
+</html>
