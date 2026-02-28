@@ -1,12 +1,18 @@
 # Daily Lab Changelog
 
-*Updated: 2026-02-28 03:30*
+*Updated: 2026-02-28 12:35*
 
 # Changelog — daily-lab
 
 Changes since 2026-02-01:
 
-- `9ad1c4f` fix: add dist assets with dark mode — *chung0223* (2026-02-27)
+- `4f3e0e6` fix: layout + add career/love/health readings — *chung0223* (2026-02-28)
+- `a7018e2` enhance: I Ching with full interpretations — *chung0223* (2026-02-28)
+- `f777aee` add: pure HTML version of I Ching Oracle — *chung0223* (2026-02-28)
+- `cc0e4c3` add: .nojekyll for GitHub Pages — *chung0223* (2026-02-28)
+- `e073976` fix: correct base path for 2026-02-28 — *chung0223* (2026-02-28)
+- `989737d` add: dist for 2026-02-28 I Ching Oracle — *chung0223* (2026-02-28)
+- `cea0ada` docs: update changelog 2026-02-28 — *chung0223* (2026-02-28)
 - `7cbf967` fix: force dark mode styling — *chung0223* (2026-02-27)
 - `a56639f` fix: correct asset paths to dist/ — *chung0223* (2026-02-27)
 - `5e0394c` fix: update index.html to point to dist assets — *chung0223* (2026-02-27)
