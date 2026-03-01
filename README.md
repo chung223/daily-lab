@@ -23,9 +23,9 @@
 
 | 預覽 | 日期 | 專案 | 描述 |
 |:---:|:---:|:---:|---|
+| 🎰 | 03/02 | [幸運拉霸 Lucky Slots](https://chung223.github.io/daily-lab/2026-03-02/) | 拉斯維加斯風拉霸機、旋轉動畫、獲勝判定 |
 | 🪙 | 03/01 | [心願存錢筒 Wish Jar](https://chung223.github.io/daily-lab/2026-03-01/) | 設定心願與目標金額，計算達成天數，硬幣動畫 |
 | ☯ | 02/28 | [易經六十四卦 I Ching](https://chung223.github.io/daily-lab/2026-02-28-pure/) | 隨機抽取六十四卦，含事業/感情/健康解讀 |
-| 🙏 | 02/27 | [今日偈語 Gatha](https://chung223.github.io/daily-lab/2026-02-27-pure/) | 隨機抽取偈語智慧 |
 
 ---
 
@@ -72,6 +72,15 @@
 </details>
 
 <details>
+<summary><b>🎮 遊戲系</b> — mini game、clicker、word game</summary>
+
+| 日期 | 專案 | 描述 |
+|:---:|---:|---|
+| 03/02 | 🎰 [幸運拉霸 Lucky Slots](https://chung223.github.io/daily-lab/2026-03-02/) | 拉斯維加斯風拉霸機、旋轉動畫、獲勝判定 |
+
+</details>
+
+<details>
 <summary><b>🎮 趣味系</b> — 好玩就對了</summary>
 
 | 日期 | 專案 | 描述 |
@@ -98,8 +107,8 @@
      ╔═══════════════════════════╗
      ║     Daily Lab Stats       ║
      ╠═══════════════════════════╣
-     ║  📦 總專案數: 18+         ║
-     ║  🔥 連續產出: 19 天        ║
+     ║  📦 總專案數: 19+         ║
+     ║  🔥 連續產出: 20 天        ║
      ║  ⏰ 平均產出時間: 3:00 AM  ║
      ║  ☕ 消耗咖啡: ☕☕☕☕☕☕☕☕         ║
      ║  🐛 Bug 數: 數不清        ║
