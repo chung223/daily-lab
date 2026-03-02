@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>紀念日銀河 ✨</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-primary: #0a0a12;
+      --bg-card: rgba(20, 20, 35, 0.6);
+      --text-primary: #f5f5f5;
+      --text-secondary: #a0a0b8;
+      --gold: #d4af37;
+      --gold-light: #f0d78c;
+      --accent-pink: #ff6b9d;
+      --accent-blue: #6bfff0;
+      --accent-purple: #b56bff;
+      --border: rgba(212, 175, 55, 0.2);
+      --shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Noto Sans TC', sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* Starfield Background */
+    .stars {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .star {
+      position: absolute;
+      background: white;
+      border-radius: 50%;
+      animation: twinkle var(--duration) ease-in-out infinite;
+    }
+
+    @keyframes twinkle {
+      0%, 100% { opacity: var(--min-opacity); transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.2); }
+    }
+
+    /* Shooting Stars */
+    .shooting-star {
+      position: fixed;
+      width: 100px;
+      height: 2px;
+      background: linear-gradient(90deg, var(--gold), transparent);
+      animation: shoot 3s ease-in-out infinite;
+      opacity: 0;
+    }
+
+    @keyframes shoot {
+      0% { transform: translateX(-100px) translateY(0); opacity: 0; }
+      10% { opacity: 1; }
+      30% { transform: translateX(calc(100vw + 100px)) translateY(200px); opacity: 0; }
+      100% { opacity: 0; }
+    }
+
+    /* Main Container */
+    .container {
+      position: relative;
+      z-index: 1;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 2rem 1rem;
+    }
+
+    /* Header */
+    header {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+
+    h1 {
+      font-family: 'Cinzel Decorative', serif;
+      font-size: 2.5rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--gold) 0%, var(--gold-light) 50%, var(--gold) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 0.5rem;
+      letter-spacing: 0.1em;
+    }
+
+    .subtitle {
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+      font-weight: 300;
+    }
+
+    /* Quote Section */
+    .quote-box {
+      background: var(--bg-card);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--border);
+      border-radius: 1rem;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .quote-box::before {
+      content: '"';
+      position: absolute;
+      top: -10px;
+      left: 20px;
+      font-size: 5rem;
+      color: var(--gold);
+      opacity: 0.1;
+      font-family: serif;
+    }
+
+    .quote-text {
+      font-size: 1.1rem;
+      font-weight: 300;
+      line-height: 1.6;
+      color: var(--text-primary);
+    }
+
+    .quote-author {
+      margin-top: 0.75rem;
+      font-size: 0.85rem;
+      color: var(--gold);
+    }
+
+    /* Add Form */
+    .add-form {
+      background: var(--bg-card);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--border);
+      border-radius: 1rem;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .form-title {
+      font-family: 'Cinzel Decorative', serif;
+      font-size: 1.2rem;
+      color: var(--gold);
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+
+    .form-row {
+      display: flex;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+    }
+
+    input, select {
+      flex: 1;
+      min-width: 120px;
+      padding: 0.75rem 1rem;
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid var(--border);
+      border-radius: 0.5rem;
+      color: var(--text-primary);
+      font-size: 0.95rem;
+      font-family: inherit;
+      transition: all 0.2s ease;
+    }
+
+    input:focus, select:focus {
+      outline: none;
+      border-color: var(--gold);
+      box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+    }
+
+    input::placeholder {
+      color: var(--text-secondary);
+    }
+
+    select {
+      cursor: pointer;
+    }
+
+    select option {
+      background: var(--bg-primary);
+    }
+
+    .btn-add {
+      width: 100%;
+      padding: 0.85rem;
+      background: linear-gradient(135deg, var(--gold) 0%, #c9a227 100%);
+      border: none;
+      border-radius: 0.5rem;
+      color: var(--bg-primary);
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-family: inherit;
+    }
+
+    .btn-add:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 20px rgba(212, 175, 55, 0.3);
+    }
+
+    .btn-add:active {
+      transform: translateY(0);
+    }
+
+    /* Events List */
+    .events-section {
+      margin-bottom: 2rem;
+    }
+
+    .section-title {
+      font-family: 'Cinzel Decorative', serif;
+      font-size: 1.3rem;
+      color: var(--gold);
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .events-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .event-card {
+      background: var(--bg-card);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--border);
+      border-radius: 1rem;
+      padding: 1.25rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .event-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 4px;
+      height: 100%;
+      background: var(--card-accent, var(--gold));
+    }
+
+    .event-card:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow);
+      border-color: var(--gold);
+    }
+
+    .event-card.birthday { --card-accent: var(--accent-pink); }
+    .event-card.festival { --card-accent: var(--accent-blue); }
+    .event-card.anniversary { --card-accent: var(--gold); }
+    .event-card.other { --card-accent: var(--accent-purple); }
+
+    .event-info {
+      flex: 1;
+    }
+
+    .event-name {
+      font-size: 1.1rem;
+      font-weight: 500;
+      margin-bottom: 0.25rem;
+    }
+
+    .event-date {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+    }
+
+    .event-countdown {
+      text-align: right;
+      margin-right: 1rem;
+    }
+
+    .countdown-number {
+      font-family: 'Cinzel Decorative', serif;
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--card-accent, var(--gold));
+      line-height: 1;
+    }
+
+    .countdown-label {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      margin-top: 0.25rem;
+    }
+
+    .countdown-label.passed {
+      color: var(--accent-pink);
+    }
+
+    .btn-delete {
+      background: transparent;
+      border: 1px solid rgba(255, 107, 157, 0.3);
+      color: var(--accent-pink);
+      padding: 0.5rem;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-size: 1.2rem;
+      line-height: 1;
+    }
+
+    .btn-delete:hover {
+      background: rgba(255, 107, 157, 0.1);
+      border-color: var(--accent-pink);
+    }
+
+    /* Empty State */
+    .empty-state {
+      text-align: center;
+      padding: 3rem;
+      color: var(--text-secondary);
+    }
+
+    .empty-icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      opacity: 0.5;
+    }
+
+    /* Footer Stats */
+    .stats {
+      background: var(--bg-card);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--border);
+      border-radius: 1rem;
+      padding: 1.25rem;
+      text-align: center;
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .stat-item {
+      text-align: center;
+    }
+
+    .stat-number {
+      font-family: 'Cinzel Decorative', serif;
+      font-size: 1.5rem;
+      color: var(--gold);
+    }
+
+    .stat-label {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      margin-top: 0.25rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      h1 { font-size: 1.8rem; }
+      .form-row { flex-direction: column; }
+      .event-card { flex-direction: column; gap: 1rem; text-align: center; }
+      .event-card::before { width: 100%; height: 4px; }
+      .event-countdown { margin-right: 0; text-align: center; }
+      .btn-delete { width: 100%; }
+    }
+
+    /* Animations */
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .event-card {
+      animation: fadeInUp 0.4s ease-out forwards;
+    }
+
+    .event-card:nth-child(1) { animation-delay: 0s; }
+    .event-card:nth-child(2) { animation-delay: 0.1s; }
+    .event-card:nth-child(3) { animation-delay: 0.2s; }
+    .event-card:nth-child(4) { animation-delay: 0.3s; }
+    .event-card:nth-child(5) { animation-delay: 0.4s; }
+  </style>
+</head>
+<body>
+  <div class="stars" id="stars"></div>
+  
+  <div class="container">
+    <header>
+      <h1>✨ 紀念日銀河 ✨</h1>
+      <p class="subtitle">讓每個重要時刻閃耀如星</p>
+    </header>
+
+    <div class="quote-box">
+      <p class="quote-text" id="quoteText">Loading...</p>
+      <p class="quote-author" id="quoteAuthor"></p>
+    </div>
+
+    <div class="add-form">
+      <h2 class="form-title">＋ 新增紀念日</h2>
+      <div class="form-row">
+        <input type="text" id="eventName" placeholder="名稱（生日、紀念日...）" maxlength="30">
+        <input type="date" id="eventDate">
+      </div>
+      <div class="form-row">
+        <select id="eventType">
+          <option value="birthday">🎂 生日</option>
+          <option value="festival">🎉 節日</option>
+          <option value="anniversary">💝 紀念日</option>
+          <option value="other">⭐ 其他</option>
+        </select>
+        <button class="btn-add" onclick="addEvent()">新增紀念日</button>
+      </div>
+    </div>
+
+    <div class="events-section">
+      <h2 class="section-title">🌟 我的紀念日</h2>
+      <div class="events-list" id="eventsList">
+        <div class="empty-state">
+          <div class="empty-icon">🌌</div>
+          <p>還沒有紀念日，添加第一個吧！</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="stats">
+      <div class="stat-item">
+        <div class="stat-number" id="totalEvents">0</div>
+        <div class="stat-label">紀念日總數</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number" id="upcomingCount">0</div>
+        <div class="stat-label">即將到來</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number" id="totalDays">0</div>
+        <div class="stat-label">記錄總天數</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Quotes
+    const quotes = [
+      { text: "時間會告訴你，誰是真正重要的人。", author: "匿名" },
+      { text: "每一個今天，都是明天的第一天。", author: "奧普拉·溫弗瑞" },
+      { text: "最重要的日子，往往是那些還沒到來的日子。", author: "匿名" },
+      { text: "等待是值得的，因為美好值得期待。", author: "匿名" },
+      { text: "時間不是敵人，是最誠實的朋友。", author: "匿名" },
+      { text: "當你期待的那一刻，整個宇宙都會幫你。", author: "匿名" },
+      { text: "人生不在於活了多久，而在於記住了多少。", author: "馬克·吐溫" },
+      { text: "今天是你餘生的第一天。", author: "史蒂夫·喬布斯" },
+      { text: "最棒的旅程往往始於一個勇敢的決定。", author: "匿名" },
+      { text: "時間會沖淡一切，但記憶永遠閃耀。", author: "匿名" }
+    ];
+
+    // Initialize
+    let events = JSON.parse(localStorage.getItem('milestoneEvents')) || [];
+
+    // Create stars
+    function createStars() {
+      const container = document.getElementById('stars');
+      const count = 150;
+      
+      for (let i = 0; i < count; i++) {
+        const star = document.createElement('div');
+        star.className = 'star';
+        star.style.left = Math.random() * 100 + '%';
+        star.style.top = Math.random() * 100 + '%';
+        star.style.width = Math.random() * 2 + 1 + 'px';
+        star.style.height = star.style.width;
+        star.style.setProperty('--duration', (Math.random() * 3 + 2) + 's');
+        star.style.setProperty('--min-opacity', Math.random() * 0.3 + 0.1);
+        star.style.animationDelay = Math.random() * 5 + 's';
+        container.appendChild(star);
+      }
+
+      // Shooting stars
+      for (let i = 0; i < 3; i++) {
+        const shooting = document.createElement('div');
+        shooting.className = 'shooting-star';
+        shooting.style.top = Math.random() * 50 + '%';
+        shooting.style.animationDelay = (i * 5 + Math.random() * 3) + 's';
+        container.appendChild(shooting);
+      }
+    }
+
+    // Display random quote
+    function displayQuote() {
+      const quote = quotes[Math.floor(Math.random() * quotes.length)];
+      document.getElementById('quoteText').textContent = quote.text;
+      document.getElementById('quoteAuthor').textContent = '— ' + quote.author;
+    }
+
+    // Calculate days
+    function calculateDays(eventDate) {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const event = new Date(eventDate);
+      event.setHours(0, 0, 0, 0);
+      
+      // Get this year's event date
+      const thisYear = new Date(today.getFullYear(), event.getMonth(), event.getDate());
+      
+      // If passed, get next year
+      if (thisYear < today) {
+        thisYear.setFullYear(today.getFullYear() + 1);
+      }
+      
+      const diffTime = thisYear - today;
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      
+      return diffDays;
+    }
+
+    // Calculate passed days from a past date
+    function calculatePassedDays(eventDate) {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const event = new Date(eventDate);
+      event.setHours(0, 0, 0, 0);
+      
+      const diffTime = today - event;
+      const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+      
+      return diffDays;
+    }
+
+    // Render events
+    function renderEvents() {
+      const list = document.getElementById('eventsList');
+      
+      if (events.length === 0) {
+        list.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-icon">🌌</div>
+            <p>還沒有紀念日，添加第一個吧！</p>
+          </div>
+        `;
+        updateStats();
+        return;
+      }
+
+      // Sort by days until event
+      events.sort((a, b) => {
+        const daysA = calculateDays(a.date);
+        const daysB = calculateDays(b.date);
+        return daysA - daysB;
+      });
+
+      list.innerHTML = events.map((event, index) => {
+        const days = calculateDays(event.date);
+        const isPassed = new Date(event.date) < new Date();
+        const typeLabels = { birthday: '🎂', festival: '🎉', anniversary: '💝', other: '⭐' };
+        
+        return `
+          <div class="event-card ${event.type}" style="animation-delay: ${index * 0.1}s">
+            <div class="event-info">
+              <div class="event-name">${typeLabels[event.type]} ${escapeHtml(event.name)}</div>
+              <div class="event-date">${formatDate(event.date)}</div>
+            </div>
+            <div class="event-countdown">
+              <div class="countdown-number">${isPassed ? '+' : ''}${days}</div>
+              <div class="countdown-label ${isPassed ? 'passed' : ''}">${isPassed ? '天前' : '天後'}</div>
+            </div>
+            <button class="btn-delete" onclick="deleteEvent(${index})">✕</button>
+          </div>
+        `;
+      }).join('');
+
+      updateStats();
+    }
+
+    // Update stats
+    function updateStats() {
+      document.getElementById('totalEvents').textContent = events.length;
+      
+      const upcoming = events.filter(e => calculateDays(e.date) > 0).length;
+      document.getElementById('upcomingCount').textContent = upcoming;
+      
+      const totalDays = events.reduce((sum, e) => sum + calculatePassedDays(e.date), 0);
+      document.getElementById('totalDays').textContent = totalDays;
+    }
+
+    // Add event
+    function addEvent() {
+      const name = document.getElementById('eventName').value.trim();
+      const date = document.getElementById('eventDate').value;
+      const type = document.getElementById('eventType').value;
+
+      if (!name || !date) {
+        alert('請填寫名稱和日期！');
+        return;
+      }
+
+      events.push({ name, date, type });
+      localStorage.setItem('milestoneEvents', JSON.stringify(events));
+      
+      document.getElementById('eventName').value = '';
+      document.getElementById('eventDate').value = '';
+      
+      renderEvents();
+      displayQuote(); // New quote on add
+    }
+
+    // Delete event
+    function deleteEvent(index) {
+      if (confirm('確定要刪除這個紀念日嗎？')) {
+        events.splice(index, 1);
+        localStorage.setItem('milestoneEvents', JSON.stringify(events));
+        renderEvents();
+      }
+    }
+
+    // Helper functions
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    function formatDate(dateStr) {
+      const date = new Date(dateStr);
+      const year = date.getFullYear();
+      const month = date.getMonth() + 1;
+      const day = date.getDate();
+      return `${year}年${month}月${day}日`;
+    }
+
+    // Keyboard shortcut
+    document.getElementById('eventDate').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') addEvent();
+    });
+
+    // Initialize
+    createStars();
+    displayQuote();
+    renderEvents();
+  </script>
+</body>
+</html>
