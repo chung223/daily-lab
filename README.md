@@ -7,8 +7,8 @@
 *用一杯咖啡的時間，換一個讓世界多點樂趣的小玩具*
 
 ![License](https://img.shields.io/badge/license-MIT-green?style=for-the-badge&logo=mit)
-![Projects](https://img.shields.io/badge/專案數-21-blue?style=for-the-badge)
-![Streak](https://img.shields.io/badge/連續-20天-orange?style=for-the-badge)
+![Projects](https://img.shields.io/badge/專案數-22-blue?style=for-the-badge)
+![Streak](https://img.shields.io/badge/連續-21天-orange?style=for-the-badge)
 ![Coffee](https://img.shields.io/badge/消耗咖啡-☕☕☕☕☕☕☕☕-red?style=for-the-badge)
 
 </div>
@@ -23,9 +23,9 @@
 
 | 預覽 | 日期 | 專案 | 描述 |
 |:---:|:---:|:---:|---|
+| ⭐ | 03/04 | [時空流轉 Temporal Flow](https://chung223.github.io/daily-lab/2026-03-04/) | 療癒系沙漏冥想體驗、沙粒流動動畫 |
 | ⭐ | 03/03 | [紀念日銀河 Milestone Galaxy](https://chung223.github.io/daily-lab/2026-03-03/) | 紀念日倒數、localStorage 持久化、隨機勵志語錄 |
 | 🎰 | 03/02 | [幸運拉霸 Lucky Slots](https://chung223.github.io/daily-lab/2026-03-02/) | 拉斯維加斯風拉霸機、旋轉動畫、獲勝判定 |
-| 🪙 | 03/01 | [心願存錢筒 Wish Jar](https://chung223.github.io/daily-lab/2026-03-01/) | 設定心願與目標金額，計算達成天數，硬幣動畫 |
 
 ---
 
@@ -45,6 +45,7 @@
 
 | 日期 | 專案 | 描述 |
 |:---:|:---:|---|
+| 03/04 | ⭐ [時空流轉 Temporal Flow](https://chung223.github.io/daily-lab/2026-03-04/) | 療癒系沙漏冥想體驗、沙粒流動動畫 |
 | 03/03 | ⭐ [紀念日銀河 Milestone Galaxy](https://chung223.github.io/daily-lab/2026-03-03/) | 紀念日倒數、localStorage 持久化、隨機勵志語錄 |
 | 03/01 | 🪙 [心願存錢筒 Wish Jar](https://chung223.github.io/daily-lab/2026-03-01/) | 設定心願與目標金額，計算達成天數，硬幣動畫 |
 | 02/28 | ☯ [易經六十四卦 I Ching](https://chung223.github.io/daily-lab/2026-02-28-pure/) | 隨機抽取六十四卦，含事業/感情/健康解讀 |
@@ -108,7 +109,7 @@
      ╔═══════════════════════════╗
      ║     Daily Lab Stats       ║
      ╠═══════════════════════════╣
-     ║  📦 總專案數: 20+         ║
+     ║  📦 總專案數: 21+         ║
      ║  🔥 連續產出: 20 天        ║
      ║  ⏰ 平均產出時間: 3:00 AM  ║
      ║  ☕ 消耗咖啡: ☕☕☕☕☕☕☕☕         ║
