@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>⚡ Prompt Forge - AI Prompt Optimizer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Noto+Sans+TC:wght@400;500;600&family=Orbitron:wght@600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-deep: #0a0e17;
+      --bg-surface: #111827;
+      --bg-elevated: #1e293b;
+      --primary: #22d3ee;
+      --primary-dim: #0891b2;
+      --primary-glow: rgba(34, 211, 238, 0.3);
+      --accent: #fbbf24;
+      --accent-dim: #d97706;
+      --text-primary: #f1f5f9;
+      --text-secondary: #94a3b8;
+      --text-muted: #64748b;
+      --border: #334155;
+      --border-active: #22d3ee;
+      --success: #10b981;
+      --error: #f43f5e;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Noto Sans TC', sans-serif;
+      background: var(--bg-deep);
+      color: var(--text-primary);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Grid Background */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-image: 
+        linear-gradient(rgba(34, 211, 238, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(34, 211, 238, 0.03) 1px, transparent 1px);
+      background-size: 50px 50px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Scanline Effect */
+    body::after {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0, 0, 0, 0.1) 2px,
+        rgba(0, 0, 0, 0.1) 4px
+      );
+      pointer-events: none;
+      z-index: 1000;
+      opacity: 0.3;
+    }
+
+    .container {
+      position: relative;
+      z-index: 1;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 20px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      animation: fadeIn 0.3s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Header */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 0 30px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 30px;
+    }
+
+    .logo {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: 4px;
+      color: var(--primary);
+      text-shadow: 0 0 20px var(--primary-glow);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo-icon {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 12px;
+    }
+
+    .btn-icon {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      padding: 10px 16px;
+      border-radius: 8px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-icon:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+      box-shadow: 0 0 15px var(--primary-glow);
+    }
+
+    /* Main Content */
+    .main-content {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+
+    @media (max-width: 768px) {
+      .main-content {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Panels */
+    .panel {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .panel::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+    }
+
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .panel-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .panel-title .icon {
+      font-size: 16px;
+    }
+
+    .copy-btn {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 11px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .copy-btn:hover {
+      border-color: var(--success);
+      color: var(--success);
+    }
+
+    .copy-btn.copied {
+      border-color: var(--success);
+      color: var(--success);
+      background: rgba(16, 185, 129, 0.1);
+    }
+
+    /* Input */
+    .input-area {
+      flex: 1;
+      min-height: 300px;
+    }
+
+    #prompt-input {
+      width: 100%;
+      height: 100%;
+      min-height: 280px;
+      background: var(--bg-deep);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+      color: var(--text-primary);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 14px;
+      line-height: 1.6;
+      resize: none;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    #prompt-input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 20px var(--primary-glow);
+    }
+
+    #prompt-input::placeholder {
+      color: var(--text-muted);
+    }
+
+    /* Output */
+    .output-area {
+      flex: 1;
+      min-height: 300px;
+      background: var(--bg-deep);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 14px;
+      line-height: 1.6;
+      overflow-y: auto;
+      position: relative;
+    }
+
+    .output-placeholder {
+      color: var(--text-muted);
+      font-style: italic;
+    }
+
+    .output-text {
+      color: var(--text-primary);
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .cursor {
+      display: inline-block;
+      width: 2px;
+      height: 1em;
+      background: var(--primary);
+      margin-left: 2px;
+      animation: blink 0.5s infinite;
+      vertical-align: text-bottom;
+    }
+
+    @keyframes blink {
+      0%, 50% { opacity: 1; }
+      51%, 100% { opacity: 0; }
+    }
+
+    /* Style Selector */
+    .style-selector {
+      margin: 24px 0;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: center;
+    }
+
+    .style-chip {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-transform: uppercase;
+    }
+
+    .style-chip:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    .style-chip.active {
+      border-color: var(--primary);
+      background: rgba(34, 211, 238, 0.1);
+      color: var(--primary);
+      box-shadow: 0 0 20px var(--primary-glow);
+      transform: scale(1.05);
+    }
+
+    /* Forge Button */
+    .forge-container {
+      display: flex;
+      justify-content: center;
+      margin: 20px 0;
+    }
+
+    .forge-btn {
+      background: linear-gradient(135deg, var(--primary-dim), var(--primary));
+      border: none;
+      color: var(--bg-deep);
+      padding: 18px 48px;
+      border-radius: 12px;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      position: relative;
+      overflow: hidden;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 0 20px var(--primary-glow); }
+      50% { box-shadow: 0 0 40px var(--primary-glow), 0 0 60px rgba(34, 211, 238, 0.2); }
+    }
+
+    .forge-btn:hover {
+      transform: scale(1.02);
+      box-shadow: 0 0 50px var(--primary-glow), 0 0 80px rgba(34, 211, 238, 0.3);
+    }
+
+    .forge-btn:active {
+      transform: scale(0.98);
+    }
+
+    .forge-btn::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(
+        45deg,
+        transparent,
+        rgba(255, 255, 255, 0.1),
+        transparent
+      );
+      transform: rotate(45deg);
+      animation: shine 3s infinite;
+    }
+
+    @keyframes shine {
+      0% { transform: translateX(-100%) rotate(45deg); }
+      100% { transform: translateX(100%) rotate(45deg); }
+    }
+
+    /* Footer Stats */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 20px 0;
+      margin-top: 30px;
+      text-align: center;
+    }
+
+    .stats {
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .stat {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .stat-value {
+      color: var(--primary);
+      font-weight: 600;
+    }
+
+    /* History Panel */
+    .history-panel {
+      position: fixed;
+      top: 0;
+      right: -400px;
+      width: 400px;
+      height: 100vh;
+      background: var(--bg-surface);
+      border-left: 1px solid var(--border);
+      z-index: 100;
+      transition: right 0.3s ease;
+      overflow-y: auto;
+      padding: 20px;
+    }
+
+    .history-panel.open {
+      right: 0;
+    }
+
+    .history-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .history-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      color: var(--text-primary);
+    }
+
+    .close-history {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 24px;
+      cursor: pointer;
+      line-height: 1;
+    }
+
+    .close-history:hover {
+      color: var(--error);
+    }
+
+    .history-item {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 12px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .history-item:hover {
+      border-color: var(--primary);
+    }
+
+    .history-prompt {
+      font-size: 12px;
+      color: var(--text-secondary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-bottom: 8px;
+    }
+
+    .history-meta {
+      font-size: 10px;
+      color: var(--text-muted);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .history-empty {
+      text-align: center;
+      color: var(--text-muted);
+      padding: 40px 0;
+      font-size: 14px;
+    }
+
+    /* Overlay */
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 99;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .overlay.visible {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    /* Mobile Adjustments */
+    @media (max-width: 768px) {
+      .container {
+        padding: 12px;
+      }
+
+      .logo {
+        font-size: 20px;
+        letter-spacing: 2px;
+      }
+
+      .logo-icon {
+        width: 32px;
+        height: 32px;
+        font-size: 16px;
+      }
+
+      .header-actions {
+        gap: 8px;
+      }
+
+      .btn-icon {
+        padding: 8px 12px;
+        font-size: 11px;
+      }
+
+      .panel {
+        padding: 16px;
+      }
+
+      .input-area,
+      .output-area {
+        min-height: 200px;
+      }
+
+      .style-chip {
+        padding: 10px 16px;
+        font-size: 10px;
+      }
+
+      .forge-btn {
+        padding: 14px 32px;
+        font-size: 14px;
+      }
+
+      .stats {
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .history-panel {
+        width: 100%;
+        right: -100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="logo">
+        <div class="logo-icon">⚡</div>
+        PROMPT FORGE
+      </div>
+      <div class="header-actions">
+        <button class="btn-icon" id="history-btn">
+          <span>📜</span> History
+        </button>
+        <button class="btn-icon" id="clear-btn">
+          <span>🗑️</span> Clear
+        </button>
+      </div>
+    </header>
+
+    <div class="main-content">
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">
+            <span class="icon">📥</span>
+            Raw Prompt
+          </div>
+        </div>
+        <div class="input-area">
+          <textarea id="prompt-input" placeholder="Enter your prompt here...
+
+Example: Write a function to sort an array"></textarea>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">
+            <span class="icon">📤</span>
+            Optimized
+          </div>
+          <button class="copy-btn" id="copy-btn">Copy</button>
+        </div>
+        <div class="output-area" id="output-area">
+          <span class="output-placeholder">Optimized prompt will appear here...</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="style-selector">
+      <button class="style-chip active" data-style="concise">Concise</button>
+      <button class="style-chip" data-style="detailed">Detailed</button>
+      <button class="style-chip" data-style="creative">Creative</button>
+      <button class="style-chip" data-style="technical">Technical</button>
+    </div>
+
+    <div class="forge-container">
+      <button class="forge-btn" id="forge-btn">🔥 FORGE PROMPT</button>
+    </div>
+
+    <footer>
+      <div class="stats">
+        <div class="stat">
+          <span>Transformations:</span>
+          <span class="stat-value" id="transform-count">0</span>
+        </div>
+        <div class="stat">
+          <span>Sessions:</span>
+          <span class="stat-value" id="session-count">0</span>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <!-- History Panel -->
+  <div class="overlay" id="overlay"></div>
+  <div class="history-panel" id="history-panel">
+    <div class="history-header">
+      <span class="history-title">History</span>
+      <button class="close-history" id="close-history">×</button>
+    </div>
+    <div id="history-list"></div>
+  </div>
+
+  <script>
+    // State
+    let currentStyle = 'concise';
+    let isTyping = false;
+    let transformationCount = parseInt(localStorage.getItem('prompt-forge-transformations') || '0');
+    let sessionCount = parseInt(localStorage.getItem('prompt-forge-sessions') || '0');
+    let history = JSON.parse(localStorage.getItem('prompt-forge-history') || '[]');
+
+    // DOM Elements
+    const promptInput = document.getElementById('prompt-input');
+    const outputArea = document.getElementById('output-area');
+    const forgeBtn = document.getElementById('forge-btn');
+    const copyBtn = document.getElementById('copy-btn');
+    const historyBtn = document.getElementById('history-btn');
+    const clearBtn = document.getElementById('clear-btn');
+    const historyPanel = document.getElementById('history-panel');
+    const overlay = document.getElementById('overlay');
+    const closeHistory = document.getElementById('close-history');
+    const historyList = document.getElementById('history-list');
+    const transformCount = document.getElementById('transform-count');
+    const sessionCountEl = document.getElementById('session-count');
+    const styleChips = document.querySelectorAll('.style-chip');
+
+    // Initialize
+    function init() {
+      transformCount.textContent = transformationCount;
+      sessionCountEl.textContent = sessionCount;
+      renderHistory();
+    }
+
+    // Style Selection
+    styleChips.forEach(chip => {
+      chip.addEventListener('click', () => {
+        styleChips.forEach(c => c.classList.remove('active'));
+        chip.classList.add('active');
+        currentStyle = chip.dataset.style;
+      });
+    });
+
+    // Optimization Templates
+    const styleTemplates = {
+      concise: (prompt) => {
+        return `Refined prompt (Concise):
+
+${prompt.trim()}
+
+---
+Optimized for brevity while maintaining core requirements.`;
+      },
+      detailed: (prompt) => {
+        return `Enhanced prompt (Detailed):
+
+Task: ${prompt.trim()}
+
+Requirements:
+- Execute the core request with precision
+- Include relevant examples where helpful
+- Provide clear explanations for any assumptions
+- Ensure output is well-structured and actionable
+
+---
+Enhanced with structured context and clear expectations.`;
+      },
+      creative: (prompt) => {
+        return `✨ Creative Enhancement ✨
+
+Original: ${prompt.trim()}
+
+Transform your approach:
+- Think creatively and unconventionally
+- Surprise with innovative solutions
+- Add creative flair while meeting core needs
+- Make it engaging and memorable
+
+🔮 Let's create something amazing!
+
+---
+Energized with creative prompts and imaginative framing.`;
+      },
+      technical: (prompt) => {
+        return `// Technical Specification
+// Input: "${prompt.trim()}"
+
+/**
+ * Objective
+ * Execute the request with technical precision
+ * 
+ * Constraints
+ * - Type-safe implementation where applicable
+ * - Optimized for performance
+ * - Well-documented with comments
+ * - Error handling included
+ * - Follows best practices
+ */
+
+execute(prompt);
+
+---
+Technical enhancement with specification format and constraints.`;
+      }
+    };
+
+    // Forge Function
+    async function forgePrompt() {
+      const prompt = promptInput.value.trim();
+      if (!prompt) {
+        outputArea.innerHTML = '<span class="output-placeholder" style="color: var(--error);">Please enter a prompt first!</span>';
+        return;
+      }
+
+      if (isTyping) return;
+      isTyping = true;
+
+      // Get optimized result
+      const optimized = styleTemplates[currentStyle](prompt);
+
+      // Update stats
+      transformationCount++;
+      localStorage.setItem('prompt-forge-transformations', transformationCount.toString());
+      transformCount.textContent = transformationCount;
+
+      // Save to history
+      const historyItem = {
+        original: prompt,
+        optimized: optimized,
+        style: currentStyle,
+        timestamp: new Date().toISOString()
+      };
+      history.unshift(historyItem);
+      if (history.length > 20) history.pop();
+      localStorage.setItem('prompt-forge-history', JSON.stringify(history));
+      renderHistory();
+
+      // Typewriter effect
+      outputArea.innerHTML = '';
+      const cursor = document.createElement('span');
+      cursor.className = 'cursor';
+
+      for (let i = 0; i < optimized.length; i++) {
+        outputArea.innerHTML = optimized.substring(0, i + 1);
+        outputArea.appendChild(cursor);
+        await new Promise(r => setTimeout(r, 15));
+      }
+
+      cursor.remove();
+      isTyping = false;
+    }
+
+    // Copy Function
+    function copyOutput() {
+      const text = outputArea.textContent;
+      if (!text || text.includes('will appear here') || text.includes('Please enter')) return;
+
+      navigator.clipboard.writeText(text).then(() => {
+        copyBtn.textContent = 'Copied!';
+        copyBtn.classList.add('copied');
+        setTimeout(() => {
+          copyBtn.textContent = 'Copy';
+          copyBtn.classList.remove('copied');
+        }, 2000);
+      });
+    }
+
+    // History Functions
+    function renderHistory() {
+      if (history.length === 0) {
+        historyList.innerHTML = '<div class="history-empty">No history yet</div>';
+        return;
+      }
+
+      historyList.innerHTML = history.map((item, index) => `
+        <div class="history-item" data-index="${index}">
+          <div class="history-prompt">${item.original}</div>
+          <div class="history-meta">${item.style} • ${new Date(item.timestamp).toLocaleString()}</div>
+        </div>
+      `).join('');
+
+      document.querySelectorAll('.history-item').forEach(item => {
+        item.addEventListener('click', () => {
+          const index = parseInt(item.dataset.index);
+          promptInput.value = history[index].original;
+          outputArea.innerHTML = `<pre class="output-text">${history[index].optimized}</pre>`;
+          closeHistoryPanel();
+        });
+      });
+    }
+
+    function openHistoryPanel() {
+      historyPanel.classList.add('open');
+      overlay.classList.add('visible');
+    }
+
+    function closeHistoryPanel() {
+      historyPanel.classList.remove('open');
+      overlay.classList.remove('visible');
+    }
+
+    // Clear Function
+    function clearAll() {
+      promptInput.value = '';
+      outputArea.innerHTML = '<span class="output-placeholder">Optimized prompt will appear here...</span>';
+      transformationCount = 0;
+      sessionCount++;
+      localStorage.setItem('prompt-forge-transformations', '0');
+      localStorage.setItem('prompt-forge-sessions', sessionCount.toString());
+      transformCount.textContent = '0';
+      sessionCountEl.textContent = sessionCount;
+      history = [];
+      localStorage.setItem('prompt-forge-history', '[]');
+      renderHistory();
+    }
+
+    // Event Listeners
+    forgeBtn.addEventListener('click', forgePrompt);
+    copyBtn.addEventListener('click', copyOutput);
+    historyBtn.addEventListener('click', openHistoryPanel);
+    closeHistory.addEventListener('click', closeHistoryPanel);
+    overlay.addEventListener('click', closeHistoryPanel);
+    clearBtn.addEventListener('click', clearAll);
+
+    // Keyboard shortcut
+    promptInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && e.ctrlKey) {
+        forgePrompt();
+      }
+    });
+
+    // Initialize
+    init();
+  </script>
+</body>
+</html>
