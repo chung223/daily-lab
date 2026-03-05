@@ -1,11 +1,14 @@
 # Daily Lab Changelog
 
-*Updated: 2026-03-05 03:30*
+*Updated: 2026-03-06 03:30*
 
 # Changelog — daily-lab
 
 Changes since 2026-02-01:
 
+- `ab438d4` chore: 中文界面 — *chung0223* (2026-03-05)
+- `30de410` Daily Lab 2026-03-05 — *chung0223* (2026-03-05)
+- `a61e420` docs: update changelog 2026-03-05 — *chung0223* (2026-03-05)
 - `262bf57` Daily Lab 2026-03-04: 時空流轉 (Temporal Flow) - 療癒系沙漏冥想體驗 — *chung0223* (2026-03-04)
 - `4bd9737` docs: update changelog 2026-03-04 — *chung0223* (2026-03-04)
 - `ccb56ca` Update meta.json — *chung223* (2026-03-03)
