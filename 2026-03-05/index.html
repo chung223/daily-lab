@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>⚡ Prompt Forge - AI Prompt Optimizer</title>
+  <title>⚡ 提示詞工坊 - AI 提示詞優化工具</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Noto+Sans+TC:wght@400;500;600&family=Orbitron:wght@600;700&display=swap" rel="stylesheet">
@@ -602,10 +602,10 @@
       </div>
       <div class="header-actions">
         <button class="btn-icon" id="history-btn">
-          <span>📜</span> History
+          <span>📜</span> 歷史記錄
         </button>
         <button class="btn-icon" id="clear-btn">
-          <span>🗑️</span> Clear
+          <span>🗑️</span> 清除
         </button>
       </div>
     </header>
@@ -619,7 +619,7 @@
           </div>
         </div>
         <div class="input-area">
-          <textarea id="prompt-input" placeholder="Enter your prompt here...
+          <textarea id="prompt-input" placeholder="在此輸入您的提示詞..."
 
 Example: Write a function to sort an array"></textarea>
         </div>
@@ -631,23 +631,23 @@ Example: Write a function to sort an array"></textarea>
             <span class="icon">📤</span>
             Optimized
           </div>
-          <button class="copy-btn" id="copy-btn">Copy</button>
+          <button class="copy-btn" id="copy-btn">複製</button>
         </div>
         <div class="output-area" id="output-area">
-          <span class="output-placeholder">Optimized prompt will appear here...</span>
+          <span class="output-placeholder">優化後的提示詞將在此出現...</span>
         </div>
       </div>
     </div>
 
     <div class="style-selector">
-      <button class="style-chip active" data-style="concise">Concise</button>
-      <button class="style-chip" data-style="detailed">Detailed</button>
-      <button class="style-chip" data-style="creative">Creative</button>
-      <button class="style-chip" data-style="technical">Technical</button>
+      <button class="style-chip active" data-style="concise">簡潔</button>
+      <button class="style-chip" data-style="detailed">詳細</button>
+      <button class="style-chip" data-style="creative">創意</button>
+      <button class="style-chip" data-style="technical">技術</button>
     </div>
 
     <div class="forge-container">
-      <button class="forge-btn" id="forge-btn">🔥 FORGE PROMPT</button>
+      <button class="forge-btn" id="forge-btn">🔥 優化提示詞</button>
     </div>
 
     <footer>
@@ -668,7 +668,7 @@ Example: Write a function to sort an array"></textarea>
   <div class="overlay" id="overlay"></div>
   <div class="history-panel" id="history-panel">
     <div class="history-header">
-      <span class="history-title">History</span>
+      <span class="history-title">歷史記錄</span>
       <button class="close-history" id="close-history">×</button>
     </div>
     <div id="history-list"></div>
@@ -780,7 +780,7 @@ Technical enhancement with specification format and constraints.`;
     async function forgePrompt() {
       const prompt = promptInput.value.trim();
       if (!prompt) {
-        outputArea.innerHTML = '<span class="output-placeholder" style="color: var(--error);">Please enter a prompt first!</span>';
+        outputArea.innerHTML = '<span class="output-placeholder" style="color: var(--error);">請先輸入提示詞！</span>';
         return;
       }
 
@@ -874,7 +874,7 @@ Technical enhancement with specification format and constraints.`;
     // Clear Function
     function clearAll() {
       promptInput.value = '';
-      outputArea.innerHTML = '<span class="output-placeholder">Optimized prompt will appear here...</span>';
+      outputArea.innerHTML = '<span class="output-placeholder">優化後的提示詞將在此出現...</span>';
       transformationCount = 0;
       sessionCount++;
       localStorage.setItem('prompt-forge-transformations', '0');
