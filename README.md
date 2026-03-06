@@ -7,8 +7,8 @@
 *用一杯咖啡的時間，換一個讓世界多點樂趣的小玩具*
 
 ![License](https://img.shields.io/badge/license-MIT-green?style=for-the-badge&logo=mit)
-![Projects](https://img.shields.io/badge/專案數-24-blue?style=for-the-badge)
-![Streak](https://img.shields.io/badge/連續-23天-orange?style=for-the-badge)
+![Projects](https://img.shields.io/badge/專案數-25-blue?style=for-the-badge)
+![Streak](https://img.shields.io/badge/連續-24天-orange?style=for-the-badge)
 ![Coffee](https://img.shields.io/badge/消耗咖啡-☕☕☕☕☕☕☕☕-red?style=for-the-badge)
 
 </div>
@@ -23,10 +23,10 @@
 
 | 預覽 | 日期 | 專案 | 描述 |
 |:---:|:---:|:---:|---|
+| ⭐ | 03/07 | [許願蛋神](https://chung223.github.io/daily-lab/2026-03-07/) | 搞笑許願實現 App、sarcastic 回應、五彩紙屑動畫 |
 | ⭐ | 03/06 | [Neon Pong](https://chung223.github.io/daily-lab/2026-03-06/) | 復古霓虹乒乓球遊戲、粒子特效、統計追蹤 |
 | ⭐ | 03/05 | [Prompt Forge](https://chung223.github.io/daily-lab/2026-03-05/) | AI 提示詞優化工具、打字機動畫輸出 |
 | ⭐ | 03/04 | [時空流轉 Temporal Flow](https://chung223.github.io/daily-lab/2026-03-04/) | 療癒系沙漏冥想體驗、沙粒流動動畫 |
-| ⭐ | 03/03 | [紀念日銀河 Milestone Galaxy](https://chung223.github.io/daily-lab/2026-03-03/) | 紀念日倒數、localStorage 持久化、隨機勵志語錄 |
 
 ---
 
@@ -37,6 +37,7 @@
 
 | 日期 | 專案 | 描述 |
 |:---:|---:|---|
+| 03/07 | ⭐ [許願蛋神](https://chung223.github.io/daily-lab/2026-03-07/) | 搞笑許願實現 App、sarcastic 回應、五彩紙屑動畫 |
 | 02/27 | 🙏 [今日偈語 Gatha](https://chung223.github.io/daily-lab/2026-02-27/) | 隨機抽取偈語智慧 |
 
 </details>
@@ -112,8 +113,8 @@
      ╔═══════════════════════════╗
      ║     Daily Lab Stats       ║
      ╠═══════════════════════════╣
-     ║  📦 總專案數: 24+         ║
-     ║  🔥 連續產出: 23 天        ║
+     ║  📦 總專案數: 25+         ║
+     ║  🔥 連續產出: 24 天        ║
      ║  ⏰ 平均產出時間: 3:00 AM  ║
      ║  ☕ 消耗咖啡: ☕☕☕☕☕☕☕☕         ║
      ║  🐛 Bug 數: 數不清        ║

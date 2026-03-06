@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>許願蛋神 ✨ 願望成真</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Noto+Sans+TC:wght@400;700&family=ZCOOL+KuaiLe&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        :root {
+            --bg-deep: #0d0221;
+            --bg-card: #1a0a2e;
+            --gold: #ffd700;
+            --gold-light: #ffe566;
+            --pink: #ff6b9d;
+            --blue: #4a90d9;
+            --purple: #8b5cf6;
+            --text: #ffffff;
+            --text-dim: #a78bfa;
+        }
+
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background: var(--bg-deep);
+            min-height: 100vh;
+            overflow-x: hidden;
+            color: var(--text);
+            position: relative;
+        }
+
+        /* Star particles */
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .star {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 2s infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.5); }
+        }
+
+        /* Main container */
+        .container {
+            position: relative;
+            z-index: 1;
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Header */
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-family: 'Cinzel Decorative', serif;
+            font-size: 2rem;
+            background: linear-gradient(135deg, var(--gold) 0%, var(--gold-light) 50%, var(--pink) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from { filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.5)); }
+            to { filter: drop-shadow(0 0 20px rgba(255, 107, 157, 0.8)); }
+        }
+
+        .subtitle {
+            font-family: 'ZCOOL KuaiLe', cursive;
+            color: var(--text-dim);
+            font-size: 1rem;
+            margin-top: 5px;
+        }
+
+        /* Egg container */
+        .egg-container {
+            position: relative;
+            width: 200px;
+            height: 260px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        .egg {
+            width: 140px;
+            height: 180px;
+            background: linear-gradient(180deg, 
+                var(--gold-light) 0%, 
+                var(--gold) 30%, 
+                #c9a227 70%, 
+                #8b6914 100%
+            );
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            position: relative;
+            cursor: pointer;
+            animation: egg-float 3s ease-in-out infinite;
+            box-shadow: 
+                0 0 60px rgba(255, 215, 0, 0.6),
+                0 0 100px rgba(255, 107, 157, 0.3),
+                inset 0 -20px 40px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease;
+        }
+
+        .egg:hover {
+            transform: scale(1.05);
+        }
+
+        .egg:active {
+            transform: scale(0.95);
+        }
+
+        @keyframes egg-float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* Eyes on egg */
+        .egg-face {
+            position: absolute;
+            top: 35%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: flex;
+            gap: 20px;
+        }
+
+        .eye {
+            width: 20px;
+            height: 24px;
+            background: #1a0a2e;
+            border-radius: 50%;
+            position: relative;
+        }
+
+        .eye::after {
+            content: '';
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: white;
+            border-radius: 50%;
+            top: 4px;
+            left: 4px;
+        }
+
+        .mouth {
+            position: absolute;
+            top: 55%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 30px;
+            height: 15px;
+            border: 3px solid #1a0a2e;
+            border-top: none;
+            border-radius: 0 0 30px 30px;
+        }
+
+        /* Crown */
+        .crown {
+            position: absolute;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 40px;
+            filter: drop-shadow(0 0 10px var(--gold));
+            animation: crown-spin 4s ease-in-out infinite;
+        }
+
+        @keyframes crown-spin {
+            0%, 100% { transform: translateX(-50%) rotate(-5deg); }
+            50% { transform: translateX(-50%) rotate(5deg); }
+        }
+
+        /* Wish button */
+        .wish-btn {
+            margin-top: 20px;
+            padding: 15px 40px;
+            font-family: 'ZCOOL KuaiLe', cursive;
+            font-size: 1.3rem;
+            background: linear-gradient(135deg, var(--purple), var(--pink));
+            border: none;
+            border-radius: 30px;
+            color: white;
+            cursor: pointer;
+            box-shadow: 0 5px 30px rgba(139, 92, 246, 0.5);
+            transition: all 0.3s ease;
+            animation: btn-pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes btn-pulse {
+            0%, 100% { box-shadow: 0 5px 30px rgba(139, 92, 246, 0.5); }
+            50% { box-shadow: 0 5px 50px rgba(255, 107, 157, 0.8); }
+        }
+
+        .wish-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 40px rgba(255, 107, 157, 0.6);
+        }
+
+        /* Wish options grid */
+        .wish-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-top: 30px;
+            width: 100%;
+            max-width: 350px;
+        }
+
+        .wish-option {
+            background: var(--bg-card);
+            border: 2px solid var(--purple);
+            border-radius: 15px;
+            padding: 15px 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .wish-option:hover {
+            background: var(--purple);
+            transform: scale(1.05);
+        }
+
+        .wish-option .emoji {
+            font-size: 1.5rem;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        /* Stats */
+        .stats {
+            margin-top: 30px;
+            text-align: center;
+            color: var(--text-dim);
+        }
+
+        .stats-btn {
+            background: transparent;
+            border: 1px solid var(--blue);
+            color: var(--blue);
+            padding: 10px 25px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-family: 'Noto Sans TC', sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        .stats-btn:hover {
+            background: var(--blue);
+            color: var(--bg-deep);
+        }
+
+        /* Result overlay */
+        .result-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(13, 2, 33, 0.95);
+            z-index: 100;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            text-align: center;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .result-overlay.show {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .result-emoji {
+            font-size: 80px;
+            animation: bounce 0.5s ease;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.3); }
+        }
+
+        .result-title {
+            font-family: 'Cinzel Decorative', serif;
+            font-size: 1.8rem;
+            color: var(--gold);
+            margin: 20px 0;
+        }
+
+        .result-message {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            max-width: 300px;
+            color: var(--text);
+        }
+
+        .result-image {
+            max-width: 250px;
+            max-height: 200px;
+            margin: 20px 0;
+            border-radius: 15px;
+            box-shadow: 0 0 30px var(--purple);
+        }
+
+        .close-btn {
+            margin-top: 30px;
+            padding: 12px 30px;
+            background: var(--pink);
+            border: none;
+            border-radius: 25px;
+            color: white;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+
+        /* History modal */
+        .history-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(13, 2, 33, 0.95);
+            z-index: 100;
+            display: none;
+            flex-direction: column;
+            padding: 20px;
+        }
+
+        .history-modal.show {
+            display: flex;
+        }
+
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .history-title {
+            font-family: 'Cinzel Decorative', serif;
+            color: var(--gold);
+            font-size: 1.5rem;
+        }
+
+        .close-history {
+            background: none;
+            border: none;
+            color: var(--text);
+            font-size: 2rem;
+            cursor: pointer;
+        }
+
+        .history-list {
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .history-item {
+            background: var(--bg-card);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .history-wish {
+            color: var(--pink);
+        }
+
+        .history-result {
+            color: var(--text-dim);
+            font-size: 0.9rem;
+        }
+
+        .no-history {
+            text-align: center;
+            color: var(--text-dim);
+            margin-top: 50px;
+        }
+
+        /* Confetti */
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            pointer-events: none;
+            z-index: 101;
+            animation: confetti-fall 3s linear forwards;
+        }
+
+        @keyframes confetti-fall {
+            to {
+                transform: translateY(100vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        /* Shake animation */
+        .shake {
+            animation: shake 0.5s ease;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        /* Flash effect */
+        .flash {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: white;
+            z-index: 99;
+            animation: flash 0.3s ease;
+            pointer-events: none;
+        }
+
+        @keyframes flash {
+            0% { opacity: 0.8; }
+            100% { opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Stars background -->
+    <div class="stars" id="stars"></div>
+
+    <div class="container">
+        <header>
+            <h1>✨ 許願蛋神 ✨</h1>
+            <p class="subtitle">點擊蛋蛋，願望成真（？）</p>
+        </header>
+
+        <div class="egg-container">
+            <div class="crown">👑</div>
+            <div class="egg" id="egg">
+                <div class="egg-face">
+                    <div class="eye"></div>
+                    <div class="eye"></div>
+                </div>
+                <div class="mouth"></div>
+            </div>
+        </div>
+
+        <button class="wish-btn" id="wishBtn">🖱 點我許願</button>
+
+        <div class="wish-grid" id="wishGrid">
+            <div class="wish-option" data-wish="money">
+                <span class="emoji">💰</span>
+                <span>有錢</span>
+            </div>
+            <div class="wish-option" data-wish="career">
+                <span class="emoji">💼</span>
+                <span>事業</span>
+            </div>
+            <div class="wish-option" data-wish="love">
+                <span class="emoji">❤️</span>
+                <span>脫單</span>
+            </div>
+            <div class="wish-option" data-wish="sleep">
+                <span class="emoji">😴</span>
+                <span>睡飽</span>
+            </div>
+            <div class="wish-option" data-wish="food">
+                <span class="emoji">🍔</span>
+                <span>美食</span>
+            </div>
+            <div class="wish-option" data-wish="game">
+                <span class="emoji">🎮</span>
+                <span>遊戲</span>
+            </div>
+            <div class="wish-option" data-wish="fame">
+                <span class="emoji">📺</span>
+                <span>名聲</span>
+            </div>
+            <div class="wish-option" data-wish="luck">
+                <span class="emoji">🎯</span>
+                <span>幸運</span>
+            </div>
+            <div class="wish-option" data-wish="health">
+                <span class="emoji">💪</span>
+                <span>健康</span>
+            </div>
+        </div>
+
+        <div class="stats">
+            <p>蛋神已實現 <span id="wishCount">0</span> 個願望</p>
+            <button class="stats-btn" id="statsBtn">📜 查看歷史</button>
+        </div>
+    </div>
+
+    <!-- Result overlay -->
+    <div class="result-overlay" id="resultOverlay">
+        <div class="result-emoji" id="resultEmoji">🎉</div>
+        <h2 class="result-title">願望實現！</h2>
+        <img class="result-image" id="resultImage" src="" alt="Result">
+        <p class="result-message" id="resultMessage"></p>
+        <button class="close-btn" id="closeResult">再許一次 🔄</button>
+    </div>
+
+    <!-- History modal -->
+    <div class="history-modal" id="historyModal">
+        <div class="history-header">
+            <h2 class="history-title">📜 許願歷史</h2>
+            <button class="close-history" id="closeHistory">×</button>
+        </div>
+        <div class="history-list" id="historyList">
+            <p class="no-history">還沒有人許願過...</p>
+        </div>
+    </div>
+
+    <script>
+        // Wish results database
+        const wishResults = {
+            money: [
+                { emoji: '💰', message: '您的銀行帳戶已增加新台幣 0 元！等等，蛋神說「做夢比較快」', image: 'https://media.giphy.com/media/l0MYt5jPR6QX5pnqM/giphy.gif' },
+                { emoji: '🏦', message: '已幫您預約「明天會更好」銀行！明天記得去排隊', image: 'https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/giphy.gif' },
+                { emoji: '🤑', message: '已將您的螢幕桌布換成鈔票！每天看每天開心', image: 'https://media.giphy.com/media/xT5LMHxhOfscxPfIfm/giphy.gif' },
+                { emoji: '💎', message: '蛋神給你一顆「希望鑽石」！它在你的心裡發光', image: 'https://media.giphy.com/media/3o7btPCcdNniyf0ArS/giphy.gif' },
+                { emoji: '🎰', message: '恭喜！獲得「幻想致富」體驗券一張，終身有效', image: 'https://media.giphy.com/media/j2pW7c2cH2p3o/giphy.gif' }
+            ],
+            career: [
+                { emoji: '📈', message: '已幫您發送「求職運勢」到宇宙！下週一有好運', image: 'https://media.giphy.com/media/l4q8cJzGdR9J8w3hS/giphy.gif' },
+                { emoji: '🏆', message: '您在「認真工作」領域的排名上升到第 99 名！', image: 'https://media.giphy.com/media/3o7TKO66F1Wj2nTojG/giphy.gif' },
+                { emoji: '💼', message: '已為您開啟「老闆視角」濾鏡！看到的世界不一樣了', image: 'https://media.giphy.com/media/xT9IgzoKnwFNmISR8I/giphy.gif' },
+                { emoji: '🎯', message: '今日工作效率 +0%！但至少你許願了，有進步', image: 'https://media.giphy.com/media/l0MYGb1LuZ3n3dRnO/giphy.gif' },
+                { emoji: '🚀', message: '已為您發射「職場火箭」！燃料是您的夢想', image: 'https://media.giphy.com/media/l0HlvtIPzPdt2usKs/giphy.gif' }
+            ],
+            love: [
+                { emoji: '💔', message: '警告：全世界的孤單人類數量因你許願下降 0%', image: 'https://media.giphy.com/media/l41YtZOb9EUABnuqA/giphy.gif' },
+                { emoji: '🐱', message: '蛋神幫你配對到一隻貓！養隻貓吧，貓很好', image: 'https://media.giphy.com/media/MDJ9IbxxvDUQM/giphy.gif' },
+                { emoji: '🌹', message: '已為您灑下「桃花運」花瓣！過敏的人除外', image: 'https://media.giphy.com/media/3o7btM7NWDt8htDBuI/giphy.gif' },
+                { emoji: '💑', message: '你的真愛正在「未來」等著你！祝你好運', image: 'https://media.giphy.com/media/l0MYzn1C6R3p2Y3XG/giphy.gif' },
+                { emoji: '📱', message: '已幫你開啟「脫單濾鏡」！FaceApp 了解一下', image: 'https://media.giphy.com/media/xT5XP9aRbTHjIfDYDy/giphy.gif' }
+            ],
+            sleep: [
+                { emoji: '😴', message: '已為您充值「睡眠時間」..系統顯示餘額不足', image: 'https://media.giphy.com/media/l0Iy69RBwtdmvwkIo/giphy.gif' },
+                { emoji: '🛏️', message: '蛋神幫你買了「秒睡體驗」！閉眼瞬間入睡（幻想）', image: 'https://media.giphy.com/media/3o7TKO66F1Wj2nTojG/giphy.gif' },
+                { emoji: '🌙', message: '已發射「好眠光子」到你的枕頭！今晚會做美夢', image: 'https://media.giphy.com/media/l0MYt5jPR6QX5pnqM/giphy.gif' },
+                { emoji: '💤', message: '「睡眠之神」說：你該睡了！蛋神的指示', image: 'https://media.giphy.com/media/l41YtZOb9EUABnuqA/giphy.gif' },
+                { emoji: '☕', message: '已為您準備「提神咖啡」！等等，這是讓你睡飽？', image: 'https://media.giphy.com/media/3o7btPCcdNniyf0ArS/giphy.gif' }
+            ],
+            food: [
+                { emoji: '🍕', message: '已為您下單「虛擬披薩」！看得到吃不到', image: 'https://media.giphy.com/media/3o7btPCcdNniyf0ArS/giphy.gif' },
+                { emoji: '🍜', message: '「美食運」已升級！明天午餐會比今天好', image: 'https://media.giphy.com/media/xT9IgG1OHooVRJHCxS/giphy.gif' },
+                { emoji: '🍣', message: '已為您空投「鮪魚」！請打開窗戶接收', image: 'https://media.giphy.com/media/3o7TKSjRrfIPjeiVyM/giphy.gif' },
+                { emoji: '🧁', message: '「甜點運」大開！去買個蛋糕吧，這是神的旨意', image: 'https://media.giphy.com/media/l0HlvtIPzPdt2usKs/giphy.gif' },
+                { emoji: '🥘', message: '蛋神在你家廚房放了「美味光波」！開火的時候注意', image: 'https://media.giphy.com/media/l0Iy69RBwtdmvwkIo/giphy.gif' }
+            ],
+            game: [
+                { emoji: '🎮', message: '已為您開通「神之手」模式！遊戲變簡單了...才怪', image: 'https://media.giphy.com/media/3o7TKO66F1Wj2nTojG/giphy.gif' },
+                { emoji: '🏆', message: '「電競之神」說：你該練習了！去爬天梯', image: 'https://media.giphy.com/media/l4q8cJzGdR9J8w3hS/giphy.gif' },
+                { emoji: '🎲', message: '已為您投擲「幸運骰子」！出現數字：看臉', image: 'https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/giphy.gif' },
+                { emoji: '👾', message: '「遊戲人間」成就解鎖！現實也是一款遊戲', image: 'https://media.giphy.com/media/l0MYGb1LuZ3n3dRnO/giphy.gif' },
+                { emoji: '⚔️', message: '已為您裝備「必勝武器」！副作用：會變強', image: 'https://media.giphy.com/media/l0MYt5jPR6QX5pnqM/giphy.gif' }
+            ],
+            fame: [
+                { emoji: '📸', message: '「網紅運」已計算！結果：需要更多努力', image: 'https://media.giphy.com/media/3o7btM7NWDt8htDBuI/giphy.gif' },
+                { emoji: '🌟', message: '已為您啟動「星光大道」濾鏡！自信+100', image: 'https://media.giphy.com/media/l0MYzn1C6R3p2Y3XG/giphy.gif' },
+                { emoji: '📣', message: '「名聲大噪」咒語生效！副作用：可能會被打', image: 'https://media.giphy.com/media/l41YtZOb9EUABnuqA/giphy.gif' },
+                { emoji: '🎤', message: '已為您預約「TED演講」！日期：下輩子', image: 'https://media.giphy.com/media/3oTKO66F1Wj2nTojG/giphy.gif' },
+                { emoji: '📰', message: '「頭條新聞」生成中...標題：「這個人許願要名聲」', image: 'https://media.giphy.com/media/l0Iy69RBwtdmvwkIo/giphy.gif' }
+            ],
+            luck: [
+                { emoji: '🍀', message: '已撿到「幸運四葉草」！但是是在夢裡', image: 'https://media.giphy.com/media/l0MYt5jPR6QX5pnqM/giphy.gif' },
+                { emoji: '🎰', message: '今日幸運數字：7！記得買樂透...然後中兩百', image: 'https://media.giphy.com/media/xT5XP9aRbTHjIfDYDy/giphy.gif' },
+                { emoji: '⭐', message: '「幸運星」高照！出門小心天上掉下幸運', image: 'https://media.giphy.com/media/l4q8cJzGdR9J8w3hS/giphy.gif' },
+                { emoji: '🔮', message: '占卜結果：大吉！信則有，不信則...繼續', image: 'https://media.giphy.com/media/3oTKO66F1Wj2nTojG/giphy.gif' },
+                { emoji: '🌈', message: '「彩虹運」到帳！出門记得抬頭看', image: 'https://media.giphy.com/media/l0HlvtIPzPdt2usKs/giphy.gif' }
+            ],
+            health: [
+                { emoji: '💪', message: '「健康拳」修煉中！記得每天運動 0 分鐘', image: 'https://media.giphy.com/media/3o7btPCcdNniyf0ArS/giphy.gif' },
+                { emoji: '🏃', message: '已為您開通「健康模式」！早餐吃了嗎？', image: 'https://media.giphy.com/media/l0MYGb1LuZ3n3dRnO/giphy.gif' },
+                { emoji: '🍎', message: '「每日一蘋果」咒語生效！醫生遠離你...', image: 'https://media.giphy.com/media/3o7btM7NWDt8htDBuI/giphy.gif' },
+                { emoji: '🧘', message: '已為您開啟「佛系養生」！一切隨緣', image: 'https://media.giphy.com/media/l0Iy69RBwtdmvwkIo/giphy.gif' },
+                { emoji: '💊', message: '「健康藥丸」已發送！請去睡覺', image: 'https://media.giphy.com/media/l0MYt5jPR6QX5pnqM/giphy.gif' }
+            ]
+        };
+
+        const wishNames = {
+            money: '有錢',
+            career: '事業',
+            love: '脫單',
+            sleep: '睡飽',
+            food: '美食',
+            game: '遊戲',
+            fame: '名聲',
+            luck: '幸運',
+            health: '健康'
+        };
+
+        // DOM elements
+        const egg = document.getElementById('egg');
+        const wishBtn = document.getElementById('wishBtn');
+        const wishGrid = document.getElementById('wishGrid');
+        const wishOptions = document.querySelectorAll('.wish-option');
+        const resultOverlay = document.getElementById('resultOverlay');
+        const resultEmoji = document.getElementById('resultEmoji');
+        const resultImage = document.getElementById('resultImage');
+        const resultMessage = document.getElementById('resultMessage');
+        const closeResult = document.getElementById('closeResult');
+        const historyModal = document.getElementById('historyModal');
+        const historyList = document.getElementById('historyList');
+        const closeHistory = document.getElementById('closeHistory');
+        const statsBtn = document.getElementById('statsBtn');
+        const wishCount = document.getElementById('wishCount');
+
+        // Initialize
+        let history = JSON.parse(localStorage.getItem('wishHistory')) || [];
+        updateWishCount();
+
+        // Create stars
+        function createStars() {
+            const starsContainer = document.getElementById('stars');
+            for (let i = 0; i < 50; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.animationDelay = Math.random() * 2 + 's';
+                star.style.opacity = Math.random() * 0.5 + 0.3;
+                starsContainer.appendChild(star);
+            }
+        }
+        createStars();
+
+        // Update wish count
+        function updateWishCount() {
+            wishCount.textContent = history.length;
+        }
+
+        // Make wish
+        function makeWish(wishType) {
+            const results = wishResults[wishType];
+            const result = results[Math.floor(Math.random() * results.length)];
+            
+            // Add to history
+            history.unshift({
+                wish: wishNames[wishType],
+                result: result.message.substring(0, 20) + '...',
+                time: new Date().toLocaleString('zh-TW')
+            });
+            localStorage.setItem('wishHistory', JSON.stringify(history));
+            updateWishCount();
+
+            // Show result
+            showResult(result);
+            
+            // Create confetti
+            createConfetti();
+        }
+
+        // Show result
+        function showResult(result) {
+            // Flash effect
+            const flash = document.createElement('div');
+            flash.className = 'flash';
+            document.body.appendChild(flash);
+            setTimeout(() => flash.remove(), 300);
+
+            resultEmoji.textContent = result.emoji;
+            resultImage.src = result.image;
+            resultMessage.textContent = result.message;
+            resultOverlay.classList.add('show');
+
+            // Shake the egg
+            egg.classList.add('shake');
+            setTimeout(() => egg.classList.remove('shake'), 500);
+        }
+
+        // Close result
+        closeResult.addEventListener('click', () => {
+            resultOverlay.classList.remove('show');
+        });
+
+        // Show history
+        statsBtn.addEventListener('click', () => {
+            renderHistory();
+            historyModal.classList.add('show');
+        });
+
+        // Close history
+        closeHistory.addEventListener('click', () => {
+            historyModal.classList.remove('show');
+        });
+
+        // Render history
+        function renderHistory() {
+            if (history.length === 0) {
+                historyList.innerHTML = '<p class="no-history">還沒有人許願過...</p>';
+                return;
+            }
+
+            historyList.innerHTML = history.map(item => `
+                <div class="history-item">
+                    <div>
+                        <div class="history-wish">${item.wish}</div>
+                        <div class="history-result">${item.result}</div>
+                    </div>
+                    <div class="history-time">${item.time}</div>
+                </div>
+            `).join('');
+        }
+
+        // Create confetti
+        function createConfetti() {
+            const colors = ['#ffd700', '#ff6b9d', '#8b5cf6', '#4a90d9', '#ffffff'];
+            for (let i = 0; i < 30; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.style.left = Math.random() * 100 + 'vw';
+                    confetti.style.top = '-10px';
+                    confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+                    document.body.appendChild(confetti);
+                    setTimeout(() => confetti.remove(), 3000);
+                }, i * 50);
+            }
+        }
+
+        // Event listeners for wish options
+        wishOptions.forEach(option => {
+            option.addEventListener('click', () => {
+                const wishType = option.dataset.wish;
+                makeWish(wishType);
+            });
+        });
+
+</script>
+</body>
+</html>
