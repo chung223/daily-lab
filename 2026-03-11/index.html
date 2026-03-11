@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mood Waves - 心情浪潮</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-deep: #0a0e1a;
+      --bg-card: rgba(15, 20, 35, 0.7);
+      --cyan-glow: #00f5ff;
+      --coral-soft: #ff6b9d;
+      --moonlight: #f0f4ff;
+      --purple-dream: #a855f7;
+      --gold-accent: #fbbf24;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Noto Serif TC', serif;
+      background: var(--bg-deep);
+      color: var(--moonlight);
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* Floating particles */
+    .particles {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .particle {
+      position: absolute;
+      width: 3px;
+      height: 3px;
+      background: var(--cyan-glow);
+      border-radius: 50%;
+      opacity: 0;
+      animation: float-particle 8s infinite ease-in-out;
+    }
+
+    @keyframes float-particle {
+      0%, 100% { opacity: 0; transform: translateY(100vh) scale(0); }
+      10% { opacity: 0.8; }
+      90% { opacity: 0.8; }
+      100% { transform: translateY(-10vh) scale(1); }
+    }
+
+    /* Wave canvas */
+    #waveCanvas {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 45%;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    /* Main container */
+    .container {
+      position: relative;
+      z-index: 10;
+      max-width: 480px;
+      margin: 0 auto;
+      padding: 24px 20px 60px;
+      min-height: 100vh;
+    }
+
+    /* Header */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 32px;
+    }
+
+    h1 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      background: linear-gradient(135deg, var(--cyan-glow), var(--coral-soft));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .refresh-btn {
+      background: var(--bg-card);
+      border: 1px solid rgba(0, 245, 255, 0.2);
+      color: var(--cyan-glow);
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+    }
+
+    .refresh-btn:hover {
+      background: rgba(0, 245, 255, 0.15);
+      transform: rotate(180deg);
+    }
+
+    /* Mood input card */
+    .mood-card {
+      background: var(--bg-card);
+      border: 1px solid rgba(0, 245, 255, 0.15);
+      border-radius: 24px;
+      padding: 28px 24px;
+      margin-bottom: 24px;
+      backdrop-filter: blur(20px);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3),
+                  inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    }
+
+    .mood-question {
+      text-align: center;
+      font-size: 1.15rem;
+      margin-bottom: 24px;
+      color: var(--moonlight);
+    }
+
+    .mood-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .mood-btn {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 16px;
+      padding: 16px 8px;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .mood-btn:hover {
+      background: rgba(0, 245, 255, 0.1);
+      border-color: var(--cyan-glow);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 24px rgba(0, 245, 255, 0.15);
+    }
+
+    .mood-btn.selected {
+      background: linear-gradient(135deg, rgba(0, 245, 255, 0.2), rgba(168, 85, 247, 0.2));
+      border-color: var(--cyan-glow);
+      box-shadow: 0 0 20px rgba(0, 245, 255, 0.3);
+    }
+
+    .mood-emoji {
+      font-size: 2rem;
+      filter: drop-shadow(0 0 8px currentColor);
+    }
+
+    .mood-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.75rem;
+      color: rgba(240, 244, 255, 0.6);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .save-btn {
+      width: 100%;
+      background: linear-gradient(135deg, var(--cyan-glow), var(--purple-dream));
+      border: none;
+      color: var(--bg-deep);
+      font-family: 'Noto Serif TC', serif;
+      font-size: 1rem;
+      font-weight: 600;
+      padding: 14px;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-top: 8px;
+    }
+
+    .save-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0, 245, 255, 0.4);
+    }
+
+    .save-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* Stats card */
+    .stats-card {
+      background: var(--bg-card);
+      border: 1px solid rgba(168, 85, 247, 0.15);
+      border-radius: 24px;
+      padding: 24px;
+      backdrop-filter: blur(20px);
+      margin-bottom: 24px;
+    }
+
+    .stats-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .stats-title {
+      font-size: 1rem;
+      color: var(--moonlight);
+    }
+
+    .streak-badge {
+      background: linear-gradient(135deg, var(--gold-accent), #f59e0b);
+      color: var(--bg-deep);
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.8rem;
+      font-weight: 500;
+    }
+
+    .mood-timeline {
+      display: flex;
+      align-items: flex-end;
+      gap: 8px;
+      height: 80px;
+      padding: 10px 0;
+    }
+
+    .timeline-bar {
+      flex: 1;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 6px;
+      position: relative;
+      min-height: 30px;
+      transition: all 0.3s ease;
+    }
+
+    .timeline-bar::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      border-radius: 6px;
+      transition: height 0.5s ease;
+    }
+
+    .timeline-bar.happy::after { background: linear-gradient(to top, var(--coral-soft), #ff8fab); }
+    .timeline-bar.calm::after { background: linear-gradient(to top, var(--cyan-glow), #67e8f9); }
+    .timeline-bar.sad::after { background: linear-gradient(to top, #6366f1, #818cf8); }
+    .timeline-bar.angry::after { background: linear-gradient(to top, #ef4444, #f87171); }
+    .timeline-bar.tired::after { background: linear-gradient(to top, #64748b, #94a3b8); }
+    .timeline-bar.excited::after { background: linear-gradient(to top, var(--gold-accent), #fcd34d); }
+
+    .timeline-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      color: rgba(240, 244, 255, 0.5);
+      text-align: center;
+      margin-top: 8px;
+    }
+
+    /* History card */
+    .history-card {
+      background: var(--bg-card);
+      border: 1px solid rgba(251, 191, 36, 0.15);
+      border-radius: 24px;
+      padding: 24px;
+      backdrop-filter: blur(20px);
+    }
+
+    .history-title {
+      font-size: 1rem;
+      margin-bottom: 16px;
+      color: var(--moonlight);
+    }
+
+    .history-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+
+    .history-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px;
+      background: rgba(255, 255, 255, 0.02);
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .history-emoji {
+      font-size: 1.4rem;
+    }
+
+    .history-info {
+      flex: 1;
+    }
+
+    .history-mood {
+      font-size: 0.9rem;
+      color: var(--moonlight);
+    }
+
+    .history-time {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.7rem;
+      color: rgba(240, 244, 255, 0.4);
+    }
+
+    .history-delete {
+      background: transparent;
+      border: none;
+      color: rgba(239, 68, 68, 0.6);
+      cursor: pointer;
+      font-size: 1rem;
+      padding: 4px 8px;
+      transition: color 0.2s;
+    }
+
+    .history-delete:hover {
+      color: #ef4444;
+    }
+
+    /* Confetti animation */
+    .confetti {
+      position: fixed;
+      pointer-events: none;
+      z-index: 100;
+    }
+
+    .confetti-piece {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      animation: confetti-fall 3s ease-out forwards;
+    }
+
+    @keyframes confetti-fall {
+      0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+    }
+
+    /* Empty state */
+    .empty-state {
+      text-align: center;
+      padding: 24px;
+      color: rgba(240, 244, 255, 0.4);
+      font-size: 0.9rem;
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--cyan-glow);
+      border-radius: 2px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Floating particles -->
+  <div class="particles" id="particles"></div>
+
+  <!-- Wave canvas -->
+  <canvas id="waveCanvas"></canvas>
+
+  <div class="container">
+    <header>
+      <h1>🌊 Mood Waves</h1>
+      <button class="refresh-btn" id="refreshBtn" title="重新整理">↻</button>
+    </header>
+
+    <!-- Mood Input -->
+    <div class="mood-card">
+      <div class="mood-question">此刻的心情是？</div>
+      <div class="mood-grid" id="moodGrid">
+        <button class="mood-btn" data-mood="happy" data-value="5">
+          <span class="mood-emoji">😊</span>
+          <span class="mood-label">開心</span>
+        </button>
+        <button class="mood-btn" data-mood="calm" data-value="4">
+          <span class="mood-emoji">😌</span>
+          <span class="mood-label">平靜</span>
+        </button>
+        <button class="mood-btn" data-mood="excited" data-value="5">
+          <span class="mood-emoji">🤩</span>
+          <span class="mood-label">興奮</span>
+        </button>
+        <button class="mood-btn" data-mood="sad" data-value="2">
+          <span class="mood-emoji">😢</span>
+          <span class="mood-label">難過</span>
+        </button>
+        <button class="mood-btn" data-mood="angry" data-value="1">
+          <span class="mood-emoji">😤</span>
+          <span class="mood-label">生氣</span>
+        </button>
+        <button class="mood-btn" data-mood="tired" data-value="2">
+          <span class="mood-emoji">😴</span>
+          <span class="mood-label">疲倦</span>
+        </button>
+      </div>
+      <button class="save-btn" id="saveBtn" disabled>儲存心情</button>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-card">
+      <div class="stats-header">
+        <span class="stats-title">今日心情趨勢</span>
+        <span class="streak-badge" id="streakBadge">🔥 0 天連續</span>
+      </div>
+      <div class="mood-timeline" id="moodTimeline">
+        <!-- Timeline bars will be generated by JS -->
+      </div>
+    </div>
+
+    <!-- History -->
+    <div class="history-card">
+      <div class="history-title">心情紀錄</div>
+      <div class="history-list" id="historyList">
+        <div class="empty-state">還沒有紀錄，開始記錄你的心情吧！</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ==================== Data & State ====================
+    const MOODS = {
+      happy: { emoji: '😊', label: '開心', value: 5 },
+      calm: { emoji: '😌', label: '平靜', value: 4 },
+      excited: { emoji: '🤩', label: '興奮', value: 5 },
+      sad: { emoji: '😢', label: '難過', value: 2 },
+      angry: { emoji: '😤', label: '生氣', value: 1 },
+      tired: { emoji: '😴', label: '疲倦', value: 2 }
+    };
+
+    let selectedMood = null;
+    let history = JSON.parse(localStorage.getItem('moodWavesHistory') || '[]');
+
+    // ==================== Particles ====================
+    function createParticles() {
+      const container = document.getElementById('particles');
+      container.innerHTML = '';
+      const colors = ['#00f5ff', '#ff6b9d', '#a855f7', '#fbbf24'];
+      
+      for (let i = 0; i < 20; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+        particle.style.left = Math.random() * 100 + '%';
+        particle.style.animationDelay = Math.random() * 8 + 's';
+        particle.style.background = colors[Math.floor(Math.random() * colors.length)];
+        particle.style.animationDuration = (6 + Math.random() * 4) + 's';
+        container.appendChild(particle);
+      }
+    }
+
+    // ==================== Wave Animation ====================
+    const canvas = document.getElementById('waveCanvas');
+    const ctx = canvas.getContext('2d');
+    let waveOffset = 0;
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight * 0.45;
+    }
+
+    function drawWaves() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      const time = waveOffset;
+      const waveCount = 3;
+      
+      for (let w = 0; w < waveCount; w++) {
+        ctx.beginPath();
+        ctx.moveTo(0, canvas.height);
+        
+        const amplitude = 20 + w * 10;
+        const frequency = 0.01 - w * 0.002;
+        const speed = 0.02 - w * 0.005;
+        const yOffset = canvas.height * (0.3 + w * 0.2);
+        
+        for (let x = 0; x <= canvas.width; x += 5) {
+          const y = yOffset + Math.sin(x * frequency + time + w) * amplitude;
+          ctx.lineTo(x, y);
+        }
+        
+        ctx.lineTo(canvas.width, canvas.height);
+        ctx.closePath();
+        
+        const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+        if (w === 0) {
+          gradient.addColorStop(0, 'rgba(0, 245, 255, 0.3)');
+          gradient.addColorStop(1, 'rgba(0, 245, 255, 0)');
+        } else if (w === 1) {
+          gradient.addColorStop(0, 'rgba(168, 85, 247, 0.25)');
+          gradient.addColorStop(1, 'rgba(168, 85, 247, 0)');
+        } else {
+          gradient.addColorStop(0, 'rgba(255, 107, 157, 0.2)');
+          gradient.addColorStop(1, 'rgba(255, 107, 157, 0)');
+        }
+        
+        ctx.fillStyle = gradient;
+        ctx.fill();
+      }
+      
+      waveOffset += 0.03;
+      requestAnimationFrame(drawWaves);
+    }
+
+    // ==================== Mood Selection ====================
+    document.querySelectorAll('.mood-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+        selectedMood = btn.dataset.mood;
+        document.getElementById('saveBtn').disabled = false;
+      });
+    });
+
+    // ==================== Save Mood ====================
+    document.getElementById('saveBtn').addEventListener('click', () => {
+      if (!selectedMood) return;
+      
+      const now = new Date();
+      const record = {
+        mood: selectedMood,
+        timestamp: now.toISOString(),
+        hour: now.getHours()
+      };
+      
+      history.unshift(record);
+      localStorage.setItem('moodWavesHistory', JSON.stringify(history));
+      
+      // Confetti!
+      createConfetti();
+      
+      // Reset
+      selectedMood = null;
+      document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('selected'));
+      document.getElementById('saveBtn').disabled = true;
+      
+      renderHistory();
+      renderTimeline();
+      updateStreak();
+    });
+
+    // ==================== Confetti ====================
+    function createConfetti() {
+      const container = document.createElement('div');
+      container.className = 'confetti';
+      document.body.appendChild(container);
+      
+      const colors = ['#00f5ff', '#ff6b9d', '#a855f7', '#fbbf24', '#f0f4ff'];
+      
+      for (let i = 0; i < 30; i++) {
+        const piece = document.createElement('div');
+        piece.className = 'confetti-piece';
+        piece.style.left = Math.random() * 100 + '%';
+        piece.style.top = '40%';
+        piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+        piece.style.animationDelay = Math.random() * 0.5 + 's';
+        piece.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+        container.appendChild(piece);
+      }
+      
+      setTimeout(() => container.remove(), 3500);
+    }
+
+    // ==================== Render History ====================
+    function renderHistory() {
+      const list = document.getElementById('historyList');
+      const today = new Date().toDateString();
+      
+      const todayHistory = history.filter(r => new Date(r.timestamp).toDateString() === today);
+      
+      if (todayHistory.length === 0) {
+        list.innerHTML = '<div class="empty-state">今天還沒有紀錄，開始記錄吧！</div>';
+        return;
+      }
+      
+      list.innerHTML = todayHistory.slice(0, 10).map((record, idx) => {
+        const mood = MOODS[record.mood];
+        const time = new Date(record.timestamp).toLocaleTimeString('zh-TW', { 
+          hour: '2-digit', 
+          minute: '2-digit' 
+        });
+        return `
+          <div class="history-item">
+            <span class="history-emoji">${mood.emoji}</span>
+            <div class="history-info">
+              <div class="history-mood">${mood.label}</div>
+              <div class="history-time">${time}</div>
+            </div>
+            <button class="history-delete" onclick="deleteHistory(${idx})">✕</button>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // ==================== Delete History ====================
+    window.deleteHistory = function(idx) {
+      const today = new Date().toDateString();
+      const todayHistory = history.filter(r => new Date(r.timestamp).toDateString() === today);
+      
+      // Find the original index in the full history array
+      const todayIndices = history
+        .map((r, i) => new Date(r.timestamp).toDateString() === today ? i : -1)
+        .filter(i => i !== -1);
+      
+      if (todayIndices[idx] !== undefined) {
+        history.splice(todayIndices[idx], 1);
+        localStorage.setItem('moodWavesHistory', JSON.stringify(history));
+        renderHistory();
+        renderTimeline();
+        updateStreak();
+      }
+    };
+
+    // ==================== Render Timeline ====================
+    function renderTimeline() {
+      const timeline = document.getElementById('moodTimeline');
+      const today = new Date().toDateString();
+      
+      const todayHistory = history
+        .filter(r => new Date(r.timestamp).toDateString() === today)
+        .sort((a, b) => a.hour - b.hour);
+      
+      // Group by 4-hour intervals
+      const intervals = [0, 4, 8, 12, 16, 20, 24];
+      const grouped = intervals.slice(0, -1).map((start, i) => {
+        const end = intervals[i + 1];
+        const entries = todayHistory.filter(r => r.hour >= start && r.hour < end);
+        if (entries.length === 0) return null;
+        
+        // Average value
+        const avg = entries.reduce((sum, r) => sum + MOODS[r.mood].value, 0) / entries.length;
+        const dominantMood = entries[entries.length - 1].mood;
+        
+        return { mood: dominantMood, value: avg, height: (avg / 5) * 100 };
+      });
+      
+      let html = '';
+      const labels = ['凌晨', '早晨', '上午', '下午', '傍晚', '晚上'];
+      
+      grouped.forEach((item, i) => {
+        if (item) {
+          html += `
+            <div style="flex:1; display:flex; flex-direction:column; align-items:center;">
+              <div class="timeline-bar ${item.mood}" style="height: ${item.height}%;"></div>
+              <div class="timeline-label">${labels[i]}</div>
+            </div>
+          `;
+        }
+      });
+      
+      timeline.innerHTML = html || '<div class="empty-state" style="padding:10px;">記錄今天的心情來顯示趨勢</div>';
+    }
+
+    // ==================== Streak ====================
+    function updateStreak() {
+      const today = new Date().toDateString();
+      let streak = 0;
+      let checkDate = new Date();
+      
+      while (true) {
+        const dateStr = checkDate.toDateString();
+        const hasEntry = history.some(r => new Date(r.timestamp).toDateString() === dateStr);
+        
+        if (hasEntry) {
+          streak++;
+          checkDate.setDate(checkDate.getDate() - 1);
+        } else if (dateStr === today) {
+          // Today hasn't been recorded yet, check yesterday
+          checkDate.setDate(checkDate.getDate() - 1);
+        } else {
+          break;
+        }
+      }
+      
+      document.getElementById('streakBadge').textContent = `🔥 ${streak} 天連續`;
+    }
+
+    // ==================== Refresh ====================
+    document.getElementById('refreshBtn').addEventListener('click', () => {
+      createParticles();
+      renderHistory();
+      renderTimeline();
+      updateStreak();
+    });
+
+    // ==================== Init ====================
+    window.addEventListener('resize', resizeCanvas);
+    
+    resizeCanvas();
+    createParticles();
+    drawWaves();
+    renderHistory();
+    renderTimeline();
+    updateStreak();
+  </script>
+</body>
+</html>

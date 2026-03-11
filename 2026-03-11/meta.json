@@ -1,0 +1,5 @@
+{
+  "title": "Mood Waves (心情浪潮)",
+  "type": "療癒系",
+  "description": "情緒追蹤記錄 Web App，6 種心情選項、每日趨勢圖表、連續天數統計，localStorage 持久化。"
+}

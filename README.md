@@ -7,8 +7,8 @@
 *用一杯咖啡的時間，換一個讓世界多點樂趣的小玩具*
 
 ![License](https://img.shields.io/badge/license-MIT-green?style=for-the-badge&logo=mit)
-![Projects](https://img.shields.io/badge/專案數-27-blue?style=for-the-badge)
-![Streak](https://img.shields.io/badge/連續-26天-orange?style=for-the-badge)
+![Projects](https://img.shields.io/badge/專案數-28-blue?style=for-the-badge)
+![Streak](https://img.shields.io/badge/連續-27天-orange?style=for-the-badge)
 ![Coffee](https://img.shields.io/badge/消耗咖啡-☕☕☕☕☕☕☕☕-red?style=for-the-badge)
 
 </div>
@@ -23,9 +23,9 @@
 
 | 預覽 | 日期 | 專案 | 描述 |
 |:---:|:---:|:---:|---|
+| ⭐ | 03/11 | [心情浪潮 Mood Waves](https://chung223.github.io/daily-lab/2026-03-11/) | 情緒追蹤記錄、6 種心情選項、趨勢圖表、彩屑動畫 |
 | ⭐ | 03/09 | [虛空蓮 Void Lotus](https://chung223.github.io/daily-lab/2026-03-09/) | 互動式蓮花召喚體驗、花瓣粒子爆發、星空閃爍 |
 | ⭐ | 03/08 | [幾何花園 Geometric Garden](https://chung223.github.io/daily-lab/2026-03-08/) | 互動式幾何圖形生成器、5 種形狀、6 種色彩主題 |
-| ⭐ | 03/07 | [許願蛋神](https://chung223.github.io/daily-lab/2026-03-07/) | 搞笑許願實現 App、sarcastic 回應、五彩紙屑動畫 |
 
 ---
 
