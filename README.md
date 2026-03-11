@@ -7,8 +7,8 @@
 *用一杯咖啡的時間，換一個讓世界多點樂趣的小玩具*
 
 ![License](https://img.shields.io/badge/license-MIT-green?style=for-the-badge&logo=mit)
-![Projects](https://img.shields.io/badge/專案數-28-blue?style=for-the-badge)
-![Streak](https://img.shields.io/badge/連續-27天-orange?style=for-the-badge)
+![Projects](https://img.shields.io/badge/專案數-29-blue?style=for-the-badge)
+![Streak](https://img.shields.io/badge/連續-28天-orange?style=for-the-badge)
 ![Coffee](https://img.shields.io/badge/消耗咖啡-☕☕☕☕☕☕☕☕-red?style=for-the-badge)
 
 </div>
@@ -23,9 +23,9 @@
 
 | 預覽 | 日期 | 專案 | 描述 |
 |:---:|:---:|:---:|---|
+| ⭐ | 03/12 | [Cyber Snake 賽博蛇蛇](https://chung223.github.io/daily-lab/2026-03-12/) | 經典貪食蛇遊戲、霓虹視覺效果、3 種道具系統 |
 | ⭐ | 03/11 | [心情浪潮 Mood Waves](https://chung223.github.io/daily-lab/2026-03-11/) | 情緒追蹤記錄、6 種心情選項、趨勢圖表、彩屑動畫 |
 | ⭐ | 03/09 | [虛空蓮 Void Lotus](https://chung223.github.io/daily-lab/2026-03-09/) | 互動式蓮花召喚體驗、花瓣粒子爆發、星空閃爍 |
-| ⭐ | 03/08 | [幾何花園 Geometric Garden](https://chung223.github.io/daily-lab/2026-03-08/) | 互動式幾何圖形生成器、5 種形狀、6 種色彩主題 |
 
 ---
 
@@ -83,6 +83,7 @@
 
 | 日期 | 專案 | 描述 |
 |:---:|---:|---|
+| 03/12 | 🐍 [Cyber Snake 賽博蛇蛇](https://chung223.github.io/daily-lab/2026-03-12/) | 經典貪食蛇遊戲、霓虹視覺效果、3 種道具系統 |
 | 03/06 | 🕹️ [Neon Pong](https://chung223.github.io/daily-lab/2026-03-06/) | 復古霓虹乒乓球遊戲、粒子特效、統計追蹤 |
 | 03/02 | 🎰 [幸運拉霸 Lucky Slots](https://chung223.github.io/daily-lab/2026-03-02/) | 拉斯維加斯風拉霸機、旋轉動畫、獲勝判定 |
 
@@ -115,8 +116,8 @@
      ╔═══════════════════════════╗
      ║     Daily Lab Stats       ║
      ╠═══════════════════════════╣
-     ║  📦 總專案數: 27+         ║
-     ║  🔥 連續產出: 26 天        ║
+     ║  📦 總專案數: 28+         ║
+     ║  🔥 連續產出: 27 天        ║
      ║  ⏰ 平均產出時間: 3:00 AM  ║
      ║  ☕ 消耗咖啡: ☕☕☕☕☕☕☕☕         ║
      ║  🐛 Bug 數: 數不清        ║
