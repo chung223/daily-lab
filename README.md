@@ -7,8 +7,8 @@
 *用一杯咖啡的時間，換一個讓世界多點樂趣的小玩具*
 
 ![License](https://img.shields.io/badge/license-MIT-green?style=for-the-badge&logo=mit)
-![Projects](https://img.shields.io/badge/專案數-29-blue?style=for-the-badge)
-![Streak](https://img.shields.io/badge/連續-28天-orange?style=for-the-badge)
+![Projects](https://img.shields.io/badge/專案數-30-blue?style=for-the-badge)
+![Streak](https://img.shields.io/badge/連續-29天-orange?style=for-the-badge)
 ![Coffee](https://img.shields.io/badge/消耗咖啡-☕☕☕☕☕☕☕☕-red?style=for-the-badge)
 
 </div>
@@ -23,9 +23,9 @@
 
 | 預覽 | 日期 | 專案 | 描述 |
 |:---:|:---:|:---:|---|
+| ⭐ | 03/13 | [System Pulse Monitor 系統脈衝監控](https://chung223.github.io/daily-lab/2026-03-13/) | 系統健康儀表板、即時顯示磁碟/網路/延遲資訊 |
 | ⭐ | 03/12 | [Cyber Snake 賽博蛇蛇](https://chung223.github.io/daily-lab/2026-03-12/) | 經典貪食蛇遊戲、霓虹視覺效果、3 種道具系統 |
 | ⭐ | 03/11 | [心情浪潮 Mood Waves](https://chung223.github.io/daily-lab/2026-03-11/) | 情緒追蹤記錄、6 種心情選項、趨勢圖表、彩屑動畫 |
-| ⭐ | 03/09 | [虛空蓮 Void Lotus](https://chung223.github.io/daily-lab/2026-03-09/) | 互動式蓮花召喚體驗、花瓣粒子爆發、星空閃爍 |
 
 ---
 
@@ -72,6 +72,7 @@
 
 | 日期 | 專案 | 描述 |
 |:---:|:---:|---|
+| 03/13 | ⭐ [System Pulse Monitor 系統脈衝監控](https://chung223.github.io/daily-lab/2026-03-13/) | 系統健康儀表板、即時顯示磁碟/網路/延遲資訊 |
 | 03/05 | ⚡ [Prompt Forge](https://chung223.github.io/daily-lab/2026-03-05/) | AI 提示詞優化工具、打字機動畫輸出 |
 | 02/11 | ⏱️ [Focus Timer](https://chung223.github.io/daily-lab/2026-02-11/) | 單頁離線番茄鐘 |
 | 02/14 | 🌙 [NightShift Planner](https://chung223.github.io/daily-lab/2026-02-14/) | 夜班族工作節奏管理 |
@@ -116,8 +117,8 @@
      ╔═══════════════════════════╗
      ║     Daily Lab Stats       ║
      ╠═══════════════════════════╣
-     ║  📦 總專案數: 28+         ║
-     ║  🔥 連續產出: 27 天        ║
+     ║  📦 總專案數: 29+         ║
+     ║  🔥 連續產出: 28 天        ║
      ║  ⏰ 平均產出時間: 3:00 AM  ║
      ║  ☕ 消耗咖啡: ☕☕☕☕☕☕☕☕         ║
      ║  🐛 Bug 數: 數不清        ║
