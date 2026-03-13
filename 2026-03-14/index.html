@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>幹話產生器 🎲</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Noto+Sans+TC:wght@400;700&family=ZCOOL+KuaiLe&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-deep: #0d0221;
+      --bg-surface: #1a0a2e;
+      --primary: #ff0080;
+      --secondary: #00ffff;
+      --accent: #ffff00;
+      --text: #ffffff;
+      --text-dim: #b8b8b8;
+      --glow-pink: rgba(255, 0, 128, 0.6);
+      --glow-cyan: rgba(0, 255, 255, 0.5);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Noto Sans TC', sans-serif;
+      background: var(--bg-deep);
+      min-height: 100vh;
+      color: var(--text);
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* Retro grid background */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: 
+        linear-gradient(90deg, rgba(255,0,128,0.03) 1px, transparent 1px),
+        linear-gradient(rgba(0,255,255,0.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Scanlines */
+    body::after {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: repeating-linear-gradient(
+        0deg,
+        rgba(0, 0, 0, 0.1) 0px,
+        rgba(0, 0, 0, 0.1) 1px,
+        transparent 1px,
+        transparent 3px
+      );
+      pointer-events: none;
+      z-index: 1000;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Header */
+    header {
+      text-align: center;
+      padding: 30px 0 20px;
+    }
+
+    h1 {
+      font-family: 'Bangers', cursive;
+      font-size: 3.5rem;
+      letter-spacing: 4px;
+      background: linear-gradient(135deg, var(--primary), var(--accent), var(--secondary));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-shadow: none;
+      filter: drop-shadow(0 0 20px var(--glow-pink));
+      animation: titlePulse 2s ease-in-out infinite;
+    }
+
+    @keyframes titlePulse {
+      0%, 100% { filter: drop-shadow(0 0 20px var(--glow-pink)); }
+      50% { filter: drop-shadow(0 0 40px var(--glow-cyan)); }
+    }
+
+    .subtitle {
+      font-family: 'ZCOOL KuaiLe', cursive;
+      font-size: 1.2rem;
+      color: var(--text-dim);
+      margin-top: 10px;
+    }
+
+    /* Main Card */
+    .main-card {
+      background: linear-gradient(145deg, var(--bg-surface), #120520);
+      border: 3px solid var(--primary);
+      border-radius: 20px;
+      padding: 30px;
+      margin: 20px 0;
+      box-shadow: 
+        0 0 30px var(--glow-pink),
+        inset 0 0 30px rgba(255, 0, 128, 0.1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .main-card::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: conic-gradient(from 0deg, transparent, var(--primary), transparent, var(--secondary), transparent);
+      animation: rotate 4s linear infinite;
+      opacity: 0.1;
+    }
+
+    @keyframes rotate {
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Output Display */
+    .output-area {
+      min-height: 150px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    .output-text {
+      font-family: 'ZCOOL KuaiLe', cursive;
+      font-size: 1.8rem;
+      text-align: center;
+      color: var(--text);
+      line-height: 1.6;
+      padding: 20px;
+      animation: fadeIn 0.3s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.9); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    .output-text.typing::after {
+      content: '|';
+      animation: blink 0.5s infinite;
+    }
+
+    @keyframes blink {
+      0%, 50% { opacity: 1; }
+      51%, 100% { opacity: 0; }
+    }
+
+    .placeholder {
+      color: var(--text-dim);
+      font-style: italic;
+      font-size: 1.2rem;
+    }
+
+    /* Generate Button */
+    .generate-btn {
+      display: block;
+      width: 100%;
+      padding: 20px 40px;
+      font-family: 'Bangers', cursive;
+      font-size: 1.8rem;
+      letter-spacing: 3px;
+      color: var(--bg-deep);
+      background: linear-gradient(135deg, var(--accent), var(--primary));
+      border: none;
+      border-radius: 15px;
+      cursor: pointer;
+      position: relative;
+      z-index: 1;
+      transition: all 0.2s ease;
+      box-shadow: 
+        0 8px 0 #990050,
+        0 15px 30px rgba(255, 0, 128, 0.4);
+      margin: 20px 0;
+    }
+
+    .generate-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 
+        0 10px 0 #990050,
+        0 20px 40px rgba(255, 0, 128, 0.5);
+    }
+
+    .generate-btn:active {
+      transform: translateY(4px);
+      box-shadow: 
+        0 4px 0 #990050,
+        0 8px 20px rgba(255, 0, 128, 0.3);
+    }
+
+    /* Action Buttons */
+    .actions {
+      display: flex;
+      gap: 10px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .action-btn {
+      flex: 1;
+      padding: 12px 20px;
+      font-family: 'Noto Sans TC', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text);
+      background: transparent;
+      border: 2px solid var(--secondary);
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .action-btn:hover {
+      background: var(--secondary);
+      color: var(--bg-deep);
+    }
+
+    .action-btn.copied {
+      background: #00ff88;
+      border-color: #00ff88;
+      color: var(--bg-deep);
+    }
+
+    /* Stats */
+    .stats {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      position: relative;
+      z-index: 1;
+    }
+
+    .stat-item {
+      text-align: center;
+    }
+
+    .stat-number {
+      font-family: 'Bangers', cursive;
+      font-size: 2rem;
+      color: var(--accent);
+    }
+
+    .stat-label {
+      font-size: 0.8rem;
+      color: var(--text-dim);
+    }
+
+    /* Sparkles */
+    .sparkle {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      background: var(--accent);
+      border-radius: 50%;
+      pointer-events: none;
+      animation: sparkle 0.6s ease-out forwards;
+    }
+
+    @keyframes sparkle {
+      0% { transform: scale(0); opacity: 1; }
+      100% { transform: scale(2); opacity: 0; }
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 20px;
+      color: var(--text-dim);
+      font-size: 0.85rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 480px) {
+      h1 { font-size: 2.5rem; }
+      .output-text { font-size: 1.4rem; }
+      .generate-btn { font-size: 1.4rem; padding: 15px 30px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>🎲 幹話產生器</h1>
+      <p class="subtitle">人生已經夠苦了，來點廢話吧</p>
+    </header>
+
+    <main class="main-card">
+      <div class="output-area">
+        <p class="output-text" id="output">
+          <span class="placeholder">點擊下方按鈕產生幹話</span>
+        </p>
+      </div>
+
+      <button class="generate-btn" id="generateBtn">✨ 產生幹話 ✨</button>
+
+      <div class="actions">
+        <button class="action-btn" id="copyBtn">📋 複製</button>
+        <button class="action-btn" id="shareBtn">📤 分享</button>
+      </div>
+
+      <div class="stats">
+        <div class="stat-item">
+          <div class="stat-number" id="count">0</div>
+          <div class="stat-label">已產生幹話</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number" id="shareCount">0</div>
+          <div class="stat-label">分享次數</div>
+        </div>
+      </div>
+    </main>
+
+    <footer>
+      <p>🤔 認真你就輸了</p>
+    </footer>
+  </div>
+
+  <script>
+    // Data arrays for generating bullshit
+    const zodiacSigns = ['牡羊座', '金牛座', '雙子座', '巨蟹座', '獅子座', '處女座', '天秤座', '天蠍座', '射手座', '摩羯座', '水瓶座', '雙魚座'];
+    const elements = ['火', '土', '風', '水', '光', '暗'];
+    const timePhrases = ['今天', '明天', '這週', '這個月', '今年', '未來'];
+    const buzzwords = ['區塊鏈', 'AI', '元宇宙', '雲端', '物聯網', '大數據', '機器學習', '深度學習', '5G', '量子計算'];
+    const philosophies = ['宇宙', '人生', '命運', '運氣', '能量', '頻率', '振動', '靈魂', '意識', '因果'];
+    const predictions = [
+      '將迎來重大轉機',
+      '會遇到貴人相助',
+      '適合展開新計畫',
+      '需要注意健康',
+      '財運將會上升',
+      '戀愛運勢強',
+      '適合靜養思考',
+      '行動會有好結果',
+      '貴人在東南方',
+      '水逆期間小心'
+    ];
+    const nonsense = [
+      '放下手機，感受當下的能量',
+      '相信直覺，它不會背叛你',
+      'Everything happens for a reason',
+      '宇宙正在回應你的頻率',
+      '今天適合吃掉最後一塊蛋糕',
+      '如果你覺得累，那是因為你在走上坡',
+      '失敗是成功之母，但成功是失敗他爹',
+      '時間會證明一切，但時間也需要休息',
+      '人生就像巧克力，結果都是甜的',
+      '心誠則靈，不誠則靈魂'
+    ];
+    const techNonsense = [
+      '把你的意念能量上傳到區塊鏈',
+      'AI預測你今天會大便',
+      '大數據顯示你有 87% 的機率會成功',
+      '物聯網連接你和宇宙的頻率',
+      '5G 讓你的運氣變得更快',
+      '雲端上有一個你的守護天使',
+      '量子計算顯示你的幸運數字是 7',
+      '深度學習預測你會瘦 3 公斤'
+    ];
+    const fortuneCookie = [
+      '機會是留給準備好的人，但休息是留給需要的人',
+      '今天不要吃虧，因為你已經吃夠了',
+      '你的努力一定會有結果，只是時間問題',
+      '船到橋頭自然直，船不到橋頭你可以躺下',
+      '明天會更好，但今天要先睡飽',
+      '人生沒有捷徑，但有電梯',
+      '知足常樂，不知足也常樂',
+      '失敗是成功之母，但母親有時也會偏心'
+    ];
+
+    // State
+    let currentBullshit = '';
+    let generateCount = parseInt(localStorage.getItem('bullshit_count') || '0');
+    let shareCount = parseInt(localStorage.getItem('bullshit_share') || '0');
+
+    // DOM Elements
+    const output = document.getElementById('output');
+    const generateBtn = document.getElementById('generateBtn');
+    const copyBtn = document.getElementById('copyBtn');
+    const shareBtn = document.getElementById('shareBtn');
+    const countEl = document.getElementById('count');
+    const shareCountEl = document.getElementById('shareCount');
+
+    // Initialize stats
+    countEl.textContent = generateCount;
+    shareCountEl.textContent = shareCount;
+
+    // Generate bullshit
+    function generateBullshit() {
+      const type = Math.floor(Math.random() * 6);
+      let text = '';
+
+      switch(type) {
+        case 0: // Zodiac + Prediction
+          const sign = zodiacSigns[Math.floor(Math.random() * zodiacSigns.length)];
+          const pred = predictions[Math.floor(Math.random() * predictions.length)];
+          const time = timePhrases[Math.floor(Math.random() * timePhrases.length)];
+          text = `${sign}的朋友，${time}${pred}！`;
+          break;
+        case 1: // Tech + Philosophy
+          const tech = buzzwords[Math.floor(Math.random() * buzzwords.length)];
+          const phil = philosophies[Math.floor(Math.random() * philosophies.length)];
+          text = `當${phil}遇見${tech}，就是你成功的時刻。`;
+          break;
+        case 2: // Pure nonsense
+          text = nonsense[Math.floor(Math.random() * nonsense.length)];
+          break;
+        case 3: // Tech nonsense
+          text = techNonsense[Math.floor(Math.random() * techNonsense.length)];
+          break;
+        case 4: // Fortune cookie
+          text = fortuneCookie[Math.floor(Math.random() * fortuneCookie.length)];
+          break;
+        case 5: // Random mix
+          const phrase1 = [nonsense, techNonsense, fortuneCookie][Math.floor(Math.random() * 3)];
+          text = phrase1[Math.floor(Math.random() * phrase1.length)];
+          break;
+      }
+
+      currentBullshit = text;
+      output.innerHTML = `<span class="typing">${text}</span>`;
+      
+      // Update count
+      generateCount++;
+      localStorage.setItem('bullshit_count', generateCount.toString());
+      countEl.textContent = generateCount;
+
+      // Sparkle effect
+      createSparkles();
+    }
+
+    // Create sparkles
+    function createSparkles() {
+      for (let i = 0; i < 10; i++) {
+        setTimeout(() => {
+          const sparkle = document.createElement('div');
+          sparkle.className = 'sparkle';
+          sparkle.style.left = Math.random() * 100 + '%';
+          sparkle.style.top = Math.random() * 100 + '%';
+          sparkle.style.background = Math.random() > 0.5 ? 'var(--primary)' : 'var(--accent)';
+          output.parentElement.appendChild(sparkle);
+          setTimeout(() => sparkle.remove(), 600);
+        }, i * 50);
+      }
+    }
+
+    // Copy to clipboard
+    async function copyToClipboard() {
+      if (!currentBullshit) return;
+      
+      try {
+        await navigator.clipboard.writeText(currentBullshit + ' 🎲 #幹話產生器');
+        copyBtn.textContent = '✅ 已複製！';
+        copyBtn.classList.add('copied');
+        setTimeout(() => {
+          copyBtn.textContent = '📋 複製';
+          copyBtn.classList.remove('copied');
+        }, 2000);
+      } catch (err) {
+        // Fallback
+        const textarea = document.createElement('textarea');
+        textarea.value = currentBullshit;
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textarea);
+        copyBtn.textContent = '✅ 已複製！';
+        copyBtn.classList.add('copied');
+        setTimeout(() => {
+          copyBtn.textContent = '📋 複製';
+          copyBtn.classList.remove('copied');
+        }, 2000);
+      }
+    }
+
+    // Share
+    async function shareBullshit() {
+      if (!currentBullshit) return;
+
+      const shareText = currentBullshit + ' 🎲 #幹話產生器';
+
+      if (navigator.share) {
+        try {
+          await navigator.share({
+            title: '🎲 幹話產生器',
+            text: shareText,
+          });
+          shareCount++;
+          localStorage.setItem('bullshit_share', shareCount.toString());
+          shareCountEl.textContent = shareCount;
+        } catch (err) {
+          // User cancelled or error
+          copyToClipboard();
+        }
+      } else {
+        copyToClipboard();
+      }
+    }
+
+    // Event listeners
+    generateBtn.addEventListener('click', generateBullshit);
+    copyBtn.addEventListener('click', copyToClipboard);
+    shareBtn.addEventListener('click', shareBullshit);
+
+    // Keyboard support
+    document.addEventListener('keydown', (e) => {
+      if (e.code === 'Space' && document.activeElement !== generateBtn) {
+        e.preventDefault();
+        generateBullshit();
+      }
+    });
+  </script>
+</body>
+</html>
