@@ -7,8 +7,8 @@
 *用一杯咖啡的時間，換一個讓世界多點樂趣的小玩具*
 
 ![License](https://img.shields.io/badge/license-MIT-green?style=for-the-badge&logo=mit)
-![Projects](https://img.shields.io/badge/專案數-33-blue?style=for-the-badge)
-![Streak](https://img.shields.io/badge/連續-32天-orange?style=for-the-badge)
+![Projects](https://img.shields.io/badge/專案數-34-blue?style=for-the-badge)
+![Streak](https://img.shields.io/badge/連續-33天-orange?style=for-the-badge)
 ![Coffee](https://img.shields.io/badge/消耗咖啡-☕☕☕☕☕☕☕☕-red?style=for-the-badge)
 
 </div>
@@ -23,10 +23,10 @@
 
 | 預覽 | 日期 | 專案 | 描述 |
 |:---:|:---:|:---:|---|
+| ⭐ | 03/17 | [星光流 Starry Flow](https://chung223.github.io/daily-lab/2026-03-17/) | 許願輸入體驗、文字轉化為飄浮星光粒子 |
 | ⭐ | 03/16 | [Rhythm Breaker 節奏粉碎者](https://chung223.github.io/daily-lab/2026-03-16/) | 節奏點擊遊戲、120 BPM 節拍、Combo 倍分系統 |
 | ⭐ | 03/15 | [數位流星雨 Digital Meteor Shower](https://chung223.github.io/daily-lab/2026-03-15/) | Matrix 風格數位雨動畫、輸入文字轉化為掉落字符 |
 | ⭐ | 03/14 | [幹話產生器](https://chung223.github.io/daily-lab/2026-03-14/) | 人生已經夠苦了，來點廢話吧！ |
-| ⭐ | 03/12 | [Cyber Snake 賽博蛇蛇](https://chung223.github.io/daily-lab/2026-03-12/) | 經典貪食蛇遊戲、霓虹視覺效果、3 種道具系統 |
 
 ---
 
@@ -51,6 +51,7 @@
 
 | 日期 | 專案 | 描述 |
 |:---:|:---:|---|
+| 03/17 | ⭐ [星光流 Starry Flow](https://chung223.github.io/daily-lab/2026-03-17/) | 許願輸入體驗、文字轉化為飄浮星光粒子 |
 | 03/09 | ⭐ [虛空蓮 Void Lotus](https://chung223.github.io/daily-lab/2026-03-09/) | 互動式蓮花召喚體驗、花瓣粒子爆發、星空閃爍 |
 | 03/04 | ⭐ [時空流轉 Temporal Flow](https://chung223.github.io/daily-lab/2026-03-04/) | 療癒系沙漏冥想體驗、沙粒流動動畫 |
 | 03/03 | ⭐ [紀念日銀河 Milestone Galaxy](https://chung223.github.io/daily-lab/2026-03-03/) | 紀念日倒數、localStorage 持久化、隨機勵志語錄 |
@@ -122,8 +123,8 @@
      ╔═══════════════════════════╗
      ║     Daily Lab Stats       ║
      ╠═══════════════════════════╣
-     ║  📦 總專案數: 33+         ║
-     ║  🔥 連續產出: 32 天        ║
+     ║  📦 總專案數: 34+         ║
+     ║  🔥 連續產出: 33 天        ║
      ║  ⏰ 平均產出時間: 3:00 AM  ║
      ║  ☕ 消耗咖啡: ☕☕☕☕☕☕☕☕         ║
      ║  🐛 Bug 數: 數不清        ║
