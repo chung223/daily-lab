@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>思緒風鈴 | Thought Wind Chimes</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400&family=Noto+Serif+JP:wght@200;300;400&family=Zen+Kaku+Gothic+New:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --night-sky: #0d1117;
+      --night-sky-light: #161b22;
+      --moon-glow: #f0e6d3;
+      --moon-gold: #c9a227;
+      --wind-blue: #4a90a4;
+      --bamboo-green: #3d5a45;
+      --warm-amber: #d4a574;
+      --soft-white: #f5f0e8;
+      --chime-glow: rgba(201, 162, 39, 0.4);
+      --ripple: rgba(74, 144, 164, 0.3);
+      --glass-bg: rgba(255, 255, 255, 0.05);
+      --glass-border: rgba(255, 255, 255, 0.1);
+      --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      height: 100%;
+      overflow: hidden;
+    }
+
+    body {
+      font-family: 'Zen Kaku Gothic New', 'Noto Sans TC', sans-serif;
+      background: var(--night-sky);
+      color: var(--soft-white);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      position: relative;
+    }
+
+    /* Starry Background */
+    .stars {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .star {
+      position: absolute;
+      background: var(--moon-glow);
+      border-radius: 50%;
+      animation: twinkle var(--duration) ease-in-out infinite;
+      animation-delay: var(--delay);
+    }
+
+    @keyframes twinkle {
+      0%, 100% { opacity: var(--min-opacity); transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.2); }
+    }
+
+    /* Moon */
+    .moon {
+      position: fixed;
+      top: 8%;
+      right: 12%;
+      width: 80px;
+      height: 80px;
+      background: radial-gradient(circle at 30% 30%, var(--moon-glow) 0%, #d4c4a8 100%);
+      border-radius: 50%;
+      box-shadow: 
+        0 0 40px rgba(240, 230, 211, 0.3),
+        0 0 80px rgba(240, 230, 211, 0.15),
+        inset -8px -8px 20px rgba(0,0,0,0.1);
+      animation: moonBreath 4s ease-in-out infinite;
+      z-index: 1;
+    }
+
+    .moon::before {
+      content: '';
+      position: absolute;
+      top: 15%;
+      left: 20%;
+      width: 20px;
+      height: 20px;
+      background: rgba(0,0,0,0.05);
+      border-radius: 50%;
+    }
+
+    .moon::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 55%;
+      width: 12px;
+      height: 12px;
+      background: rgba(0,0,0,0.04);
+      border-radius: 50%;
+    }
+
+    @keyframes moonBreath {
+      0%, 100% { transform: scale(1); opacity: 0.9; }
+      50% { transform: scale(1.03); opacity: 1; }
+    }
+
+    /* Main Container */
+    .container {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 24px;
+      padding: 20px;
+      max-width: 480px;
+      width: 100%;
+    }
+
+    /* Title */
+    .title {
+      font-family: 'Noto Serif JP', serif;
+      font-weight: 200;
+      font-size: 1.8rem;
+      letter-spacing: 0.2em;
+      color: var(--moon-glow);
+      text-shadow: 0 0 30px var(--chime-glow);
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      font-size: 0.85rem;
+      color: rgba(245, 240, 232, 0.5);
+      letter-spacing: 0.15em;
+    }
+
+    /* Wind Chimes Canvas */
+    .chimes-container {
+      position: relative;
+      width: 100%;
+      height: 200px;
+      margin: 16px 0;
+    }
+
+    #chimesCanvas {
+      width: 100%;
+      height: 100%;
+    }
+
+    /* Input Panel */
+    .input-panel {
+      background: var(--glass-bg);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--glass-border);
+      border-radius: 20px;
+      padding: 24px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .input-wrapper {
+      position: relative;
+    }
+
+    .thought-input {
+      width: 100%;
+      min-height: 80px;
+      padding: 16px;
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      color: var(--soft-white);
+      font-family: 'Zen Kaku Gothic New', sans-serif;
+      font-size: 1rem;
+      resize: none;
+      outline: none;
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
+
+    .thought-input::placeholder {
+      color: rgba(245, 240, 232, 0.35);
+    }
+
+    .thought-input:focus {
+      border-color: var(--moon-gold);
+      box-shadow: 0 0 20px rgba(201, 162, 39, 0.15);
+    }
+
+    .char-count {
+      position: absolute;
+      bottom: 8px;
+      right: 12px;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.7rem;
+      color: rgba(245, 240, 232, 0.3);
+    }
+
+    /* Submit Button */
+    .submit-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 14px 28px;
+      background: linear-gradient(135deg, var(--moon-gold) 0%, var(--warm-amber) 100%);
+      border: none;
+      border-radius: 12px;
+      color: var(--night-sky);
+      font-family: 'Zen Kaku Gothic New', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 400;
+      letter-spacing: 0.1em;
+      cursor: pointer;
+      transition: transform 0.2s var(--ease-smooth), box-shadow 0.2s;
+      box-shadow: 0 4px 20px rgba(201, 162, 39, 0.3);
+    }
+
+    .submit-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 30px rgba(201, 162, 39, 0.4);
+    }
+
+    .submit-btn:active {
+      transform: translateY(0);
+    }
+
+    .submit-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* Ambient Sound Toggle */
+    .ambient-section {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 8px;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .ambient-label {
+      font-size: 0.8rem;
+      color: rgba(245, 240, 232, 0.6);
+    }
+
+    .ambient-toggle {
+      display: flex;
+      gap: 8px;
+    }
+
+    .ambient-btn {
+      padding: 6px 14px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      color: rgba(245, 240, 232, 0.5);
+      font-size: 0.75rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .ambient-btn.active {
+      background: rgba(201, 162, 39, 0.2);
+      border-color: var(--moon-gold);
+      color: var(--moon-glow);
+    }
+
+    .ambient-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    /* Stats Bar */
+    .stats-bar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 24px;
+      padding: 12px 20px;
+      background: var(--glass-bg);
+      backdrop-filter: blur(8px);
+      border-radius: 30px;
+      border: 1px solid var(--glass-border);
+    }
+
+    .stat-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.8rem;
+      color: rgba(245, 240, 232, 0.7);
+    }
+
+    .stat-icon {
+      font-size: 1rem;
+    }
+
+    .stat-value {
+      color: var(--moon-glow);
+      font-weight: 400;
+    }
+
+    /* Particles Container */
+    #particlesCanvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 5;
+    }
+
+    /* Ripple Effects */
+    .ripple {
+      position: fixed;
+      border: 2px solid var(--wind-blue);
+      border-radius: 50%;
+      animation: rippleExpand 2s ease-out forwards;
+      pointer-events: none;
+      z-index: 4;
+    }
+
+    @keyframes rippleExpand {
+      0% {
+        width: 0;
+        height: 0;
+        opacity: 0.8;
+      }
+      100% {
+        width: 200px;
+        height: 200px;
+        opacity: 0;
+        margin-left: -100px;
+        margin-top: -100px;
+      }
+    }
+
+    /* Toast Notification */
+    .toast {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: var(--glass-bg);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      padding: 12px 24px;
+      color: var(--moon-glow);
+      font-size: 0.9rem;
+      opacity: 0;
+      transition: all 0.4s var(--ease-smooth);
+      z-index: 100;
+    }
+
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+
+    /* Responsive */
+    @media (max-width: 480px) {
+      .title {
+        font-size: 1.5rem;
+      }
+      
+      .moon {
+        width: 60px;
+        height: 60px;
+        top: 5%;
+        right: 8%;
+      }
+      
+      .chimes-container {
+        height: 160px;
+      }
+      
+      .stats-bar {
+        gap: 16px;
+        padding: 10px 16px;
+      }
+      
+      .stat-item {
+        font-size: 0.75rem;
+      }
+    }
+
+    /* Wind Bell SVG Animation */
+    .wind-bell {
+      animation: bellSway var(--sway-duration, 2s) ease-in-out infinite;
+      transform-origin: top center;
+    }
+
+    @keyframes bellSway {
+      0%, 100% { transform: rotate(var(--sway-start, -3deg)); }
+      50% { transform: rotate(var(--sway-end, 3deg)); }
+    }
+
+    /* Clacker line */
+    .clacker {
+      animation: clackerSwing 0.15s ease-in-out;
+    }
+
+    @keyframes clackerSwing {
+      0% { transform: rotate(0deg); }
+      25% { transform: rotate(15deg); }
+      50% { transform: rotate(-10deg); }
+      75% { transform: rotate(5deg); }
+      100% { transform: rotate(0deg); }
+    }
+  </style>
+</head>
+<body>
+  <!-- Stars Background -->
+  <div class="stars" id="stars"></div>
+  
+  <!-- Moon -->
+  <div class="moon"></div>
+  
+  <!-- Particles Canvas -->
+  <canvas id="particlesCanvas"></canvas>
+  
+  <!-- Main Container -->
+  <div class="container">
+    <h1 class="title">思緒風鈴</h1>
+    <p class="subtitle">點擊輸入，讓思緒化為風鈴聲</p>
+    
+    <!-- Wind Chimes SVG -->
+    <div class="chimes-container">
+      <svg id="chimesCanvas" viewBox="0 0 400 200" preserveAspectRatio="xMidYMid meet">
+        <defs>
+          <linearGradient id="bellGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#c9a227"/>
+            <stop offset="50%" style="stop-color:#d4a574"/>
+            <stop offset="100%" style="stop-color:#8b7355"/>
+          </linearGradient>
+          <filter id="glow">
+            <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+            <feMerge>
+              <feMergeNode in="coloredBlur"/>
+              <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+          </filter>
+        </defs>
+        
+        <!-- String/Hook -->
+        <line x1="200" y1="0" x2="200" y2="30" stroke="#8b7355" stroke-width="2"/>
+        <circle cx="200" cy="30" r="4" fill="#c9a227"/>
+        
+        <!-- Center Bell (larger) -->
+        <g class="wind-bell" style="--sway-start: -2deg; --sway-end: 2deg; --sway-duration: 2.2s;" data-bell="center">
+          <line x1="200" y1="30" x2="200" y2="55" stroke="#a08060" stroke-width="1.5"/>
+          <ellipse cx="200" cy="75" rx="18" ry="22" fill="url(#bellGradient)" filter="url(#glow)"/>
+          <ellipse cx="200" cy="95" rx="6" ry="4" fill="#0d1117"/>
+          <circle cx="200" cy="95" r="3" fill="#c9a227" class="clacker"/>
+        </g>
+        
+        <!-- Left Bell -->
+        <g class="wind-bell" style="--sway-start: -4deg; --sway-end: 1deg; --sway-duration: 1.8s; transform-origin: 150px 30px;" data-bell="left">
+          <line x1="150" y1="25" x2="150" y2="45" stroke="#a08060" stroke-width="1.5"/>
+          <ellipse cx="150" cy="62" rx="14" ry="18" fill="url(#bellGradient)" filter="url(#glow)"/>
+          <ellipse cx="150" cy="78" rx="5" ry="3" fill="#0d1117"/>
+          <circle cx="150" cy="78" r="2.5" fill="#c9a227" class="clacker"/>
+        </g>
+        
+        <!-- Right Bell -->
+        <g class="wind-bell" style="--sway-start: -1deg; --sway-end: 4deg; --sway-duration: 2.5s; transform-origin: 250px 30px;" data-bell="right">
+          <line x1="250" y1="25" x2="250" y2="45" stroke="#a08060" stroke-width="1.5"/>
+          <ellipse cx="250" cy="62" rx="14" ry="18" fill="url(#bellGradient)" filter="url(#glow)"/>
+          <ellipse cx="250" cy="78" rx="5" ry="3" fill="#0d1117"/>
+          <circle cx="250" cy="78" r="2.5" fill="#c9a227" class="clacker"/>
+        </g>
+        
+        <!-- Far Left Bell -->
+        <g class="wind-bell" style="--sway-start: -5deg; --sway-end: 0deg; --sway-duration: 2.8s; transform-origin: 100px 20px;" data-bell="farLeft">
+          <line x1="100" y1="20" x2="100" y2="35" stroke="#a08060" stroke-width="1.5"/>
+          <ellipse cx="100" cy="48" rx="11" ry="14" fill="url(#bellGradient)" filter="url(#glow)"/>
+          <ellipse cx="100" cy="60" rx="4" ry="2.5" fill="#0d1117"/>
+          <circle cx="100" cy="60" r="2" fill="#c9a227" class="clacker"/>
+        </g>
+        
+        <!-- Far Right Bell -->
+        <g class="wind-bell" style="--sway-start: 0deg; --sway-end: 5deg; --sway-duration: 2.1s; transform-origin: 300px 20px;" data-bell="farRight">
+          <line x1="300" y1="20" x2="300" y2="35" stroke="#a08060" stroke-width="1.5"/>
+          <ellipse cx="300" cy="48" rx="11" ry="14" fill="url(#bellGradient)" filter="url(#glow)"/>
+          <ellipse cx="300" cy="60" rx="4" ry="2.5" fill="#0d1117"/>
+          <circle cx="300" cy="60" r="2" fill="#c9a227" class="clacker"/>
+        </g>
+      </svg>
+    </div>
+    
+    <!-- Input Panel -->
+    <div class="input-panel">
+      <div class="input-wrapper">
+        <textarea 
+          class="thought-input" 
+          id="thoughtInput" 
+          placeholder="在此輸入你的思緒..."
+          maxlength="100"
+        ></textarea>
+        <span class="char-count" id="charCount">0/100</span>
+      </div>
+      
+      <button class="submit-btn" id="submitBtn" disabled>
+        <span>✨</span>
+        <span>化為風鈴聲</span>
+      </button>
+      
+      <div class="ambient-section">
+        <span class="ambient-label">環境音</span>
+        <div class="ambient-toggle">
+          <button class="ambient-btn active" data-sound="chime">風鈴</button>
+          <button class="ambient-btn" data-sound="rain">雨聲</button>
+          <button class="ambient-btn" data-sound="none">靜音</button>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Stats Bar -->
+    <div class="stats-bar">
+      <div class="stat-item">
+        <span class="stat-icon">🔔</span>
+        <span>累計</span>
+        <span class="stat-value" id="totalCount">0</span>
+        <span>次</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-icon">🌙</span>
+        <span id="currentTime">--:--</span>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <script>
+    // ===== State =====
+    let totalCount = parseInt(localStorage.getItem('windChimes_count') || '0');
+    let currentAmbient = 'chime';
+    let audioContext = null;
+    let particles = [];
+    let isRinging = false;
+
+    // ===== DOM Elements =====
+    const starsContainer = document.getElementById('stars');
+    const thoughtInput = document.getElementById('thoughtInput');
+    const charCount = document.getElementById('charCount');
+    const submitBtn = document.getElementById('submitBtn');
+    const totalCountEl = document.getElementById('totalCount');
+    const currentTimeEl = document.getElementById('currentTime');
+    const toast = document.getElementById('toast');
+    const particlesCanvas = document.getElementById('particlesCanvas');
+    const ctx = particlesCanvas.getContext('2d');
+    const ambientBtns = document.querySelectorAll('.ambient-btn');
+
+    // ===== Initialize =====
+    function init() {
+      createStars();
+      resizeCanvas();
+      updateTime();
+      updateCountDisplay();
+      bindEvents();
+      animateParticles();
+      
+      // Update time every minute
+      setInterval(updateTime, 60000);
+    }
+
+    // ===== Create Stars =====
+    function createStars() {
+      const count = 60;
+      for (let i = 0; i < count; i++) {
+        const star = document.createElement('div');
+        star.className = 'star';
+        star.style.cssText = `
+          left: ${Math.random() * 100}%;
+          top: ${Math.random() * 70}%;
+          width: ${Math.random() * 2 + 1}px;
+          height: ${Math.random() * 2 + 1}px;
+          --duration: ${Math.random() * 3 + 1}s;
+          --delay: ${Math.random() * 3}s;
+          --min-opacity: ${Math.random() * 0.3 + 0.2};
+        `;
+        starsContainer.appendChild(star);
+      }
+    }
+
+    // ===== Canvas Setup =====
+    function resizeCanvas() {
+      particlesCanvas.width = window.innerWidth;
+      particlesCanvas.height = window.innerHeight;
+    }
+
+    window.addEventListener('resize', resizeCanvas);
+
+    // ===== Particles System =====
+    class Particle {
+      constructor(text, x, y) {
+        this.text = text;
+        this.x = x;
+        this.y = y;
+        this.vx = (Math.random() - 0.5) * 2;
+        this.vy = -Math.random() * 2 - 1;
+        this.opacity = 1;
+        this.size = Math.random() * 12 + 14;
+        this.font = Math.random() > 0.5 ? 'Noto Serif JP' : 'Zen Kaku Gothic New';
+      }
+
+      update() {
+        this.x += this.vx;
+        this.y += this.vy;
+        this.vy *= 0.99;
+        this.opacity -= 0.008;
+        this.size *= 0.995;
+      }
+
+      draw() {
+        ctx.save();
+        ctx.globalAlpha = this.opacity;
+        ctx.font = `200 ${this.size}px ${this.font}`;
+        ctx.fillStyle = '#f0e6d3';
+        ctx.textAlign = 'center';
+        ctx.shadowColor = 'rgba(201, 162, 39, 0.5)';
+        ctx.shadowBlur = 10;
+        ctx.fillText(this.text, this.x, this.y);
+        ctx.restore();
+      }
+
+      isDead() {
+        return this.opacity <= 0;
+      }
+    }
+
+    function animateParticles() {
+      ctx.clearRect(0, 0, particlesCanvas.width, particlesCanvas.height);
+      
+      particles = particles.filter(p => !p.isDead());
+      particles.forEach(p => {
+        p.update();
+        p.draw();
+      });
+      
+      requestAnimationFrame(animateParticles);
+    }
+
+    // ===== Audio System =====
+    function initAudio() {
+      if (!audioContext) {
+        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      if (audioContext.state === 'suspended') {
+        audioContext.resume();
+      }
+    }
+
+    function playChimeSound() {
+      if (currentAmbient === 'none') return;
+      if (!audioContext) return;
+
+      const frequencies = [523.25, 587.33, 659.25, 698.46, 783.99, 880, 987.77, 1046.5];
+      const freq = frequencies[Math.floor(Math.random() * frequencies.length)];
+      
+      const oscillator = audioContext.createOscillator();
+      const gainNode = audioContext.createGain();
+      
+      oscillator.connect(gainNode);
+      gainNode.connect(audioContext.destination);
+      
+      oscillator.type = 'sine';
+      oscillator.frequency.setValueAtTime(freq, audioContext.currentTime);
+      
+      gainNode.gain.setValueAtTime(0.15, audioContext.currentTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 2);
+      
+      oscillator.start(audioContext.currentTime);
+      oscillator.stop(audioContext.currentTime + 2);
+    }
+
+    function playAmbientLoop() {
+      if (currentAmbient === 'none' || currentAmbient === 'chime') return;
+      
+      // Rain ambient would go here
+      // For now just a placeholder
+    }
+
+    // ===== Bell Animation =====
+    function ringBell(bellElement) {
+      const clacker = bellElement.querySelector('.clacker');
+      if (!clacker) return;
+      
+      clacker.style.animation = 'none';
+      clacker.offsetHeight; // Trigger reflow
+      clacker.style.animation = 'clackerSwing 0.15s ease-in-out';
+      
+      playChimeSound();
+    }
+
+    function ringRandomBells() {
+      const bells = document.querySelectorAll('.wind-bell');
+      const count = Math.floor(Math.random() * 3) + 1;
+      
+      for (let i = 0; i < count; i++) {
+        setTimeout(() => {
+          const bell = bells[Math.floor(Math.random() * bells.length)];
+          ringBell(bell);
+        }, i * 150);
+      }
+    }
+
+    // ===== Create Ripple =====
+    function createRipple(x, y) {
+      const ripple = document.createElement('div');
+      ripple.className = 'ripple';
+      ripple.style.left = x + 'px';
+      ripple.style.top = y + 'px';
+      document.body.appendChild(ripple);
+      
+      setTimeout(() => ripple.remove(), 2000);
+    }
+
+    // ===== Submit Handler =====
+    async function handleSubmit() {
+      const text = thoughtInput.value.trim();
+      if (!text) return;
+      
+      initAudio();
+      
+      // Get center of screen for particles
+      const centerX = window.innerWidth / 2;
+      const centerY = window.innerHeight / 2;
+      
+      // Create particles from text
+      const chars = text.split('');
+      chars.forEach((char, i) => {
+        setTimeout(() => {
+          const offsetX = (Math.random() - 0.5) * 100;
+          const offsetY = (Math.random() - 0.5) * 50;
+          particles.push(new Particle(char, centerX + offsetX, centerY + offsetY - 50));
+        }, i * 80);
+      });
+      
+      // Ring bells
+      ringRandomBells();
+      
+      // Create ripples
+      for (let i = 0; i < 3; i++) {
+        setTimeout(() => {
+          createRipple(
+            centerX + (Math.random() - 0.5) * 200,
+            centerY + (Math.random() - 0.5) * 100
+          );
+        }, i * 200);
+      }
+      
+      // Update count
+      totalCount++;
+      localStorage.setItem('windChimes_count', totalCount.toString());
+      updateCountDisplay();
+      
+      // Clear input
+      thoughtInput.value = '';
+      charCount.textContent = '0/100';
+      submitBtn.disabled = true;
+      
+      // Show toast
+      showToast('✨ 思緒已化為風鈴聲');
+    }
+
+    // ===== Event Bindings =====
+    function bindEvents() {
+      // Input
+      thoughtInput.addEventListener('input', () => {
+        const len = thoughtInput.value.length;
+        charCount.textContent = `${len}/100`;
+        submitBtn.disabled = len === 0;
+      });
+      
+      thoughtInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+          e.preventDefault();
+          handleSubmit();
+        }
+      });
+      
+      // Submit button
+      submitBtn.addEventListener('click', handleSubmit);
+      
+      // Ambient buttons
+      ambientBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          ambientBtns.forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          currentAmbient = btn.dataset.sound;
+          initAudio();
+        });
+      });
+      
+      // Click on chimes to ring
+      document.getElementById('chimesCanvas').addEventListener('click', (e) => {
+        initAudio();
+        ringRandomBells();
+      });
+    }
+
+    // ===== Utilities =====
+    function updateTime() {
+      const now = new Date();
+      const hours = now.getHours().toString().padStart(2, '0');
+      const mins = now.getMinutes().toString().padStart(2, '0');
+      currentTimeEl.textContent = `${hours}:${mins}`;
+    }
+
+    function updateCountDisplay() {
+      totalCountEl.textContent = totalCount;
+    }
+
+    function showToast(message) {
+      toast.textContent = message;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2500);
+    }
+
+    // ===== Start =====
+    init();
+  </script>
+</body>
+</html>
