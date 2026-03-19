@@ -7,8 +7,8 @@
 *用一杯咖啡的時間，換一個讓世界多點樂趣的小玩具*
 
 ![License](https://img.shields.io/badge/license-MIT-green?style=for-the-badge&logo=mit)
-![Projects](https://img.shields.io/badge/專案數-36-blue?style=for-the-badge)
-![Streak](https://img.shields.io/badge/連續-35天-orange?style=for-the-badge)
+![Projects](https://img.shields.io/badge/專案數-37-blue?style=for-the-badge)
+![Streak](https://img.shields.io/badge/連續-36天-orange?style=for-the-badge)
 ![Coffee](https://img.shields.io/badge/消耗咖啡-☕☕☕☕☕☕☕☕☕-red?style=for-the-badge)
 
 </div>
@@ -23,6 +23,7 @@
 
 | 預覽 | 日期 | 專案 | 描述 |
 |:---:|:---:|:---:|---|
+| ⭐ | 03/20 | [銀河筆刷 Galaxy Brush](https://chung223.github.io/daily-lab/2026-03-20/) | 互動式星雲繪畫體驗、拖曳滑鼠創建流動的銀河粒子軌跡 |
 | ⭐ | 03/19 | [思緒風鈴 Thought Wind Chimes](https://chung223.github.io/daily-lab/2026-03-19/) | 輸入文字化為風鈴聲響、文字粒子漂浮動畫、互動式風鈴 SVG |
 | ⭐ | 03/18 | [竹林風禪 Bamboo Sway](https://chung223.github.io/daily-lab/2026-03-18/) | 互動式竹林風體驗、滑動產生微風、竹子搖曳動畫 |
 | ⭐ | 03/17 | [星光流 Starry Flow](https://chung223.github.io/daily-lab/2026-03-17/) | 許願輸入體驗、文字轉化為飄浮星光粒子 |
@@ -37,6 +38,7 @@
 
 | 日期 | 專案 | 描述 |
 |:---:|---:|---|
+| 03/20 | 🌌 [銀河筆刷 Galaxy Brush](https://chung223.github.io/daily-lab/2026-03-20/) | 互動式星雲繪畫體驗、拖曳滑鼠創建流動的銀河粒子軌跡 |
 | 03/15 | ⭐ [數位流星雨 Digital Meteor Shower](https://chung223.github.io/daily-lab/2026-03-15/) | Matrix 風格數位雨動畫、輸入文字轉化為掉落字符 |
 | 03/14 | 💩 [幹話產生器](https://chung223.github.io/daily-lab/2026-03-14/) | 人生已經夠苦了，來點廢話吧！ |
 | 03/08 | ⭐ [幾何花園 Geometric Garden](https://chung223.github.io/daily-lab/2026-03-08/) | 互動式幾何圖形生成器、5 種形狀、6 種色彩主題 |
@@ -125,8 +127,8 @@
      ╔═══════════════════════════╗
      ║     Daily Lab Stats       ║
      ╠═══════════════════════════╣
-     ║  📦 總專案數: 36+         ║
-     ║  🔥 連續產出: 35 天        ║
+     ║  📦 總專案數: 37+         ║
+     ║  🔥 連續產出: 36 天        ║
      ║  ⏰ 平均產出時間: 3:00 AM  ║
      ║  ☕ 消耗咖啡: ☕☕☕☕☕☕☕☕         ║
      ║  🐛 Bug 數: 數不清        ║
