@@ -1,3 +1,18 @@
+## 2026-03-21 03:12 (Asia/Taipei)
+- 建立 `project-20260321`：Morse Pulse (摩斯脈衝)
+  - 功能：輸入文字即時轉換為摩斯密碼、Web Audio API 播放滴答聲、大型指示燈泡同步閃爍、速度可調 (5-30 WPM)、信號強度視覺化動畫、localStorage 統計使用次數
+  - 技術：單一 HTML 檔案、Google Fonts（Orbitron + JetBrains Mono + Noto Sans TC）、Web Audio API、localStorage
+  - 設計：Retro Telegraph × Neon Pulse 復古電報機美學、深邃黑背景 (#0a0a0f)、黃銅色 (#d4a574)、霓虹綠 (#39ff14)、電光青 (#00f5ff) 強調、網格背景、發光動畫、顆粒感覆蓋
+  - 檔案：`Lab/project-20260321/index.html`（直接開啟即可用）
+  - Commit: `76fb473`
+
+## 2026-03-20 03:15 (Asia/Taipei)
+- 建立 `project-20260320`：銀河筆刷 (Galaxy Brush)
+  - 功能：互動式星雲繪畫體驗、拖曳滑鼠創建流動的銀河粒子軌跡、多種色彩選擇（電光青/霓虹粉/金色/紫色/粉紅/白色）、可調式筆觸大小、閃爍星空背景 + 星雲漂移動畫、玻璃擬態 UI 設計、localStorage 統計繪製次數、支援觸控設備、Mobile responsive design
+  - 技術：單一 HTML 檔案、Google Fonts（Cinzel Decorative + Noto Sans TC）、Canvas API、CSS 動畫、localStorage
+  - 設計：Ethereal Nebula 星雲風、深邃太空背景 (#050510)、電光青 (#00f5ff)、霓虹粉 (#ff00ff)、金色 (#ffd700) 強調、星雲漂移、玻璃擬態 UI、閃爍星空背景
+  - 檔案：`Lab/project-20260320/index.html`（直接開啟即可用）
+
 ## 2026-03-19 03:10 (Asia/Taipei)
 - 建立 `project-20260319`：思緒風鈴 (Thought Wind Chimes)
   - 功能：輸入文字化為風鈴聲響、文字粒子漂浮動畫、互動式風鈴 SVG、點擊產生漣漪、月夜禪風背景、localStorage 累計計數
