@@ -7,8 +7,8 @@
 *用一杯咖啡的時間，換一個讓世界多點樂趣的小玩具*
 
 ![License](https://img.shields.io/badge/license-MIT-green?style=for-the-badge&logo=mit)
-![Projects](https://img.shields.io/badge/專案數-38-blue?style=for-the-badge)
-![Streak](https://img.shields.io/badge/連續-37天-orange?style=for-the-badge)
+![Projects](https://img.shields.io/badge/專案數-39-blue?style=for-the-badge)
+![Streak](https://img.shields.io/badge/連續-38天-orange?style=for-the-badge)
 ![Coffee](https://img.shields.io/badge/消耗咖啡-☕☕☕☕☕☕☕☕☕☕-red?style=for-the-badge)
 
 </div>
@@ -17,16 +17,16 @@
 
 ## 🌟 本日精選
 
-<a href="https://chung223.github.io/daily-lab/2026-03-21/">
-<img src="https://custom-icon-badges.demolab.com/badge/點此體驗-2026--03--21-ff6b6b?style=for-the-badge&logo=rocket" alt="Try Now">
+<a href="https://chung223.github.io/daily-lab/2026-03-22/">
+<img src="https://custom-icon-badges.demolab.com/badge/點此體驗-2026--03--22-9d4edd?style=for-the-badge&logo=rocket" alt="Try Now">
 </a>
 
 | 預覽 | 日期 | 專案 | 描述 |
 |:---:|:---:|:---:|---|
+| ⭐ | 03/22 | [露珠禪境 Dewdrop Zen](https://chung223.github.io/daily-lab/2026-03-22/) | 輸入思緒化作漂浮露珠、點擊產生漣漪、霧氣漂移、樹葉飄動 |
 | ⭐ | 03/21 | [Morse Pulse 摩斯脈衝](https://chung223.github.io/daily-lab/2026-03-21/) | 輸入文字即時轉換為摩斯密碼、Web Audio API 播放滴答聲 |
 | ⭐ | 03/20 | [銀河筆刷 Galaxy Brush](https://chung223.github.io/daily-lab/2026-03-20/) | 互動式星雲繪畫體驗、拖曳滑鼠創建流動的銀河粒子軌跡 |
 | ⭐ | 03/19 | [思緒風鈴 Thought Wind Chimes](https://chung223.github.io/daily-lab/2026-03-19/) | 輸入文字化為風鈴聲響、文字粒子漂浮動畫、互動式風鈴 SVG |
-| ⭐ | 03/18 | [竹林風禪 Bamboo Sway](https://chung223.github.io/daily-lab/2026-03-18/) | 互動式竹林風體驗、滑動產生微風、竹子搖曳動畫 |
 
 ---
 
@@ -53,6 +53,7 @@
 
 | 日期 | 專案 | 描述 |
 |:---:|:---:|---|
+| 03/22 | ⭐ [露珠禪境 Dewdrop Zen](https://chung223.github.io/daily-lab/2026-03-22/) | 禪意露珠體驗、輸入思緒化作漂浮露珠、霧氣漂移、樹葉飄動 |
 | 03/19 | ⭐ [思緒風鈴 Thought Wind Chimes](https://chung223.github.io/daily-lab/2026-03-19/) | 輸入文字化為風鈴聲響、文字粒子漂浮動畫、互動式風鈴 SVG |
 | 03/18 | ⭐ [竹林風禪 Bamboo Sway](https://chung223.github.io/daily-lab/2026-03-18/) | 互動式竹林風體驗、滑動產生微風、竹子搖曳動畫 |
 | 03/17 | ⭐ [星光流 Starry Flow](https://chung223.github.io/daily-lab/2026-03-17/) | 許願輸入體驗、文字轉化為飄浮星光粒子 |
@@ -127,8 +128,8 @@
      ╔═══════════════════════════╗
      ║     Daily Lab Stats       ║
      ╠═══════════════════════════╣
-     ║  📦 總專案數: 38+         ║
-     ║  🔥 連續產出: 37 天        ║
+     ║  📦 總專案數: 39+         ║
+     ║  🔥 連續產出: 38 天        ║
      ║  ⏰ 平均產出時間: 3:00 AM  ║
      ║  ☕ 消耗咖啡: ☕☕☕☕☕☕☕☕☕         ║
      ║  🐛 Bug 數: 數不清        ║
