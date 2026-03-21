@@ -1,3 +1,11 @@
+## 2026-03-22 03:10 (Asia/Taipei)
+- 建立 `project-20260322`：露珠禪境 (Dewdrop Zen)
+  - 功能：禪意露珠體驗、輸入思緒化作漂浮露珠、點擊畫面產生漣漪與小露珠、霧氣漂移動畫、樹葉飄動背景、星塵閃爍效果、localStorage 統計凝結次數
+  - 技術：單一 HTML 檔案、Google Fonts（Noto Serif TC + DM Mono）、Canvas API、localStorage
+  - 設計：Zen Garden 禪意花園風、深邃暗綠背景 (#0a0f0d)、翡翠綠 (#4a8c5e)、晨露白 (#c8e6ff) 強調、霧氣層疊、玻璃質感露珠、漂浮粒子、發光效果
+  - 檔案：`Lab/project-20260322/index.html`（直接開啟即可用）
+  - Commit: `0d34c11`
+
 ## 2026-03-21 03:12 (Asia/Taipei)
 - 建立 `project-20260321`：Morse Pulse (摩斯脈衝)
   - 功能：輸入文字即時轉換為摩斯密碼、Web Audio API 播放滴答聲、大型指示燈泡同步閃爍、速度可調 (5-30 WPM)、信號強度視覺化動畫、localStorage 統計使用次數
