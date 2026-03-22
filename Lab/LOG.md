@@ -1,3 +1,12 @@
+## 2026-03-23 03:05 (Asia/Taipei)
+- 建立 `project-20260323`：Memory Echo (記憶迴聲)
+  - 功能：記憶配對遊戲、翻牌時產生故障效果、配對成功金色爆炸動畫、配對失敗紅色閃爍、16種獨特符號、8對卡片、計時器+步數計數、本地最佳成績儲存
+  - 技術：單一 HTML 檔案、Google Fonts（Orbitron + JetBrains Mono）、CSS 動畫、localStorage
+  - 設計：Glitch-Abstract 故障藝術風、深邃虛空背景 (#050508)、電光青 (#00f5ff)、霓虹紫 (#ff00ff)、金色 (#ffd700) 強調、CRT 掃描線、噪點顆粒、漂浮粒子、卡牌翻轉色差效果
+  - 靈感：哈拉瑞「記憶是幻想工廠」
+  - 檔案：`Lab/project-20260323/index.html`（直接開啟即可用）
+  - GitHub：https://github.com/chung223/daily-lab
+
 ## 2026-03-22 03:10 (Asia/Taipei)
 - 建立 `project-20260322`：露珠禪境 (Dewdrop Zen)
   - 功能：禪意露珠體驗、輸入思緒化作漂浮露珠、點擊畫面產生漣漪與小露珠、霧氣漂移動畫、樹葉飄動背景、星塵閃爍效果、localStorage 統計凝結次數
