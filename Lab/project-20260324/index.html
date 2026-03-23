@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>意識之鏡 | Mirror of Consciousness</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;700&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg-deep: #050508;
+      --bg-surface: #0a0a10;
+      --clarity-white: #f0f4ff;
+      --noise-purple: #a855f7;
+      --noise-pink: #ec4899;
+      --noise-cyan: #22d3ee;
+      --accent-gold: #fbbf24;
+      --glass-bg: rgba(255, 255, 255, 0.03);
+      --glass-border: rgba(255, 255, 255, 0.08);
+    }
+
+    body {
+      font-family: 'Noto Serif TC', serif;
+      background: var(--bg-deep);
+      color: var(--clarity-white);
+      min-height: 100vh;
+      overflow: hidden;
+      cursor: crosshair;
+    }
+
+    /* Particle Background */
+    .particle-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      opacity: 0.3;
+    }
+
+    /* Noise Layer */
+    .noise-layer {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      pointer-events: none;
+      opacity: 0.4;
+      transition: opacity 0.8s ease;
+    }
+
+    .noise-layer.cleared {
+      opacity: 0;
+    }
+
+    /* Thought Fragments */
+    .thought {
+      position: fixed;
+      font-family: 'DM Mono', monospace;
+      font-size: 14px;
+      color: var(--noise-purple);
+      opacity: 0.6;
+      pointer-events: none;
+      z-index: 2;
+      animation: float-thought 15s ease-in-out infinite, glitch 3s infinite;
+      text-shadow: 0 0 10px var(--noise-purple);
+      transition: opacity 0.5s ease, color 0.5s ease;
+      white-space: nowrap;
+    }
+
+    .thought.cleared {
+      opacity: 0;
+      transform: scale(0.5);
+    }
+
+    .thought.type-pink { color: var(--noise-pink); text-shadow: 0 0 10px var(--noise-pink); }
+    .thought.type-cyan { color: var(--noise-cyan); text-shadow: 0 0 10px var(--noise-cyan); }
+    .thought.type-gold { color: var(--accent-gold); text-shadow: 0 0 10px var(--accent-gold); }
+
+    @keyframes float-thought {
+      0%, 100% { transform: translate(0, 0) rotate(0deg); }
+      25% { transform: translate(30px, -20px) rotate(2deg); }
+      50% { transform: translate(-20px, 10px) rotate(-1deg); }
+      75% { transform: translate(10px, 30px) rotate(1deg); }
+    }
+
+    @keyframes glitch {
+      0%, 90%, 100% { filter: blur(0); }
+      92% { filter: blur(2px) hue-rotate(10deg); }
+      94% { filter: blur(0); }
+      96% { filter: blur(1px) hue-rotate(-5deg); }
+    }
+
+    /* Clarity Zone */
+    .clarity-zone {
+      position: fixed;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(240, 244, 255, 0.15) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 3;
+      opacity: 0;
+      transform: scale(0);
+      transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+
+    .clarity-zone.active {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    /* UI Layer */
+    .ui-layer {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 24px;
+      pointer-events: none;
+    }
+
+    /* Header */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      pointer-events: auto;
+    }
+
+    .title-block {
+      text-align: left;
+    }
+
+    .title {
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: 8px;
+      color: var(--clarity-white);
+      text-shadow: 0 0 30px rgba(240, 244, 255, 0.5);
+      margin-bottom: 4px;
+    }
+
+    .subtitle {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: rgba(240, 244, 255, 0.4);
+      letter-spacing: 3px;
+    }
+
+    /* Stats Panel */
+    .stats-panel {
+      display: flex;
+      gap: 16px;
+    }
+
+    .stat-box {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      padding: 12px 20px;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      text-align: center;
+      min-width: 90px;
+    }
+
+    .stat-value {
+      font-family: 'DM Mono', monospace;
+      font-size: 28px;
+      font-weight: 400;
+      color: var(--clarity-white);
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+
+    .stat-value.highlight {
+      color: var(--accent-gold);
+      text-shadow: 0 0 20px var(--accent-gold);
+    }
+
+    .stat-label {
+      font-size: 10px;
+      color: rgba(240, 244, 255, 0.5);
+      letter-spacing: 1px;
+    }
+
+    /* Center Prompt */
+    .center-prompt {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      pointer-events: none;
+      transition: opacity 0.5s ease;
+    }
+
+    .center-prompt.hidden {
+      opacity: 0;
+    }
+
+    .prompt-text {
+      font-size: 18px;
+      color: rgba(240, 244, 255, 0.6);
+      letter-spacing: 4px;
+      animation: pulse-text 3s ease-in-out infinite;
+    }
+
+    @keyframes pulse-text {
+      0%, 100% { opacity: 0.6; }
+      50% { opacity: 1; }
+    }
+
+    .prompt-hint {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: rgba(240, 244, 255, 0.3);
+      margin-top: 12px;
+      letter-spacing: 2px;
+    }
+
+    /* Footer */
+    .footer {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 32px;
+      pointer-events: auto;
+    }
+
+    .breath-indicator {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      border: 2px solid rgba(240, 244, 255, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: breath 8s ease-in-out infinite;
+      transition: all 0.3s ease;
+    }
+
+    .breath-indicator.active {
+      border-color: var(--accent-gold);
+      box-shadow: 0 0 30px rgba(251, 191, 36, 0.4);
+      animation: none;
+    }
+
+    .breath-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: rgba(240, 244, 255, 0.4);
+      transition: all 0.3s ease;
+    }
+
+    .breath-indicator.active .breath-dot {
+      background: var(--accent-gold);
+      box-shadow: 0 0 20px var(--accent-gold);
+    }
+
+    @keyframes breath {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.2); }
+    }
+
+    /* Clarity Flash Effect */
+    .clarity-flash {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at var(--x, 50%) var(--y, 50%), rgba(240, 244, 255, 0.3) 0%, transparent 50%);
+      pointer-events: none;
+      z-index: 5;
+      opacity: 0;
+      transition: opacity 0.1s ease;
+    }
+
+    .clarity-flash.active {
+      opacity: 1;
+    }
+
+    /* Quote Panel */
+    .quote-panel {
+      position: fixed;
+      bottom: 100px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      padding: 20px 32px;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      max-width: 500px;
+      text-align: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.5s ease, transform 0.5s ease;
+      z-index: 15;
+    }
+
+    .quote-panel.visible {
+      opacity: 1;
+    }
+
+    .quote-text {
+      font-size: 16px;
+      line-height: 1.8;
+      color: var(--clarity-white);
+      margin-bottom: 8px;
+    }
+
+    .quote-author {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: rgba(240, 244, 255, 0.4);
+    }
+
+    /* Mobile Responsive */
+    @media (max-width: 768px) {
+      .ui-layer {
+        padding: 16px;
+      }
+
+      .title {
+        font-size: 20px;
+        letter-spacing: 4px;
+      }
+
+      .stats-panel {
+        gap: 8px;
+      }
+
+      .stat-box {
+        padding: 8px 12px;
+        min-width: 70px;
+      }
+
+      .stat-value {
+        font-size: 20px;
+      }
+
+      .prompt-text {
+        font-size: 14px;
+      }
+
+      .footer {
+        gap: 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Particle Background -->
+  <canvas class="particle-bg" id="particleBg"></canvas>
+
+  <!-- Noise Layer -->
+  <div class="noise-layer" id="noiseLayer"></div>
+
+  <!-- Clarity Flash -->
+  <div class="clarity-flash" id="clarityFlash"></div>
+
+  <!-- Thoughts Container -->
+  <div id="thoughtsContainer"></div>
+
+  <!-- UI Layer -->
+  <div class="ui-layer">
+    <div class="header">
+      <div class="title-block">
+        <h1 class="title">意識之鏡</h1>
+        <p class="subtitle">MIRROR OF CONSCIOUSNESS</p>
+      </div>
+      <div class="stats-panel">
+        <div class="stat-box">
+          <div class="stat-value" id="clarityCount">0</div>
+          <div class="stat-label">CLARITY</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-value highlight" id="maxStreak">0</div>
+          <div class="stat-label">STREAK</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="center-prompt" id="centerPrompt">
+      <p class="prompt-text">點擊召喚清明</p>
+      <p class="prompt-hint">CLICK TO SUMMON CLARITY</p>
+    </div>
+
+    <div class="footer">
+      <div class="breath-indicator" id="breathIndicator">
+        <div class="breath-dot"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quote Panel -->
+  <div class="quote-panel" id="quotePanel">
+    <p class="quote-text" id="quoteText"></p>
+    <p class="quote-author" id="quoteAuthor"></p>
+  </div>
+
+  <script>
+    // ===== CONFIGURATION =====
+    const THOUGHTS = [
+      '明天要買什麼', '會議要說什麼', '錢不夠用', '誰在想我', '肚子好餓',
+      '臉書有新訊息', '要減肥了', 'IG讚好少', '工作堆積', 'email回了沒',
+      '那人怎麼看我的', '手機沒電', '待辦事項', '水喝太少', '運動要持續',
+      '該睡了', '早餐吃什麼', '老闆不高興', '客戶問題', '家裡要打掃',
+      '要學新技能', '時間不夠', '這投資好嗎', '擔心未來', '後悔過去',
+      '社交媒體', '别人怎麼看我', '身體好累', '睡不著', '太焦慮了',
+      'what if...', 'should have', 'need to do', 'forgot to', 'must remember',
+      'maybe later', 'probably not', 'probably yes', 'maybe no', 'not sure',
+      '???', '...', 'why', 'how', 'when', 'where', 'who', 'what'
+    ];
+
+    const QUOTES = [
+      { text: '人們花 95% 的力氣解題，卻只花 5% 選擇正確的問題。', author: '哈拉瑞' },
+      { text: '連續專注呼吸 5 秒都做不到，各種幻想記憶立馬入侵。', author: '哈拉瑞' },
+      { text: '資訊不等於真相。真相昂貴且罕見。', author: '哈拉瑞' },
+      { text: '清意識就是力量。', author: '哈拉瑞' },
+      { text: '真正的智慧是知道自己的無知。', author: '蘇格拉底' },
+      { text: '覺察是改變的第一步。', author: '一行禪師' },
+      { text: '過去已成記憶，未來尚未到來，只有當下是真的。', author: '一行禪師' },
+      { text: '心猿意馬，是修行必經之路。', author: '慧能禪師' },
+      { text: '活在當下，是最珍貴的禮物。', author: '一行禪師' }
+    ];
+
+    const THOUGHT_COLORS = ['', 'type-pink', 'type-cyan', 'type-gold'];
+
+    // ===== STATE =====
+    let clarityCount = 0;
+    let currentStreak = 0;
+    let maxStreak = parseInt(localStorage.getItem('consciousness_maxStreak') || '0');
+    let thoughts = [];
+    let isCleared = false;
+    let clearTimer = null;
+
+    // ===== DOM ELEMENTS =====
+    const particleBg = document.getElementById('particleBg');
+    const noiseLayer = document.getElementById('noiseLayer');
+    const thoughtsContainer = document.getElementById('thoughtsContainer');
+    const clarityFlash = document.getElementById('clarityFlash');
+    const clarityCountEl = document.getElementById('clarityCount');
+    const maxStreakEl = document.getElementById('maxStreak');
+    const centerPrompt = document.getElementById('centerPrompt');
+    const breathIndicator = document.getElementById('breathIndicator');
+    const quotePanel = document.getElementById('quotePanel');
+    const quoteText = document.getElementById('quoteText');
+    const quoteAuthor = document.getElementById('quoteAuthor');
+
+    // ===== PARTICLE BACKGROUND =====
+    const ctx = particleBg.getContext('2d');
+    let particles = [];
+
+    function resizeCanvas() {
+      particleBg.width = window.innerWidth;
+      particleBg.height = window.innerHeight;
+    }
+
+    function createParticles() {
+      particles = [];
+      const count = Math.floor((window.innerWidth * window.innerHeight) / 15000);
+      for (let i = 0; i < count; i++) {
+        particles.push({
+          x: Math.random() * particleBg.width,
+          y: Math.random() * particleBg.height,
+          size: Math.random() * 1.5 + 0.5,
+          speedX: (Math.random() - 0.5) * 0.3,
+          speedY: (Math.random() - 0.5) * 0.3,
+          opacity: Math.random() * 0.5 + 0.2
+        });
+      }
+    }
+
+    function drawParticles() {
+      ctx.clearRect(0, 0, particleBg.width, particleBg.height);
+      
+      particles.forEach(p => {
+        p.x += p.speedX;
+        p.y += p.speedY;
+
+        if (p.x < 0) p.x = particleBg.width;
+        if (p.x > particleBg.width) p.x = 0;
+        if (p.y < 0) p.y = particleBg.height;
+        if (p.y > particleBg.height) p.y = 0;
+
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(240, 244, 255, ${p.opacity})`;
+        ctx.fill();
+      });
+
+      requestAnimationFrame(drawParticles);
+    }
+
+    // ===== THOUGHTS GENERATION =====
+    function createThought() {
+      const thought = document.createElement('div');
+      thought.className = 'thought ' + THOUGHT_COLORS[Math.floor(Math.random() * THOUGHT_COLORS.length)];
+      thought.textContent = THOUGHTS[Math.floor(Math.random() * THOUGHTS.length)];
+      
+      const x = Math.random() * (window.innerWidth - 200);
+      const y = Math.random() * (window.innerHeight - 100);
+      thought.style.left = x + 'px';
+      thought.style.top = y + 'px';
+      
+      thoughtsContainer.appendChild(thought);
+      thoughts.push(thought);
+
+      // Remove old thoughts if too many
+      if (thoughts.length > 25) {
+        const old = thoughts.shift();
+        old.remove();
+      }
+
+      // Schedule next thought
+      const delay = isCleared ? 3000 : (1000 + Math.random() * 2000);
+      setTimeout(createThought, delay);
+    }
+
+    // ===== CLARITY EFFECT =====
+    function triggerClarity(x, y) {
+      // Update flash position
+      clarityFlash.style.setProperty('--x', x + 'px');
+      clarityFlash.style.setProperty('--y', y + 'px');
+      clarityFlash.classList.add('active');
+      
+      setTimeout(() => {
+        clarityFlash.classList.remove('active');
+      }, 300);
+
+      // Update stats
+      clarityCount++;
+      currentStreak++;
+      if (currentStreak > maxStreak) {
+        maxStreak = currentStreak;
+        localStorage.setItem('consciousness_maxStreak', maxStreak);
+      }
+      
+      clarityCountEl.textContent = clarityCount;
+      maxStreakEl.textContent = maxStreak;
+
+      // Hide prompt after first clarity
+      if (clarityCount === 1) {
+        centerPrompt.classList.add('hidden');
+      }
+
+      // Clear thoughts
+      isCleared = true;
+      noiseLayer.classList.add('cleared');
+      breathIndicator.classList.add('active');
+      
+      thoughts.forEach(t => t.classList.add('cleared'));
+
+      // Show quote occasionally
+      if (clarityCount % 5 === 0) {
+        showQuote();
+      }
+
+      // Reset after delay
+      if (clearTimer) clearTimeout(clearTimer);
+      clearTimer = setTimeout(() => {
+        isCleared = false;
+        noiseLayer.classList.remove('cleared');
+        breathIndicator.classList.remove('active');
+        thoughts.forEach(t => t.classList.remove('cleared'));
+      }, 3000 + Math.random() * 2000);
+    }
+
+    // ===== QUOTE DISPLAY =====
+    function showQuote() {
+      const quote = QUOTES[Math.floor(Math.random() * QUOTES.length)];
+      quoteText.textContent = quote.text;
+      quoteAuthor.textContent = '— ' + quote.author;
+      quotePanel.classList.add('visible');
+
+      setTimeout(() => {
+        quotePanel.classList.remove('visible');
+      }, 5000);
+    }
+
+    // ===== EVENT LISTENERS =====
+    document.addEventListener('click', (e) => {
+      triggerClarity(e.clientX, e.clientY);
+    });
+
+    document.addEventListener('touchstart', (e) => {
+      const touch = e.touches[0];
+      triggerClarity(touch.clientX, touch.clientY);
+    });
+
+    window.addEventListener('resize', () => {
+      resizeCanvas();
+      createParticles();
+    });
+
+    // ===== INITIALIZATION =====
+    function init() {
+      resizeCanvas();
+      createParticles();
+      drawParticles();
+      
+      // Initialize display
+      clarityCountEl.textContent = clarityCount;
+      maxStreakEl.textContent = maxStreak;
+
+      // Start generating thoughts
+      createThought();
+      setTimeout(createThought, 500);
+      setTimeout(createThought, 1200);
+      setTimeout(createThought, 2000);
+    }
+
+    init();
+  </script>
+</body>
+</html>
