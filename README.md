@@ -7,8 +7,8 @@
 *用一杯咖啡的時間，換一個讓世界多點樂趣的小玩具*
 
 ![License](https://img.shields.io/badge/license-MIT-green?style=for-the-badge&logo=mit)
-![Projects](https://img.shields.io/badge/專案數-41-blue?style=for-the-badge)
-![Streak](https://img.shields.io/badge/連續-40天-orange?style=for-the-badge)
+![Projects](https://img.shields.io/badge/專案數-42-blue?style=for-the-badge)
+![Streak](https://img.shields.io/badge/連續-41天-orange?style=for-the-badge)
 ![Coffee](https://img.shields.io/badge/消耗咖啡-☕☕☕☕☕☕☕☕☕☕-red?style=for-the-badge)
 
 </div>
@@ -17,16 +17,16 @@
 
 ## 🌟 本日精選
 
-<a href="https://chung223.github.io/daily-lab/2026-03-24/">
-<img src="https://custom-icon-badges.demolab.com/badge/點此體驗-2026--03--24-9d4edd?style=for-the-badge&logo=rocket" alt="Try Now">
+<a href="https://chung223.github.io/daily-lab/2026-03-25/">
+<img src="https://custom-icon-badges.demolab.com/badge/點此體驗-2026--03--25-9d4edd?style=for-the-badge&logo=rocket" alt="Try Now">
 </a>
 
 | 預覽 | 日期 | 專案 | 描述 |
 |:---:|:---:|:---:|---|
+| ⭐ | 03/25 | [Question Flow 問題之流](https://chung223.github.io/daily-lab/2026-03-25/) | 輸入問題化作字元粒子流、星空背景、哈拉瑞名言激勵 |
 | ⭐ | 03/24 | [意識之鏡 Mirror of Consciousness](https://chung223.github.io/daily-lab/2026-03-24/) | 意識探索互動體驗、清除心智雜訊、專注時長追蹤 |
 | ⭐ | 03/23 | [Memory Echo 記憶迴聲](https://chung223.github.io/daily-lab/2026-03-23/) | 記憶配對遊戲、翻牌故障效果、配對成功金色爆炸動畫 |
 | ⭐ | 03/22 | [露珠禪境 Dewdrop Zen](https://chung223.github.io/daily-lab/2026-03-22/) | 輸入思緒化作漂浮露珠、點擊產生漣漪、霧氣漂移、樹葉飄動 |
-| ⭐ | 03/21 | [Morse Pulse 摩斯脈衝](https://chung223.github.io/daily-lab/2026-03-21/) | 輸入文字即時轉換為摩斯密碼、Web Audio API 播放滴答聲 |
 
 ---
 
@@ -37,6 +37,7 @@
 
 | 日期 | 專案 | 描述 |
 |:---:|---:|---|
+| 03/25 | 💫 [Question Flow 問題之流](https://chung223.github.io/daily-lab/2026-03-25/) | 輸入問題化作字元粒子流、星空背景、哈拉瑞名言激勵 |
 | 03/21 | 📡 [Morse Pulse 摩斯脈衝](https://chung223.github.io/daily-lab/2026-03-21/) | 輸入文字即時轉換為摩斯密碼、Web Audio API 播放滴答聲 |
 | 03/20 | 🌌 [銀河筆刷 Galaxy Brush](https://chung223.github.io/daily-lab/2026-03-20/) | 互動式星雲繪畫體驗、拖曳滑鼠創建流動的銀河粒子軌跡 |
 | 03/15 | ⭐ [數位流星雨 Digital Meteor Shower](https://chung223.github.io/daily-lab/2026-03-15/) | Matrix 風格數位雨動畫、輸入文字轉化為掉落字符 |
@@ -130,8 +131,8 @@
      ╔═══════════════════════════╗
      ║     Daily Lab Stats       ║
      ╠═══════════════════════════╣
-     ║  📦 總專案數: 41+         ║
-     ║  🔥 連續產出: 40 天        ║
+     ║  📦 總專案數: 42+         ║
+     ║  🔥 連續產出: 41 天        ║
      ║  ⏰ 平均產出時間: 3:00 AM  ║
      ║  ☕ 消耗咖啡: ☕☕☕☕☕☕☕☕☕         ║
      ║  🐛 Bug 數: 數不清        ║
