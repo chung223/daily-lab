@@ -1,11 +1,25 @@
 # Daily Lab Changelog
 
-*Updated: 2026-03-25 03:30*
+*Updated: 2026-03-26 03:40*
 
 # Changelog — daily-lab
 
 Changes since 2026-02-01:
 
+- `264dadd` Daily Lab 2026-03-25 — *chung0223* (2026-03-25)
+- `32c5a97` docs: update changelog 2026-03-25 — *chung0223* (2026-03-25)
+- `3eff945` feat: Question Oracle (2026-03-25) - move to daily-lab — *chung0223* (2026-03-25)
+- `28301ed` feat: Question Oracle (2026-03-25) — *chung0223* (2026-03-25)
+- `1b8885d` feat: 意識之鏡 (Mirror of Consciousness) - 2026-03-24 — *chung0223* (2026-03-24)
+- `d785753` docs: update LOG for 2026-03-23 Memory Echo — *chung0223* (2026-03-23)
+- `57613a7` feat: Memory Echo (2026-03-23) — *chung0223* (2026-03-23)
+- `bc881a1` Update LOG.md with project-20260322 entry — *chung0223* (2026-03-22)
+- `d881b8a` project-20260322: 露珠禪境 (Dewdrop Zen) — *chung0223* (2026-03-22)
+- `1c4f39a` project-20260322: 露珠禪境 (Dewdrop Zen) — *chung0223* (2026-03-22)
+- `0128f9d` docs: update LOG for Morse Pulse project — *chung0223* (2026-03-21)
+- `411a20d` feat: Morse Pulse - 摩斯脈衝訊號轉換器 — *chung0223* (2026-03-21)
+- `96fd4fb` docs: update LOG.md 2026-03-20 — *chung0223* (2026-03-20)
+- `8fdbe21` feat: MagicUI demo page — *chung0223* (2026-03-16)
 - `d5e99bd` Daily Lab 2026-03-24: 意識之鏡 Mirror of Consciousness — *chung0223* (2026-03-24)
 - `4f0d06b` docs: update changelog 2026-03-24 — *chung0223* (2026-03-24)
 - `686c85b` Daily Lab 2026-03-23 — *chung0223* (2026-03-23)
