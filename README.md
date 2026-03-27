@@ -7,8 +7,8 @@
 *用一杯咖啡的時間，換一個讓世界多點樂趣的小玩具*
 
 ![License](https://img.shields.io/badge/license-MIT-green?style=for-the-badge&logo=mit)
-![Projects](https://img.shields.io/badge/專案數-44-blue?style=for-the-badge)
-![Streak](https://img.shields.io/badge/連續-43天-orange?style=for-the-badge)
+![Projects](https://img.shields.io/badge/專案數-45-blue?style=for-the-badge)
+![Streak](https://img.shields.io/badge/連續-44天-orange?style=for-the-badge)
 ![Coffee](https://img.shields.io/badge/消耗咖啡-☕☕☕☕☕☕☕☕☕☕☕-red?style=for-the-badge)
 
 </div>
@@ -23,10 +23,10 @@
 
 | 預覽 | 日期 | 專案 | 描述 |
 |:---:|:---:|:---:|---|
+| ⭐ | 03/28 | [Cyber Dice Roller 命運骰子](https://chung223.github.io/daily-lab/2026-03-28/) | 3D 互動骰子體驗、霓虹 cyber 風格、星空背景與動態粒子 |
 | ⭐ | 03/27 | [命運之弦 String of Fate](https://chung223.github.io/daily-lab/2026-03-27/) | 輸入思緒化作宇宙中的震動之弦、點擊共鳴效果、星空宇宙背景 |
 | ⭐ | 03/26 | [時間之結 Time Knot](https://chung223.github.io/daily-lab/2026-03-26/) | 輸入想法化作發光結點漂浮宇宙空間、結點動態連線、漣漪粒子效果 |
 | ⭐ | 03/25 | [Question Flow 問題之流](https://chung223.github.io/daily-lab/2026-03-25/) | 輸入問題化作字元粒子流、星空背景、哈拉瑞名言激勵 |
-| ⭐ | 03/24 | [意識之鏡 Mirror of Consciousness](https://chung223.github.io/daily-lab/2026-03-24/) | 意識探索互動體驗、清除心智雜訊、專注時長追蹤 |
 
 ---
 
@@ -97,6 +97,7 @@
 
 | 日期 | 專案 | 描述 |
 |:---:|---:|---|
+| 03/28 | 🎲 [Cyber Dice Roller 命運骰子](https://chung223.github.io/daily-lab/2026-03-28/) | 3D 互動骰子體驗、霓虹 cyber 風格、星空背景與動態粒子 |
 | 03/23 | 🧠 [Memory Echo 記憶迴聲](https://chung223.github.io/daily-lab/2026-03-23/) | 記憶配對遊戲、故障藝術風格、翻牌特效、金色爆炸動畫 |
 | 03/16 | ⭐ [Rhythm Breaker 節奏粉碎者](https://chung223.github.io/daily-lab/2026-03-16/) | 節奏點擊遊戲、120 BPM 節拍、Combo 倍分系統 |
 | 03/12 | 🐍 [Cyber Snake 賽博蛇蛇](https://chung223.github.io/daily-lab/2026-03-12/) | 經典貪食蛇遊戲、霓虹視覺效果、3 種道具系統 |
@@ -133,8 +134,8 @@
      ╔═══════════════════════════╗
      ║     Daily Lab Stats       ║
      ╠═══════════════════════════╣
-     ║  📦 總專案數: 44+         ║
-     ║  🔥 連續產出: 43 天        ║
+     ║  📦 總專案數: 45+         ║
+     ║  🔥 連續產出: 44 天        ║
      ║  ⏰ 平均產出時間: 3:00 AM  ║
      ║  ☕ 消耗咖啡: ☕☕☕☕☕☕☕☕☕☕☕         ║
      ║  🐛 Bug 數: 數不清        ║

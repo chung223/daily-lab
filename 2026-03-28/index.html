@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎲 Cyber Dice Roller - 命運骰子</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        /* 主題色彩 */
+        :root {
+            --primary: #00f5ff;
+            --secondary: #a855f7;
+            --accent: #fbbf24;
+            --background: #050508;
+            --text: #e0e7ff;
+            --glow: #ff6b9d;
+            --neon-pink: #ff2d95;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background: var(--background);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* 星空背景 */
+        .starfield {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .star {
+            position: absolute;
+            background: #fff;
+            border-radius: 50%;
+            animation: twinkle 3s infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+
+        /* 噪音覆蓋 */
+        .noise {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+            opacity: 0.03;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+        }
+
+        /* 主容器 */
+        .container {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2rem;
+            padding: 1rem;
+            max-width: 100%;
+        }
+
+        /* 標題 */
+        .title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: clamp(1.5rem, 5vw, 2.5rem);
+            font-weight: 900;
+            background: linear-gradient(135deg, #00f5ff, #a855f7, #fbbf24);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 0 30px rgba(0, 245, 255, 0.3);
+            letter-spacing: 0.1em;
+            text-align: center;
+        }
+
+        /* 骰子容器 */
+        .dice-area {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            perspective: 1000px;
+            cursor: pointer;
+        }
+
+        .dice {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.1s ease-out;
+        }
+
+        .dice.rolling {
+            animation: roll 1.5s ease-out;
+        }
+
+        @keyframes roll {
+            0% { transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg); }
+            20% { transform: rotateX(180deg) rotateY(90deg) rotateZ(45deg); }
+            40% { transform: rotateX(360deg) rotateY(180deg) rotateZ(90deg); }
+            60% { transform: rotateX(540deg) rotateY(270deg) rotateZ(180deg); }
+            80% { transform: rotateX(720deg) rotateY(360deg) rotateZ(270deg); }
+            100% { transform: rotateX(var(--final-x)) rotateY(var(--final-y)) rotateZ(0deg); }
+        }
+
+        .dice-face {
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            background: linear-gradient(145deg, #0a0a15, #151525);
+            border: 2px solid #00f5ff;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 6rem;
+            font-weight: 900;
+            color: #00f5ff;
+            text-shadow: 
+                0 0 20px #00f5ff,
+                0 0 40px #00f5ff,
+                0 0 60px rgba(0, 245, 255, 0.5);
+            box-shadow: 
+                inset 0 0 30px rgba(0, 245, 255, 0.1),
+                0 0 20px rgba(0, 245, 255, 0.3);
+            backface-visibility: hidden;
+        }
+
+        .dice-face.show {
+            display: flex;
+        }
+
+        .dice-face.hide {
+            display: none;
+        }
+
+        /* 骰子面的位置 */
+        .face-1 { transform: rotateY(0deg) translateZ(100px); }
+        .face-6 { transform: rotateY(180deg) translateZ(100px); }
+        .face-2 { transform: rotateY(90deg) translateZ(100px); }
+        .face-5 { transform: rotateY(-90deg) translateZ(100px); }
+        .face-3 { transform: rotateX(90deg) translateZ(100px); }
+        .face-4 { transform: rotateX(-90deg) translateZ(100px); }
+
+        /* 結果數字 */
+        .result-display {
+            font-family: 'Orbitron', sans-serif;
+            font-size: clamp(4rem, 15vw, 8rem);
+            font-weight: 900;
+            color: #fbbf24;
+            text-shadow: 
+                0 0 20px #fbbf24,
+                0 0 40px #fbbf24,
+                0 0 80px rgba(251, 191, 36, 0.5);
+            opacity: 0;
+            transform: scale(0.5);
+            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .result-display.show {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        /* 玻璃卡片 */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 245, 255, 0.2);
+            border-radius: 16px;
+            padding: 1.5rem;
+            text-align: center;
+            width: 100%;
+            max-width: 350px;
+            box-shadow: 
+                0 8px 32px rgba(0, 0, 0, 0.3),
+                inset 0 0 20px rgba(0, 245, 255, 0.05);
+        }
+
+        /* 擲骰按鈕 */
+        .roll-btn {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 700;
+            padding: 1rem 3rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border: none;
+            border-radius: 50px;
+            color: var(--background);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .roll-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .roll-btn:hover::before {
+            left: 100%;
+        }
+
+        .roll-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 
+                0 0 30px rgba(0, 245, 255, 0.5),
+                0 0 60px rgba(168, 85, 247, 0.3),
+                0 0 90px rgba(255, 45, 149, 0.2);
+        }
+
+        .roll-btn:active {
+            transform: scale(0.95);
+        }
+
+        .roll-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* 按鈕脈動動畫 */
+        .roll-btn::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%);
+            transform: translate(-50%, -50%) scale(0);
+            border-radius: 50%;
+            opacity: 0;
+        }
+
+        .roll-btn.charging::after {
+            animation: charge 0.3s ease-out;
+        }
+
+        @keyframes charge {
+            0% {
+                transform: translate(-50%, -50%) scale(0);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(-50%, -50%) scale(2);
+                opacity: 0;
+            }
+        }
+
+        /* 命運語錄 */
+        .fortune-text {
+            font-family: 'Noto Sans TC', sans-serif;
+            font-size: 1rem;
+            color: #e0e7ff;
+            line-height: 1.8;
+            margin-top: 1rem;
+            min-height: 3rem;
+            opacity: 0.8;
+        }
+
+        .fortune-text::before {
+            content: '「';
+            color: #a855f7;
+            font-size: 1.5rem;
+        }
+
+        .fortune-text::after {
+            content: '」';
+            color: #a855f7;
+            font-size: 1.5rem;
+        }
+
+        /* 統計 */
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            gap: 1rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #00f5ff;
+            text-shadow: 0 0 10px rgba(0, 245, 255, 0.5);
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            color: rgba(224, 231, 255, 0.6);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-top: 0.25rem;
+        }
+
+        /* 粒子系統 */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 5;
+        }
+
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            animation: particle-float 2s ease-out forwards;
+        }
+
+        @keyframes particle-float {
+            0% {
+                opacity: 1;
+                transform: translate(0, 0) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translate(var(--tx), var(--ty)) scale(0);
+            }
+        }
+
+        /* 選擇骰子數量 */
+        .dice-selector {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .dice-option {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.9rem;
+            padding: 0.5rem 1rem;
+            background: rgba(0, 245, 255, 0.1);
+            border: 1px solid rgba(0, 245, 255, 0.3);
+            border-radius: 8px;
+            color: #e0e7ff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .dice-option:hover {
+            background: rgba(0, 245, 255, 0.2);
+        }
+
+        .dice-option.active {
+            background: linear-gradient(135deg, #00f5ff, #a855f7);
+            color: #050508;
+            border-color: transparent;
+        }
+
+        /* 總和顯示 */
+        .sum-display {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.2rem;
+            color: #a855f7;
+            margin-top: 0.5rem;
+        }
+
+        .sum-display span {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #fbbf24;
+            text-shadow: 0 0 15px rgba(251, 191, 36, 0.5);
+        }
+
+        /* 歷史記錄 */
+        .history {
+            margin-top: 1rem;
+            max-height: 120px;
+            overflow-y: auto;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            justify-content: center;
+        }
+
+        .history-item {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.8rem;
+            padding: 0.25rem 0.75rem;
+            background: rgba(168, 85, 247, 0.2);
+            border: 1px solid rgba(168, 85, 247, 0.3);
+            border-radius: 20px;
+            color: #e0e7ff;
+        }
+
+        /* 滾動條美化 */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(0, 245, 255, 0.3);
+            border-radius: 3px;
+        }
+
+        /* 響應式 */
+        @media (max-width: 480px) {
+            .container {
+                gap: 1.5rem;
+            }
+
+            .dice-area {
+                width: 150px;
+                height: 150px;
+            }
+
+            .dice-face {
+                width: 150px;
+                height: 150px;
+                font-size: 4rem;
+                border-radius: 15px;
+            }
+
+            .face-1 { transform: rotateY(0deg) translateZ(75px); }
+            .face-6 { transform: rotateY(180deg) translateZ(75px); }
+            .face-2 { transform: rotateY(90deg) translateZ(75px); }
+            .face-5 { transform: rotateY(-90deg) translateZ(75px); }
+            .face-3 { transform: rotateX(90deg) translateZ(75px); }
+            .face-4 { transform: rotateX(-90deg) translateZ(75px); }
+
+            .glass-card {
+                padding: 1rem;
+            }
+
+            .roll-btn {
+                padding: 0.8rem 2rem;
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 星空背景 -->
+    <div class="starfield" id="starfield"></div>
+    
+    <!-- 噪音覆蓋 -->
+    <div class="noise"></div>
+    
+    <!-- 粒子系統 -->
+    <div class="particles" id="particles"></div>
+
+    <!-- 主容器 -->
+    <div class="container">
+        <h1 class="title">命運骰子</h1>
+
+        <!-- 骰子數量選擇 -->
+        <div class="dice-selector">
+            <button class="dice-option active" data-count="1">🎲 x1</button>
+            <button class="dice-option" data-count="2">🎲 x2</button>
+            <button class="dice-option" data-count="3">🎲 x3</button>
+        </div>
+
+        <!-- 骰子區域 -->
+        <div class="dice-area" id="diceArea">
+            <div class="dice" id="dice">
+                <div class="dice-face face-1 show">1</div>
+                <div class="dice-face face-2 hide">2</div>
+                <div class="dice-face face-3 hide">3</div>
+                <div class="dice-face face-4 hide">4</div>
+                <div class="dice-face face-5 hide">5</div>
+                <div class="dice-face face-6 hide">6</div>
+            </div>
+        </div>
+
+        <!-- 結果顯示 -->
+        <div class="result-display" id="resultDisplay">?</div>
+
+        <!-- 總和顯示 -->
+        <div class="sum-display" id="sumDisplay" style="display: none;">
+            總和: <span id="sumValue">0</span>
+        </div>
+
+        <!-- 玻璃卡片 -->
+        <div class="glass-card">
+            <button class="roll-btn" id="rollBtn">擲骰</button>
+            <p class="fortune-text" id="fortuneText">點擊擲骰，命運將揭曉...</p>
+            
+            <div class="stats">
+                <div class="stat-item">
+                    <div class="stat-value" id="totalRolls">0</div>
+                    <div class="stat-label">總擲骰次</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="maxRecord">-</div>
+                    <div class="stat-label">最高總和</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="luckyCount">0</div>
+                    <div class="stat-label">幸運次數</div>
+                </div>
+            </div>
+
+            <div class="history" id="history"></div>
+        </div>
+    </div>
+
+    <script>
+        // ========== 狀態管理 ==========
+        const state = {
+            diceCount: 1,
+            isRolling: false,
+            totalRolls: 0,
+            maxRecord: 0,
+            luckyCount: 0,
+            history: [],
+            results: []
+        };
+
+        // ========== 載入 localStorage ==========
+        function loadState() {
+            const saved = localStorage.getItem('cyberDiceState');
+            if (saved) {
+                const data = JSON.parse(saved);
+                state.totalRolls = data.totalRolls || 0;
+                state.maxRecord = data.maxRecord || 0;
+                state.luckyCount = data.luckyCount || 0;
+                state.history = data.history || [];
+            }
+            updateStats();
+            renderHistory();
+        }
+
+        // ========== 保存 localStorage ==========
+        function saveState() {
+            localStorage.setItem('cyberDiceState', JSON.stringify({
+                totalRolls: state.totalRolls,
+                maxRecord: state.maxRecord,
+                luckyCount: state.luckyCount,
+                history: state.history.slice(-20) // 只保留最近20條
+            }));
+        }
+
+        // ========== 更新統計顯示 ==========
+        function updateStats() {
+            document.getElementById('totalRolls').textContent = state.totalRolls;
+            document.getElementById('maxRecord').textContent = state.maxRecord || '-';
+            document.getElementById('luckyCount').textContent = state.luckyCount;
+        }
+
+        // ========== 渲染歷史記錄 ==========
+        function renderHistory() {
+            const container = document.getElementById('history');
+            container.innerHTML = state.history.map(h => 
+                `<span class="history-item">${h}</span>`
+            ).join('');
+        }
+
+        // ========== 命運語錄 ==========
+        const fortunes = [
+            "每一次擲骰都是與命運的對話",
+            "骰子不會說謊，但會開玩笑",
+            "最大的冒險是接受隨機",
+            "命運掌握在六面之間",
+            "當你不確定時，讓骰子決定",
+            "每一個數字都是可能的起點",
+            "隨機不是混亂，是無限可能",
+            "宇宙在硬幣和骰子中顯現",
+            "相信機率，也相信奇蹟",
+            "骰子落下時，一切都已決定"
+        ];
+
+        function getFortune() {
+            return fortunes[Math.floor(Math.random() * fortunes.length)];
+        }
+
+        // ========== 幸運判定 ==========
+        function isLucky(results) {
+            const sum = results.reduce((a, b) => a + b, 0);
+            const maxPossible = results.length * 6;
+            // 最高可能總和的 80% 以上視為幸運
+            return sum >= maxPossible * 0.85;
+        }
+
+        // ========== 創建星空背景 ==========
+        function createStarfield() {
+            const container = document.getElementById('starfield');
+            const starCount = Math.min(100, Math.floor(window.innerWidth * window.innerHeight / 8000));
+            
+            for (let i = 0; i < starCount; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.width = (Math.random() * 2 + 1) + 'px';
+                star.style.height = star.style.width;
+                star.style.animationDelay = Math.random() * 3 + 's';
+                star.style.animationDuration = (Math.random() * 2 + 2) + 's';
+                container.appendChild(star);
+            }
+        }
+
+        // ========== 粒子爆炸效果 ==========
+        function createParticles(x, y, color = '#fbbf24') {
+            const container = document.getElementById('particles');
+            const particleCount = 20;
+
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                const size = Math.random() * 8 + 4;
+                particle.style.width = size + 'px';
+                particle.style.height = size + 'px';
+                particle.style.background = color;
+                particle.style.boxShadow = `0 0 ${size * 2}px ${color}`;
+                particle.style.left = x + 'px';
+                particle.style.top = y + 'px';
+                
+                const angle = (Math.PI * 2 / particleCount) * i;
+                const distance = Math.random() * 100 + 50;
+                particle.style.setProperty('--tx', Math.cos(angle) * distance + 'px');
+                particle.style.setProperty('--ty', Math.sin(angle) * distance + 'px');
+                
+                container.appendChild(particle);
+                
+                setTimeout(() => particle.remove(), 2000);
+            }
+        }
+
+        // ========== 滾動動畫 ==========
+        async function rollDice() {
+            if (state.isRolling) return;
+            state.isRolling = true;
+
+            const dice = document.getElementById('dice');
+            const resultDisplay = document.getElementById('resultDisplay');
+            const rollBtn = document.getElementById('rollBtn');
+            const diceArea = document.getElementById('diceArea');
+
+            rollBtn.disabled = true;
+            resultDisplay.classList.remove('show');
+
+            // 蓄能動畫
+            rollBtn.classList.add('charging');
+            await new Promise(resolve => setTimeout(resolve, 300));
+            rollBtn.classList.remove('charging');
+
+            // 擲骰結果
+            state.results = [];
+            for (let i = 0; i < state.diceCount; i++) {
+                state.results.push(Math.floor(Math.random() * 6) + 1);
+            }
+
+            // 動畫
+            dice.classList.add('rolling');
+
+            // 動畫過程中的視覺效果
+            let animCount = 0;
+            const animInterval = setInterval(() => {
+                const tempResult = Math.floor(Math.random() * 6) + 1;
+                showDiceFace(tempResult);
+                animCount++;
+            }, 150);
+
+            // 等待動畫結束
+            await new Promise(resolve => setTimeout(resolve, 1500));
+            
+            clearInterval(animInterval);
+            dice.classList.remove('rolling');
+
+            // 顯示最終結果
+            const finalResult = state.results[0]; // 主骰子
+            const sum = state.results.reduce((a, b) => a + b, 0);
+
+            // 設置骰子旋轉角度
+            const rotations = {
+                1: { x: 0, y: 0 },
+                2: { x: 0, y: 90 },
+                3: { x: -90, y: 0 },
+                4: { x: 90, y: 0 },
+                5: { x: 0, y: -90 },
+                6: { x: 0, y: 180 }
+            };
+
+            dice.style.setProperty('--final-x', rotations[finalResult].x + 'deg');
+            dice.style.setProperty('--final-y', rotations[finalResult].y + 'deg');
+            
+            // 顯示骰子面
+            showDiceFace(finalResult);
+
+            // 延遲顯示結果數字
+            setTimeout(() => {
+                if (state.diceCount === 1) {
+                    resultDisplay.textContent = finalResult;
+                    document.getElementById('sumDisplay').style.display = 'none';
+                } else {
+                    resultDisplay.textContent = state.results.join(' + ');
+                    document.getElementById('sumDisplay').style.display = 'block';
+                    document.getElementById('sumValue').textContent = sum;
+                }
+                resultDisplay.classList.add('show');
+
+                // 粒子效果
+                const rect = diceArea.getBoundingClientRect();
+                const isLuckyResult = isLucky(state.results);
+                createParticles(
+                    rect.left + rect.width / 2,
+                    rect.top + rect.height / 2,
+                    isLuckyResult ? '#fbbf24' : '#00f5ff'
+                );
+
+                // 幸運額外效果
+                if (isLuckyResult) {
+                    createParticles(
+                        rect.left + rect.width / 2,
+                        rect.top + rect.height / 2,
+                        '#ff2d95'
+                    );
+                    createParticles(
+                        rect.left + rect.width / 2,
+                        rect.top + rect.height / 2,
+                        '#a855f7'
+                    );
+                }
+
+                // 更新統計
+                state.totalRolls++;
+                if (sum > state.maxRecord) {
+                    state.maxRecord = sum;
+                }
+                if (isLuckyResult) {
+                    state.luckyCount++;
+                }
+
+                // 添加歷史
+                state.history.push(sum);
+                if (state.history.length > 20) state.history.shift();
+
+                saveState();
+                updateStats();
+                renderHistory();
+
+                // 更新語錄
+                document.getElementById('fortuneText').textContent = getFortune();
+
+                rollBtn.disabled = false;
+                state.isRolling = false;
+            }, 500);
+        }
+
+        // ========== 顯示骰子面 ==========
+        function showDiceFace(value) {
+            const faces = document.querySelectorAll('.dice-face');
+            faces.forEach((face, index) => {
+                if (index + 1 === value) {
+                    face.classList.remove('hide');
+                    face.classList.add('show');
+                } else {
+                    face.classList.remove('show');
+                    face.classList.add('hide');
+                }
+            });
+        }
+
+        // ========== 骰子數量選擇 ==========
+        function setupDiceSelector() {
+            const options = document.querySelectorAll('.dice-option');
+            options.forEach(opt => {
+                opt.addEventListener('click', () => {
+                    options.forEach(o => o.classList.remove('active'));
+                    opt.classList.add('active');
+                    state.diceCount = parseInt(opt.dataset.count);
+                });
+            });
+        }
+
+        // ========== 初始化 ==========
+        document.addEventListener('DOMContentLoaded', () => {
+            createStarfield();
+            loadState();
+            setupDiceSelector();
+
+            document.getElementById('rollBtn').addEventListener('click', rollDice);
+            
+            // 點擊骰子也可以擲骰
+            document.getElementById('diceArea').addEventListener('click', rollDice);
+
+            // 鍵盤支援
+            document.addEventListener('keydown', (e) => {
+                if (e.code === 'Space' || e.code === 'Enter') {
+                    e.preventDefault();
+                    rollDice();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
