@@ -7,8 +7,8 @@
 *用一杯咖啡的時間，換一個讓世界多點樂趣的小玩具*
 
 ![License](https://img.shields.io/badge/license-MIT-green?style=for-the-badge&logo=mit)
-![Projects](https://img.shields.io/badge/專案數-45-blue?style=for-the-badge)
-![Streak](https://img.shields.io/badge/連續-44天-orange?style=for-the-badge)
+![Projects](https://img.shields.io/badge/專案數-46-blue?style=for-the-badge)
+![Streak](https://img.shields.io/badge/連續-45天-orange?style=for-the-badge)
 ![Coffee](https://img.shields.io/badge/消耗咖啡-☕☕☕☕☕☕☕☕☕☕☕-red?style=for-the-badge)
 
 </div>
@@ -23,10 +23,9 @@
 
 | 預覽 | 日期 | 專案 | 描述 |
 |:---:|:---:|:---:|---|
+| ⭐ | 03/29 | [QR Forge](https://chung223.github.io/daily-lab/2026-03-29/) | Cyberpunk-styled QR code generator, real-time generation, download as PNG, history tracking |
 | ⭐ | 03/28 | [Cyber Dice Roller 命運骰子](https://chung223.github.io/daily-lab/2026-03-28/) | 3D 互動骰子體驗、霓虹 cyber 風格、星空背景與動態粒子 |
 | ⭐ | 03/27 | [命運之弦 String of Fate](https://chung223.github.io/daily-lab/2026-03-27/) | 輸入思緒化作宇宙中的震動之弦、點擊共鳴效果、星空宇宙背景 |
-| ⭐ | 03/26 | [時間之結 Time Knot](https://chung223.github.io/daily-lab/2026-03-26/) | 輸入想法化作發光結點漂浮宇宙空間、結點動態連線、漣漪粒子效果 |
-| ⭐ | 03/25 | [Question Flow 問題之流](https://chung223.github.io/daily-lab/2026-03-25/) | 輸入問題化作字元粒子流、星空背景、哈拉瑞名言激勵 |
 
 ---
 
@@ -85,6 +84,7 @@
 
 | 日期 | 專案 | 描述 |
 |:---:|:---:|---|
+| 03/29 | ⭐ [QR Forge](https://chung223.github.io/daily-lab/2026-03-29/) | Cyberpunk-styled QR code generator, real-time generation, download as PNG |
 | 03/13 | ⭐ [System Pulse Monitor 系統脈衝監控](https://chung223.github.io/daily-lab/2026-03-13/) | 系統健康儀表板、即時顯示磁碟/網路/延遲資訊 |
 | 03/05 | ⚡ [Prompt Forge](https://chung223.github.io/daily-lab/2026-03-05/) | AI 提示詞優化工具、打字機動畫輸出 |
 | 02/11 | ⏱️ [Focus Timer](https://chung223.github.io/daily-lab/2026-02-11/) | 單頁離線番茄鐘 |
@@ -134,8 +134,8 @@
      ╔═══════════════════════════╗
      ║     Daily Lab Stats       ║
      ╠═══════════════════════════╣
-     ║  📦 總專案數: 45+         ║
-     ║  🔥 連續產出: 44 天        ║
+     ║  📦 總專案數: 46+         ║
+     ║  🔥 連續產出: 45 天        ║
      ║  ⏰ 平均產出時間: 3:00 AM  ║
      ║  ☕ 消耗咖啡: ☕☕☕☕☕☕☕☕☕☕☕         ║
      ║  🐛 Bug 數: 數不清        ║

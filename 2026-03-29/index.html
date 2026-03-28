@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>星圖記憶 | Stellar Memory</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Noto+Sans+TC:wght@300;400;500&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg-deep: #030512;
+      --bg-mid: #0a0e1f;
+      --star-white: #f0f4ff;
+      --star-gold: #fbbf24;
+      --star-blue: #60a5fa;
+      --star-pink: #f472b6;
+      --star-cyan: #22d3ee;
+      --accent-gold: #d4af37;
+      --text-primary: #e8eaf6;
+      --text-secondary: #9fa8da;
+      --glass-bg: rgba(255, 255, 255, 0.03);
+      --glass-border: rgba(255, 255, 255, 0.08);
+    }
+
+    body {
+      font-family: 'Noto Sans TC', sans-serif;
+      background: var(--bg-deep);
+      color: var(--text-primary);
+      min-height: 100vh;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Starfield Background */
+    .starfield {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .layer {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 200%;
+      animation: drift linear infinite;
+    }
+
+    .layer-1 { animation-duration: 120s; opacity: 0.6; }
+    .layer-2 { animation-duration: 180s; opacity: 0.4; animation-direction: reverse; }
+    .layer-3 { animation-duration: 240s; opacity: 0.3; }
+
+    @keyframes drift {
+      from { transform: translateY(0); }
+      to { transform: translateY(-50%); }
+    }
+
+    .bg-star {
+      position: absolute;
+      background: var(--star-white);
+      border-radius: 50%;
+      animation: twinkle var(--duration) ease-in-out infinite;
+      animation-delay: var(--delay);
+    }
+
+    @keyframes twinkle {
+      0%, 100% { opacity: var(--base-opacity); transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.2); }
+    }
+
+    /* Nebula Effect */
+    .nebula {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+      opacity: 0.4;
+    }
+
+    .nebula::before,
+    .nebula::after {
+      content: '';
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(100px);
+    }
+
+    .nebula::before {
+      width: 600px;
+      height: 600px;
+      top: -200px;
+      right: -200px;
+      background: radial-gradient(circle, rgba(147, 51, 234, 0.3) 0%, transparent 70%);
+      animation: nebulaFloat 30s ease-in-out infinite;
+    }
+
+    .nebula::after {
+      width: 500px;
+      height: 500px;
+      bottom: -150px;
+      left: -150px;
+      background: radial-gradient(circle, rgba(59, 130, 246, 0.25) 0%, transparent 70%);
+      animation: nebulaFloat 40s ease-in-out infinite reverse;
+    }
+
+    @keyframes nebulaFloat {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      33% { transform: translate(30px, 20px) scale(1.1); }
+      66% { transform: translate(-20px, -30px) scale(0.95); }
+    }
+
+    /* Noise Overlay */
+    .noise {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 2;
+      opacity: 0.03;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    }
+
+    /* Constellation Canvas */
+    #constellation {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 3;
+    }
+
+    /* Memory Stars */
+    .memory-star {
+      position: absolute;
+      cursor: pointer;
+      z-index: 10;
+      transition: transform 0.3s ease, filter 0.3s ease;
+    }
+
+    .memory-star:hover {
+      transform: scale(1.5);
+      filter: brightness(1.5);
+      z-index: 20;
+    }
+
+    .star-core {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: var(--star-size);
+      height: var(--star-size);
+      background: var(--star-color);
+      border-radius: 50%;
+      box-shadow: 
+        0 0 10px var(--star-color),
+        0 0 20px var(--star-color),
+        0 0 40px var(--star-color);
+      animation: starPulse var(--pulse-duration) ease-in-out infinite;
+    }
+
+    @keyframes starPulse {
+      0%, 100% { 
+        opacity: var(--base-opacity);
+        box-shadow: 
+          0 0 10px var(--star-color),
+          0 0 20px var(--star-color);
+      }
+      50% { 
+        opacity: 1;
+        box-shadow: 
+          0 0 15px var(--star-color),
+          0 0 30px var(--star-color),
+          0 0 50px var(--star-color);
+      }
+    }
+
+    .star-rays {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: calc(var(--star-size) * 3);
+      height: calc(var(--star-size) * 3);
+      animation: raysSpin 20s linear infinite;
+    }
+
+    .star-rays::before,
+    .star-rays::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: linear-gradient(90deg, transparent 30%, var(--star-color) 50%, transparent 70%);
+      opacity: 0.3;
+    }
+
+    .star-rays::before {
+      width: 100%;
+      height: 2px;
+    }
+
+    .star-rays::after {
+      width: 2px;
+      height: 100%;
+    }
+
+    @keyframes raysSpin {
+      from { transform: translate(-50%, -50%) rotate(0deg); }
+      to { transform: translate(-50%, -50%) rotate(360deg); }
+    }
+
+    /* Memory Tooltip */
+    .memory-tooltip {
+      position: fixed;
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      padding: 20px 24px;
+      max-width: 320px;
+      z-index: 100;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(10px);
+      transition: all 0.3s ease;
+      pointer-events: none;
+    }
+
+    .memory-tooltip.active {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+
+    .tooltip-date {
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-bottom: 8px;
+      letter-spacing: 0.5px;
+    }
+
+    .tooltip-text {
+      font-size: 15px;
+      line-height: 1.6;
+      color: var(--text-primary);
+    }
+
+    .tooltip-delete {
+      margin-top: 12px;
+      padding: 6px 12px;
+      background: rgba(239, 68, 68, 0.2);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      border-radius: 8px;
+      color: #ef4444;
+      font-size: 12px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .tooltip-delete:hover {
+      background: rgba(239, 68, 68, 0.3);
+    }
+
+    /* UI Panel */
+    .ui-panel {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 50;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .input-group {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .memory-input {
+      width: 360px;
+      padding: 16px 24px;
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      border-radius: 50px;
+      color: var(--text-primary);
+      font-family: 'Noto Sans TC', sans-serif;
+      font-size: 15px;
+      outline: none;
+      transition: all 0.3s ease;
+    }
+
+    .memory-input::placeholder {
+      color: var(--text-secondary);
+    }
+
+    .memory-input:focus {
+      border-color: var(--accent-gold);
+      box-shadow: 0 0 30px rgba(212, 175, 55, 0.2);
+    }
+
+    .submit-btn {
+      width: 52px;
+      height: 52px;
+      background: linear-gradient(135deg, var(--accent-gold), #c9a227);
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 20px rgba(212, 175, 55, 0.4);
+    }
+
+    .submit-btn:hover {
+      transform: scale(1.1);
+      box-shadow: 0 6px 30px rgba(212, 175, 55, 0.6);
+    }
+
+    .submit-btn svg {
+      width: 24px;
+      height: 24px;
+      fill: var(--bg-deep);
+    }
+
+    .stats-bar {
+      display: flex;
+      gap: 32px;
+      padding: 12px 28px;
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      border-radius: 30px;
+    }
+
+    .stat {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .stat-value {
+      font-family: 'Cinzel Decorative', serif;
+      font-size: 20px;
+      color: var(--star-gold);
+    }
+
+    .stat-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    /* Header */
+    .header {
+      position: fixed;
+      top: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      text-align: center;
+      z-index: 50;
+    }
+
+    .title {
+      font-family: 'Cinzel Decorative', serif;
+      font-size: 28px;
+      color: var(--text-primary);
+      letter-spacing: 4px;
+      margin-bottom: 8px;
+      text-shadow: 0 0 30px rgba(212, 175, 55, 0.3);
+    }
+
+    .subtitle {
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      color: var(--text-secondary);
+      letter-spacing: 2px;
+    }
+
+    /* Shooting Stars */
+    .shooting-star {
+      position: fixed;
+      width: 100px;
+      height: 2px;
+      background: linear-gradient(90deg, var(--star-white), transparent);
+      border-radius: 50%;
+      z-index: 5;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    /* Instructions */
+    .instructions {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      z-index: 5;
+      pointer-events: none;
+      opacity: 0.6;
+      transition: opacity 1s ease;
+    }
+
+    .instructions.hidden {
+      opacity: 0;
+    }
+
+    .instructions-text {
+      font-family: 'DM Mono', monospace;
+      font-size: 14px;
+      color: var(--text-secondary);
+      letter-spacing: 1px;
+    }
+
+    /* Mobile Responsive */
+    @media (max-width: 480px) {
+      .memory-input {
+        width: 280px;
+        padding: 14px 20px;
+      }
+
+      .title {
+        font-size: 22px;
+      }
+
+      .ui-panel {
+        bottom: 20px;
+      }
+
+      .stats-bar {
+        gap: 20px;
+        padding: 10px 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="starfield" id="starfield"></div>
+  <div class="nebula"></div>
+  <div class="noise"></div>
+  <canvas id="constellation"></canvas>
+
+  <header class="header">
+    <h1 class="title">星圖記憶</h1>
+    <p class="subtitle">STELLAR MEMORY · 點擊星光回顧記憶</p>
+  </header>
+
+  <div class="instructions" id="instructions">
+    <p class="instructions-text">輸入思緒，化作永恆星光</p>
+  </div>
+
+  <div class="ui-panel">
+    <div class="input-group">
+      <input type="text" class="memory-input" id="memoryInput" placeholder="寫下此刻的思緒..." maxlength="100">
+      <button class="submit-btn" id="submitBtn" aria-label="新增記憶">
+        <svg viewBox="0 0 24 24"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg>
+      </button>
+    </div>
+    <div class="stats-bar">
+      <div class="stat">
+        <span class="stat-value" id="totalMemories">0</span>
+        <span class="stat-label">星數</span>
+      </div>
+      <div class="stat">
+        <span class="stat-value" id="todayMemories">0</span>
+        <span class="stat-label">今日</span>
+      </div>
+      <div class="stat">
+        <span class="stat-value" id="totalDays">0</span>
+        <span class="stat-label">天數</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="memory-tooltip" id="tooltip">
+    <div class="tooltip-date" id="tooltipDate"></div>
+    <div class="tooltip-text" id="tooltipText"></div>
+    <button class="tooltip-delete" id="tooltipDelete">移除記憶</button>
+  </div>
+
+  <div class="shooting-star" id="shootingStar"></div>
+
+  <script>
+    // State
+    let memories = [];
+    let selectedStar = null;
+
+    // DOM Elements
+    const canvas = document.getElementById('constellation');
+    const ctx = canvas.getContext('2d');
+    const memoryInput = document.getElementById('memoryInput');
+    const submitBtn = document.getElementById('submitBtn');
+    const tooltip = document.getElementById('tooltip');
+    const tooltipDate = document.getElementById('tooltipDate');
+    const tooltipText = document.getElementById('tooltipText');
+    const tooltipDelete = document.getElementById('tooltipDelete');
+    const instructions = document.getElementById('instructions');
+    const starfield = document.getElementById('starfield');
+    const shootingStar = document.getElementById('shootingStar');
+
+    // Colors for stars
+    const starColors = ['#fbbf24', '#60a5fa', '#f472b6', '#22d3ee', '#a78bfa', '#34d399', '#fb923c'];
+
+    // Initialize
+    function init() {
+      resizeCanvas();
+      generateBackgroundStars();
+      loadMemories();
+      renderMemories();
+      updateStats();
+      scheduleShootingStar();
+      
+      window.addEventListener('resize', () => {
+        resizeCanvas();
+        renderMemories();
+      });
+
+      // Event Listeners
+      submitBtn.addEventListener('click', addMemory);
+      memoryInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') addMemory();
+      });
+
+      document.addEventListener('click', (e) => {
+        if (!tooltip.contains(e.target) && !e.target.closest('.memory-star')) {
+          hideTooltip();
+        }
+      });
+
+      tooltipDelete.addEventListener('click', deleteSelectedMemory);
+    }
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+
+    function generateBackgroundStars() {
+      starfield.innerHTML = '';
+      const layers = [
+        { class: 'layer-1', count: 100, minSize: 1, maxSize: 2 },
+        { class: 'layer-2', count: 80, minSize: 1, maxSize: 3 },
+        { class: 'layer-3', count: 60, minSize: 2, maxSize: 4 }
+      ];
+
+      layers.forEach(layer => {
+        const layerEl = document.createElement('div');
+        layerEl.className = `layer ${layer.class}`;
+        
+        for (let i = 0; i < layer.count; i++) {
+          const star = document.createElement('div');
+          star.className = 'bg-star';
+          const size = layer.minSize + Math.random() * (layer.maxSize - layer.minSize);
+          star.style.cssText = `
+            left: ${Math.random() * 100}%;
+            top: ${Math.random() * 100}%;
+            width: ${size}px;
+            height: ${size}px;
+            --duration: ${3 + Math.random() * 4}s;
+            --delay: ${Math.random() * 3}s;
+            --base-opacity: ${0.3 + Math.random() * 0.4};
+          `;
+          layerEl.appendChild(star);
+        }
+        
+        starfield.appendChild(layerEl);
+      });
+    }
+
+    function loadMemories() {
+      const saved = localStorage.getItem('stellarMemory');
+      if (saved) {
+        memories = JSON.parse(saved);
+      }
+    }
+
+    function saveMemories() {
+      localStorage.setItem('stellarMemory', JSON.stringify(memories));
+    }
+
+    function addMemory() {
+      const text = memoryInput.value.trim();
+      if (!text) return;
+
+      // Hide instructions
+      instructions.classList.add('hidden');
+
+      const memory = {
+        id: Date.now(),
+        text: text,
+        date: new Date().toISOString(),
+        x: 100 + Math.random() * (window.innerWidth - 200),
+        y: 100 + Math.random() * (window.innerHeight - 300),
+        color: starColors[Math.floor(Math.random() * starColors.length)],
+        size: 12 + Math.random() * 8,
+        pulseDuration: 2 + Math.random() * 2,
+        baseOpacity: 0.7 + Math.random() * 0.3
+      };
+
+      memories.push(memory);
+      saveMemories();
+      renderMemories();
+      updateStats();
+      
+      // Trigger shooting star
+      triggerShootingStar();
+
+      memoryInput.value = '';
+    }
+
+    function renderMemories() {
+      // Remove existing stars
+      document.querySelectorAll('.memory-star').forEach(el => el.remove());
+
+      // Create new stars
+      memories.forEach(memory => {
+        const star = document.createElement('div');
+        star.className = 'memory-star';
+        star.dataset.id = memory.id;
+        star.style.cssText = `
+          left: ${memory.x}px;
+          top: ${memory.y}px;
+          --star-color: ${memory.color};
+          --star-size: ${memory.size}px;
+          --pulse-duration: ${memory.pulseDuration}s;
+          --base-opacity: ${memory.baseOpacity};
+        `;
+
+        star.innerHTML = `
+          <div class="star-rays"></div>
+          <div class="star-core"></div>
+        `;
+
+        star.addEventListener('click', (e) => {
+          e.stopPropagation();
+          showTooltip(memory, star);
+        });
+
+        document.body.appendChild(star);
+      });
+
+      // Draw constellation lines
+      drawConstellationLines();
+    }
+
+    function drawConstellationLines() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      if (memories.length < 2) return;
+
+      // Sort by proximity to draw lines between close stars
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
+      ctx.lineWidth = 1;
+
+      for (let i = 0; i < memories.length; i++) {
+        for (let j = i + 1; j < memories.length; j++) {
+          const m1 = memories[i];
+          const m2 = memories[j];
+          const dist = Math.sqrt(Math.pow(m2.x - m1.x, 2) + Math.pow(m2.y - m1.y, 2));
+          
+          if (dist < 250) {
+            ctx.beginPath();
+            ctx.moveTo(m1.x, m1.y);
+            ctx.lineTo(m2.x, m2.y);
+            ctx.globalAlpha = 1 - (dist / 250);
+            ctx.stroke();
+          }
+        }
+      }
+      ctx.globalAlpha = 1;
+    }
+
+    function showTooltip(memory, starElement) {
+      selectedStar = memory;
+      
+      const rect = starElement.getBoundingClientRect();
+      let left = rect.left + rect.width / 2;
+      let top = rect.bottom + 15;
+
+      // Keep tooltip in viewport
+      if (left + 160 > window.innerWidth) left = window.innerWidth - 180;
+      if (left < 20) left = 20;
+      if (top + 150 > window.innerHeight) top = rect.top - 170;
+
+      tooltip.style.left = `${left}px`;
+      tooltip.style.top = `${top}px`;
+      tooltip.style.transform = 'translateX(-50%)';
+
+      const date = new Date(memory.date);
+      tooltipDate.textContent = date.toLocaleDateString('zh-TW', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+      tooltipText.textContent = memory.text;
+      
+      tooltip.classList.add('active');
+    }
+
+    function hideTooltip() {
+      tooltip.classList.remove('active');
+      selectedStar = null;
+    }
+
+    function deleteSelectedMemory() {
+      if (!selectedStar) return;
+      
+      memories = memories.filter(m => m.id !== selectedStar.id);
+      saveMemories();
+      renderMemories();
+      updateStats();
+      hideTooltip();
+    }
+
+    function updateStats() {
+      const totalMemories = document.getElementById('totalMemories');
+      const todayMemories = document.getElementById('todayMemories');
+      const totalDays = document.getElementById('totalDays');
+
+      totalMemories.textContent = memories.length;
+
+      // Count today's memories
+      const today = new Date().toDateString();
+      const todayCount = memories.filter(m => new Date(m.date).toDateString() === today).length;
+      todayMemories.textContent = todayCount;
+
+      // Count unique days
+      const uniqueDays = new Set(memories.map(m => new Date(m.date).toDateString())).size;
+      totalDays.textContent = uniqueDays;
+    }
+
+    function triggerShootingStar() {
+      const startX = Math.random() * window.innerWidth;
+      const startY = Math.random() * window.innerHeight * 0.5;
+      const angle = 30 + Math.random() * 30;
+      const duration = 800 + Math.random() * 400;
+
+      shootingStar.style.cssText = `
+        left: ${startX}px;
+        top: ${startY}px;
+        transform: rotate(${angle}deg);
+        opacity: 1;
+        transition: none;
+      `;
+
+      requestAnimationFrame(() => {
+        shootingStar.style.transition = `all ${duration}ms ease-out`;
+        shootingStar.style.transform = `rotate(${angle}deg) translateX(${window.innerWidth}px)`;
+        shootingStar.style.opacity = '0';
+      });
+    }
+
+    function scheduleShootingStar() {
+      // Random shooting star every 5-15 seconds
+      const delay = 5000 + Math.random() * 10000;
+      setTimeout(() => {
+        if (Math.random() > 0.3) triggerShootingStar();
+        scheduleShootingStar();
+      }, delay);
+    }
+
+    // Initialize on load
+    init();
+  </script>
+</body>
+</html>
