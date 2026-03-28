@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Forge — 量子QR生成器</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-deep: #0a0a0f;
+            --bg-card: rgba(15, 15, 25, 0.8);
+            --cyan: #00f5ff;
+            --cyan-dim: rgba(0, 245, 255, 0.3);
+            --amber: #f59e0b;
+            --amber-dim: rgba(245, 158, 11, 0.3);
+            --text: #e2e8f0;
+            --text-dim: #94a3b8;
+            --glass-border: rgba(255, 255, 255, 0.08);
+        }
+
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background: var(--bg-deep);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Background effects */
+        .bg-grid {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(0, 245, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 245, 255, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .scanline {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                transparent 50%,
+                rgba(0, 0, 0, 0.02) 50%
+            );
+            background-size: 100% 4px;
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        .floating-particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: var(--cyan);
+            border-radius: 50%;
+            opacity: 0.5;
+            animation: float 20s infinite linear;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.5; }
+            90% { opacity: 0.5; }
+            100% { transform: translateY(-100vh) rotate(720deg); opacity: 0; }
+        }
+
+        /* Main container */
+        .container {
+            position: relative;
+            z-index: 10;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .logo {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 2.5rem;
+            font-weight: 600;
+            color: var(--cyan);
+            text-shadow: 0 0 20px var(--cyan-dim), 0 0 40px var(--cyan-dim);
+            letter-spacing: 4px;
+            animation: glow-pulse 3s ease-in-out infinite;
+        }
+
+        @keyframes glow-pulse {
+            0%, 100% { text-shadow: 0 0 20px var(--cyan-dim), 0 0 40px var(--cyan-dim); }
+            50% { text-shadow: 0 0 30px var(--cyan), 0 0 60px var(--cyan-dim); }
+        }
+
+        .subtitle {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--text-dim);
+            margin-top: 10px;
+            letter-spacing: 2px;
+        }
+
+        /* Main card */
+        .main-card {
+            background: var(--bg-card);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 40px;
+            backdrop-filter: blur(20px);
+            box-shadow: 
+                0 25px 50px rgba(0, 0, 0, 0.5),
+                inset 0 1px 0 rgba(255, 255, 255, 0.05);
+        }
+
+        /* Input section */
+        .input-section {
+            margin-bottom: 30px;
+        }
+
+        .input-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--amber);
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .text-input {
+            width: 100%;
+            padding: 16px 20px;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            color: var(--text);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .text-input:focus {
+            border-color: var(--cyan);
+            box-shadow: 0 0 20px var(--cyan-dim), inset 0 0 20px rgba(0, 245, 255, 0.05);
+        }
+
+        .text-input::placeholder {
+            color: var(--text-dim);
+            opacity: 0.5;
+        }
+
+        /* Size selector */
+        .size-selector {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .size-btn {
+            flex: 1;
+            min-width: 80px;
+            padding: 12px 16px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--glass-border);
+            border-radius: 10px;
+            color: var(--text-dim);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .size-btn:hover {
+            border-color: var(--cyan-dim);
+            color: var(--text);
+        }
+
+        .size-btn.active {
+            background: linear-gradient(135deg, var(--cyan-dim), transparent);
+            border-color: var(--cyan);
+            color: var(--cyan);
+            box-shadow: 0 0 15px var(--cyan-dim);
+        }
+
+        /* QR Display */
+        .qr-display {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .qr-container {
+            background: white;
+            padding: 20px;
+            border-radius: 16px;
+            box-shadow: 
+                0 0 30px var(--cyan-dim),
+                0 20px 40px rgba(0, 0, 0, 0.3);
+            transition: all 0.5s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .qr-container.generating {
+            animation: qr-flash 0.3s ease;
+        }
+
+        @keyframes qr-flash {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(0.95); box-shadow: 0 0 50px var(--cyan); }
+        }
+
+        .qr-container canvas {
+            display: block;
+        }
+
+        .qr-placeholder {
+            width: 200px;
+            height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #cbd5e1;
+            font-size: 0.9rem;
+            text-align: center;
+            padding: 20px;
+            border: 2px dashed #cbd5e1;
+            border-radius: 12px;
+            opacity: 0.5;
+        }
+
+        /* Action buttons */
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 14px 28px;
+            border: none;
+            border-radius: 12px;
+            font-family: 'Noto Sans TC', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--cyan), #0891b2);
+            color: var(--bg-deep);
+            box-shadow: 0 4px 20px var(--cyan-dim);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px var(--cyan-dim);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text);
+            border: 1px solid var(--glass-border);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--amber);
+            color: var(--amber);
+        }
+
+        .btn-icon {
+            font-size: 1.2rem;
+        }
+
+        /* History section */
+        .history-section {
+            margin-top: 50px;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1rem;
+            color: var(--amber);
+            letter-spacing: 2px;
+        }
+
+        .clear-btn {
+            padding: 8px 16px;
+            background: transparent;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            border-radius: 8px;
+            color: #ef4444;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .clear-btn:hover {
+            background: rgba(239, 68, 68, 0.1);
+            border-color: #ef4444;
+        }
+
+        .history-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 15px;
+        }
+
+        .history-item {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .history-item:hover {
+            border-color: var(--cyan);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .history-item img {
+            width: 100%;
+            aspect-ratio: 1;
+            border-radius: 8px;
+            background: white;
+        }
+
+        .history-item .history-text {
+            font-size: 0.7rem;
+            color: var(--text-dim);
+            margin-top: 8px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .history-delete {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            width: 24px;
+            height: 24px;
+            background: rgba(239, 68, 68, 0.8);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            font-size: 0.8rem;
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .history-item:hover .history-delete {
+            opacity: 1;
+        }
+
+        .history-empty {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 40px;
+            color: var(--text-dim);
+            opacity: 0.5;
+        }
+
+        /* Toast notification */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: var(--bg-card);
+            border: 1px solid var(--cyan);
+            border-radius: 12px;
+            padding: 16px 24px;
+            color: var(--cyan);
+            font-size: 0.9rem;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            z-index: 1001;
+            opacity: 0;
+            transition: all 0.4s ease;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        /* Stats bar */
+        .stats-bar {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 1px solid var(--glass-border);
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.5rem;
+            color: var(--cyan);
+            text-shadow: 0 0 10px var(--cyan-dim);
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            color: var(--text-dim);
+            margin-top: 5px;
+            letter-spacing: 1px;
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px 15px;
+            }
+
+            .logo {
+                font-size: 1.8rem;
+            }
+
+            .main-card {
+                padding: 25px;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .stats-bar {
+                gap: 20px;
+            }
+
+            .stat-value {
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-grid"></div>
+    <div class="scanline"></div>
+    <div class="floating-particles" id="particles"></div>
+
+    <div class="container">
+        <header class="header">
+            <h1 class="logo">QR FORGE</h1>
+            <p class="subtitle">// 量子QR生成器 //</p>
+        </header>
+
+        <div class="main-card">
+            <div class="input-section">
+                <label class="input-label">INPUT_TEXT</label>
+                <div class="input-wrapper">
+                    <input 
+                        type="text" 
+                        class="text-input" 
+                        id="textInput" 
+                        placeholder="輸入文字、網址或任何內容..."
+                        autocomplete="off"
+                    >
+                </div>
+            </div>
+
+            <div class="size-selector">
+                <button class="size-btn" data-size="128">128px</button>
+                <button class="size-btn active" data-size="256">256px</button>
+                <button class="size-btn" data-size="384">384px</button>
+                <button class="size-btn" data-size="512">512px</button>
+            </div>
+
+            <div class="qr-display">
+                <div class="qr-container" id="qrContainer">
+                    <div class="qr-placeholder" id="placeholder">
+                        輸入文字即可生成QR Code
+                    </div>
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <button class="btn btn-primary" id="downloadBtn" disabled>
+                    <span class="btn-icon">⬇</span>
+                    下載PNG
+                </button>
+                <button class="btn btn-secondary" id="copyBtn" disabled>
+                    <span class="btn-icon">📋</span>
+                    複製影像
+                </button>
+            </div>
+
+            <div class="stats-bar">
+                <div class="stat">
+                    <div class="stat-value" id="totalCount">0</div>
+                    <div class="stat-label">總生成次數</div>
+                </div>
+            </div>
+        </div>
+
+        <section class="history-section">
+            <div class="section-header">
+                <h2 class="section-title">HISTORY // 歷史記錄</h2>
+                <button class="clear-btn" id="clearBtn">清除全部</button>
+            </div>
+            <div class="history-grid" id="historyGrid">
+                <div class="history-empty">尚無生成記錄</div>
+            </div>
+        </section>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // State
+        let currentQR = null;
+        let currentSize = 256;
+        let history = JSON.parse(localStorage.getItem('qrforge_history') || '[]');
+        let stats = JSON.parse(localStorage.getItem('qrforge_stats') || '{"total": 0}');
+
+        // DOM Elements
+        const textInput = document.getElementById('textInput');
+        const qrContainer = document.getElementById('qrContainer');
+        const placeholder = document.getElementById('placeholder');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const copyBtn = document.getElementById('copyBtn');
+        const clearBtn = document.getElementById('clearBtn');
+        const historyGrid = document.getElementById('historyGrid');
+        const totalCount = document.getElementById('totalCount');
+        const toast = document.getElementById('toast');
+        const sizeBtns = document.querySelectorAll('.size-btn');
+
+        // Initialize
+        function init() {
+            createParticles();
+            updateStats();
+            renderHistory();
+            setupEventListeners();
+        }
+
+        // Create floating particles
+        function createParticles() {
+            const container = document.getElementById('particles');
+            for (let i = 0; i < 30; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 20 + 's';
+                particle.style.animationDuration = (15 + Math.random() * 10) + 's';
+                if (Math.random() > 0.5) {
+                    particle.style.background = '#f59e0b';
+                }
+                container.appendChild(particle);
+            }
+        }
+
+        // Show toast
+        function showToast(message) {
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2500);
+        }
+
+        // Update stats
+        function updateStats() {
+            totalCount.textContent = stats.total;
+        }
+
+        // Generate QR Code
+        function generateQR(text, size = 256) {
+            if (!text.trim()) {
+                placeholder.style.display = 'flex';
+                qrContainer.querySelector('canvas')?.remove();
+                downloadBtn.disabled = true;
+                copyBtn.disabled = true;
+                currentQR = null;
+                return;
+            }
+
+            placeholder.style.display = 'none';
+            
+            // Remove existing canvas
+            qrContainer.querySelector('canvas')?.remove();
+
+            // Create canvas for QR
+            const canvas = document.createElement('canvas');
+            qrContainer.appendChild(canvas);
+
+            // Add generating animation
+            qrContainer.classList.add('generating');
+            setTimeout(() => qrContainer.classList.remove('generating'), 300);
+
+            // Generate QR
+            QRCode.toCanvas(canvas, text, {
+                width: size,
+                margin: 2,
+                color: {
+                    dark: '#000000',
+                    light: '#ffffff'
+                }
+            }, (error) => {
+                if (error) {
+                    console.error(error);
+                    showToast('生成失敗');
+                    return;
+                }
+
+                currentQR = canvas;
+                downloadBtn.disabled = false;
+                copyBtn.disabled = false;
+
+                // Update stats
+                stats.total++;
+                localStorage.setItem('qrforge_stats', JSON.stringify(stats));
+                updateStats();
+
+                // Add to history (debounced)
+                clearTimeout(window.historyTimeout);
+                window.historyTimeout = setTimeout(() => {
+                    addToHistory(text, canvas);
+                }, 1000);
+            });
+        }
+
+        // Add to history
+        function addToHistory(text, canvas) {
+            // Create thumbnail
+            const thumbCanvas = document.createElement('canvas');
+            const thumbSize = 100;
+            thumbCanvas.width = thumbSize;
+            thumbCanvas.height = thumbSize;
+            const ctx = thumbCanvas.getContext('2d');
+            ctx.drawImage(canvas, 0, 0, thumbSize, thumbSize);
+            const dataUrl = thumbCanvas.toDataURL('image/png');
+
+            // Add to history
+            history.unshift({
+                text: text.substring(0, 30),
+                fullText: text,
+                image: dataUrl,
+                timestamp: Date.now()
+            });
+
+            // Keep only last 20
+            history = history.slice(0, 20);
+            localStorage.setItem('qrforge_history', JSON.stringify(history));
+            renderHistory();
+        }
+
+        // Render history
+        function renderHistory() {
+            if (history.length === 0) {
+                historyGrid.innerHTML = '<div class="history-empty">尚無生成記錄</div>';
+                clearBtn.style.display = 'none';
+                return;
+            }
+
+            clearBtn.style.display = 'block';
+            historyGrid.innerHTML = history.map((item, index) => `
+                <div class="history-item" data-index="${index}">
+                    <img src="${item.image}" alt="QR Code">
+                    <div class="history-text">${item.text}${item.text.length >= 30 ? '...' : ''}</div>
+                    <button class="history-delete" data-index="${index}">×</button>
+                </div>
+            `).join('');
+
+            // Add click handlers
+            historyGrid.querySelectorAll('.history-item').forEach(item => {
+                item.addEventListener('click', (e) => {
+                    if (e.target.classList.contains('history-delete')) return;
+                    const text = history[item.dataset.index].fullText;
+                    textInput.value = text;
+                    generateQR(text, currentSize);
+                });
+            });
+
+            historyGrid.querySelectorAll('.history-delete').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    history.splice(btn.dataset.index, 1);
+                    localStorage.setItem('qrforge_history', JSON.stringify(history));
+                    renderHistory();
+                    showToast('已刪除');
+                });
+            });
+        }
+
+        // Download QR
+        function downloadQR() {
+            if (!currentQR) return;
+
+            const link = document.createElement('a');
+            link.download = `qrforge-${Date.now()}.png`;
+            link.href = currentQR.toDataURL('image/png');
+            link.click();
+            showToast('已下載 PNG');
+        }
+
+        // Copy QR to clipboard
+        async function copyQR() {
+            if (!currentQR) return;
+
+            try {
+                const blob = await new Promise(resolve => currentQR.toBlob(resolve));
+                await navigator.clipboard.write([
+                    new ClipboardItem({ 'image/png': blob })
+                ]);
+                showToast('已複製到剪貼簿');
+            } catch (err) {
+                showToast('複製失敗');
+                console.error(err);
+            }
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            // Text input
+            let timeout;
+            textInput.addEventListener('input', (e) => {
+                clearTimeout(timeout);
+                timeout = setTimeout(() => {
+                    generateQR(e.target.value, currentSize);
+                }, 300);
+            });
+
+            // Size buttons
+            sizeBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    sizeBtns.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    currentSize = parseInt(btn.dataset.size);
+                    if (textInput.value) {
+                        generateQR(textInput.value, currentSize);
+                    }
+                });
+            });
+
+            // Download
+            downloadBtn.addEventListener('click', downloadQR);
+
+            // Copy
+            copyBtn.addEventListener('click', copyQR);
+
+            // Clear history
+            clearBtn.addEventListener('click', () => {
+                if (confirm('確定要清除所有歷史記錄？')) {
+                    history = [];
+                    localStorage.setItem('qrforge_history', JSON.stringify(history));
+                    renderHistory();
+                    showToast('已清除歷史');
+                }
+            });
+        }
+
+        // Start
+        init();
+    </script>
+</body>
+</html>
