@@ -1,3 +1,11 @@
+## 2026-03-29 03:20 (Asia/Taipei)
+- 建立 `project-20260329`：星圖記憶 (Stellar Memory)
+  - 功能：輸入思緒化作漂浮星光、點擊星星回顧記憶、星座連線效果、流星雨動畫、刪除功能、localStorage 持久化
+  - 技術：單一 HTML 檔案、Google Fonts（Cinzel Decorative + Noto Sans TC + DM Mono）、Canvas API（三層星層背景）、localStorage
+  - 設計：Cosmic Constellation 星圖風、深邃太空背景 (#030512)、金色 (#fbbf24)、藍 (#60a5fa)、粉 (#f472b6)、青 (#22d3ee) 多色星星、玻璃擬態 UI、星雲光暈效果、噪音顆粒覆蓋
+  - 靈感：將每個思緒化為永恆的星光
+  - 檔案：`Lab/project-20260329/index.html`（直接開啟即可用）
+
 ## 2026-03-23 03:05 (Asia/Taipei)
 - 建立 `project-20260323`：Memory Echo (記憶迴聲)
   - 功能：記憶配對遊戲、翻牌時產生故障效果、配對成功金色爆炸動畫、配對失敗紅色閃爍、16種獨特符號、8對卡片、計時器+步數計數、本地最佳成績儲存

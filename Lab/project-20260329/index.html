@@ -1,838 +1,801 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QR Forge — 量子QR生成器</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        :root {
-            --bg-deep: #0a0a0f;
-            --bg-card: rgba(15, 15, 25, 0.8);
-            --cyan: #00f5ff;
-            --cyan-dim: rgba(0, 245, 255, 0.3);
-            --amber: #f59e0b;
-            --amber-dim: rgba(245, 158, 11, 0.3);
-            --text: #e2e8f0;
-            --text-dim: #94a3b8;
-            --glass-border: rgba(255, 255, 255, 0.08);
-        }
-
-        body {
-            font-family: 'Noto Sans TC', sans-serif;
-            background: var(--bg-deep);
-            color: var(--text);
-            min-height: 100vh;
-            overflow-x: hidden;
-        }
-
-        /* Background effects */
-        .bg-grid {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image: 
-                linear-gradient(rgba(0, 245, 255, 0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0, 245, 255, 0.03) 1px, transparent 1px);
-            background-size: 50px 50px;
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        .scanline {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(
-                transparent 50%,
-                rgba(0, 0, 0, 0.02) 50%
-            );
-            background-size: 100% 4px;
-            pointer-events: none;
-            z-index: 1000;
-        }
-
-        .floating-particles {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 1;
-            overflow: hidden;
-        }
-
-        .particle {
-            position: absolute;
-            width: 2px;
-            height: 2px;
-            background: var(--cyan);
-            border-radius: 50%;
-            opacity: 0.5;
-            animation: float 20s infinite linear;
-        }
-
-        @keyframes float {
-            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
-            10% { opacity: 0.5; }
-            90% { opacity: 0.5; }
-            100% { transform: translateY(-100vh) rotate(720deg); opacity: 0; }
-        }
-
-        /* Main container */
-        .container {
-            position: relative;
-            z-index: 10;
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 40px 20px;
-        }
-
-        /* Header */
-        .header {
-            text-align: center;
-            margin-bottom: 50px;
-        }
-
-        .logo {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 2.5rem;
-            font-weight: 600;
-            color: var(--cyan);
-            text-shadow: 0 0 20px var(--cyan-dim), 0 0 40px var(--cyan-dim);
-            letter-spacing: 4px;
-            animation: glow-pulse 3s ease-in-out infinite;
-        }
-
-        @keyframes glow-pulse {
-            0%, 100% { text-shadow: 0 0 20px var(--cyan-dim), 0 0 40px var(--cyan-dim); }
-            50% { text-shadow: 0 0 30px var(--cyan), 0 0 60px var(--cyan-dim); }
-        }
-
-        .subtitle {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.85rem;
-            color: var(--text-dim);
-            margin-top: 10px;
-            letter-spacing: 2px;
-        }
-
-        /* Main card */
-        .main-card {
-            background: var(--bg-card);
-            border: 1px solid var(--glass-border);
-            border-radius: 20px;
-            padding: 40px;
-            backdrop-filter: blur(20px);
-            box-shadow: 
-                0 25px 50px rgba(0, 0, 0, 0.5),
-                inset 0 1px 0 rgba(255, 255, 255, 0.05);
-        }
-
-        /* Input section */
-        .input-section {
-            margin-bottom: 30px;
-        }
-
-        .input-label {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.75rem;
-            color: var(--amber);
-            letter-spacing: 2px;
-            margin-bottom: 10px;
-            display: block;
-        }
-
-        .input-wrapper {
-            position: relative;
-        }
-
-        .text-input {
-            width: 100%;
-            padding: 16px 20px;
-            background: rgba(0, 0, 0, 0.4);
-            border: 1px solid var(--glass-border);
-            border-radius: 12px;
-            color: var(--text);
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 1rem;
-            outline: none;
-            transition: all 0.3s ease;
-        }
-
-        .text-input:focus {
-            border-color: var(--cyan);
-            box-shadow: 0 0 20px var(--cyan-dim), inset 0 0 20px rgba(0, 245, 255, 0.05);
-        }
-
-        .text-input::placeholder {
-            color: var(--text-dim);
-            opacity: 0.5;
-        }
-
-        /* Size selector */
-        .size-selector {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 30px;
-            flex-wrap: wrap;
-        }
-
-        .size-btn {
-            flex: 1;
-            min-width: 80px;
-            padding: 12px 16px;
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px solid var(--glass-border);
-            border-radius: 10px;
-            color: var(--text-dim);
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.8rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .size-btn:hover {
-            border-color: var(--cyan-dim);
-            color: var(--text);
-        }
-
-        .size-btn.active {
-            background: linear-gradient(135deg, var(--cyan-dim), transparent);
-            border-color: var(--cyan);
-            color: var(--cyan);
-            box-shadow: 0 0 15px var(--cyan-dim);
-        }
-
-        /* QR Display */
-        .qr-display {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin-bottom: 30px;
-        }
-
-        .qr-container {
-            background: white;
-            padding: 20px;
-            border-radius: 16px;
-            box-shadow: 
-                0 0 30px var(--cyan-dim),
-                0 20px 40px rgba(0, 0, 0, 0.3);
-            transition: all 0.5s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .qr-container.generating {
-            animation: qr-flash 0.3s ease;
-        }
-
-        @keyframes qr-flash {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(0.95); box-shadow: 0 0 50px var(--cyan); }
-        }
-
-        .qr-container canvas {
-            display: block;
-        }
-
-        .qr-placeholder {
-            width: 200px;
-            height: 200px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #cbd5e1;
-            font-size: 0.9rem;
-            text-align: center;
-            padding: 20px;
-            border: 2px dashed #cbd5e1;
-            border-radius: 12px;
-            opacity: 0.5;
-        }
-
-        /* Action buttons */
-        .action-buttons {
-            display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-
-        .btn {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 14px 28px;
-            border: none;
-            border-radius: 12px;
-            font-family: 'Noto Sans TC', sans-serif;
-            font-size: 0.95rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-            transition: left 0.5s ease;
-        }
-
-        .btn:hover::before {
-            left: 100%;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, var(--cyan), #0891b2);
-            color: var(--bg-deep);
-            box-shadow: 0 4px 20px var(--cyan-dim);
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 30px var(--cyan-dim);
-        }
-
-        .btn-secondary {
-            background: rgba(255, 255, 255, 0.05);
-            color: var(--text);
-            border: 1px solid var(--glass-border);
-        }
-
-        .btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.1);
-            border-color: var(--amber);
-            color: var(--amber);
-        }
-
-        .btn-icon {
-            font-size: 1.2rem;
-        }
-
-        /* History section */
-        .history-section {
-            margin-top: 50px;
-        }
-
-        .section-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .section-title {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 1rem;
-            color: var(--amber);
-            letter-spacing: 2px;
-        }
-
-        .clear-btn {
-            padding: 8px 16px;
-            background: transparent;
-            border: 1px solid rgba(239, 68, 68, 0.3);
-            border-radius: 8px;
-            color: #ef4444;
-            font-size: 0.8rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .clear-btn:hover {
-            background: rgba(239, 68, 68, 0.1);
-            border-color: #ef4444;
-        }
-
-        .history-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-            gap: 15px;
-        }
-
-        .history-item {
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px solid var(--glass-border);
-            border-radius: 12px;
-            padding: 12px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            position: relative;
-        }
-
-        .history-item:hover {
-            border-color: var(--cyan);
-            transform: translateY(-3px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
-        }
-
-        .history-item img {
-            width: 100%;
-            aspect-ratio: 1;
-            border-radius: 8px;
-            background: white;
-        }
-
-        .history-item .history-text {
-            font-size: 0.7rem;
-            color: var(--text-dim);
-            margin-top: 8px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .history-delete {
-            position: absolute;
-            top: 5px;
-            right: 5px;
-            width: 24px;
-            height: 24px;
-            background: rgba(239, 68, 68, 0.8);
-            border: none;
-            border-radius: 50%;
-            color: white;
-            font-size: 0.8rem;
-            cursor: pointer;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .history-item:hover .history-delete {
-            opacity: 1;
-        }
-
-        .history-empty {
-            grid-column: 1 / -1;
-            text-align: center;
-            padding: 40px;
-            color: var(--text-dim);
-            opacity: 0.5;
-        }
-
-        /* Toast notification */
-        .toast {
-            position: fixed;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%) translateY(100px);
-            background: var(--bg-card);
-            border: 1px solid var(--cyan);
-            border-radius: 12px;
-            padding: 16px 24px;
-            color: var(--cyan);
-            font-size: 0.9rem;
-            backdrop-filter: blur(20px);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-            z-index: 1001;
-            opacity: 0;
-            transition: all 0.4s ease;
-        }
-
-        .toast.show {
-            transform: translateX(-50%) translateY(0);
-            opacity: 1;
-        }
-
-        /* Stats bar */
-        .stats-bar {
-            display: flex;
-            justify-content: center;
-            gap: 40px;
-            margin-top: 40px;
-            padding-top: 30px;
-            border-top: 1px solid var(--glass-border);
-        }
-
-        .stat {
-            text-align: center;
-        }
-
-        .stat-value {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 1.5rem;
-            color: var(--cyan);
-            text-shadow: 0 0 10px var(--cyan-dim);
-        }
-
-        .stat-label {
-            font-size: 0.75rem;
-            color: var(--text-dim);
-            margin-top: 5px;
-            letter-spacing: 1px;
-        }
-
-        /* Responsive */
-        @media (max-width: 600px) {
-            .container {
-                padding: 20px 15px;
-            }
-
-            .logo {
-                font-size: 1.8rem;
-            }
-
-            .main-card {
-                padding: 25px;
-            }
-
-            .action-buttons {
-                flex-direction: column;
-            }
-
-            .btn {
-                width: 100%;
-                justify-content: center;
-            }
-
-            .stats-bar {
-                gap: 20px;
-            }
-
-            .stat-value {
-                font-size: 1.2rem;
-            }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>星圖記憶 | Stellar Memory</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Noto+Sans+TC:wght@300;400;500&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg-deep: #030512;
+      --bg-mid: #0a0e1f;
+      --star-white: #f0f4ff;
+      --star-gold: #fbbf24;
+      --star-blue: #60a5fa;
+      --star-pink: #f472b6;
+      --star-cyan: #22d3ee;
+      --accent-gold: #d4af37;
+      --text-primary: #e8eaf6;
+      --text-secondary: #9fa8da;
+      --glass-bg: rgba(255, 255, 255, 0.03);
+      --glass-border: rgba(255, 255, 255, 0.08);
+    }
+
+    body {
+      font-family: 'Noto Sans TC', sans-serif;
+      background: var(--bg-deep);
+      color: var(--text-primary);
+      min-height: 100vh;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Starfield Background */
+    .starfield {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .layer {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 200%;
+      animation: drift linear infinite;
+    }
+
+    .layer-1 { animation-duration: 120s; opacity: 0.6; }
+    .layer-2 { animation-duration: 180s; opacity: 0.4; animation-direction: reverse; }
+    .layer-3 { animation-duration: 240s; opacity: 0.3; }
+
+    @keyframes drift {
+      from { transform: translateY(0); }
+      to { transform: translateY(-50%); }
+    }
+
+    .bg-star {
+      position: absolute;
+      background: var(--star-white);
+      border-radius: 50%;
+      animation: twinkle var(--duration) ease-in-out infinite;
+      animation-delay: var(--delay);
+    }
+
+    @keyframes twinkle {
+      0%, 100% { opacity: var(--base-opacity); transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.2); }
+    }
+
+    /* Nebula Effect */
+    .nebula {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+      opacity: 0.4;
+    }
+
+    .nebula::before,
+    .nebula::after {
+      content: '';
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(100px);
+    }
+
+    .nebula::before {
+      width: 600px;
+      height: 600px;
+      top: -200px;
+      right: -200px;
+      background: radial-gradient(circle, rgba(147, 51, 234, 0.3) 0%, transparent 70%);
+      animation: nebulaFloat 30s ease-in-out infinite;
+    }
+
+    .nebula::after {
+      width: 500px;
+      height: 500px;
+      bottom: -150px;
+      left: -150px;
+      background: radial-gradient(circle, rgba(59, 130, 246, 0.25) 0%, transparent 70%);
+      animation: nebulaFloat 40s ease-in-out infinite reverse;
+    }
+
+    @keyframes nebulaFloat {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      33% { transform: translate(30px, 20px) scale(1.1); }
+      66% { transform: translate(-20px, -30px) scale(0.95); }
+    }
+
+    /* Noise Overlay */
+    .noise {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 2;
+      opacity: 0.03;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    }
+
+    /* Constellation Canvas */
+    #constellation {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 3;
+    }
+
+    /* Memory Stars */
+    .memory-star {
+      position: absolute;
+      cursor: pointer;
+      z-index: 10;
+      transition: transform 0.3s ease, filter 0.3s ease;
+    }
+
+    .memory-star:hover {
+      transform: scale(1.5);
+      filter: brightness(1.5);
+      z-index: 20;
+    }
+
+    .star-core {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: var(--star-size);
+      height: var(--star-size);
+      background: var(--star-color);
+      border-radius: 50%;
+      box-shadow: 
+        0 0 10px var(--star-color),
+        0 0 20px var(--star-color),
+        0 0 40px var(--star-color);
+      animation: starPulse var(--pulse-duration) ease-in-out infinite;
+    }
+
+    @keyframes starPulse {
+      0%, 100% { 
+        opacity: var(--base-opacity);
+        box-shadow: 
+          0 0 10px var(--star-color),
+          0 0 20px var(--star-color);
+      }
+      50% { 
+        opacity: 1;
+        box-shadow: 
+          0 0 15px var(--star-color),
+          0 0 30px var(--star-color),
+          0 0 50px var(--star-color);
+      }
+    }
+
+    .star-rays {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: calc(var(--star-size) * 3);
+      height: calc(var(--star-size) * 3);
+      animation: raysSpin 20s linear infinite;
+    }
+
+    .star-rays::before,
+    .star-rays::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: linear-gradient(90deg, transparent 30%, var(--star-color) 50%, transparent 70%);
+      opacity: 0.3;
+    }
+
+    .star-rays::before {
+      width: 100%;
+      height: 2px;
+    }
+
+    .star-rays::after {
+      width: 2px;
+      height: 100%;
+    }
+
+    @keyframes raysSpin {
+      from { transform: translate(-50%, -50%) rotate(0deg); }
+      to { transform: translate(-50%, -50%) rotate(360deg); }
+    }
+
+    /* Memory Tooltip */
+    .memory-tooltip {
+      position: fixed;
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      padding: 20px 24px;
+      max-width: 320px;
+      z-index: 100;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(10px);
+      transition: all 0.3s ease;
+      pointer-events: none;
+    }
+
+    .memory-tooltip.active {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+
+    .tooltip-date {
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-bottom: 8px;
+      letter-spacing: 0.5px;
+    }
+
+    .tooltip-text {
+      font-size: 15px;
+      line-height: 1.6;
+      color: var(--text-primary);
+    }
+
+    .tooltip-delete {
+      margin-top: 12px;
+      padding: 6px 12px;
+      background: rgba(239, 68, 68, 0.2);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      border-radius: 8px;
+      color: #ef4444;
+      font-size: 12px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .tooltip-delete:hover {
+      background: rgba(239, 68, 68, 0.3);
+    }
+
+    /* UI Panel */
+    .ui-panel {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 50;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .input-group {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .memory-input {
+      width: 360px;
+      padding: 16px 24px;
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      border-radius: 50px;
+      color: var(--text-primary);
+      font-family: 'Noto Sans TC', sans-serif;
+      font-size: 15px;
+      outline: none;
+      transition: all 0.3s ease;
+    }
+
+    .memory-input::placeholder {
+      color: var(--text-secondary);
+    }
+
+    .memory-input:focus {
+      border-color: var(--accent-gold);
+      box-shadow: 0 0 30px rgba(212, 175, 55, 0.2);
+    }
+
+    .submit-btn {
+      width: 52px;
+      height: 52px;
+      background: linear-gradient(135deg, var(--accent-gold), #c9a227);
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 20px rgba(212, 175, 55, 0.4);
+    }
+
+    .submit-btn:hover {
+      transform: scale(1.1);
+      box-shadow: 0 6px 30px rgba(212, 175, 55, 0.6);
+    }
+
+    .submit-btn svg {
+      width: 24px;
+      height: 24px;
+      fill: var(--bg-deep);
+    }
+
+    .stats-bar {
+      display: flex;
+      gap: 32px;
+      padding: 12px 28px;
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      border-radius: 30px;
+    }
+
+    .stat {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .stat-value {
+      font-family: 'Cinzel Decorative', serif;
+      font-size: 20px;
+      color: var(--star-gold);
+    }
+
+    .stat-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    /* Header */
+    .header {
+      position: fixed;
+      top: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      text-align: center;
+      z-index: 50;
+    }
+
+    .title {
+      font-family: 'Cinzel Decorative', serif;
+      font-size: 28px;
+      color: var(--text-primary);
+      letter-spacing: 4px;
+      margin-bottom: 8px;
+      text-shadow: 0 0 30px rgba(212, 175, 55, 0.3);
+    }
+
+    .subtitle {
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      color: var(--text-secondary);
+      letter-spacing: 2px;
+    }
+
+    /* Shooting Stars */
+    .shooting-star {
+      position: fixed;
+      width: 100px;
+      height: 2px;
+      background: linear-gradient(90deg, var(--star-white), transparent);
+      border-radius: 50%;
+      z-index: 5;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    /* Instructions */
+    .instructions {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      z-index: 5;
+      pointer-events: none;
+      opacity: 0.6;
+      transition: opacity 1s ease;
+    }
+
+    .instructions.hidden {
+      opacity: 0;
+    }
+
+    .instructions-text {
+      font-family: 'DM Mono', monospace;
+      font-size: 14px;
+      color: var(--text-secondary);
+      letter-spacing: 1px;
+    }
+
+    /* Mobile Responsive */
+    @media (max-width: 480px) {
+      .memory-input {
+        width: 280px;
+        padding: 14px 20px;
+      }
+
+      .title {
+        font-size: 22px;
+      }
+
+      .ui-panel {
+        bottom: 20px;
+      }
+
+      .stats-bar {
+        gap: 20px;
+        padding: 10px 20px;
+      }
+    }
+  </style>
 </head>
 <body>
-    <div class="bg-grid"></div>
-    <div class="scanline"></div>
-    <div class="floating-particles" id="particles"></div>
+  <div class="starfield" id="starfield"></div>
+  <div class="nebula"></div>
+  <div class="noise"></div>
+  <canvas id="constellation"></canvas>
 
-    <div class="container">
-        <header class="header">
-            <h1 class="logo">QR FORGE</h1>
-            <p class="subtitle">// 量子QR生成器 //</p>
-        </header>
+  <header class="header">
+    <h1 class="title">星圖記憶</h1>
+    <p class="subtitle">STELLAR MEMORY · 點擊星光回顧記憶</p>
+  </header>
 
-        <div class="main-card">
-            <div class="input-section">
-                <label class="input-label">INPUT_TEXT</label>
-                <div class="input-wrapper">
-                    <input 
-                        type="text" 
-                        class="text-input" 
-                        id="textInput" 
-                        placeholder="輸入文字、網址或任何內容..."
-                        autocomplete="off"
-                    >
-                </div>
-            </div>
+  <div class="instructions" id="instructions">
+    <p class="instructions-text">輸入思緒，化作永恆星光</p>
+  </div>
 
-            <div class="size-selector">
-                <button class="size-btn" data-size="128">128px</button>
-                <button class="size-btn active" data-size="256">256px</button>
-                <button class="size-btn" data-size="384">384px</button>
-                <button class="size-btn" data-size="512">512px</button>
-            </div>
-
-            <div class="qr-display">
-                <div class="qr-container" id="qrContainer">
-                    <div class="qr-placeholder" id="placeholder">
-                        輸入文字即可生成QR Code
-                    </div>
-                </div>
-            </div>
-
-            <div class="action-buttons">
-                <button class="btn btn-primary" id="downloadBtn" disabled>
-                    <span class="btn-icon">⬇</span>
-                    下載PNG
-                </button>
-                <button class="btn btn-secondary" id="copyBtn" disabled>
-                    <span class="btn-icon">📋</span>
-                    複製影像
-                </button>
-            </div>
-
-            <div class="stats-bar">
-                <div class="stat">
-                    <div class="stat-value" id="totalCount">0</div>
-                    <div class="stat-label">總生成次數</div>
-                </div>
-            </div>
-        </div>
-
-        <section class="history-section">
-            <div class="section-header">
-                <h2 class="section-title">HISTORY // 歷史記錄</h2>
-                <button class="clear-btn" id="clearBtn">清除全部</button>
-            </div>
-            <div class="history-grid" id="historyGrid">
-                <div class="history-empty">尚無生成記錄</div>
-            </div>
-        </section>
+  <div class="ui-panel">
+    <div class="input-group">
+      <input type="text" class="memory-input" id="memoryInput" placeholder="寫下此刻的思緒..." maxlength="100">
+      <button class="submit-btn" id="submitBtn" aria-label="新增記憶">
+        <svg viewBox="0 0 24 24"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg>
+      </button>
     </div>
+    <div class="stats-bar">
+      <div class="stat">
+        <span class="stat-value" id="totalMemories">0</span>
+        <span class="stat-label">星數</span>
+      </div>
+      <div class="stat">
+        <span class="stat-value" id="todayMemories">0</span>
+        <span class="stat-label">今日</span>
+      </div>
+      <div class="stat">
+        <span class="stat-value" id="totalDays">0</span>
+        <span class="stat-label">天數</span>
+      </div>
+    </div>
+  </div>
 
-    <div class="toast" id="toast"></div>
+  <div class="memory-tooltip" id="tooltip">
+    <div class="tooltip-date" id="tooltipDate"></div>
+    <div class="tooltip-text" id="tooltipText"></div>
+    <button class="tooltip-delete" id="tooltipDelete">移除記憶</button>
+  </div>
 
-    <script>
-        // State
-        let currentQR = null;
-        let currentSize = 256;
-        let history = JSON.parse(localStorage.getItem('qrforge_history') || '[]');
-        let stats = JSON.parse(localStorage.getItem('qrforge_stats') || '{"total": 0}');
+  <div class="shooting-star" id="shootingStar"></div>
 
-        // DOM Elements
-        const textInput = document.getElementById('textInput');
-        const qrContainer = document.getElementById('qrContainer');
-        const placeholder = document.getElementById('placeholder');
-        const downloadBtn = document.getElementById('downloadBtn');
-        const copyBtn = document.getElementById('copyBtn');
-        const clearBtn = document.getElementById('clearBtn');
-        const historyGrid = document.getElementById('historyGrid');
-        const totalCount = document.getElementById('totalCount');
-        const toast = document.getElementById('toast');
-        const sizeBtns = document.querySelectorAll('.size-btn');
+  <script>
+    // State
+    let memories = [];
+    let selectedStar = null;
 
-        // Initialize
-        function init() {
-            createParticles();
-            updateStats();
-            renderHistory();
-            setupEventListeners();
+    // DOM Elements
+    const canvas = document.getElementById('constellation');
+    const ctx = canvas.getContext('2d');
+    const memoryInput = document.getElementById('memoryInput');
+    const submitBtn = document.getElementById('submitBtn');
+    const tooltip = document.getElementById('tooltip');
+    const tooltipDate = document.getElementById('tooltipDate');
+    const tooltipText = document.getElementById('tooltipText');
+    const tooltipDelete = document.getElementById('tooltipDelete');
+    const instructions = document.getElementById('instructions');
+    const starfield = document.getElementById('starfield');
+    const shootingStar = document.getElementById('shootingStar');
+
+    // Colors for stars
+    const starColors = ['#fbbf24', '#60a5fa', '#f472b6', '#22d3ee', '#a78bfa', '#34d399', '#fb923c'];
+
+    // Initialize
+    function init() {
+      resizeCanvas();
+      generateBackgroundStars();
+      loadMemories();
+      renderMemories();
+      updateStats();
+      scheduleShootingStar();
+      
+      window.addEventListener('resize', () => {
+        resizeCanvas();
+        renderMemories();
+      });
+
+      // Event Listeners
+      submitBtn.addEventListener('click', addMemory);
+      memoryInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') addMemory();
+      });
+
+      document.addEventListener('click', (e) => {
+        if (!tooltip.contains(e.target) && !e.target.closest('.memory-star')) {
+          hideTooltip();
         }
+      });
 
-        // Create floating particles
-        function createParticles() {
-            const container = document.getElementById('particles');
-            for (let i = 0; i < 30; i++) {
-                const particle = document.createElement('div');
-                particle.className = 'particle';
-                particle.style.left = Math.random() * 100 + '%';
-                particle.style.animationDelay = Math.random() * 20 + 's';
-                particle.style.animationDuration = (15 + Math.random() * 10) + 's';
-                if (Math.random() > 0.5) {
-                    particle.style.background = '#f59e0b';
-                }
-                container.appendChild(particle);
-            }
+      tooltipDelete.addEventListener('click', deleteSelectedMemory);
+    }
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+
+    function generateBackgroundStars() {
+      starfield.innerHTML = '';
+      const layers = [
+        { class: 'layer-1', count: 100, minSize: 1, maxSize: 2 },
+        { class: 'layer-2', count: 80, minSize: 1, maxSize: 3 },
+        { class: 'layer-3', count: 60, minSize: 2, maxSize: 4 }
+      ];
+
+      layers.forEach(layer => {
+        const layerEl = document.createElement('div');
+        layerEl.className = `layer ${layer.class}`;
+        
+        for (let i = 0; i < layer.count; i++) {
+          const star = document.createElement('div');
+          star.className = 'bg-star';
+          const size = layer.minSize + Math.random() * (layer.maxSize - layer.minSize);
+          star.style.cssText = `
+            left: ${Math.random() * 100}%;
+            top: ${Math.random() * 100}%;
+            width: ${size}px;
+            height: ${size}px;
+            --duration: ${3 + Math.random() * 4}s;
+            --delay: ${Math.random() * 3}s;
+            --base-opacity: ${0.3 + Math.random() * 0.4};
+          `;
+          layerEl.appendChild(star);
         }
+        
+        starfield.appendChild(layerEl);
+      });
+    }
 
-        // Show toast
-        function showToast(message) {
-            toast.textContent = message;
-            toast.classList.add('show');
-            setTimeout(() => toast.classList.remove('show'), 2500);
+    function loadMemories() {
+      const saved = localStorage.getItem('stellarMemory');
+      if (saved) {
+        memories = JSON.parse(saved);
+      }
+    }
+
+    function saveMemories() {
+      localStorage.setItem('stellarMemory', JSON.stringify(memories));
+    }
+
+    function addMemory() {
+      const text = memoryInput.value.trim();
+      if (!text) return;
+
+      // Hide instructions
+      instructions.classList.add('hidden');
+
+      const memory = {
+        id: Date.now(),
+        text: text,
+        date: new Date().toISOString(),
+        x: 100 + Math.random() * (window.innerWidth - 200),
+        y: 100 + Math.random() * (window.innerHeight - 300),
+        color: starColors[Math.floor(Math.random() * starColors.length)],
+        size: 12 + Math.random() * 8,
+        pulseDuration: 2 + Math.random() * 2,
+        baseOpacity: 0.7 + Math.random() * 0.3
+      };
+
+      memories.push(memory);
+      saveMemories();
+      renderMemories();
+      updateStats();
+      
+      // Trigger shooting star
+      triggerShootingStar();
+
+      memoryInput.value = '';
+    }
+
+    function renderMemories() {
+      // Remove existing stars
+      document.querySelectorAll('.memory-star').forEach(el => el.remove());
+
+      // Create new stars
+      memories.forEach(memory => {
+        const star = document.createElement('div');
+        star.className = 'memory-star';
+        star.dataset.id = memory.id;
+        star.style.cssText = `
+          left: ${memory.x}px;
+          top: ${memory.y}px;
+          --star-color: ${memory.color};
+          --star-size: ${memory.size}px;
+          --pulse-duration: ${memory.pulseDuration}s;
+          --base-opacity: ${memory.baseOpacity};
+        `;
+
+        star.innerHTML = `
+          <div class="star-rays"></div>
+          <div class="star-core"></div>
+        `;
+
+        star.addEventListener('click', (e) => {
+          e.stopPropagation();
+          showTooltip(memory, star);
+        });
+
+        document.body.appendChild(star);
+      });
+
+      // Draw constellation lines
+      drawConstellationLines();
+    }
+
+    function drawConstellationLines() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      if (memories.length < 2) return;
+
+      // Sort by proximity to draw lines between close stars
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
+      ctx.lineWidth = 1;
+
+      for (let i = 0; i < memories.length; i++) {
+        for (let j = i + 1; j < memories.length; j++) {
+          const m1 = memories[i];
+          const m2 = memories[j];
+          const dist = Math.sqrt(Math.pow(m2.x - m1.x, 2) + Math.pow(m2.y - m1.y, 2));
+          
+          if (dist < 250) {
+            ctx.beginPath();
+            ctx.moveTo(m1.x, m1.y);
+            ctx.lineTo(m2.x, m2.y);
+            ctx.globalAlpha = 1 - (dist / 250);
+            ctx.stroke();
+          }
         }
+      }
+      ctx.globalAlpha = 1;
+    }
 
-        // Update stats
-        function updateStats() {
-            totalCount.textContent = stats.total;
-        }
+    function showTooltip(memory, starElement) {
+      selectedStar = memory;
+      
+      const rect = starElement.getBoundingClientRect();
+      let left = rect.left + rect.width / 2;
+      let top = rect.bottom + 15;
 
-        // Generate QR Code
-        function generateQR(text, size = 256) {
-            if (!text.trim()) {
-                placeholder.style.display = 'flex';
-                qrContainer.querySelector('canvas')?.remove();
-                downloadBtn.disabled = true;
-                copyBtn.disabled = true;
-                currentQR = null;
-                return;
-            }
+      // Keep tooltip in viewport
+      if (left + 160 > window.innerWidth) left = window.innerWidth - 180;
+      if (left < 20) left = 20;
+      if (top + 150 > window.innerHeight) top = rect.top - 170;
 
-            placeholder.style.display = 'none';
-            
-            // Remove existing canvas
-            qrContainer.querySelector('canvas')?.remove();
+      tooltip.style.left = `${left}px`;
+      tooltip.style.top = `${top}px`;
+      tooltip.style.transform = 'translateX(-50%)';
 
-            // Create canvas for QR
-            const canvas = document.createElement('canvas');
-            qrContainer.appendChild(canvas);
+      const date = new Date(memory.date);
+      tooltipDate.textContent = date.toLocaleDateString('zh-TW', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+      tooltipText.textContent = memory.text;
+      
+      tooltip.classList.add('active');
+    }
 
-            // Add generating animation
-            qrContainer.classList.add('generating');
-            setTimeout(() => qrContainer.classList.remove('generating'), 300);
+    function hideTooltip() {
+      tooltip.classList.remove('active');
+      selectedStar = null;
+    }
 
-            // Generate QR
-            QRCode.toCanvas(canvas, text, {
-                width: size,
-                margin: 2,
-                color: {
-                    dark: '#000000',
-                    light: '#ffffff'
-                }
-            }, (error) => {
-                if (error) {
-                    console.error(error);
-                    showToast('生成失敗');
-                    return;
-                }
+    function deleteSelectedMemory() {
+      if (!selectedStar) return;
+      
+      memories = memories.filter(m => m.id !== selectedStar.id);
+      saveMemories();
+      renderMemories();
+      updateStats();
+      hideTooltip();
+    }
 
-                currentQR = canvas;
-                downloadBtn.disabled = false;
-                copyBtn.disabled = false;
+    function updateStats() {
+      const totalMemories = document.getElementById('totalMemories');
+      const todayMemories = document.getElementById('todayMemories');
+      const totalDays = document.getElementById('totalDays');
 
-                // Update stats
-                stats.total++;
-                localStorage.setItem('qrforge_stats', JSON.stringify(stats));
-                updateStats();
+      totalMemories.textContent = memories.length;
 
-                // Add to history (debounced)
-                clearTimeout(window.historyTimeout);
-                window.historyTimeout = setTimeout(() => {
-                    addToHistory(text, canvas);
-                }, 1000);
-            });
-        }
+      // Count today's memories
+      const today = new Date().toDateString();
+      const todayCount = memories.filter(m => new Date(m.date).toDateString() === today).length;
+      todayMemories.textContent = todayCount;
 
-        // Add to history
-        function addToHistory(text, canvas) {
-            // Create thumbnail
-            const thumbCanvas = document.createElement('canvas');
-            const thumbSize = 100;
-            thumbCanvas.width = thumbSize;
-            thumbCanvas.height = thumbSize;
-            const ctx = thumbCanvas.getContext('2d');
-            ctx.drawImage(canvas, 0, 0, thumbSize, thumbSize);
-            const dataUrl = thumbCanvas.toDataURL('image/png');
+      // Count unique days
+      const uniqueDays = new Set(memories.map(m => new Date(m.date).toDateString())).size;
+      totalDays.textContent = uniqueDays;
+    }
 
-            // Add to history
-            history.unshift({
-                text: text.substring(0, 30),
-                fullText: text,
-                image: dataUrl,
-                timestamp: Date.now()
-            });
+    function triggerShootingStar() {
+      const startX = Math.random() * window.innerWidth;
+      const startY = Math.random() * window.innerHeight * 0.5;
+      const angle = 30 + Math.random() * 30;
+      const duration = 800 + Math.random() * 400;
 
-            // Keep only last 20
-            history = history.slice(0, 20);
-            localStorage.setItem('qrforge_history', JSON.stringify(history));
-            renderHistory();
-        }
+      shootingStar.style.cssText = `
+        left: ${startX}px;
+        top: ${startY}px;
+        transform: rotate(${angle}deg);
+        opacity: 1;
+        transition: none;
+      `;
 
-        // Render history
-        function renderHistory() {
-            if (history.length === 0) {
-                historyGrid.innerHTML = '<div class="history-empty">尚無生成記錄</div>';
-                clearBtn.style.display = 'none';
-                return;
-            }
+      requestAnimationFrame(() => {
+        shootingStar.style.transition = `all ${duration}ms ease-out`;
+        shootingStar.style.transform = `rotate(${angle}deg) translateX(${window.innerWidth}px)`;
+        shootingStar.style.opacity = '0';
+      });
+    }
 
-            clearBtn.style.display = 'block';
-            historyGrid.innerHTML = history.map((item, index) => `
-                <div class="history-item" data-index="${index}">
-                    <img src="${item.image}" alt="QR Code">
-                    <div class="history-text">${item.text}${item.text.length >= 30 ? '...' : ''}</div>
-                    <button class="history-delete" data-index="${index}">×</button>
-                </div>
-            `).join('');
+    function scheduleShootingStar() {
+      // Random shooting star every 5-15 seconds
+      const delay = 5000 + Math.random() * 10000;
+      setTimeout(() => {
+        if (Math.random() > 0.3) triggerShootingStar();
+        scheduleShootingStar();
+      }, delay);
+    }
 
-            // Add click handlers
-            historyGrid.querySelectorAll('.history-item').forEach(item => {
-                item.addEventListener('click', (e) => {
-                    if (e.target.classList.contains('history-delete')) return;
-                    const text = history[item.dataset.index].fullText;
-                    textInput.value = text;
-                    generateQR(text, currentSize);
-                });
-            });
-
-            historyGrid.querySelectorAll('.history-delete').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    history.splice(btn.dataset.index, 1);
-                    localStorage.setItem('qrforge_history', JSON.stringify(history));
-                    renderHistory();
-                    showToast('已刪除');
-                });
-            });
-        }
-
-        // Download QR
-        function downloadQR() {
-            if (!currentQR) return;
-
-            const link = document.createElement('a');
-            link.download = `qrforge-${Date.now()}.png`;
-            link.href = currentQR.toDataURL('image/png');
-            link.click();
-            showToast('已下載 PNG');
-        }
-
-        // Copy QR to clipboard
-        async function copyQR() {
-            if (!currentQR) return;
-
-            try {
-                const blob = await new Promise(resolve => currentQR.toBlob(resolve));
-                await navigator.clipboard.write([
-                    new ClipboardItem({ 'image/png': blob })
-                ]);
-                showToast('已複製到剪貼簿');
-            } catch (err) {
-                showToast('複製失敗');
-                console.error(err);
-            }
-        }
-
-        // Setup event listeners
-        function setupEventListeners() {
-            // Text input
-            let timeout;
-            textInput.addEventListener('input', (e) => {
-                clearTimeout(timeout);
-                timeout = setTimeout(() => {
-                    generateQR(e.target.value, currentSize);
-                }, 300);
-            });
-
-            // Size buttons
-            sizeBtns.forEach(btn => {
-                btn.addEventListener('click', () => {
-                    sizeBtns.forEach(b => b.classList.remove('active'));
-                    btn.classList.add('active');
-                    currentSize = parseInt(btn.dataset.size);
-                    if (textInput.value) {
-                        generateQR(textInput.value, currentSize);
-                    }
-                });
-            });
-
-            // Download
-            downloadBtn.addEventListener('click', downloadQR);
-
-            // Copy
-            copyBtn.addEventListener('click', copyQR);
-
-            // Clear history
-            clearBtn.addEventListener('click', () => {
-                if (confirm('確定要清除所有歷史記錄？')) {
-                    history = [];
-                    localStorage.setItem('qrforge_history', JSON.stringify(history));
-                    renderHistory();
-                    showToast('已清除歷史');
-                }
-            });
-        }
-
-        // Start
-        init();
-    </script>
+    // Initialize on load
+    init();
+  </script>
 </body>
 </html>
