@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>March 2026 ✦ 月度回顧</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=DM+Mono:wght@400;500&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-cream: #faf8f5;
+            --bg-warm: #f5f0e8;
+            --ink-dark: #1a1a1a;
+            --ink-medium: #4a4a4a;
+            --ink-light: #8a8a8a;
+            --accent-coral: #e85d4c;
+            --accent-mustard: #d4a853;
+            --accent-teal: #2d8a8a;
+            --accent-purple: #7c5cbf;
+            --border-soft: rgba(0,0,0,0.08);
+        }
+
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background: var(--bg-cream);
+            color: var(--ink-dark);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 60px;
+            position: relative;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: var(--accent-coral);
+        }
+
+        .month-label {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 14px;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: var(--ink-light);
+            margin-bottom: 8px;
+        }
+
+        .month-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(48px, 10vw, 72px);
+            font-weight: 700;
+            letter-spacing: -2px;
+            line-height: 1.1;
+            margin-bottom: 8px;
+        }
+
+        .month-title span {
+            color: var(--accent-coral);
+        }
+
+        .year-subtitle {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 18px;
+            font-style: italic;
+            color: var(--ink-medium);
+        }
+
+        .header-stats {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 42px;
+            font-weight: 700;
+            color: var(--ink-dark);
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: var(--ink-light);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Section Styles */
+        .section {
+            margin-bottom: 60px;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 30px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid var(--ink-dark);
+        }
+
+        .section-icon {
+            font-size: 24px;
+        }
+
+        .section-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 28px;
+            font-weight: 700;
+        }
+
+        /* Daily Projects Grid */
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .project-card {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .project-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+        }
+
+        .project-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+        }
+
+        .project-card:nth-child(6n+1)::before { background: var(--accent-coral); }
+        .project-card:nth-child(6n+2)::before { background: var(--accent-mustard); }
+        .project-card:nth-child(6n+3)::before { background: var(--accent-teal); }
+        .project-card:nth-child(6n+4)::before { background: var(--accent-purple); }
+        .project-card:nth-child(6n+5)::before { background: #5c9c5c; }
+        .project-card:nth-child(6n+6)::before { background: #5c7c9c; }
+
+        .project-date {
+            font-family: 'DM Mono', monospace;
+            font-size: 11px;
+            color: var(--ink-light);
+            margin-bottom: 8px;
+        }
+
+        .project-name {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 22px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--ink-dark);
+        }
+
+        .project-desc {
+            font-size: 13px;
+            color: var(--ink-medium);
+            line-height: 1.5;
+        }
+
+        .project-tag {
+            display: inline-block;
+            font-size: 10px;
+            padding: 4px 8px;
+            background: var(--bg-warm);
+            border-radius: 4px;
+            margin-top: 12px;
+            color: var(--ink-medium);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Categories Section */
+        .categories-wrapper {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+        }
+
+        .category-item {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            transition: transform 0.2s ease;
+        }
+
+        .category-item:hover {
+            transform: scale(1.02);
+        }
+
+        .category-emoji {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+
+        .category-name {
+            font-size: 14px;
+            color: var(--ink-medium);
+            margin-bottom: 4px;
+        }
+
+        .category-count {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--ink-dark);
+        }
+
+        /* Notes Section */
+        .notes-section {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+        }
+
+        .notes-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .notes-textarea {
+            width: 100%;
+            min-height: 150px;
+            border: 2px solid var(--border-soft);
+            border-radius: 12px;
+            padding: 16px;
+            font-family: 'Noto Sans TC', sans-serif;
+            font-size: 15px;
+            line-height: 1.8;
+            resize: vertical;
+            transition: border-color 0.3s ease;
+        }
+
+        .notes-textarea:focus {
+            outline: none;
+            border-color: var(--accent-coral);
+        }
+
+        .notes-textarea::placeholder {
+            color: var(--ink-light);
+        }
+
+        .notes-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-family: 'Noto Sans TC', sans-serif;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary {
+            background: var(--ink-dark);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--ink-medium);
+        }
+
+        .btn-secondary {
+            background: var(--bg-warm);
+            color: var(--ink-medium);
+        }
+
+        .btn-secondary:hover {
+            background: #ebe6de;
+        }
+
+        /* Saved Notes Display */
+        .saved-notes {
+            margin-top: 24px;
+            padding-top: 24px;
+            border-top: 1px dashed var(--border-soft);
+        }
+
+        .saved-notes-title {
+            font-size: 12px;
+            color: var(--ink-light);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+        }
+
+        .saved-note {
+            background: var(--bg-cream);
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 12px;
+            position: relative;
+        }
+
+        .saved-note-date {
+            font-family: 'DM Mono', monospace;
+            font-size: 11px;
+            color: var(--ink-light);
+            margin-bottom: 8px;
+        }
+
+        .saved-note-content {
+            font-size: 14px;
+            line-height: 1.7;
+            white-space: pre-wrap;
+        }
+
+        .saved-note-delete {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            width: 24px;
+            height: 24px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            opacity: 0.3;
+            transition: opacity 0.2s ease;
+            font-size: 16px;
+        }
+
+        .saved-note-delete:hover {
+            opacity: 1;
+        }
+
+        /* Countdown */
+        .countdown-section {
+            text-align: center;
+            padding: 40px;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            border-radius: 20px;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .countdown-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%' height='100%' filter='url(%23noise)'/%3E%3C/svg%3E");
+            opacity: 0.03;
+            pointer-events: none;
+        }
+
+        .countdown-label {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 16px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            opacity: 0.7;
+            margin-bottom: 16px;
+        }
+
+        .countdown-timer {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            flex-wrap: wrap;
+        }
+
+        .countdown-item {
+            text-align: center;
+        }
+
+        .countdown-number {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 56px;
+            font-weight: 700;
+            line-height: 1;
+        }
+
+        .countdown-unit {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            opacity: 0.5;
+            margin-top: 8px;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding-top: 40px;
+            margin-top: 40px;
+            border-top: 1px solid var(--border-soft);
+        }
+
+        .footer-text {
+            font-family: 'Cormorant Garamond', serif;
+            font-style: italic;
+            color: var(--ink-light);
+            font-size: 16px;
+        }
+
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: var(--ink-dark);
+            color: white;
+            padding: 14px 28px;
+            border-radius: 30px;
+            font-size: 14px;
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 1000;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            .container {
+                padding: 24px 16px;
+            }
+
+            .header-stats {
+                gap: 24px;
+            }
+
+            .stat-number {
+                font-size: 32px;
+            }
+
+            .projects-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .countdown-number {
+                font-size: 40px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="month-label">Monthly Review</div>
+            <h1 class="month-title">March <span>2026</span></h1>
+            <p class="year-subtitle">第三季的最後一個月 ✦ 春天的尾聲</p>
+            
+            <div class="header-stats">
+                <div class="stat-item">
+                    <div class="stat-number" id="project-count">0</div>
+                    <div class="stat-label">專案完成</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">31</div>
+                    <div class="stat-label">總天數</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">4</div>
+                    <div class="stat-label">專案類型</div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Countdown to April -->
+        <section class="section">
+            <div class="countdown-section">
+                <div class="countdown-label">倒數迎接 April</div>
+                <div class="countdown-timer" id="countdown">
+                    <div class="countdown-item">
+                        <div class="countdown-number" id="days">00</div>
+                        <div class="countdown-unit">Days</div>
+                    </div>
+                    <div class="countdown-item">
+                        <div class="countdown-number" id="hours">00</div>
+                        <div class="countdown-unit">Hours</div>
+                    </div>
+                    <div class="countdown-item">
+                        <div class="countdown-number" id="minutes">00</div>
+                        <div class="countdown-unit">Mins</div>
+                    </div>
+                    <div class="countdown-item">
+                        <div class="countdown-number" id="seconds">00</div>
+                        <div class="countdown-unit">Secs</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Daily Lab Projects -->
+        <section class="section">
+            <div class="section-header">
+                <span class="section-icon">✦</span>
+                <h2 class="section-title">Daily Lab 專案回顧</h2>
+            </div>
+            <div class="projects-grid" id="projects-grid">
+                <!-- Projects will be inserted here -->
+            </div>
+        </section>
+
+        <!-- Categories Breakdown -->
+        <section class="section">
+            <div class="section-header">
+                <span class="section-icon">◈</span>
+                <h2 class="section-title">專案類型分布</h2>
+            </div>
+            <div class="categories-wrapper" id="categories">
+                <!-- Categories will be inserted here -->
+            </div>
+        </section>
+
+        <!-- Personal Notes -->
+        <section class="section">
+            <div class="notes-section">
+                <h3 class="notes-title">
+                    <span>📝</span>
+                    三月回顧筆記
+                </h3>
+                <textarea 
+                    class="notes-textarea" 
+                    id="notes-input"
+                    placeholder="記錄這個月的收穫、挑戰、或是任何想法..."
+                ></textarea>
+                <div class="notes-actions">
+                    <button class="btn btn-primary" onclick="saveNote()">儲存筆記</button>
+                    <button class="btn btn-secondary" onclick="clearNotes()">清除</button>
+                </div>
+                <div class="saved-notes" id="saved-notes" style="display: none;">
+                    <div class="saved-notes-title">歷史筆記</div>
+                    <div id="notes-list"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p class="footer-text">March 2026 — 一個充滿創意與實驗的月份 ✦ Daily Lab</p>
+        </footer>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // March 2026 Projects Data
+        const marchProjects = [
+            { date: '03-01', name: '心願存錢筒', desc: '設定心願與目標金額，每日儲蓄計算達成天數，硬幣投入動畫', tag: '工具系' },
+            { date: '03-02', name: '幸運拉霸', desc: '拉斯維加斯風格拉霸機遊戲，三滾輪旋轉動畫，localStorage 統計', tag: '遊戲系' },
+            { date: '03-03', name: '紀念日銀河', desc: '新增紀念日與倒數天數，深邃星河視覺效果，localStorage 持久化', tag: '工具系' },
+            { date: '03-04', name: '時空流轉', desc: '療癒系沙漏冥想體驗，沙粒流動動畫，點擊產生漣漪效果', tag: '療癒系' },
+            { date: '03-05', name: 'Prompt Forge', desc: 'AI Prompt 優化工具，選擇優化風格，打字機動畫輸出', tag: '工具系' },
+            { date: '03-06', name: 'Neon Pong', desc: '復古霓虹乒乓球遊戲，支援鍵盤/滑鼠/觸控，粒子特效', tag: '遊戲系' },
+            { date: '03-07', name: '許願蛋神', desc: '搞笑許願實現 App，九種願望類型，sarcastic 回應', tag: '惡搞系' },
+            { date: '03-08', name: '幾何花園', desc: '互動式幾何圖形生成器，五種形狀六種色彩，動態連線效果', tag: '工具系' },
+            { date: '03-09', name: '虛空蓮', desc: '互動式蓮花召喚體驗，花瓣粒子爆發，星空星雲背景', tag: '療癒系' },
+            { date: '03-11', name: 'Mood Waves', desc: '情緒追蹤記錄，六種心情選項，每日趨勢圖表', tag: '工具系' },
+            { date: '03-12', name: 'Cyber Snake', desc: '賽博龐克風貪食蛇遊戲，三種道具系統，Web Audio 音效', tag: '遊戲系' },
+            { date: '03-13', name: 'System Pulse Monitor', desc: '系統健康儀表板，即時時鐘、磁碟空間、網路狀態監控', tag: '工具系' },
+            { date: '03-14', name: '幹話產生器', desc: '隨機產生哲學廢話、星座預測、科技術語混搭', tag: '惡搞系' },
+            { date: '03-15', name: '數位流星雨', desc: 'Matrix 風格數位雨動畫，中文字庫字符掉落動畫', tag: '視覺系' },
+            { date: '03-16', name: 'Rhythm Breaker', desc: '節奏點擊遊戲，三軌道音符下落，Perfect/Good/Miss 判定', tag: '遊戲系' },
+            { date: '03-17', name: '星光流', desc: '許願輸入體驗，文字轉化為飄浮星光粒子，多層星雲背景', tag: '療癒系' },
+            { date: '03-18', name: '竹林風禪', desc: '互動式竹林風體驗，竹子搖曳動畫，432Hz 自然環境音', tag: '療癒系' },
+            { date: '03-19', name: '思緒風鈴', desc: '輸入文字化為風鈴聲響，文字粒子漂浮，月夜禪風背景', tag: '療癒系' },
+            { date: '03-20', name: '銀河筆刷', desc: '互動式星雲繪畫體驗，拖曳滑鼠創建銀河粒子軌跡', tag: '工具系' },
+            { date: '03-21', name: 'Morse Pulse', desc: '摩斯密碼轉換工具，Web Audio 播放滴答聲，大型指示燈泡', tag: '工具系' },
+            { date: '03-22', name: '露珠禪境', desc: '輸入思緒化作漂浮露珠，點擊產生漣漪，霧氣漂移背景', tag: '療癒系' },
+            { date: '03-23', name: 'Memory Echo', desc: '記憶配對遊戲，翻牌故障效果，配對成功金色爆炸動畫', tag: '遊戲系' },
+            { date: '03-24', name: '問題煉金術', desc: '輸入模糊困擾翻譯成精準問題，配方解析，神秘煉金術暗色風', tag: '工具系' },
+            { date: '03-29', name: '星圖記憶', desc: '輸入思緒化作漂浮星光，點擊星星回顧記憶，星座連線效果', tag: '療癒系' },
+        ];
+
+        const categories = [
+            { emoji: '🔧', name: '工具系', count: 12 },
+            { emoji: '🎮', name: '遊戲系', count: 6 },
+            { emoji: '✨', name: '療癒系', count: 6 },
+            { emoji: '🎭', name: '惡搞系', count: 2 },
+        ];
+
+        // Render projects
+        function renderProjects() {
+            const grid = document.getElementById('projects-grid');
+            grid.innerHTML = marchProjects.map(p => `
+                <div class="project-card">
+                    <div class="project-date">2026.${p.date}</div>
+                    <div class="project-name">${p.name}</div>
+                    <div class="project-desc">${p.desc}</div>
+                    <span class="project-tag">${p.tag}</span>
+                </div>
+            `).join('');
+            
+            document.getElementById('project-count').textContent = marchProjects.length;
+        }
+
+        // Render categories
+        function renderCategories() {
+            const wrapper = document.getElementById('categories');
+            wrapper.innerHTML = categories.map(c => `
+                <div class="category-item">
+                    <div class="category-emoji">${c.emoji}</div>
+                    <div class="category-name">${c.name}</div>
+                    <div class="category-count">${c.count}</div>
+                </div>
+            `).join('');
+        }
+
+        // Countdown to April 2026
+        function updateCountdown() {
+            const now = new Date();
+            const april = new Date('2026-04-01T00:00:00');
+            const diff = april - now;
+            
+            if (diff > 0) {
+                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+                
+                document.getElementById('days').textContent = String(days).padStart(2, '0');
+                document.getElementById('hours').textContent = String(hours).padStart(2, '0');
+                document.getElementById('minutes').textContent = String(minutes).padStart(2, '0');
+                document.getElementById('seconds').textContent = String(seconds).padStart(2, '0');
+            }
+        }
+
+        // Notes functionality
+        function saveNote() {
+            const input = document.getElementById('notes-input');
+            const text = input.value.trim();
+            
+            if (!text) {
+                showToast('請輸入一些內容');
+                return;
+            }
+            
+            const notes = JSON.parse(localStorage.getItem('march2026_notes') || '[]');
+            notes.unshift({
+                text: text,
+                date: new Date().toISOString()
+            });
+            
+            localStorage.setItem('march2026_notes', JSON.stringify(notes));
+            input.value = '';
+            renderNotes();
+            showToast('筆記已儲存 ✦');
+        }
+
+        function deleteNote(index) {
+            const notes = JSON.parse(localStorage.getItem('march2026_notes') || '[]');
+            notes.splice(index, 1);
+            localStorage.setItem('march2026_notes', JSON.stringify(notes));
+            renderNotes();
+            showToast('筆記已刪除');
+        }
+
+        function renderNotes() {
+            const notes = JSON.parse(localStorage.getItem('march2026_notes') || '[]');
+            const container = document.getElementById('saved-notes');
+            const list = document.getElementById('notes-list');
+            
+            if (notes.length === 0) {
+                container.style.display = 'none';
+                return;
+            }
+            
+            container.style.display = 'block';
+            list.innerHTML = notes.map((n, i) => {
+                const date = new Date(n.date);
+                const dateStr = `${date.getMonth() + 1}/${date.getDate()} ${date.getHours()}:${String(date.getMinutes()).padStart(2, '0')}`;
+                return `
+                    <div class="saved-note">
+                        <button class="saved-note-delete" onclick="deleteNote(${i})">✕</button>
+                        <div class="saved-note-date">${dateStr}</div>
+                        <div class="saved-note-content">${escapeHtml(n.text)}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function clearNotes() {
+            document.getElementById('notes-input').value = '';
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2500);
+        }
+
+        // Initialize
+        renderProjects();
+        renderCategories();
+        renderNotes();
+        updateCountdown();
+        setInterval(updateCountdown, 1000);
+    </script>
+</body>
+</html>
