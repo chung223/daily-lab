@@ -7,9 +7,9 @@
 *用一杯咖啡的時間，換一個讓世界多點樂趣的小玩具*
 
 ![License](https://img.shields.io/badge/license-MIT-green?style=for-the-badge&logo=mit)
-![Projects](https://img.shields.io/badge/專案數-46-blue?style=for-the-badge)
-![Streak](https://img.shields.io/badge/連續-45天-orange?style=for-the-badge)
-![Coffee](https://img.shields.io/badge/消耗咖啡-☕☕☕☕☕☕☕☕☕☕☕-red?style=for-the-badge)
+![Projects](https://img.shields.io/badge/專案數-48-blue?style=for-the-badge)
+![Streak](https://img.shields.io/badge/連續-47天-orange?style=for-the-badge)
+![Coffee](https://img.shields.io/badge/消耗咖啡-☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕-red?style=for-the-badge)
 
 </div>
 
@@ -17,15 +17,15 @@
 
 ## 🌟 本日精選
 
-<a href="https://chung223.github.io/daily-lab/2026-03-27/">
-<img src="https://custom-icon-badges.demolab.com/badge/點此體驗-2026--03--27-9d4edd?style=for-the-badge&logo=rocket" alt="Try Now">
+<a href="https://chung223.github.io/daily-lab/2026-03-31/">
+<img src="https://custom-icon-badges.demolab.com/badge/點此體驗-2026--03--31-9d4edd?style=for-the-badge&logo=rocket" alt="Try Now">
 </a>
 
 | 預覽 | 日期 | 專案 | 描述 |
 |:---:|:---:|:---:|---|
+| ⭐ | 03/31 | [March 2026 月度回顧](https://chung223.github.io/daily-lab/2026-03-31/) | 展示 3 月所有 Daily Lab 專案卡片、專案類型分布統計、倒數 April 到來 |
+| ⭐ | 03/31 | [Process Cards 腳本管理](https://chung223.github.io/daily-lab/2026-03-31b/) | 視覺化腳本管理面板、狀態追蹤、執行次數統計、localStorage 持久化 |
 | ⭐ | 03/29 | [QR Forge](https://chung223.github.io/daily-lab/2026-03-29/) | Cyberpunk-styled QR code generator, real-time generation, download as PNG, history tracking |
-| ⭐ | 03/28 | [Cyber Dice Roller 命運骰子](https://chung223.github.io/daily-lab/2026-03-28/) | 3D 互動骰子體驗、霓虹 cyber 風格、星空背景與動態粒子 |
-| ⭐ | 03/27 | [命運之弦 String of Fate](https://chung223.github.io/daily-lab/2026-03-27/) | 輸入思緒化作宇宙中的震動之弦、點擊共鳴效果、星空宇宙背景 |
 
 ---
 
@@ -36,6 +36,7 @@
 
 | 日期 | 專案 | 描述 |
 |:---:|---:|---|
+| 03/31 | 📅 [March 2026 月度回顧](https://chung223.github.io/daily-lab/2026-03-31/) | 展示 3 月所有 Daily Lab 專案卡片、專案類型分布統計、倒數 April 到來 |
 | 03/25 | 💫 [Question Flow 問題之流](https://chung223.github.io/daily-lab/2026-03-25/) | 輸入問題化作字元粒子流、星空背景、哈拉瑞名言激勵 |
 | 03/21 | 📡 [Morse Pulse 摩斯脈衝](https://chung223.github.io/daily-lab/2026-03-21/) | 輸入文字即時轉換為摩斯密碼、Web Audio API 播放滴答聲 |
 | 03/20 | 🌌 [銀河筆刷 Galaxy Brush](https://chung223.github.io/daily-lab/2026-03-20/) | 互動式星雲繪畫體驗、拖曳滑鼠創建流動的銀河粒子軌跡 |
@@ -84,6 +85,7 @@
 
 | 日期 | 專案 | 描述 |
 |:---:|:---:|---|
+| 03/31 | 🔧 [Process Cards 腳本管理](https://chung223.github.io/daily-lab/2026-03-31b/) | 視覺化腳本管理面板、狀態追蹤（運行中/閒置/錯誤/已停止）、執行次數統計 |
 | 03/29 | ⭐ [QR Forge](https://chung223.github.io/daily-lab/2026-03-29/) | Cyberpunk-styled QR code generator, real-time generation, download as PNG |
 | 03/13 | ⭐ [System Pulse Monitor 系統脈衝監控](https://chung223.github.io/daily-lab/2026-03-13/) | 系統健康儀表板、即時顯示磁碟/網路/延遲資訊 |
 | 03/05 | ⚡ [Prompt Forge](https://chung223.github.io/daily-lab/2026-03-05/) | AI 提示詞優化工具、打字機動畫輸出 |
@@ -134,10 +136,10 @@
      ╔═══════════════════════════╗
      ║     Daily Lab Stats       ║
      ╠═══════════════════════════╣
-     ║  📦 總專案數: 46+         ║
-     ║  🔥 連續產出: 45 天        ║
+     ║  📦 總專案數: 48+         ║
+     ║  🔥 連續產出: 47 天        ║
      ║  ⏰ 平均產出時間: 3:00 AM  ║
-     ║  ☕ 消耗咖啡: ☕☕☕☕☕☕☕☕☕☕☕         ║
+     ║  ☕ 消耗咖啡: ☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕         ║
      ║  🐛 Bug 數: 數不清        ║
      ╚═══════════════════════════╝
 ```
