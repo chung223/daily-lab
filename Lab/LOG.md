@@ -1,3 +1,51 @@
+## 2026-04-04 03:30 (Asia/Taipei)
+- 建立 `project-20260404`：主機航班看板 (VPS Station Board)
+  - 功能：VPS 主機狀態監控面板、16 個站台狀態顯示（12 online/4 offline）、航班看板式排版、狀態指示燈（脈衝動畫）、點擊查看詳情（SSL 狀態/問題/修復建議）、即時時鐘、統計面板（上線率/總數）
+  - 技術：單一 HTML 檔案、Google Fonts（VT323 + Orbitron + Noto Sans TC）、CSS 動畫（翻牌進場/狀態脈衝）、Grid 排版、Modal 詳情面板
+  - 設計：Retro Airline Departure Board 復古航班看板風、深色背景 (#1a1a1a)、琥珀色標題 (#f0a830)、綠/紅狀態燈 (#4ade80/#f87171)、掃描線覆蓋、字元風格火車時刻表美學
+  - 靈感：Chung 昨天下午 VPS 夜班站點健檢（12/16 上線）、4 個站台離線含 SSL_ERROR_SYSCALL、提案修復 SSL 問題與新增 Security Headers
+  - 檔案：`Lab/project-20260404/index.html`（直接開啟即可用）
+
+## 2026-04-03 03:30 (Asia/Taipei)
+- 建立 `project-20260403`：思維花園 (Thought Garden)
+  - 功能：種植每日智慧種子的花園視覺化工具、輸入學習內容與標籤、5種獨特樹種 SVG 視覺化（橡樹/松樹/櫻花/柳樹/銀杏）、點擊查看詳細內容、刪除功能、localStorage 持久化、統計面板（播種總數/概念標籤/連續播種天數）
+  - 技術：單一 HTML 檔案、Google Fonts（Caveat + Noto Sans TC + DM Mono）、SVG 樹種視覺化、CSS 動畫（搖擺/浮現）、localStorage
+  - 設計：Botanical Paper 植物紙藝風、奶油白背景 (#faf7f2)、鼠尾草綠 (#8fae8b)、赤陶 (#c4785a)、金色 (#d4a853) 多色點綴、5種樹種各有特色（綠葉/松針/粉櫻/垂柳/金黃銀杏）
+  - 靈感：Chung 昨天觀看 3 部 YouTube 學習影片（Naval Ravikant 愛自己、哇賽心理學慢生活、雪力愛情與傷痛），延續知識花園概念
+  - 檔案：`Lab/project-20260403/index.html`（直接開啟即可用）
+
+## 2026-04-02 03:30 (Asia/Taipei)
+- 建立 `project-20260402`：Global Bridge 筆友橋 (Pen Pal Connection Map)
+  - 功能：US-Taiwan 筆友配對視覺化、56 組參加者對應顯示、兄妹檔群組標示、跨性別/同性配對統計、年齡差距顯示、配對詳情面板、點擊查看詳細資訊、localStorage 拜訪計數
+  - 技術：單一 HTML 檔案、Google Fonts（Playfair Display + DM Mono + Noto Sans TC）、CSS 動畫、localStorage
+  - 設計：Swiss Minimalist 瑞士極簡風、奶油白背景 (#faf8f5)、珊瑚 (#e07a5f)、青色 (#3d7a8c)、金色 (#d4a574) 多色卡片、幾何連線地圖、玻璃質感面板
+  - 靈感：Chung 昨天下午修正 Sheets 筆友配對、處理兄妹檔（selena0109/lililin0317/m8k511）、年齡差距最小化演算法、跨性別配對與待確認組
+  - 檔案：`Lab/project-20260402/index.html`（直接開啟即可用）
+
+## 2026-04-01 03:30 (Asia/Taipei)
+- 建立 `project-20260401`：拖延鯊魚油大作戰 (Procrastination Shark Fish Oil Operation)
+  - 功能：愚人節特別企劃、30秒魚油保質期倒數計時器、經典藉口生成器（魚油過期/工作/減肥等）、魚油劇場漫畫分鏡展示、統計追蹤（經典藉口次數/魚油時計/分享次數/連續挑戰）、彩屑慶祝動畫、Konami Code 彩蛋
+  - 技術：單一 HTML 檔案、Google Fonts（Bangers + ZCOOL KuaiLe + Caveat + Noto Sans TC）、CSS 動畫、localStorage、Web Confetti
+  - 設計：Hand-Drawn Cartoon 手繪卡通風、亮色系（珊瑚 #FF6B6B、黃 #FFE66D、青 #4ECDCC、紫 #9B5DE5）、漫畫分鏡式面板、卡通對話框、旋轉浮動 emoji、橡膠質感的動畫效果
+  - 靈感：三色蛋魚油劇場「拖延鯊吃泡麵配珍奶，魚油過期一個月還說這個月過得真快呵呵呵」
+  - 檔案：`Lab/project-20260401/index.html`（直接開啟即可用）
+
+## 2026-03-31 09:59 (Asia/Taipei)
+- 建立 `project-20260331b`：Process Cards (腳本卡片管理)
+  - 功能：視覺化腳本/程序管理面板、新增/編輯/刪除腳本卡片、狀態追蹤（運行中/閒置/錯誤/已停止）、執行次數統計、最後執行時間、localStorage 持久化
+  - 技術：單一 HTML 檔案、Google Fonts（Caveat + DM Mono + Noto Sans TC）、CSS 動畫、localStorage
+  - 設計：Warm Paper Card 暖色紙卡片風、奶油白背景 (#faf7f2)、珊瑚 (#e07a5f)、青色 (#3d7a8c)、金色 (#d4a574)、紫色 (#8b7ec8) 多色點綴、狀態色彩左側標示條、卡片懸停浮動效果
+  - 靈感：系統監控腳本 `sync_aoa_to_gog.py` 收到 SIGTERM 錯誤，想做一個視覺化的腳本管理工具
+  - 檔案：`Lab/project-20260331b/index.html`（直接開啟即可用）
+
+## 2026-03-31 03:31 (Asia/Taipei)
+- 建立 `project-20260331`：March 2026 月度回顧 (Monthly Review)
+  - 功能：展示 3 月所有 Daily Lab 專案卡片、專案類型分布統計（工具系/遊戲系/療癒系/惡搞系）、倒數 April 到來、個人三月回顧筆記 localStorage 儲存
+  - 技術：單一 HTML 檔案、Google Fonts（Cormorant Garamond + DM Mono + Noto Sans TC）、CSS 動畫、localStorage
+  - 設計：Editorial Magazine 亮色風、奶油白背景 (#faf8f5)、珊瑚 (#e85d4c)、芥末 (#d4a853)、青色 (#2d8a8a)、紫色 (#7c5cbf) 多色卡片頂部裝飾、卡片懸停浮動效果、計時器深色復古區塊
+  - 靈感：三月最後一天，做一個完整的月度回顧，擺脫暗色粒子特效模式
+  - 檔案：`Lab/project-20260331/index.html`（直接開啟即可用）
+
 ## 2026-03-29 03:20 (Asia/Taipei)
 - 建立 `project-20260329`：星圖記憶 (Stellar Memory)
   - 功能：輸入思緒化作漂浮星光、點擊星星回顧記憶、星座連線效果、流星雨動畫、刪除功能、localStorage 持久化
