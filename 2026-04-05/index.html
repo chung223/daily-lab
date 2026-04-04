@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>💭 心理健康知識庫 - 案例故事書</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&family=Caveat:wght@500;700&family=Bangers&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #fef9f3;
+      --accent: #ff6b6b;
+      --accent2: #4ecdc4;
+      --accent3: #ffe66d;
+      --accent4: #a29bfe;
+      --text: #2d3436;
+      --text-light: #636e72;
+      --panel: #ffffff;
+      --border: #2d3436;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Noto Sans TC', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Comic Pattern Background */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-image: 
+        radial-gradient(circle at 20px 20px, rgba(0,0,0,0.03) 2px, transparent 2px);
+      background-size: 40px 40px;
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    /* Header */
+    header {
+      background: linear-gradient(135deg, var(--accent) 0%, #ff8e53 100%);
+      padding: 30px 20px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(255, 107, 107, 0.3);
+    }
+
+    header::before {
+      content: '💭';
+      position: absolute;
+      font-size: 120px;
+      opacity: 0.1;
+      top: -20px;
+      left: 20px;
+    }
+
+    h1 {
+      font-family: 'Bangers', cursive;
+      font-size: clamp(2.5rem, 8vw, 4rem);
+      color: white;
+      text-shadow: 3px 3px 0 var(--border), -1px -1px 0 var(--border);
+      letter-spacing: 3px;
+      position: relative;
+    }
+
+    .subtitle {
+      font-family: 'Caveat', cursive;
+      font-size: 1.4rem;
+      color: rgba(255,255,255,0.9);
+      margin-top: 10px;
+    }
+
+    /* Stats Bar */
+    .stats-bar {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      padding: 15px;
+      background: var(--panel);
+      border-bottom: 3px solid var(--border);
+      flex-wrap: wrap;
+    }
+
+    .stat {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 700;
+    }
+
+    .stat-icon {
+      width: 36px;
+      height: 36px;
+      background: var(--accent);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      border: 2px solid var(--border);
+    }
+
+    .stat-num {
+      font-size: 1.5rem;
+      font-weight: 900;
+      color: var(--accent);
+    }
+
+    /* Controls */
+    .controls {
+      padding: 20px;
+      background: white;
+      border-bottom: 3px solid var(--border);
+    }
+
+    .search-box {
+      max-width: 600px;
+      margin: 0 auto 15px;
+      position: relative;
+    }
+
+    .search-box input {
+      width: 100%;
+      padding: 15px 20px 15px 50px;
+      font-size: 1.1rem;
+      font-family: 'Noto Sans TC', sans-serif;
+      border: 3px solid var(--border);
+      border-radius: 0;
+      background: var(--bg);
+      outline: none;
+      transition: all 0.2s;
+    }
+
+    .search-box input:focus {
+      background: white;
+      box-shadow: 5px 5px 0 var(--accent);
+    }
+
+    .search-box::before {
+      content: '🔍';
+      position: absolute;
+      left: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 1.3rem;
+    }
+
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .tag {
+      padding: 8px 16px;
+      background: var(--bg);
+      border: 2px solid var(--border);
+      font-size: 0.9rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+      position: relative;
+    }
+
+    .tag::before {
+      content: '';
+      position: absolute;
+      top: -4px;
+      left: -4px;
+      width: 100%;
+      height: 100%;
+      background: var(--accent3);
+      z-index: -1;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    .tag:hover::before,
+    .tag.active::before {
+      opacity: 1;
+    }
+
+    .tag.active {
+      background: var(--accent3);
+      transform: translate(-2px, -2px);
+      box-shadow: 3px 3px 0 var(--border);
+    }
+
+    /* Comic Book Container */
+    .comic-container {
+      max-width: 1000px;
+      margin: 30px auto;
+      padding: 0 20px;
+    }
+
+    .comic-book {
+      background: white;
+      border: 4px solid var(--border);
+      box-shadow: 8px 8px 0 var(--border);
+      position: relative;
+      min-height: 500px;
+    }
+
+    /* Book Spine */
+    .comic-book::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 30px;
+      background: linear-gradient(90deg, 
+        rgba(0,0,0,0.1) 0%, 
+        rgba(0,0,0,0) 100%);
+      border-right: 2px dashed rgba(0,0,0,0.1);
+    }
+
+    /* Navigation */
+    .nav-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 20px;
+      background: var(--bg);
+      border-bottom: 2px solid var(--border);
+    }
+
+    .page-indicator {
+      font-family: 'Bangers', cursive;
+      font-size: 1.5rem;
+      color: var(--text);
+    }
+
+    .nav-btn {
+      padding: 10px 25px;
+      font-family: 'Bangers', cursive;
+      font-size: 1.3rem;
+      background: var(--accent);
+      color: white;
+      border: 3px solid var(--border);
+      cursor: pointer;
+      transition: all 0.2s;
+      letter-spacing: 1px;
+    }
+
+    .nav-btn:hover:not(:disabled) {
+      transform: translate(-3px, -3px);
+      box-shadow: 5px 5px 0 var(--border);
+    }
+
+    .nav-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    /* Comic Panel */
+    .comic-page {
+      padding: 30px;
+      min-height: 450px;
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 3px solid var(--border);
+      padding: 25px;
+      margin-bottom: 20px;
+      position: relative;
+      transition: all 0.3s;
+    }
+
+    .panel:hover {
+      transform: scale(1.01);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+
+    /* Panel decorations */
+    .panel::before {
+      content: '';
+      position: absolute;
+      top: -8px;
+      left: -8px;
+      width: 100%;
+      height: 100%;
+      border: 3px solid var(--border);
+      z-index: -1;
+    }
+
+    .panel-type {
+      position: absolute;
+      top: -12px;
+      left: 20px;
+      background: var(--accent2);
+      color: white;
+      padding: 4px 12px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      border: 2px solid var(--border);
+      text-transform: uppercase;
+    }
+
+    .panel-type.story { background: var(--accent); }
+    .panel-type.solution { background: var(--accent2); }
+    .panel-type.warning { background: #ff7675; }
+    .panel-type.insight { background: var(--accent4); }
+
+    .panel-title {
+      font-family: 'Bangers', cursive;
+      font-size: 1.8rem;
+      color: var(--text);
+      margin: 15px 0 10px;
+      letter-spacing: 1px;
+    }
+
+    .panel-content {
+      font-size: 1.05rem;
+      line-height: 1.8;
+      color: var(--text);
+    }
+
+    .panel-content p {
+      margin-bottom: 12px;
+    }
+
+    /* Speech Bubble */
+    .speech-bubble {
+      background: white;
+      border: 3px solid var(--border);
+      border-radius: 20px;
+      padding: 20px;
+      position: relative;
+      margin: 20px 0;
+    }
+
+    .speech-bubble::after {
+      content: '';
+      position: absolute;
+      bottom: -15px;
+      left: 30px;
+      width: 0;
+      height: 0;
+      border-left: 15px solid transparent;
+      border-right: 15px solid transparent;
+      border-top: 15px solid var(--border);
+    }
+
+    .speech-bubble::before {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 33px;
+      width: 0;
+      height: 0;
+      border-left: 12px solid transparent;
+      border-right: 12px solid transparent;
+      border-top: 12px solid white;
+      z-index: 1;
+    }
+
+    /* Thought Bubble */
+    .thought-bubble {
+      background: linear-gradient(135deg, #fff9e6 0%, #fff3cc 100%);
+      border: 3px solid var(--border);
+      border-radius: 50px;
+      padding: 20px 30px;
+      position: relative;
+      margin: 20px 0;
+    }
+
+    .thought-bubble::before,
+    .thought-bubble::after {
+      content: '○';
+      position: absolute;
+      color: var(--border);
+      font-size: 1.2rem;
+    }
+
+    .thought-bubble::before {
+      bottom: -20px;
+      left: 40px;
+    }
+
+    .thought-bubble::after {
+      bottom: -35px;
+      left: 25px;
+      font-size: 0.8rem;
+    }
+
+    /* Tags in panel */
+    .panel-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 15px;
+    }
+
+    .panel-tag {
+      padding: 4px 10px;
+      background: var(--bg);
+      border: 2px solid var(--border);
+      font-size: 0.8rem;
+      font-weight: 700;
+    }
+
+    /* Empty State */
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+    }
+
+    .empty-state .emoji {
+      font-size: 4rem;
+      margin-bottom: 20px;
+    }
+
+    .empty-state h3 {
+      font-family: 'Bangers', cursive;
+      font-size: 2rem;
+      margin-bottom: 10px;
+    }
+
+    /* Page transition */
+    .page-flip-enter {
+      animation: pageFlipIn 0.4s ease-out;
+    }
+
+    @keyframes pageFlipIn {
+      0% {
+        opacity: 0;
+        transform: rotateY(-10deg) translateX(30px);
+      }
+      100% {
+        opacity: 1;
+        transform: rotateY(0) translateX(0);
+      }
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 30px;
+      background: var(--text);
+      color: white;
+      font-family: 'Caveat', cursive;
+      font-size: 1.2rem;
+    }
+
+    footer span {
+      opacity: 0.7;
+    }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      .stats-bar {
+        gap: 15px;
+      }
+      
+      .stat {
+        font-size: 0.85rem;
+      }
+
+      .comic-page {
+        padding: 20px 15px;
+      }
+
+      .panel {
+        padding: 20px 15px;
+      }
+
+      .panel-title {
+        font-size: 1.4rem;
+      }
+
+      .nav-btn {
+        padding: 8px 15px;
+        font-size: 1.1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>心理健康知識庫</h1>
+    <p class="subtitle">用漫畫說故事，讓理解更容易 💫</p>
+  </header>
+
+  <div class="stats-bar">
+    <div class="stat">
+      <div class="stat-icon">📚</div>
+      <div>
+        <span class="stat-num" id="totalCases">0</span>
+        <span>案例</span>
+      </div>
+    </div>
+    <div class="stat">
+      <div class="stat-icon">🏷️</div>
+      <div>
+        <span class="stat-num" id="totalTags">0</span>
+        <span>標籤</span>
+      </div>
+    </div>
+    <div class="stat">
+      <div class="stat-icon">📖</div>
+      <div>
+        <span class="stat-num" id="currentPage">1</span>
+        <span>/<span id="totalPages">1</span></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="controls">
+    <div class="search-box">
+      <input type="text" id="searchInput" placeholder="搜尋案例關鍵字...">
+    </div>
+    <div class="tags" id="tagFilters">
+      <button class="tag active" data-tag="all">全部 📚</button>
+      <button class="tag" data-tag="分手康復">分手康復 💔</button>
+      <button class="tag" data-tag="依附關係">依附關係 🔗</button>
+      <button class="tag" data-tag="毒關係">毒關係 ☠️</button>
+      <button class="tag" data-tag="自尊成長">自尊成長 💪</button>
+      <button class="tag" data-tag="burnout">Burnout 🔥</button>
+    </div>
+  </div>
+
+  <div class="comic-container">
+    <div class="comic-book">
+      <div class="nav-bar">
+        <button class="nav-btn" id="prevBtn" disabled>⬅️ 上一頁</button>
+        <span class="page-indicator" id="pageIndicator">第 1 話</span>
+        <button class="nav-btn" id="nextBtn">下一頁 ➡️</button>
+      </div>
+      <div class="comic-page" id="comicPage"></div>
+    </div>
+  </div>
+
+  <footer>
+    <span>🌙 Daily Lab | 靈感來源：Chung 的心理健康知識庫建立 | 2026-04-05</span>
+  </footer>
+
+  <script>
+    // 案例資料
+    const cases = [
+      {
+        id: 1,
+        title: '分手康復故事：從心碎到重生',
+        tags: ['分手康復', '康復故事'],
+        type: 'story',
+        content: `分手後的第一個禮拜，小美覺得整個世界都崩塌了。<br><br>
+        <div class="thought-bubble">
+          「為什麼我付出了這麼多，卻得到這樣的結局？」
+        </div>
+        <p>但她不知道的是，這只是重生的開始。</p>
+        <p>三個月後，她開始重新審視自己的人生目標。六個月後，她找到了新的興趣。一年後，她遇到了真正適合她的人。</p>
+        <div class="speech-bubble">
+          <strong>🏆 關鍵轉折：</strong>當她決定把焦點從「失去什麼」轉移到「想要什麼」時，康復就開始了。
+        </div>`
+      },
+      {
+        id: 2,
+        title: '焦慮依附者的一天',
+        tags: ['依附關係', '焦慮依附'],
+        type: 'story',
+        content: `阿偉是典型的焦慮依附者，每次女朋友不回訊息，他就會陷入恐慌。</p>
+        <div class="thought-bubble">
+          「她是不是不愛我了？她是不是在跟別人在一起？」
+        </div>
+        <p>他的情緒像雲霄飛車一樣起伏，讓身邊的人壓力很大。</p>
+        <p>直到他開始接受治療，才明白這來自於童年的不安全依附經驗。</p>
+        <div class="speech-bubble">
+          <strong>💡 覺察時刻：</strong>「我的焦慮不是因為伴侶，而是來自內心的空洞。」
+        </div>`
+      },
+      {
+        id: 3,
+        title: '迴避依附者的內心獨白',
+        tags: ['依附關係', '迴避依附'],
+        type: 'story',
+        content: `小琳看起來很獨立，但實際上她是迴避依附者。</p>
+        <p>每當關係變得亲密，她就會想要逃離。</p>
+        <div class="thought-bubble">
+          「我一個人也可以過得很好，為什麼要別人？」
+        </div>
+        <p>這是她保護自己的方式，但也是孤獨的根源。</p>
+        <p>透過心理治療，她開始練習在安全關係中慢慢敞開心扉。</p>`
+      },
+      {
+        id: 4,
+        title: '辨識毒關係的五個警訊 ☠️',
+        tags: ['毒關係'],
+        type: 'warning',
+        content: `<p>不是所有的感情都值得堅持。以下是毒關係的警訊：</p>
+        <p><strong>1. 情緒勒索：</strong>「如果你愛我，就應該...」</p>
+        <p><strong>2. 操控批評：</strong>持續貶低你的價值，讓你自我懷疑。</p>
+        <p><strong>3. 佔有控制：</strong>限制你的人際關係和自由。</p>
+        <p><strong>4. 輪流施暴：</strong>暴怒後又道歉，讓你以為是你的錯。</p>
+        <p><strong>5. 單向付出：</strong>永遠只有你在配合和調整。</p>
+        <div class="speech-bubble">
+          <strong>記住：</strong>愛不應該讓你感到恐懼或失去自我。
+        </div>`
+      },
+      {
+        id: 5,
+        title: '重建自尊的七個練習 💪',
+        tags: ['自尊成長'],
+        type: 'solution',
+        content: `<p>低自尊會影響生活的每個層面。試試這些練習：</p>
+        <p><strong>1. 每日肯定：</strong>對著鏡子說出三個自己的優點。</p>
+        <p><strong>2. 邊界設定：</strong>學會說「不」，這是自我尊重的開始。</p>
+        <p><strong>3. 停止比較：</strong>每個人的旅程不同，專注自己的成長。</p>
+        <p><strong>4. 慶祝小勝利：</strong>不是只有大成就才值得慶祝。</p>
+        <p><strong>5. 身體語言：</strong>抬頭挺胸，姿勢影響心理。</p>
+        <div class="thought-bubble">
+          <strong>核心信念：</strong>「我值得被善待」不是口號，是事實。
+        </div>`
+      },
+      {
+        id: 6,
+        title: '職業倦怠 Recovery Plan 🔥',
+        tags: ['burnout'],
+        type: 'solution',
+        content: `<p>Burnout 不是 weakness，是身體在發出求救訊號。</p>
+        <p><strong>Phase 1 - 立即緩解：</strong></p>
+        <p>• 請假休息（至少一週）</p>
+        <p>• 斷開工作電子郵件通知</p>
+        <p>• 進行身體活動（散步、瑜伽）</p>
+        <p><strong>Phase 2 - 長期修復：</strong></p>
+        <p>• 重新審視工作與生活平衡</p>
+        <p>• 學習壓力管理技巧</p>
+        <p>• 考慮職涯轉型可能性</p>
+        <div class="speech-bubble">
+          <strong>重要提醒：</strong>Burnout 復原需要時間，不要急著「振作起來」。
+        </div>`
+      },
+      {
+        id: 7,
+        title: '依附風格測驗：你屬於哪一種？',
+        tags: ['依附關係', '自我覺察'],
+        type: 'insight',
+        content: `<p>依附風格形成於童年，並影響成年後的親密關係：</p>
+        <p><strong>🟢 安全依附 (Secure)：</strong></p>
+        <p>能信任他人，也能保持獨立。健康的關係模式。</p>
+        <p><strong>🟡 焦慮依附 (Anxious)：</strong></p>
+        <p>害怕被拋棄，需要過度的確認和关注。</p>
+        <p><strong>🔴 迴避依附 (Avoidant)：</strong></p>
+        <p>傾向保持距離，逃避亲密和依赖。</p>
+        <div class="thought-bubble">
+          <strong>好消息：</strong>依附風格不是固定的，可以通過覺察和練習改變。
+        </div>`
+      },
+      {
+        id: 8,
+        title: '成功關係的三個秘密 💕',
+        tags: ['關係經營', '愛情'],
+        type: 'insight',
+        content: `<p>為什麼有些伴侶能長久幸福？研究發現：</p>
+        <p><strong>1. 建設性衝突：</strong></p>
+        <p>爭吵時focus在問題上，而不是攻擊人格。</p>
+        <p><strong>2. 正向互動比例：</strong></p>
+        <p>幸福伴侣的正面互動是負面的5倍以上。</p>
+        <p><strong>3. 共同成長：</strong></p>
+        <p>支持彼此的個人目標和夢想。</p>
+        <div class="speech-bubble">
+          <strong>關係需要經營：</strong>愛情不只是感覺，更是每天的選擇和行動。
+        </div>`
+      },
+      {
+        id: 9,
+        title: '分手創傷後成長案例 🌱',
+        tags: ['分手康復', '創傷成長'],
+        type: 'story',
+        content: `<p>大明的分手經歷看似悲劇，卻成為他人生的轉捩點。</p>
+        <div class="thought-bubble">
+          「她離開後，我才發現自己一直在妥協，從未真正為自己而活。」
+        </div>
+        <p>分手後，他開始：</p>
+        <p>• 重拾大學時代放棄的繪畫</p>
+        <p>• 搬到一直想去的城市</p>
+        <p>• 建立更健康的友誼關係</p>
+        <div class="speech-bubble">
+          <strong>成長並非來自快樂，而是來自對痛苦的理解和轉化。</strong>
+        </div>`
+      },
+      {
+        id: 10,
+        title: '如何幫助正在經歷低潮的朋友 🤝',
+        tags: ['人際關係', '支持系統'],
+        type: 'insight',
+        content: `<p>當朋友陷入低潮，我們常想「修復」他們，但有時最好的幫助是：</p>
+        <p><strong>✅ 有效行動：</strong></p>
+        <p>• 單純陪伴，不強迫交談</p>
+        <p>• 傾聽，不急於給建議</p>
+        <p>• 具體幫助（「我可以幫你買午餐」）</p>
+        <p>• 定期關心，保持連結</p>
+        <p><strong>❌ 避免話語：</strong></p>
+        <p>• 「想開點就好了」</p>
+        <p>• 「我懂你的感受」（你可能不懂）</p>
+        <p>• 急於轉移話題</p>`
+      },
+      {
+        id: 11,
+        title: '依附創傷的自我療癒之路 🌊',
+        tags: ['依附關係', '自我療癒'],
+        type: 'story',
+        content: `<p>小美從小在一個情感疏離的家庭中成長，這讓她害怕親密。</p>
+        <p>但在治療中，她發現：</p>
+        <div class="thought-bubble">
+          「我不必重複童年的模式，我可以創造新的依附經驗。」
+        </div>
+        <p>她開始：</p>
+        <p>• 在安全的治療關係中練習信任</p>
+        <p>• 辨識內在批評者的聲音</p>
+        <p>• 逐步在關係中測試新的互動模式</p>
+        <p>現在的她，正在建立第一段安全依附的伴侶關係。</p>`
+      },
+      {
+        id: 12,
+        title: '價值觀不合的分手抉擇 ⚖️',
+        tags: ['分手康復', '價值觀'],
+        type: 'insight',
+        content: `<p>價值觀不合是分手的正當理由嗎？答案是：視情況而定。</p>
+        <p><strong>需要分手的跡象：</strong></p>
+        <p>• 核心價值根本衝突（要/不要孩子）</p>
+        <p>• 對方不願意討論或妥協</p>
+        <p>• 你一直在委屈自己迎合對方</p>
+        <p><strong>可以努力的情況：</strong></p>
+        <p>• 價值觀有差異但能互相尊重</p>
+        <p>• 雙方都有成長和調整的意願</p>
+        <div class="speech-bubble">
+          <strong>記住：</strong>分手不是失敗，是對雙方的誠實。
+        </div>`
+      }
+    ];
+
+    // 狀態
+    let currentPage = 0;
+    let filteredCases = [...cases];
+    let activeTag = 'all';
+    let searchQuery = '';
+
+    // DOM 元素
+    const comicPage = document.getElementById('comicPage');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const pageIndicator = document.getElementById('pageIndicator');
+    const searchInput = document.getElementById('searchInput');
+    const tagFilters = document.getElementById('tagFilters');
+
+    // 計算總頁數（每頁2個案例）
+    function getTotalPages() {
+      return Math.ceil(filteredCases.length / 2);
+    }
+
+    // 渲染當前頁面
+    function renderPage() {
+      const startIndex = currentPage * 2;
+      const pageCases = filteredCases.slice(startIndex, startIndex + 2);
+      const totalPages = getTotalPages();
+
+      // 更新統計
+      document.getElementById('totalCases').textContent = cases.length;
+      document.getElementById('totalTags').textContent = [...new Set(cases.flatMap(c => c.tags))].length;
+      document.getElementById('currentPage').textContent = currentPage + 1;
+      document.getElementById('totalPages').textContent = totalPages || 1;
+
+      // 更新分頁按鈕
+      prevBtn.disabled = currentPage === 0;
+      nextBtn.disabled = currentPage >= totalPages - 1;
+      pageIndicator.textContent = `第 ${currentPage + 1} 話 / 共 ${totalPages || 1} 話`;
+
+      // 渲染案例
+      if (pageCases.length === 0) {
+        comicPage.innerHTML = `
+          <div class="empty-state">
+            <div class="emoji">🔍</div>
+            <h3>找不到符合的案例</h3>
+            <p>嘗試不同的搜尋關鍵字或標籤</p>
+          </div>
+        `;
+        return;
+      }
+
+      comicPage.innerHTML = pageCases.map((c, idx) => `
+        <div class="panel page-flip-enter" style="animation-delay: ${idx * 0.1}s">
+          <span class="panel-type ${c.type}">${c.type === 'story' ? '📖 故事' : c.type === 'solution' ? '💡 解方' : c.type === 'warning' ? '⚠️ 警訊' : '💭 洞察'}</span>
+          <h3 class="panel-title">${c.title}</h3>
+          <div class="panel-content">${c.content}</div>
+          <div class="panel-tags">
+            ${c.tags.map(t => `<span class="panel-tag">#${t}</span>`).join('')}
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // 篩選案例
+    function filterCases() {
+      filteredCases = cases.filter(c => {
+        const matchTag = activeTag === 'all' || c.tags.includes(activeTag);
+        const matchSearch = searchQuery === '' || 
+          c.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          c.tags.some(t => t.toLowerCase().includes(searchQuery.toLowerCase()));
+        return matchTag && matchSearch;
+      });
+      currentPage = 0;
+      renderPage();
+    }
+
+    // 事件監聽
+    prevBtn.addEventListener('click', () => {
+      if (currentPage > 0) {
+        currentPage--;
+        renderPage();
+      }
+    });
+
+    nextBtn.addEventListener('click', () => {
+      if (currentPage < getTotalPages() - 1) {
+        currentPage++;
+        renderPage();
+      }
+    });
+
+    searchInput.addEventListener('input', (e) => {
+      searchQuery = e.target.value;
+      filterCases();
+    });
+
+    tagFilters.addEventListener('click', (e) => {
+      if (e.target.classList.contains('tag')) {
+        document.querySelectorAll('.tag').forEach(t => t.classList.remove('active'));
+        e.target.classList.add('active');
+        activeTag = e.target.dataset.tag;
+        filterCases();
+      }
+    });
+
+    // 初始渲染
+    renderPage();
+  </script>
+</body>
+</html>
