@@ -7,8 +7,8 @@
 *用一杯咖啡的時間，換一個讓世界多點樂趣的小玩具*
 
 ![License](https://img.shields.io/badge/license-MIT-green?style=for-the-badge&logo=mit)
-![Projects](https://img.shields.io/badge/專案數-52-blue?style=for-the-badge)
-![Streak](https://img.shields.io/badge/連續-51天-orange?style=for-the-badge)
+![Projects](https://img.shields.io/badge/專案數-53-blue?style=for-the-badge)
+![Streak](https://img.shields.io/badge/連續-52天-orange?style=for-the-badge)
 ![Coffee](https://img.shields.io/badge/消耗咖啡-☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕-red?style=for-the-badge)
 
 </div>
@@ -17,15 +17,15 @@
 
 ## 🌟 本日精選
 
-<a href="https://chung223.github.io/daily-lab/2026-04-05/">
-<img src="https://custom-icon-badges.demolab.com/badge/點此體驗-2026--04--05-8fae8b?style=for-the-badge&logo=rocket" alt="Try Now">
+<a href="https://chung223.github.io/daily-lab/2026-04-06/">
+<img src="https://custom-icon-badges.demolab.com/badge/點此體驗-2026--04--06-8fae8b?style=for-the-badge&logo=rocket" alt="Try Now">
 </a>
 
 | 預覽 | 日期 | 專案 | 描述 |
 |:---:|:---:|:---:|---|
+| ⭐ | 04/06 | [奇門遁甲愛情命盤](https://chung223.github.io/daily-lab/2026-04-06/) | 九宮八卦命盤互動視覺化、奇門盤星門屬性展示、月份感情運勢時間軸、桃花位/空亡宮位標示 |
 | ⭐ | 04/05 | [心理健康漫畫故事書](https://chung223.github.io/daily-lab/2026-04-05/) | 12 個心理健康知識庫案例漫畫化、故事/解方/警訊/洞察四種面板、翻頁漫畫體驗 |
 | ⭐ | 04/04 | [VPS Station Board 主機航班看板](https://chung223.github.io/daily-lab/2026-04-04/) | VPS 主機狀態監控面板、16 站台狀態顯示、航班看板式排版、SSL 問題檢測 |
-| ⭐ | 04/03 | [思維花園 Thought Garden](https://chung223.github.io/daily-lab/2026-04-03/) | 種植每日智慧種子的花園視覺化工具、5種獨特樹種 SVG 視覺化、localStorage 持久化 |
 
 ---
 
@@ -122,6 +122,17 @@
 
 </details>
 
+<details open>
+<summary><b>🔮 命理系</b> — 傳統命理與占卜</summary>
+
+| 日期 | 專案 | 描述 |
+|:---:|:---:|---|
+| 04/06 | ☯ [奇門遁甲愛情命盤](https://chung223.github.io/daily-lab/2026-04-06/) | 九宮八卦命盤互動視覺化、奇門盤星門屬性展示、月份感情運勢時間軸、桃花位/空亡宮位標示、傳統命理書法風格 |
+| 02/28 | ☯ [易經六十四卦 I Ching](https://chung223.github.io/daily-lab/2026-02-28-pure/) | 隨機抽取六十四卦，含事業/感情/健康解讀 |
+| 02/27 | 🙏 [今日偈語 Gatha](https://chung223.github.io/daily-lab/2026-02-27-pure/) | 隨機抽取偈語智慧 |
+
+</details>
+
 <details>
 <summary><b>💩 惡搞系</b> — 純粹整蠱</summary>
 
@@ -140,8 +151,8 @@
      ╔═══════════════════════════╗
      ║     Daily Lab Stats       ║
      ╠═══════════════════════════╣
-     ║  📦 總專案數: 52          ║
-     ║  🔥 連續產出: 51 天        ║
+     ║  📦 總專案數: 53          ║
+     ║  🔥 連續產出: 52 天        ║
      ║  ⏰ 平均產出時間: 3:00 AM  ║
      ║  ☕ 消耗咖啡: ☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕         ║
      ║  🐛 Bug 數: 數不清        ║
