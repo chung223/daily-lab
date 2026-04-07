@@ -7,8 +7,8 @@
 *用一杯咖啡的時間，換一個讓世界多點樂趣的小玩具*
 
 ![License](https://img.shields.io/badge/license-MIT-green?style=for-the-badge&logo=mit)
-![Projects](https://img.shields.io/badge/專案數-54-blue?style=for-the-badge)
-![Streak](https://img.shields.io/badge/連續-52天-orange?style=for-the-badge)
+![Projects](https://img.shields.io/badge/專案數-55-blue?style=for-the-badge)
+![Streak](https://img.shields.io/badge/連續-53天-orange?style=for-the-badge)
 ![Coffee](https://img.shields.io/badge/消耗咖啡-☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕-red?style=for-the-badge)
 
 </div>
@@ -17,15 +17,15 @@
 
 ## 🌟 本日精選
 
-<a href="https://chung223.github.io/daily-lab/2026-04-07/">
-<img src="https://custom-icon-badges.demolab.com/badge/點此體驗-2026--04--07-8fae8b?style=for-the-badge&logo=rocket" alt="Try Now">
+<a href="https://chung223.github.io/daily-lab/2026-04-08/">
+<img src="https://custom-icon-badges.demolab.com/badge/點此體驗-2026--04--08-8fae8b?style=for-the-badge&logo=rocket" alt="Try Now">
 </a>
 
 | 預覽 | 日期 | 專案 | 描述 |
 |:---:|:---:|:---:|---|
+| ⭐ | 04/08 | [魚油占卜時光機 Fish Oil Oracle Machine](https://chung223.github.io/daily-lab/2026-04-08/) | 魚油膠囊造型的占卜卡牌、12種占卜預言卡、海豚督導荒謬劇風格語錄、泡泡漂浮背景動畫 |
 | ⭐ | 04/07 | [時光岔路站 Parallel Platform](https://chung223.github.io/daily-lab/2026-04-07/) | 復古火車站互動體驗、輸入站點生成時光車票、四色車票美學、班次資訊印章裝飾 |
 | ⭐ | 04/06 | [奇門遁甲愛情命盤](https://chung223.github.io/daily-lab/2026-04-06/) | 九宮八卦命盤互動視覺化、奇門盤星門屬性展示、月份感情運勢時間軸、桃花位/空亡宮位標示 |
-| ⭐ | 04/05 | [心理健康漫畫故事書](https://chung223.github.io/daily-lab/2026-04-05/) | 12 個心理健康知識庫案例漫畫化、故事/解方/警訊/洞察四種面板、翻頁漫畫體驗 |
 
 ---
 
@@ -128,6 +128,7 @@
 
 | 日期 | 專案 | 描述 |
 |:---:|:---:|---|
+| 04/08 | 🐟 [魚油占卜時光機 Fish Oil Oracle Machine](https://chung223.github.io/daily-lab/2026-04-08/) | 魚油膠囊造型的占卜卡牌、12種占卜預言卡、海豚督導荒謬劇風格語錄、泡泡漂浮背景動畫 |
 | 04/06 | ☯ [奇門遁甲愛情命盤](https://chung223.github.io/daily-lab/2026-04-06/) | 九宮八卦命盤互動視覺化、奇門盤星門屬性展示、月份感情運勢時間軸、桃花位/空亡宮位標示、傳統命理書法風格 |
 | 02/28 | ☯ [易經六十四卦 I Ching](https://chung223.github.io/daily-lab/2026-02-28-pure/) | 隨機抽取六十四卦，含事業/感情/健康解讀 |
 | 02/27 | 🙏 [今日偈語 Gatha](https://chung223.github.io/daily-lab/2026-02-27-pure/) | 隨機抽取偈語智慧 |
@@ -152,8 +153,8 @@
      ╔═══════════════════════════╗
      ║     Daily Lab Stats       ║
      ╠═══════════════════════════╣
-     ║  📦 總專案數: 54          ║
-     ║  🔥 連續產出: 52 天        ║
+     ║  📦 總專案數: 55          ║
+     ║  🔥 連續產出: 53 天        ║
      ║  ⏰ 平均產出時間: 3:00 AM  ║
      ║  ☕ 消耗咖啡: ☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕         ║
      ║  🐛 Bug 數: 數不清        ║
