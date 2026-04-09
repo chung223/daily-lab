@@ -1,6 +1,6 @@
 {
   "title": "Sync Cycle Orchestra 同步樂團",
-  "type": "visual",
-  "description": "互動式同步循環視覺體驗，融合音樂節奏與動態色彩動畫",
-  "inspiration": "互動式音樂視覺化概念"
+  "type": "工具系",
+  "description": "把 Cron jobs 變成視覺化音樂演奏時間軸，24小時時鐘顯示每個同步任務執行時間，用戶可新增自訂同步循環，漂浮音符動畫慶祝每次執行",
+  "inspiration": "今天 (2026-04-09) 的記憶全是例行性同步循環（Threads + Wiki Sync Cycles A/B/C/D），每 30-60 分鐘執行一次，背景默默運作"
 }

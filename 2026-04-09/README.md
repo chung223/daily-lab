@@ -1,23 +1,21 @@
 # Sync Cycle Orchestra 同步樂團
 
-An interactive visual music experience featuring synchronized cycling animations.
+把 Cron jobs 變成視覺化音樂演奏時間軸，24小時時鐘顯示每個同步任務執行時間，用戶可新增自訂同步循環，漂浮音符動畫慶祝每次執行。
 
-## Features
+## 設計風格
 
-- Dynamic cycling visual animations
-- Colorful accent themes (coral, mint, gold, purple)
-- Responsive paper texture background
-- Bilingual support (Chinese/English)
+Musical Orchestra 音樂演奏風
 
-## Tech Stack
+- 暖色紙張背景 (#fef9f3)
+- 五色同步循環圖示（薄荷綠/珊瑚橘/金色/紫色/藍色）
+- 手寫字體 Caveat
+- 漂浮音符動畫
 
-- Pure HTML/CSS/JavaScript
-- Google Fonts (Caveat, Noto Sans TC)
+## 使用方式
 
-## Usage
+直接在瀏覽器中開啟 `index.html` 即可使用。
 
-Simply open `index.html` in a browser.
+## 技術說明
 
-## Credits
-
-Inspired by interactive music visualization concepts.
+- 純 HTML/CSS/JS，無需任何 skill
+- 單一檔案，離線可用
