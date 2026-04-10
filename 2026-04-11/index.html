@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>健康報告卡 2026-04-07 | Blood Test Report Card</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Playfair+Display:wght@600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-primary: #fefcf8;
+      --bg-secondary: #f8f5ef;
+      --bg-card: #ffffff;
+      --text-primary: #1a1a1a;
+      --text-secondary: #5a5a5a;
+      --text-muted: #8a8a8a;
+      --accent-teal: #0d9488;
+      --accent-coral: #e07a5f;
+      --accent-gold: #d4a853;
+      --accent-sage: #6b9080;
+      --border-light: #e8e4dd;
+      --good: #16a34a;
+      --warning: #ca8a04;
+      --critical: #dc2626;
+      --shadow-soft: 0 4px 20px rgba(0,0,0,0.06);
+      --shadow-card: 0 2px 12px rgba(0,0,0,0.04);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Noto Sans TC', sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+
+    /* Header */
+    .header {
+      text-align: center;
+      margin-bottom: 48px;
+      padding-bottom: 32px;
+      border-bottom: 2px solid var(--border-light);
+    }
+
+    .header-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      letter-spacing: 2px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+
+    .header h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.8rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      margin-bottom: 8px;
+      letter-spacing: -1px;
+    }
+
+    .header-date {
+      font-family: 'DM Mono', monospace;
+      font-size: 14px;
+      color: var(--text-secondary);
+    }
+
+    /* Summary Banner */
+    .summary-banner {
+      background: linear-gradient(135deg, var(--accent-teal) 0%, #14b8a6 100%);
+      border-radius: 16px;
+      padding: 28px 32px;
+      color: white;
+      margin-bottom: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 20px;
+      box-shadow: var(--shadow-soft);
+    }
+
+    .summary-item {
+      text-align: center;
+    }
+
+    .summary-value {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.4rem;
+      font-weight: 700;
+      line-height: 1.1;
+    }
+
+    .summary-label {
+      font-size: 13px;
+      opacity: 0.9;
+      margin-top: 4px;
+    }
+
+    .summary-divider {
+      width: 1px;
+      height: 48px;
+      background: rgba(255,255,255,0.3);
+    }
+
+    /* Section */
+    .section {
+      margin-bottom: 48px;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .section-icon {
+      width: 36px;
+      height: 36px;
+      background: var(--bg-secondary);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
+
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+    }
+
+    /* Test Cards */
+    .test-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 16px;
+    }
+
+    .test-card {
+      background: var(--bg-card);
+      border-radius: 14px;
+      padding: 22px;
+      box-shadow: var(--shadow-card);
+      border: 1px solid var(--border-light);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .test-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-soft);
+    }
+
+    .test-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 14px;
+    }
+
+    .test-name {
+      font-weight: 600;
+      font-size: 15px;
+      color: var(--text-primary);
+    }
+
+    .test-name-en {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .status-badge {
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+
+    .status-good {
+      background: #dcfce7;
+      color: var(--good);
+    }
+
+    .status-warning {
+      background: #fef9c3;
+      color: var(--warning);
+    }
+
+    .status-critical {
+      background: #fee2e2;
+      color: var(--critical);
+    }
+
+    .test-value-row {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .test-value {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .test-unit {
+      font-size: 14px;
+      color: var(--text-secondary);
+    }
+
+    .test-range {
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+    }
+
+    .gauge-container {
+      height: 8px;
+      background: var(--bg-secondary);
+      border-radius: 4px;
+      overflow: hidden;
+      margin-bottom: 10px;
+    }
+
+    .gauge-fill {
+      height: 100%;
+      border-radius: 4px;
+      transition: width 0.6s ease;
+    }
+
+    .gauge-good { background: linear-gradient(90deg, #4ade80, #16a34a); }
+    .gauge-warning { background: linear-gradient(90deg, #facc15, #ca8a04); }
+    .gauge-critical { background: linear-gradient(90deg, #f87171, #dc2626); }
+
+    .test-note {
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
+    /* Recommendations */
+    .rec-card {
+      background: var(--bg-card);
+      border-radius: 14px;
+      padding: 24px;
+      box-shadow: var(--shadow-card);
+      border: 1px solid var(--border-light);
+      margin-bottom: 14px;
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+    }
+
+    .rec-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      flex-shrink: 0;
+    }
+
+    .rec-icon-urgent { background: #fee2e2; }
+    .rec-icon-normal { background: #e0f2fe; }
+    .rec-icon-good { background: #dcfce7; }
+
+    .rec-content h4 {
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .rec-content p {
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
+    /* Footer */
+    .footer {
+      text-align: center;
+      padding-top: 32px;
+      margin-top: 32px;
+      border-top: 1px solid var(--border-light);
+      color: var(--text-muted);
+      font-size: 13px;
+    }
+
+    .footer-note {
+      font-style: italic;
+      margin-bottom: 8px;
+    }
+
+    /* Animations */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .animate-in {
+      animation: fadeInUp 0.5s ease forwards;
+    }
+
+    .delay-1 { animation-delay: 0.1s; }
+    .delay-2 { animation-delay: 0.2s; }
+    .delay-3 { animation-delay: 0.3s; }
+
+    /* Mobile */
+    @media (max-width: 600px) {
+      .header h1 { font-size: 2rem; }
+      .summary-banner { flex-direction: column; text-align: center; }
+      .summary-divider { width: 60px; height: 1px; }
+      .test-grid { grid-template-columns: 1fr; }
+      .container { padding: 24px 16px; }
+    }
+
+    /* Print styles */
+    @media print {
+      .summary-banner { box-shadow: none; }
+      .test-card { box-shadow: none; border: 1px solid #ddd; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <header class="header animate-in">
+      <div class="header-label">Blood Test Report</div>
+      <h1>健康報告卡</h1>
+      <div class="header-date">2026-04-07 &nbsp;•&nbsp; 林口長庚醫院</div>
+    </header>
+
+    <!-- Summary Banner -->
+    <div class="summary-banner animate-in delay-1">
+      <div class="summary-item">
+        <div class="summary-value">5</div>
+        <div class="summary-label">檢測項目</div>
+      </div>
+      <div class="summary-divider"></div>
+      <div class="summary-item">
+        <div class="summary-value" style="color: #86efac;">4</div>
+        <div class="summary-label">正常</div>
+      </div>
+      <div class="summary-divider"></div>
+      <div class="summary-item">
+        <div class="summary-value" style="color: #fde047;">1</div>
+        <div class="summary-label">需追蹤</div>
+      </div>
+      <div class="summary-divider"></div>
+      <div class="summary-item">
+        <div class="summary-value">2</div>
+        <div class="summary-label">建議補驗</div>
+      </div>
+    </div>
+
+    <!-- Liver & Kidney Section -->
+    <section class="section animate-in delay-2">
+      <div class="section-header">
+        <div class="section-icon">🫀</div>
+        <h2 class="section-title">肝腎功能</h2>
+      </div>
+
+      <div class="test-grid">
+        <!-- ALT -->
+        <div class="test-card">
+          <div class="test-card-header">
+            <div>
+              <div class="test-name">丙氨酸氨基轉移酶</div>
+              <div class="test-name-en">ALT / SGPT</div>
+            </div>
+            <span class="status-badge status-good">很漂亮 ✨</span>
+          </div>
+          <div class="test-value-row">
+            <span class="test-value">11</span>
+            <span class="test-unit">U/L</span>
+          </div>
+          <div class="test-range">正常範圍：9-50 U/L</div>
+          <div class="gauge-container">
+            <div class="gauge-fill gauge-good" style="width: 22%"></div>
+          </div>
+          <div class="test-note">肝臟健康指標，數值在正常範圍低點，代表肝臟沒有發炎或受損。繼續保持！</div>
+        </div>
+
+        <!-- eGFR -->
+        <div class="test-card">
+          <div class="test-card-header">
+            <div>
+              <div class="test-name">腎絲球過濾率</div>
+              <div class="test-name-en">eGFR</div>
+            </div>
+            <span class="status-badge status-good">很棒</span>
+          </div>
+          <div class="test-value-row">
+            <span class="test-value">109</span>
+            <span class="test-unit">mL/min/1.73m²</span>
+          </div>
+          <div class="test-range">正常範圍：≥90 mL/min/1.73m²</div>
+          <div class="gauge-container">
+            <div class="gauge-fill gauge-good" style="width: 100%"></div>
+          </div>
+          <div class="test-note">腎臟過濾功能正常，超過 90 就是健康的腎臟，你的腎臟表現優異！</div>
+        </div>
+
+        <!-- CK -->
+        <div class="test-card">
+          <div class="test-card-header">
+            <div>
+              <div class="test-name">肌酸激酶</div>
+              <div class="test-name-en">CK</div>
+            </div>
+            <span class="status-badge status-warning">稍微高</span>
+          </div>
+          <div class="test-value-row">
+            <span class="test-value">330</span>
+            <span class="test-unit">U/L</span>
+          </div>
+          <div class="test-range">正常範圍：26-192 U/L</div>
+          <div class="gauge-container">
+            <div class="gauge-fill gauge-warning" style="width: 85%"></div>
+          </div>
+          <div class="test-note">肌肉損傷或劇烈運動後會升高。可能原因：最近運動？肌肉量大？建議排除原因後追蹤。</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Lipid Panel Section -->
+    <section class="section animate-in delay-2">
+      <div class="section-header">
+        <div class="section-icon">🩸</div>
+        <h2 class="section-title">血脂分析</h2>
+      </div>
+
+      <div class="test-grid">
+        <!-- Total Cholesterol -->
+        <div class="test-card">
+          <div class="test-card-header">
+            <div>
+              <div class="test-name">總膽固醇</div>
+              <div class="test-name-en">Total Cholesterol</div>
+            </div>
+            <span class="status-badge status-warning">輕微超標</span>
+          </div>
+          <div class="test-value-row">
+            <span class="test-value">205</span>
+            <span class="test-unit">mg/dL</span>
+          </div>
+          <div class="test-range">理想範圍：<200 mg/dL</div>
+          <div class="gauge-container">
+            <div class="gauge-fill gauge-warning" style="width: 70%"></div>
+          </div>
+          <div class="test-note">輕微超標，不需要吃藥，但建議調整飲食（少油炸、多蔬果）和增加運動。</div>
+        </div>
+
+        <!-- LDL -->
+        <div class="test-card">
+          <div class="test-card-header">
+            <div>
+              <div class="test-name">低密度脂蛋白</div>
+              <div class="test-name-en">LDL (壞膽固醇)</div>
+            </div>
+            <span class="status-badge status-warning">輕微超標</span>
+          </div>
+          <div class="test-value-row">
+            <span class="test-value">106</span>
+            <span class="test-unit">mg/dL</span>
+          </div>
+          <div class="test-range">理想範圍：<100 mg/dL</div>
+          <div class="gauge-container">
+            <div class="gauge-fill gauge-warning" style="width: 65%"></div>
+          </div>
+          <div class="test-note">俗稱「壞膽固醇」，輕微超標。建議多吃燕麥、鮭魚、核桃，少吃紅肉和加工食品。</div>
+        </div>
+
+        <!-- HDL -->
+        <div class="test-card" style="border-color: var(--accent-gold); border-width: 2px;">
+          <div class="test-card-header">
+            <div>
+              <div class="test-name">高密度脂蛋白</div>
+              <div class="test-name-en">HDL (好膽固醇)</div>
+            </div>
+            <span class="status-badge" style="background: var(--bg-secondary); color: var(--text-muted);">未檢驗 ⚠️</span>
+          </div>
+          <div class="test-value-row">
+            <span class="test-value" style="color: var(--text-muted);">—</span>
+            <span class="test-unit">mg/dL</span>
+          </div>
+          <div class="test-range">正常範圍：≥40 mg/dL（越高越好）</div>
+          <div class="gauge-container" style="background: transparent;">
+          </div>
+          <div class="test-note" style="background: #fef3c7; padding: 10px; border-radius: 8px; color: #92400e;">
+            🔴 重要！這個項目沒有驗到。HDL 是「好膽固醇」，建議補驗。它能清除血管中的壞膽固醇，是心血管健康的關鍵指標。
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Glucose Section -->
+    <section class="section animate-in delay-2">
+      <div class="section-header">
+        <div class="section-icon">🍬</div>
+        <h2 class="section-title">血糖相關</h2>
+      </div>
+
+      <div class="test-grid">
+        <div class="test-card" style="border-color: var(--accent-gold); border-width: 2px;">
+          <div class="test-card-header">
+            <div>
+              <div class="test-name">空腹血糖</div>
+              <div class="test-name-en">Fasting Glucose</div>
+            </div>
+            <span class="status-badge" style="background: var(--bg-secondary); color: var(--text-muted);">未檢驗</span>
+          </div>
+          <div class="test-value-row">
+            <span class="test-value" style="color: var(--text-muted);">—</span>
+            <span class="test-unit">mg/dL</span>
+          </div>
+          <div class="test-range">正常範圍：70-100 mg/dL</div>
+          <div class="gauge-container" style="background: transparent;">
+          </div>
+          <div class="test-note" style="background: #fef3c7; padding: 10px; border-radius: 8px; color: #92400e;">
+            💡 建議補驗。空腹血糖是糖尿病篩檢的基本項目，配合 HbA1c 糖化血色素可以更完整評估血糖控制。
+          </div>
+        </div>
+
+        <div class="test-card" style="border-color: var(--accent-gold); border-width: 2px;">
+          <div class="test-card-header">
+            <div>
+              <div class="test-name">糖化血色素</div>
+              <div class="test-name-en">HbA1c</div>
+            </div>
+            <span class="status-badge" style="background: var(--bg-secondary); color: var(--text-muted);">未檢驗</span>
+          </div>
+          <div class="test-value-row">
+            <span class="test-value" style="color: var(--text-muted);">—</span>
+            <span class="test-unit">%</span>
+          </div>
+          <div class="test-range">正常範圍：4.0-5.6%</div>
+          <div class="gauge-container" style="background: transparent;">
+          </div>
+          <div class="test-note" style="background: #fef3c7; padding: 10px; border-radius: 8px; color: #92400e;">
+            💡 建議補驗。HbA1c 反映近 2-3 個月的平均血糖，是評估糖尿病風險的重要指標。
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Recommendations -->
+    <section class="section animate-in delay-3">
+      <div class="section-header">
+        <div class="section-icon">📋</div>
+        <h2 class="section-title">健康建議</h2>
+      </div>
+
+      <div class="rec-card">
+        <div class="rec-icon rec-icon-urgent">🔴</div>
+        <div class="rec-content">
+          <h4>優先補驗：HDL + 空腹血糖 + HbA1c</h4>
+          <p>這三項是心血管和糖尿病篩檢的關鍵指標，這次沒有驗到。建議下次回診時主動要求加驗這三項，才能完整評估健康風險。</p>
+        </div>
+      </div>
+
+      <div class="rec-card">
+        <div class="rec-icon rec-icon-normal">🩺</div>
+        <div class="rec-content">
+          <h4>追蹤 CK 肌肉酶</h4>
+          <p>330 U/L 稍微偏高，可能與劇烈運動、肌肉量或藥物有關。如果沒有不適症狀，可以觀察 2-3 個月後複檢。</p>
+        </div>
+      </div>
+
+      <div class="rec-card">
+        <div class="rec-icon rec-icon-good">🥗</div>
+        <div class="rec-content">
+          <h4>血脂飲食調整</h4>
+          <p>總膽固醇和 LDL 輕微超標。建議：多吃燕麥、鮭魚、酪梨、堅果、深綠色蔬菜；少吃紅肉、炸物、甜食。每週運動 3-5 次，每次 30 分鐘。</p>
+        </div>
+      </div>
+
+      <div class="rec-card">
+        <div class="rec-icon rec-icon-good">✨</div>
+        <div class="rec-content">
+          <h4>肝腎功能很健康</h4>
+          <p>ALT 11 和 eGFR 109 都是很好的數字！肝臟和腎臟功能都在最佳狀態。继续保持均衡飲食和適度運動的好習慣。</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <p class="footer-note">本報告僅供參考，不作為醫療診斷依據。如有疑問請諮詢醫師。</p>
+      <p>生成時間：2026-04-11 03:30 &nbsp;•&nbsp; 資料來源：林口長庚醫院檢驗報告</p>
+    </footer>
+  </div>
+
+  <script>
+    // Animate gauge fills on load
+    document.addEventListener('DOMContentLoaded', () => {
+      const gauges = document.querySelectorAll('.gauge-fill');
+      gauges.forEach(gauge => {
+        const width = gauge.style.width;
+        gauge.style.width = '0%';
+        setTimeout(() => {
+          gauge.style.width = width;
+        }, 300);
+      });
+    });
+  </script>
+</body>
+</html>
