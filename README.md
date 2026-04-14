@@ -7,8 +7,8 @@
 *用一杯咖啡的時間，換一個讓世界多點樂趣的小玩具*
 
 ![License](https://img.shields.io/badge/license-MIT-green?style=for-the-badge&logo=mit)
-![Projects](https://img.shields.io/badge/專案數-59-blue?style=for-the-badge)
-![Streak](https://img.shields.io/badge/連續-57天-orange?style=for-the-badge)
+![Projects](https://img.shields.io/badge/專案數-60-blue?style=for-the-badge)
+![Streak](https://img.shields.io/badge/連續-58天-orange?style=for-the-badge)
 ![Coffee](https://img.shields.io/badge/消耗咖啡-☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕-red?style=for-the-badge)
 
 </div>
@@ -17,12 +17,13 @@
 
 ## 🌟 本日精選
 
-<a href="https://chung223.github.io/daily-lab/2026-04-12/">
-<img src="https://custom-icon-badges.demolab.com/badge/點此體驗-2026--04--12-8fae8b?style=for-the-badge&logo=rocket" alt="Try Now">
+<a href="https://chung223.github.io/daily-lab/2026-04-14/">
+<img src="https://custom-icon-badges.demolab.com/badge/點此體驗-2026--04--14-8fae8b?style=for-the-badge&logo=rocket" alt="Try Now">
 </a>
 
 | 預覽 | 日期 | 專案 | 描述 |
 |:---:|:---:|:---:|---|
+| ⭐ | 04/14 | [Q&A Hands 破冰工具](https://chung223.github.io/daily-lab/2026-04-14/) | 互動式手掌破冰工具、五指輸入開放式問題、手繪塗鴉風格、localStorage 持久化 |
 | ⭐ | 04/12 | [昭和咖啡屋 Showa Coffee House](https://chung223.github.io/daily-lab/2026-04-12/) | 昭和時代美學晨間儀式追蹤器、5儀式打卡、互動咖啡機動畫、localStorage 持久化 |
 | ⭐ | 04/11 | [健康報告卡 Blood Test Report Card](https://chung223.github.io/daily-lab/2026-04-11/) | 血液檢驗報告單設計風格視覺化、儀表板與正常範圍顯示、健康建議提示 |
 | ⭐ | 04/09 | [Sync Cycle Orchestra 同步樂團](https://chung223.github.io/daily-lab/2026-04-09/) | 互動式同步循環視覺體驗、珊瑚薄荷金色紫色配色、紙張質感背景動畫 |
@@ -160,8 +161,8 @@
      ╔═══════════════════════════╗
      ║     Daily Lab Stats       ║
      ╠═══════════════════════════╣
-     ║  📦 總專案數: 59          ║
-     ║  🔥 連續產出: 57 天        ║
+     ║  📦 總專案數: 60          ║
+     ║  🔥 連續產出: 58 天        ║
      ║  ⏰ 平均產出時間: 3:00 AM  ║
      ║  ☕ 消耗咖啡: ☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕         ║
      ║  🐛 Bug 數: 數不清        ║
