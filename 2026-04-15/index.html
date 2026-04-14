@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>向上管理教練｜小顏視角</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;600;700&family=DM+Sans:wght@400;500;600&family=Noto+Serif+TC:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-cream: #faf8f5;
+      --bg-paper: #fffef9;
+      --ink-black: #1a1a1a;
+      --ink-gray: #4a4a4a;
+      --ink-light: #7a7a7a;
+      --accent-burgundy: #8b2942;
+      --accent-gold: #c4a35a;
+      --accent-teal: #2d6a6a;
+      --border-subtle: #e8e4de;
+      --shadow-soft: 0 2px 12px rgba(0,0,0,0.06);
+      --shadow-paper: 0 1px 3px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.03);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg-cream);
+      color: var(--ink-black);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    /* Header */
+    .header {
+      background: var(--bg-paper);
+      border-bottom: 1px solid var(--border-subtle);
+      padding: 1.5rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .header-brand {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .brand-icon {
+      width: 40px;
+      height: 40px;
+      background: var(--accent-burgundy);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 1.25rem;
+      font-weight: 700;
+    }
+
+    .brand-text h1 {
+      font-family: 'Noto Serif TC', serif;
+      font-size: 1.25rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+
+    .brand-text span {
+      font-size: 0.75rem;
+      color: var(--ink-light);
+    }
+
+    .header-meta {
+      text-align: right;
+      font-size: 0.75rem;
+      color: var(--ink-light);
+    }
+
+    /* Main Container */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    /* Intro Section */
+    .intro {
+      background: var(--bg-paper);
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+      box-shadow: var(--shadow-paper);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .intro::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--accent-burgundy), var(--accent-gold));
+    }
+
+    .intro h2 {
+      font-family: 'Crimson Pro', serif;
+      font-size: 1.75rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .intro p {
+      color: var(--ink-gray);
+      max-width: 700px;
+    }
+
+    .intro-quote {
+      margin-top: 1.5rem;
+      padding: 1rem 1.25rem;
+      background: linear-gradient(135deg, #fdf9f3, #faf6ef);
+      border-left: 3px solid var(--accent-gold);
+      border-radius: 0 8px 8px 0;
+      font-family: 'Noto Serif TC', serif;
+      font-style: italic;
+      color: var(--ink-gray);
+    }
+
+    /* Section Headers */
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .section-number {
+      width: 32px;
+      height: 32px;
+      background: var(--accent-burgundy);
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 0.875rem;
+    }
+
+    .section-title {
+      font-family: 'Noto Serif TC', serif;
+      font-size: 1.35rem;
+      font-weight: 700;
+    }
+
+    /* Cards Grid */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.25rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .card {
+      background: var(--bg-paper);
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: var(--shadow-paper);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-soft);
+    }
+
+    .card-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .card-icon.burgundy { background: #fdf2f4; }
+    .card-icon.gold { background: #fdf9f0; }
+    .card-icon.teal { background: #f0f7f7; }
+    .card-icon.gray { background: #f5f5f5; }
+
+    .card h3 {
+      font-family: 'Noto Serif TC', serif;
+      font-size: 1.1rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .card p {
+      font-size: 0.9rem;
+      color: var(--ink-gray);
+      line-height: 1.5;
+    }
+
+    /* Report Builder */
+    .report-builder {
+      background: var(--bg-paper);
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      padding: 2rem;
+      margin-bottom: 2.5rem;
+      box-shadow: var(--shadow-paper);
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-label {
+      display: block;
+      font-weight: 600;
+      font-size: 0.875rem;
+      margin-bottom: 0.5rem;
+      color: var(--ink-black);
+    }
+
+    .form-label span {
+      font-weight: 400;
+      color: var(--ink-light);
+    }
+
+    .form-input, .form-textarea, .form-select {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 0.95rem;
+      background: var(--bg-cream);
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .form-input:focus, .form-textarea:focus, .form-select:focus {
+      outline: none;
+      border-color: var(--accent-burgundy);
+      box-shadow: 0 0 0 3px rgba(139, 41, 66, 0.1);
+    }
+
+    .form-textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    @media (max-width: 600px) {
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Taboo Checker */
+    .taboo-section {
+      background: linear-gradient(135deg, #fdf9f3, #faf6ef);
+      border: 1px solid #e8e0d4;
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .taboo-title {
+      font-weight: 600;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .taboo-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 0.75rem;
+    }
+
+    .taboo-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.9rem;
+      padding: 0.5rem 0.75rem;
+      background: white;
+      border-radius: 6px;
+    }
+
+    .taboo-item .dont {
+      color: var(--accent-burgundy);
+      text-decoration: line-through;
+      font-weight: 500;
+    }
+
+    .taboo-item .arrow {
+      color: var(--ink-light);
+    }
+
+    .taboo-item .do {
+      color: var(--accent-teal);
+      font-weight: 500;
+    }
+
+    /* Preview Box */
+    .preview-box {
+      background: var(--ink-black);
+      color: #f5f5f0;
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-top: 1.5rem;
+      position: relative;
+    }
+
+    .preview-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .preview-label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--accent-gold);
+    }
+
+    .preview-copy {
+      background: rgba(255,255,255,0.1);
+      border: none;
+      color: white;
+      padding: 0.4rem 0.75rem;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .preview-copy:hover {
+      background: rgba(255,255,255,0.2);
+    }
+
+    .preview-content {
+      font-family: 'Crimson Pro', serif;
+      font-size: 1.05rem;
+      line-height: 1.7;
+      white-space: pre-wrap;
+    }
+
+    .preview-content .highlight-burgundy {
+      color: #e8a0b0;
+    }
+
+    .preview-content .highlight-gold {
+      color: var(--accent-gold);
+    }
+
+    /* Action Buttons */
+    .actions {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: none;
+    }
+
+    .btn-primary {
+      background: var(--accent-burgundy);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: #7a2439;
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      border: 1px solid var(--border-subtle);
+      color: var(--ink-gray);
+    }
+
+    .btn-secondary:hover {
+      background: var(--bg-cream);
+    }
+
+    /* Status Indicator */
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.3rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 500;
+    }
+
+    .status-badge.good {
+      background: #e8f5e9;
+      color: #2e7d32;
+    }
+
+    .status-badge.warning {
+      background: #fff3e0;
+      color: #ef6c00;
+    }
+
+    .status-badge.danger {
+      background: #ffebee;
+      color: var(--accent-burgundy);
+    }
+
+    /* Format Template */
+    .template-section {
+      margin-bottom: 2.5rem;
+    }
+
+    .template-card {
+      background: var(--bg-paper);
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: var(--shadow-paper);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .template-card:hover {
+      border-color: var(--accent-burgundy);
+      transform: translateY(-2px);
+    }
+
+    .template-card h4 {
+      font-family: 'Noto Serif TC', serif;
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .template-card p {
+      font-size: 0.875rem;
+      color: var(--ink-gray);
+    }
+
+    .template-emoji {
+      font-size: 1.25rem;
+    }
+
+    /* Memo Stamp */
+    .memo-stamp {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      padding: 0.35rem 0.75rem;
+      border: 2px solid var(--accent-burgundy);
+      border-radius: 4px;
+      color: var(--accent-burgundy);
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      transform: rotate(3deg);
+      opacity: 0.8;
+    }
+
+    /* Footer */
+    .footer {
+      text-align: center;
+      padding: 2rem;
+      color: var(--ink-light);
+      font-size: 0.8rem;
+      border-top: 1px solid var(--border-subtle);
+      margin-top: 3rem;
+    }
+
+    /* Animations */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .animate-in {
+      animation: fadeInUp 0.5s ease forwards;
+    }
+
+    .delay-1 { animation-delay: 0.1s; opacity: 0; }
+    .delay-2 { animation-delay: 0.2s; opacity: 0; }
+    .delay-3 { animation-delay: 0.3s; opacity: 0; }
+    .delay-4 { animation-delay: 0.4s; opacity: 0; }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .container {
+        padding: 1rem;
+      }
+      
+      .header {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+      }
+      
+      .header-meta {
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="header-brand">
+      <div class="brand-icon">👔</div>
+      <div class="brand-text">
+        <h1>向上管理教練</h1>
+        <span>基於小顏溝通風格蒸餾</span>
+      </div>
+    </div>
+    <div class="header-meta">
+      專案建立：2026-04-15<br>
+      資料來源：BOSS.md
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- Introduction -->
+    <section class="intro animate-in">
+      <div class="memo-stamp">OFFICIAL</div>
+      <h2>知己知彼，向上管理</h2>
+      <p>本工具基於與小顏的真實 LINE 對話蒸餾而成，幫助你掌握她的溝通偏好、報告格式與禁用詞彙，讓每次匯報都恰到好處。</p>
+      <div class="intro-quote">
+        「拿出來的事情要『想過了』，不要拿半成品讓她幫你想。」—— 小顏的省力原則
+      </div>
+    </section>
+
+    <!-- Boss Values Cards -->
+    <div class="section-header animate-in delay-1">
+      <div class="section-number">1</div>
+      <h2 class="section-title">她最在乎的價值</h2>
+    </div>
+    
+    <div class="cards-grid animate-in delay-1">
+      <div class="card">
+        <div class="card-icon burgundy">⚡</div>
+        <h3>時效性</h3>
+        <p>公文、名單、回覆都要快。盡量早上件，不要拖到最後一刻。</p>
+      </div>
+      <div class="card">
+        <div class="card-icon gold">✓</div>
+        <h3>細節正確</h3>
+        <p>錯字、格式、數字都要對。她會直接指出錯誤，不會假裝沒看到。</p>
+      </div>
+      <div class="card">
+        <div class="card-icon teal">🔄</div>
+        <h3>流程順暢</h3>
+        <p>協會運作不能卡。提出問題時，最好同時帶解決方案。</p>
+      </div>
+      <div class="card">
+        <div class="card-icon gray">💬</div>
+        <h3>有結構</h3>
+        <p>先說結論，再說過程。她喜歡一次把事情想清楚再動。</p>
+      </div>
+    </div>
+
+    <!-- Taboo Words -->
+    <div class="section-header animate-in delay-2">
+      <div class="section-number">2</div>
+      <h2 class="section-title">禁用詞彙檢查</h2>
+    </div>
+
+    <div class="report-builder animate-in delay-2">
+      <div class="taboo-section">
+        <div class="taboo-title">🚫 這些不要說 → ✅ 她想聽</div>
+        <div class="taboo-list">
+          <div class="taboo-item">
+            <span class="dont">「我覺得...」</span>
+            <span class="arrow">→</span>
+            <span class="do">「根據法規...」</span>
+          </div>
+          <div class="taboo-item">
+            <span class="dont">「應該可以吧」</span>
+            <span class="arrow">→</span>
+            <span class="do">「已確認可行」</span>
+          </div>
+          <div class="taboo-item">
+            <span class="dont">「人手不夠」</span>
+            <span class="arrow">→</span>
+            <span class="do">「缺口X人，影響Y」</span>
+          </div>
+          <div class="taboo-item">
+            <span class="dont">先解釋後結論</span>
+            <span class="arrow">→</span>
+            <span class="do">先結論後說明</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Report Builder -->
+    <div class="section-header animate-in delay-2">
+      <div class="section-number">3</div>
+      <h2 class="section-title">匯報格式產生器</h2>
+    </div>
+
+    <div class="report-builder animate-in delay-2">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">稱謂 <span>（通常用「秘書長」）</span></label>
+          <select class="form-select" id="salutation">
+            <option value="秘書長">秘書長</option>
+            <option value="小顏老師">小顏老師</option>
+            <option value="老師">老師</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">情境 <span>（選擇適用模板）</span></label>
+          <select class="form-select" id="situation">
+            <option value="report">進度報告</option>
+            <option value="request">請示/請求</option>
+            <option value="problem">問題報告</option>
+            <option value="update">資訊更新</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">主題 <span>（一句話概括）</span></label>
+        <input type="text" class="form-input" id="subject" placeholder="例如：報名系統名單確認">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">結論/請求 <span>（最重要！先說）</span></label>
+        <textarea class="form-textarea" id="conclusion" placeholder="例如：建議採用B方案，因為A方案有XXX問題"></textarea>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">背景說明 <span>（視需要，非必要）</span></label>
+        <textarea class="form-textarea" id="background" placeholder="補充說明、數據、原因等..."></textarea>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">選項/需要她決定的事 <span>（讓她選）</span></label>
+        <textarea class="form-textarea" id="options" placeholder="例如：請您決定A或B方案，附上對照表"></textarea>
+      </div>
+
+      <div class="actions">
+        <button class="btn btn-primary" onclick="generateReport()">✨ 產生匯報</button>
+        <button class="btn btn-secondary" onclick="clearForm()">清除</button>
+      </div>
+
+      <div class="preview-box" id="previewBox" style="display: none;">
+        <div class="preview-header">
+          <span class="preview-label">📋 小顏風格匯報</span>
+          <button class="preview-copy" onclick="copyReport()">複製文字</button>
+        </div>
+        <div class="preview-content" id="previewContent"></div>
+      </div>
+    </div>
+
+    <!-- Quick Templates -->
+    <div class="section-header animate-in delay-3">
+      <div class="section-number">4</div>
+      <h2 class="section-title">常用情境範本</h2>
+    </div>
+
+    <div class="cards-grid animate-in delay-3">
+      <div class="template-card" onclick="fillTemplate('problem')">
+        <h4><span class="template-emoji">⚠️</span> 問題報告格式</h4>
+        <p>目前延誤 [X]，影響範圍 [Y]，我做了 [Z]，需要您決定 [W]</p>
+      </div>
+      <div class="template-card" onclick="fillTemplate('decision')">
+        <h4><span class="template-emoji">🤔</span> 請示格式</h4>
+        <p>建議B方案，因為A方案有[問題]。附上對照表，請您決定。</p>
+      </div>
+      <div class="template-card" onclick="fillTemplate('progress')">
+        <h4><span class="template-emoji">📊</span> 進度報告格式</h4>
+        <p>[專案名] 目前進度[百分比]，預計[日期]完成，節點[已完成/待完成]。</p>
+      </div>
+    </div>
+
+    <!-- Key Insights -->
+    <div class="section-header animate-in delay-4">
+      <div class="section-number">5</div>
+      <h2 class="section-title">關鍵觀察</h2>
+    </div>
+
+    <div class="cards-grid animate-in delay-4">
+      <div class="card">
+        <div class="card-icon gold">👥</div>
+        <h3>雙頻道領導力</h3>
+        <p>她能在「要求嚴格」和「溫暖關懷」之間瞬間切換。對事要求，對人溫暖。</p>
+      </div>
+      <div class="card">
+        <div class="card-icon teal">🔍</div>
+        <h3>細節海嘯</h3>
+        <p>她會下沈到具體執行細節：服裝地址、錯字、飲水機。有她在就不會出低級錯。</p>
+      </div>
+      <div class="card">
+        <div class="card-icon burgundy">🛡️</div>
+        <h3>緩衝型政治智慧</h3>
+        <p>當想法與高層不一致時，用「請示」「呈報」方式，讓老闆自己做決定。</p>
+      </div>
+      <div class="card">
+        <div class="card-icon gray">⚖️</div>
+        <h3>正當性很在意</h3>
+        <p>她的決策要有「這樣做是對的」的邏輯。援引法規、先例比說「我覺得」更有用。</p>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <p>本工具基於真實 LINE 對話蒸餾而成｜蒸餾日期：2026-04-09｜使用本地 Gemma 模型生成</p>
+  </footer>
+
+  <script>
+    // Situation templates
+    const templates = {
+      problem: {
+        subject: '問題報告：',
+        conclusion: '目前延誤 [具體說明延誤內容]，影響範圍 [說明影響]，我已做了 [補救措施]，需要您決定 [需要什麼]。',
+        background: '',
+        options: ''
+      },
+      decision: {
+        subject: '方案請示：',
+        conclusion: '建議採用B方案，因為A方案有[具體問題]。',
+        background: '兩方案比較：[優缺點說明]',
+        options: '附上對照表，請您決定。'
+      },
+      progress: {
+        subject: '進度報告：',
+        conclusion: '[專案名稱] 目前進度[百分比]，預計[日期]完成。',
+        background: '已完成：[已完成項目]\n待完成：[待完成項目]',
+        options: ''
+      }
+    };
+
+    function generateReport() {
+      const salutation = document.getElementById('salutation').value;
+      const subject = document.getElementById('subject').value;
+      const conclusion = document.getElementById('conclusion').value;
+      const background = document.getElementById('background').value;
+      const options = document.getElementById('options').value;
+
+      if (!conclusion.trim()) {
+        alert('請至少填寫「結論/請求」欄位');
+        return;
+      }
+
+      let report = `${salutation}，`;
+
+      if (subject.trim()) {
+        report += `${subject.trim()}：`;
+      }
+
+      report += `${conclusion.trim()}`;
+
+      if (background.trim()) {
+        report += `\n\n${background.trim()}`;
+      }
+
+      if (options.trim()) {
+        report += `\n\n${options.trim()}`;
+      }
+
+      // Display preview
+      const previewBox = document.getElementById('previewBox');
+      const previewContent = document.getElementById('previewContent');
+      
+      previewBox.style.display = 'block';
+      previewContent.textContent = report;
+
+      // Scroll to preview
+      previewBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    function copyReport() {
+      const content = document.getElementById('previewContent').textContent;
+      navigator.clipboard.writeText(content).then(() => {
+        const btn = document.querySelector('.preview-copy');
+        btn.textContent = '已複製！';
+        setTimeout(() => {
+          btn.textContent = '複製文字';
+        }, 2000);
+      });
+    }
+
+    function clearForm() {
+      document.getElementById('subject').value = '';
+      document.getElementById('conclusion').value = '';
+      document.getElementById('background').value = '';
+      document.getElementById('options').value = '';
+      document.getElementById('previewBox').style.display = 'none';
+    }
+
+    function fillTemplate(type) {
+      const template = templates[type];
+      document.getElementById('subject').value = template.subject;
+      document.getElementById('conclusion').value = template.conclusion;
+      document.getElementById('background').value = template.background;
+      document.getElementById('options').value = template.options;
+      
+      // Scroll to form
+      document.querySelector('.report-builder').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // Intersection Observer for animations
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.style.animationPlayState = 'running';
+        }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.animate-in').forEach(el => {
+      el.style.animationPlayState = 'paused';
+      observer.observe(el);
+    });
+  </script>
+</body>
+</html>
