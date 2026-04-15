@@ -1,0 +1,887 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>魚油英雄拯救站點 | Fish Oil Rescue Squad</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Noto+Sans+TC:wght@400;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --coral: #FF6B6B;
+            --yellow: #FFE66D;
+            --teal: #4ECDCC;
+            --purple: #9B5DE5;
+            --orange: #FF9F43;
+            --green: #26DE81;
+            --red: #FC5C65;
+            --blue: #45AAF2;
+            --paper: #FFF9F0;
+            --ink: #2D3436;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background: var(--paper);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Comic Panel Background */
+        .comic-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                repeating-linear-gradient(
+                    0deg,
+                    transparent,
+                    transparent 40px,
+                    rgba(0,0,0,0.03) 40px,
+                    rgba(0,0,0,0.03) 41px
+                ),
+                repeating-linear-gradient(
+                    90deg,
+                    transparent,
+                    transparent 40px,
+                    rgba(0,0,0,0.03) 40px,
+                    rgba(0,0,0,0.03) 41px
+                ),
+                var(--paper);
+            z-index: -1;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            padding: 30px 20px;
+            position: relative;
+        }
+
+        .comic-title {
+            font-family: 'Bangers', cursive;
+            font-size: clamp(2.5rem, 8vw, 5rem);
+            color: var(--ink);
+            text-shadow: 
+                4px 4px 0 var(--yellow),
+                -2px -2px 0 var(--coral),
+                2px -2px 0 var(--teal);
+            letter-spacing: 3px;
+            transform: rotate(-2deg);
+            animation: titleBounce 2s ease-in-out infinite;
+        }
+
+        @keyframes titleBounce {
+            0%, 100% { transform: rotate(-2deg) scale(1); }
+            50% { transform: rotate(-2deg) scale(1.02); }
+        }
+
+        .subtitle {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.9rem;
+            color: #666;
+            margin-top: 10px;
+            letter-spacing: 2px;
+        }
+
+        /* Action Bar */
+        .action-bar {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 20px auto;
+            flex-wrap: wrap;
+            max-width: 600px;
+            padding: 0 20px;
+        }
+
+        .action-btn {
+            font-family: 'Bangers', cursive;
+            font-size: 1.2rem;
+            padding: 12px 24px;
+            border: 3px solid var(--ink);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+            background: white;
+        }
+
+        .action-btn:hover {
+            transform: translate(-3px, -3px);
+            box-shadow: 5px 5px 0 var(--ink);
+        }
+
+        .action-btn:active {
+            transform: translate(0, 0);
+            box-shadow: none;
+        }
+
+        .action-btn.coral { background: var(--coral); color: white; }
+        .action-btn.yellow { background: var(--yellow); }
+        .action-btn.teal { background: var(--teal); color: white; }
+        .action-btn.purple { background: var(--purple); color: white; }
+
+        /* Stats Panel */
+        .stats-comic {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 15px;
+            max-width: 800px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .stat-box {
+            background: white;
+            border: 3px solid var(--ink);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+            transition: transform 0.2s;
+        }
+
+        .stat-box:hover {
+            transform: scale(1.05) rotate(1deg);
+        }
+
+        .stat-box::before {
+            content: '';
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            width: 24px;
+            height: 24px;
+            background: var(--yellow);
+            border: 2px solid var(--ink);
+            border-radius: 50%;
+        }
+
+        .stat-icon {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .stat-value {
+            font-family: 'Bangers', cursive;
+            font-size: 2rem;
+            color: var(--ink);
+        }
+
+        .stat-label {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.75rem;
+            color: #666;
+            text-transform: uppercase;
+        }
+
+        /* Comic Panels Container */
+        .panels-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        @media (max-width: 700px) {
+            .panels-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Individual Comic Panel */
+        .comic-panel {
+            background: white;
+            border: 4px solid var(--ink);
+            border-radius: 4px;
+            overflow: hidden;
+            position: relative;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .comic-panel:hover {
+            transform: scale(1.02);
+            z-index: 10;
+            box-shadow: 8px 8px 0 rgba(0,0,0,0.1);
+        }
+
+        .comic-panel.critical {
+            border-color: var(--red);
+            animation: criticalPulse 1s infinite;
+        }
+
+        @keyframes criticalPulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(252, 92, 101, 0.4); }
+            50% { box-shadow: 0 0 0 10px rgba(252, 92, 101, 0); }
+        }
+
+        .panel-header {
+            background: var(--ink);
+            color: white;
+            padding: 10px 15px;
+            font-family: 'Bangers', cursive;
+            font-size: 1.3rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .severity-badge {
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-family: 'DM Mono', monospace;
+        }
+
+        .severity-badge.critical { background: var(--red); }
+        .severity-badge.warning { background: var(--orange); }
+        .severity-badge.ok { background: var(--green); }
+
+        .panel-content {
+            padding: 15px;
+        }
+
+        .site-name {
+            font-family: 'Bangers', cursive;
+            font-size: 1.4rem;
+            color: var(--ink);
+            margin-bottom: 8px;
+        }
+
+        .site-domain {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.85rem;
+            color: #666;
+            margin-bottom: 12px;
+            word-break: break-all;
+        }
+
+        .site-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        .status-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            border: 2px solid var(--ink);
+        }
+
+        .status-dot.online { background: var(--green); }
+        .status-dot.offline { background: var(--red); animation: blink 0.5s infinite; }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        .status-text {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.85rem;
+        }
+
+        .site-issue {
+            background: #FFF5F5;
+            border: 2px dashed var(--red);
+            border-radius: 6px;
+            padding: 10px;
+            margin-top: 10px;
+            font-size: 0.9rem;
+            color: #c0392b;
+        }
+
+        .site-issue-icon {
+            font-size: 1.2rem;
+            margin-right: 5px;
+        }
+
+        /* Speech Bubble */
+        .speech-bubble {
+            background: white;
+            border: 3px solid var(--ink);
+            border-radius: 20px;
+            padding: 15px 20px;
+            position: relative;
+            margin: 30px auto;
+            max-width: 700px;
+            animation: bubbleAppear 0.5s ease-out;
+        }
+
+        .speech-bubble::after {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            left: 30px;
+            border: 10px solid transparent;
+            border-top-color: var(--ink);
+        }
+
+        .speech-bubble::before {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 33px;
+            border: 7px solid transparent;
+            border-top-color: white;
+            z-index: 1;
+        }
+
+        @keyframes bubbleAppear {
+            from { transform: scale(0.5); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .bubble-character {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 10px;
+        }
+
+        .bubble-avatar {
+            font-size: 2.5rem;
+        }
+
+        .bubble-name {
+            font-family: 'Bangers', cursive;
+            font-size: 1.3rem;
+        }
+
+        .bubble-text {
+            font-size: 1rem;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        /* Speed Lines Effect */
+        .speed-lines {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 200vw;
+            height: 200vh;
+            pointer-events: none;
+            opacity: 0;
+            z-index: 1000;
+        }
+
+        .speed-lines.active {
+            animation: speedFlash 0.3s ease-out;
+        }
+
+        @keyframes speedFlash {
+            0% { opacity: 0.8; }
+            100% { opacity: 0; }
+        }
+
+        .speed-line {
+            position: absolute;
+            background: linear-gradient(90deg, transparent, rgba(0,0,0,0.1), transparent);
+            height: 2px;
+            animation: lineMove 0.3s linear;
+        }
+
+        @keyframes lineMove {
+            from { transform: translateX(-100%); }
+            to { transform: translateX(100vw); }
+        }
+
+        /* Mission Complete Overlay */
+        .mission-complete {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 249, 240, 0.95);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s;
+        }
+
+        .mission-complete.show {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .mission-text {
+            font-family: 'Bangers', cursive;
+            font-size: clamp(3rem, 10vw, 6rem);
+            color: var(--green);
+            text-shadow: 4px 4px 0 var(--ink);
+            animation: missionPop 0.5s ease-out;
+        }
+
+        @keyframes missionPop {
+            0% { transform: scale(0); }
+            70% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        .mission-sub {
+            font-family: 'DM Mono', monospace;
+            font-size: 1.2rem;
+            margin-top: 20px;
+            color: #666;
+        }
+
+        .close-mission {
+            margin-top: 30px;
+            font-family: 'Bangers', cursive;
+            font-size: 1.3rem;
+            padding: 15px 30px;
+            background: var(--teal);
+            color: white;
+            border: 3px solid var(--ink);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .close-mission:hover {
+            transform: scale(1.05);
+            box-shadow: 5px 5px 0 var(--ink);
+        }
+
+        /* Character Parade */
+        .character-parade {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+
+        .character {
+            text-align: center;
+            animation: characterBounce 1s ease-in-out infinite;
+        }
+
+        .character:nth-child(2) { animation-delay: 0.2s; }
+        .character:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes characterBounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .character-emoji {
+            font-size: 4rem;
+        }
+
+        .character-name {
+            font-family: 'Bangers', cursive;
+            font-size: 1.1rem;
+            margin-top: 5px;
+        }
+
+        /* Responsive */
+        @media (max-width: 500px) {
+            .stats-comic {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .stat-box {
+                padding: 15px 10px;
+            }
+            
+            .stat-value {
+                font-size: 1.6rem;
+            }
+        }
+
+        /* Click Feedback */
+        .click-burst {
+            position: fixed;
+            pointer-events: none;
+            font-size: 2rem;
+            animation: burstUp 0.6s ease-out forwards;
+            z-index: 1000;
+        }
+
+        @keyframes burstUp {
+            0% { transform: translateY(0) scale(1); opacity: 1; }
+            100% { transform: translateY(-50px) scale(1.5); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+    <div class="comic-bg"></div>
+    
+    <header class="header">
+        <h1 class="comic-title">魚油英雄拯救站點</h1>
+        <p class="subtitle">FISH OIL RESCUE SQUAD // 緊急救援中心</p>
+    </header>
+
+    <!-- Character Parade -->
+    <div class="character-parade">
+        <div class="character">
+            <div class="character-emoji">🐬</div>
+            <div class="character-name">海豚督導</div>
+        </div>
+        <div class="character">
+            <div class="character-emoji">🦈</div>
+            <div class="character-name">拖延鯊</div>
+        </div>
+        <div class="character">
+            <div class="character-emoji">💊</div>
+            <div class="character-name">魚油膠囊</div>
+        </div>
+    </div>
+
+    <!-- Stats Panel -->
+    <div class="stats-comic">
+        <div class="stat-box">
+            <div class="stat-icon">🖥️</div>
+            <div class="stat-value" id="total-sites">17</div>
+            <div class="stat-label">總站點</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-icon">✅</div>
+            <div class="stat-value" id="online-sites">12</div>
+            <div class="stat-label">正常運行</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-icon">🔴</div>
+            <div class="stat-value" id="offline-sites">5</div>
+            <div class="stat-label">需要救援</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-icon">⚡</div>
+            <div class="stat-value" id="rescue-count">0</div>
+            <div class="stat-label">已搶救</div>
+        </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="action-bar">
+        <button class="action-btn coral" onclick="rescueRandom()">⚡ 隨機搶救</button>
+        <button class="action-btn yellow" onclick="rescueAll()">💪 全部救援</button>
+        <button class="action-btn teal" onclick="showReport()">📊 生成報告</button>
+        <button class="action-btn purple" onclick="resetAll()">🔄 重置</button>
+    </div>
+
+    <!-- Speech Bubble -->
+    <div class="speech-bubble" id="speech-bubble">
+        <div class="bubble-character">
+            <span class="bubble-avatar">🐬</span>
+            <span class="bubble-name">海豚督導：</span>
+        </div>
+        <div class="bubble-text" id="bubble-text">
+            又有站點需要救援了！拖延鯊，快動起來！🐬
+        </div>
+    </div>
+
+    <!-- Comic Panels Grid -->
+    <div class="panels-container" id="panels-container">
+        <!-- Panels will be generated by JS -->
+    </div>
+
+    <!-- Speed Lines Effect -->
+    <div class="speed-lines" id="speed-lines"></div>
+
+    <!-- Mission Complete Overlay -->
+    <div class="mission-complete" id="mission-complete">
+        <div class="mission-text">MISSION COMPLETE!</div>
+        <div class="mission-sub" id="mission-sub">所有站點已成功救援！</div>
+        <button class="close-mission" onclick="closeMission()">繼續監視</button>
+    </div>
+
+    <script>
+        // Site Data from 2026-04-15 memory
+        const sitesData = [
+            { name: 'JP1 #1', domain: 'jp1.fourh.org.tw', status: 'online', region: '🇯🇵', note: '正常運行中' },
+            { name: 'JP1 #2', domain: 'jp1.fourh.org.tw', status: 'online', region: '🇯🇵', note: '正常運行中' },
+            { name: 'JP1 #3', domain: 'jp1.fourh.org.tw', status: 'online', region: '🇯🇵', note: '正常運行中' },
+            { name: 'JP1 #4', domain: 'jp1.fourh.org.tw', status: 'online', region: '🇯🇵', note: '正常運行中' },
+            { name: 'JP1 #5', domain: 'jp1.fourh.org.tw', status: 'online', region: '🇯🇵', note: '正常運行中' },
+            { name: 'JP2 #1', domain: 'jp2.endwith.fun', status: 'online', region: '🇯🇵', note: '正常運行中' },
+            { name: 'US #1', domain: 'us.fourh.org.tw', status: 'online', region: '🇺🇸', note: '正常運行中' },
+            { name: 'US1 #1', domain: 'us1.fourh.org.tw', status: 'online', region: '🇺🇸', note: '正常運行中' },
+            { name: 'USARM #1', domain: 'usarm.fourh.org.tw', status: 'online', region: '🇺🇸', note: '正常運行中' },
+            { name: 'USARM #2', domain: 'usarm.fourh.org.tw', status: 'online', region: '🇺🇸', note: '正常運行中' },
+            { name: 'USARM #3', domain: 'usarm.fourh.org.tw', status: 'online', region: '🇺🇸', note: '正常運行中' },
+            { name: 'USARM #4', domain: 'usarm.fourh.org.tw', status: 'online', region: '🇺🇸', note: '正常運行中' },
+            // Offline sites - the critical ones
+            { name: 'Photo', domain: 'photo.fourh.org.tw', status: 'offline', region: '🔴', issue: 'DNS 解析至 198.18.x.x 內部IP', critical: true },
+            { name: 'Wallos', domain: 'wallos.endwith.fun', status: 'offline', region: '🔴', issue: 'DNS 解析至 198.18.x.x 內部IP', critical: true },
+            { name: 'Docuseal', domain: 'docuseal.endwith.fun', status: 'offline', region: '🔴', issue: 'DNS 解析至 198.18.x.x 內部IP', critical: true },
+            { name: 'Change', domain: 'change.endwith.fun', status: 'offline', region: '🔴', issue: 'DNS 解析至 198.18.x.x 內部IP', critical: true },
+            { name: 'Demo', domain: 'demo.4-h.me', status: 'offline', region: '🔴', issue: 'DNS 解析至 198.18.x.x 內部IP', critical: true },
+        ];
+
+        let rescueCount = 0;
+        let rescuedSites = new Set();
+
+        // Bubble dialogues
+        const dialogues = {
+            rescue: [
+                "又有站點需要救援了！拖延鯊，快動起來！🐬",
+                "別再拖延了！魚油都涼了！💊",
+                "聲納定位中... 找到了！就是這個！🐬",
+                "拖延鯊！你的魚油在這裡！快吃！💊",
+                "DNS 內部IP？我用聲納穿透它！🐬",
+            ],
+            success: [
+                "魚油生效了！站點恢復正常！💊✨",
+                "拖延鯊終於行動了！🐬💪",
+                "聲納定位成功！救援完成！🐬",
+                "魚油膠囊直達病灶！任務完成！💊",
+            ],
+            allComplete: [
+                "所有站點都搶救回來了！魚油萬歲！🐬💊",
+                "拖延鯊今天表現不錯！🐬👍",
+                "救援任務圓滿成功！海豚督導很滿意！🐬",
+            ]
+        };
+
+        function getRandomDialogue(type) {
+            const list = dialogues[type];
+            return list[Math.floor(Math.random() * list.length)];
+        }
+
+        function updateBubble(text) {
+            document.getElementById('bubble-text').textContent = text;
+            document.getElementById('speech-bubble').style.animation = 'none';
+            document.getElementById('speech-bubble').offsetHeight;
+            document.getElementById('speech-bubble').style.animation = 'bubbleAppear 0.5s ease-out';
+        }
+
+        function showSpeedLines() {
+            const container = document.getElementById('speed-lines');
+            container.innerHTML = '';
+            container.classList.add('active');
+            
+            for (let i = 0; i < 20; i++) {
+                const line = document.createElement('div');
+                line.className = 'speed-line';
+                line.style.top = `${Math.random() * 100}%`;
+                line.style.width = `${100 + Math.random() * 200}px`;
+                line.style.animationDelay = `${Math.random() * 0.2}s`;
+                container.appendChild(line);
+            }
+            
+            setTimeout(() => container.classList.remove('active'), 300);
+        }
+
+        function showClickBurst(x, y, emoji) {
+            const burst = document.createElement('div');
+            burst.className = 'click-burst';
+            burst.textContent = emoji;
+            burst.style.left = `${x}px`;
+            burst.style.top = `${y}px`;
+            document.body.appendChild(burst);
+            setTimeout(() => burst.remove(), 600);
+        }
+
+        function renderPanels() {
+            const container = document.getElementById('panels-container');
+            container.innerHTML = '';
+            
+            // Shuffle sites for visual interest
+            const shuffled = [...sitesData].sort(() => Math.random() - 0.5);
+            
+            shuffled.forEach((site, index) => {
+                const isRescued = rescuedSites.has(site.domain);
+                const displayStatus = isRescued ? 'online' : site.status;
+                
+                const panel = document.createElement('div');
+                panel.className = `comic-panel ${site.critical && displayStatus === 'offline' ? 'critical' : ''}`;
+                panel.style.animationDelay = `${index * 0.05}s`;
+                
+                panel.innerHTML = `
+                    <div class="panel-header">
+                        <span>${site.region} ${site.name}</span>
+                        <span class="severity-badge ${isRescued ? 'ok' : (site.critical ? 'critical' : 'ok')}">
+                            ${isRescued ? '✅ 已救援' : (site.critical ? '🔴 CRITICAL' : '✅ OK')}
+                        </span>
+                    </div>
+                    <div class="panel-content">
+                        <div class="site-name">${site.name}</div>
+                        <div class="site-domain">${site.domain}</div>
+                        <div class="site-status">
+                            <div class="status-dot ${displayStatus}"></div>
+                            <span class="status-text">
+                                ${isRescued ? '✨ 已恢復正常' : (site.status === 'online' ? '正常運行中' : site.issue)}
+                            </span>
+                        </div>
+                        ${site.critical && !isRescued ? `
+                            <div class="site-issue">
+                                <span class="site-issue-icon">⚠️</span>
+                                ${site.issue}
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+                
+                if (site.critical && !isRescued) {
+                    panel.onclick = (e) => {
+                        rescueSite(site, panel, e);
+                    };
+                }
+                
+                container.appendChild(panel);
+            });
+            
+            updateStats();
+        }
+
+        function rescueSite(site, panel, event) {
+            if (rescuedSites.has(site.domain)) return;
+            
+            rescuedSites.add(site.domain);
+            rescueCount++;
+            
+            showSpeedLines();
+            showClickBurst(event.clientX, event.clientY, '💊');
+            
+            panel.classList.remove('critical');
+            panel.onclick = null;
+            
+            updateBubble(getRandomDialogue('success'));
+            updateStats();
+            
+            // Animate the rescue
+            panel.style.transition = 'all 0.3s';
+            panel.style.transform = 'scale(1.05)';
+            setTimeout(() => {
+                panel.style.transform = 'scale(1)';
+            }, 300);
+            
+            // Check if all rescued
+            const criticalCount = sitesData.filter(s => s.critical).length;
+            if (rescueCount >= criticalCount) {
+                setTimeout(showMissionComplete, 500);
+            }
+        }
+
+        function rescueRandom() {
+            const criticalSites = sitesData.filter(s => s.critical && !rescuedSites.has(s.domain));
+            if (criticalSites.length === 0) {
+                updateBubble('所有關鍵站點都已經救援完成了！🎉');
+                return;
+            }
+            
+            const site = criticalSites[Math.floor(Math.random() * criticalSites.length)];
+            const panels = document.querySelectorAll('.comic-panel');
+            let targetPanel = null;
+            
+            panels.forEach(p => {
+                if (p.textContent.includes(site.name)) {
+                    targetPanel = p;
+                }
+            });
+            
+            if (targetPanel) {
+                const rect = targetPanel.getBoundingClientRect();
+                rescueSite(site, targetPanel, { clientX: rect.left + rect.width/2, clientY: rect.top + rect.height/2 });
+            }
+        }
+
+        function rescueAll() {
+            const criticalSites = sitesData.filter(s => s.critical && !rescuedSites.has(s.domain));
+            if (criticalSites.length === 0) {
+                updateBubble('所有關鍵站點都已經救援完成了！🎉');
+                return;
+            }
+            
+            showSpeedLines();
+            showClickBurst(window.innerWidth/2, window.innerHeight/2, '💪');
+            
+            criticalSites.forEach((site, index) => {
+                setTimeout(() => {
+                    rescuedSites.add(site.domain);
+                    rescueCount++;
+                    
+                    const panels = document.querySelectorAll('.comic-panel');
+                    panels.forEach(p => {
+                        if (p.textContent.includes(site.name)) {
+                            p.classList.remove('critical');
+                            p.onclick = null;
+                        }
+                    });
+                    
+                    updateStats();
+                }, index * 150);
+            });
+            
+            updateBubble('魚油英雄全力出動！所有站點救援中... 💊💊💊');
+            
+            setTimeout(() => {
+                updateBubble(getRandomDialogue('allComplete')[0]);
+                showMissionComplete();
+            }, criticalSites.length * 150 + 500);
+        }
+
+        function showReport() {
+            const online = sitesData.length - sitesData.filter(s => s.critical).length + rescuedSites.size;
+            const offline = sitesData.filter(s => s.critical && !rescuedSites.has(s.domain)).length;
+            
+            const reportText = `
+📊 VPS 站點健檢報告
+━━━━━━━━━━━━━━━━━
+🖥️ 總站點：${sitesData.length}
+✅ 正常運行：${online}
+🔴 需救援：${offline}
+⚡ 已搶救：${rescueCount}
+━━━━━━━━━━━━━━━━━
+${offline === 0 ? '🎉 所有站點正常運行！' : `⚠️ 還有 ${offline} 個站點需要救援`}
+            `.trim();
+            
+            updateBubble(reportText);
+        }
+
+        function showMissionComplete() {
+            const missionSub = document.getElementById('mission-sub');
+            missionSub.textContent = `成功救援 ${rescueCount} 個站點！`;
+            document.getElementById('mission-complete').classList.add('show');
+        }
+
+        function closeMission() {
+            document.getElementById('mission-complete').classList.remove('show');
+        }
+
+        function resetAll() {
+            rescuedSites.clear();
+            rescueCount = 0;
+            renderPanels();
+            updateBubble(getRandomDialogue('rescue'));
+        }
+
+        function updateStats() {
+            const online = sitesData.length - sitesData.filter(s => s.critical).length + rescuedSites.size;
+            const offline = sitesData.filter(s => s.critical && !rescuedSites.has(s.domain)).length;
+            
+            document.getElementById('total-sites').textContent = sitesData.length;
+            document.getElementById('online-sites').textContent = online;
+            document.getElementById('offline-sites').textContent = offline;
+            document.getElementById('rescue-count').textContent = rescueCount;
+        }
+
+        // Initialize
+        renderPanels();
+    </script>
+</body>
+</html>
