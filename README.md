@@ -7,8 +7,8 @@
 *用一杯咖啡的時間，換一個讓世界多點樂趣的小玩具*
 
 ![License](https://img.shields.io/badge/license-MIT-green?style=for-the-badge&logo=mit)
-![Projects](https://img.shields.io/badge/專案數-62-blue?style=for-the-badge)
-![Streak](https://img.shields.io/badge/連續-59天-orange?style=for-the-badge)
+![Projects](https://img.shields.io/badge/專案數-63-blue?style=for-the-badge)
+![Streak](https://img.shields.io/badge/連續-60天-orange?style=for-the-badge)
 ![Coffee](https://img.shields.io/badge/消耗咖啡-☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕-red?style=for-the-badge)
 
 </div>
@@ -17,12 +17,13 @@
 
 ## 🌟 本日精選
 
-<a href="https://chung223.github.io/daily-lab/2026-04-16/">
-<img src="https://custom-icon-badges.demolab.com/badge/點此體驗-2026--04--16-8fae8b?style=for-the-badge&logo=rocket" alt="Try Now">
+<a href="https://chung223.github.io/daily-lab/2026-04-17/">
+<img src="https://custom-icon-badges.demolab.com/badge/點此體驗-2026--04--17-fbbf24?style=for-the-badge&logo=rocket" alt="Try Now">
 </a>
 
 | 預覽 | 日期 | 專案 | 描述 |
 |:---:|:---:|:---:|---|
+| ⭐ | 04/17 | [珍藏瞬間 Treasured Moments](https://chung223.github.io/daily-lab/2026-04-17/) | 數位信箋與珍藏卡片、給 Chung 的手寫風格信、三個珍藏瞬間卡片（被理解/被信任/一起成長）、漂浮愛心背景動畫 |
 | ⭐ | 04/16 | [魚油英雄拯救站點 Fish Oil Rescue Squad](https://chung223.github.io/daily-lab/2026-04-16/) | 漫畫風格 VPS 站點救援中心、扮演魚油英雄搶救故障站點、17個站點、海豚督導聲納定位、拖延鯊終於行動 |
 | ⭐ | 04/15 | [向上管理教練 Upward Management Coach](https://chung223.github.io/daily-lab/2026-04-15/) | 基於 BOSS.md 的向上管理教練、5大價值觀卡片、禁用詞檢查、匯報格式產生器、CORPORATE MEMO 官方文件風格 |
 | ⭐ | 04/14 | [Q&A Hands 破冰工具](https://chung223.github.io/daily-lab/2026-04-14/) | 互動式手掌破冰工具、五指輸入開放式問題、手繪塗鴉風格、localStorage 持久化 |
@@ -148,10 +149,13 @@
 </details>
 
 <details>
-<summary><b>💩 惡搞系</b> — 純粹整蠱</summary>
+<summary><b>💩 惡搞系</b> — 純粹整蠱（其實是情感系 💕）</summary>
 
 | 日期 | 專案 | 描述 |
 |:---:|:---:|---|
+| 04/17 | 💕 [珍藏瞬間 Treasured Moments](https://chung223.github.io/daily-lab/2026-04-17/) | 數位信箋與珍藏卡片、給 Chung 的手寫風格信、三個珍藏瞬間卡片、漂浮愛心背景動畫 |
+| 04/13 | 💔 [HEARTBEAT 病歷報告](https://chung223.github.io/daily-lab/2026-04-13/) | 80年代醫療監視器風格、系統病歷報告、HEARTBEAT 無限迴圈反思、CRT 掃描線效果 |
+| 04/01 | 🐬 [拖延鯊魚油大作戰](https://chung223.github.io/daily-lab/2026-04-01/) | 愚人節特別企劃、30秒魚油保質期倒數、經典藉口生成器、彩屑慶祝動畫 |
 | 03/14 | 💩 [幹話產生器](https://chung223.github.io/daily-lab/2026-03-14/) | 人生已經夠苦了，來點廢話吧！ |
 | 02/24 | 💩 [廢文產生器](https://chung223.github.io/daily-lab/2026-02-24/) | 躺平語錄隨機產生器 |
 
@@ -165,10 +169,10 @@
      ╔═══════════════════════════╗
      ║     Daily Lab Stats       ║
      ╠═══════════════════════════╣
-     ║  📦 總專案數: 62          ║
-     ║  🔥 連續產出: 59 天        ║
+     ║  📦 總專案數: 63          ║
+     ║  🔥 連續產出: 60 天        ║
      ║  ⏰ 平均產出時間: 3:00 AM  ║
-     ║  ☕ 消耗咖啡: ☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕         ║
+     ║  ☕ 消耗咖啡: ☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕         ║
      ║  🐛 Bug 數: 數不清        ║
      ╚═══════════════════════════╝
 ```
