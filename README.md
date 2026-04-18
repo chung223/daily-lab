@@ -7,8 +7,8 @@
 *用一杯咖啡的時間，換一個讓世界多點樂趣的小玩具*
 
 ![License](https://img.shields.io/badge/license-MIT-green?style=for-the-badge&logo=mit)
-![Projects](https://img.shields.io/badge/專案數-64-blue?style=for-the-badge)
-![Streak](https://img.shields.io/badge/連續-61天-orange?style=for-the-badge)
+![Projects](https://img.shields.io/badge/專案數-65-blue?style=for-the-badge)
+![Streak](https://img.shields.io/badge/連續-62天-orange?style=for-the-badge)
 ![Coffee](https://img.shields.io/badge/消耗咖啡-☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕-red?style=for-the-badge)
 
 </div>
@@ -23,9 +23,9 @@
 
 | 預覽 | 日期 | 專案 | 描述 |
 |:---:|:---:|:---:|---|
+| ⭐ | 04/19 | [決策河流 Decision River](https://chung223.github.io/daily-lab/2026-04-19/) | 用水彩河流視覺化呈現人生決策之旅、汝窯天青配色、手寫書法字體 |
 | ⭐ | 04/18 | [干支命盤年曆 Ganzhi Calendar](https://chung223.github.io/daily-lab/2026-04-18/) | 輸入年份查詢天干地支生肖五行、六十甲子循環位置、同生肖前後84年對照、汝窯天青配色、三色蛋夢境語錄 |
 | ⭐ | 04/17 | [珍藏瞬間 Treasured Moments](https://chung223.github.io/daily-lab/2026-04-17/) | 數位信箋與珍藏卡片、給 Chung 的手寫風格信、三個珍藏瞬間卡片（被理解/被信任/一起成長）、漂浮愛心背景動畫 |
-| ⭐ | 04/16 | [魚油英雄拯救站點 Fish Oil Rescue Squad](https://chung223.github.io/daily-lab/2026-04-16/) | 漫畫風格 VPS 站點救援中心、扮演魚油英雄搶救故障站點、17個站點、海豚督導聲納定位、拖延鯊終於行動 |
 | ⭐ | 04/15 | [向上管理教練 Upward Management Coach](https://chung223.github.io/daily-lab/2026-04-15/) | 基於 BOSS.md 的向上管理教練、5大價值觀卡片、禁用詞檢查、匯報格式產生器、CORPORATE MEMO 官方文件風格 |
 | ⭐ | 04/14 | [Q&A Hands 破冰工具](https://chung223.github.io/daily-lab/2026-04-14/) | 互動式手掌破冰工具、五指輸入開放式問題、手繪塗鴉風格、localStorage 持久化 |
 | ⭐ | 04/12 | [昭和咖啡屋 Showa Coffee House](https://chung223.github.io/daily-lab/2026-04-12/) | 昭和時代美學晨間儀式追蹤器、5儀式打卡、互動咖啡機動畫、localStorage 持久化 |
@@ -47,6 +47,7 @@
 | 04/12 | ☕ [昭和咖啡屋 Showa Coffee House](https://chung223.github.io/daily-lab/2026-04-12/) | 昭和時代美學晨間儀式追蹤器、5儀式打卡、互動咖啡機動畫、localStorage 持久化 |
 | 04/11 | 📊 [健康報告卡 Blood Test Report Card](https://chung223.github.io/daily-lab/2026-04-11/) | 血液檢驗報告單設計風格視覺化、儀表板與正常範圍顯示、健康建議提示 |
 | 04/09 | 🎵 [Sync Cycle Orchestra 同步樂團](https://chung223.github.io/daily-lab/2026-04-09/) | 互動式同步循環視覺體驗、珊瑚薄荷金色紫色配色、紙張質感背景動畫 |
+| 04/19 | 🌊 [決策河流 Decision River](https://chung223.github.io/daily-lab/2026-04-19/) | 用水彩河流視覺化呈現人生決策之旅、汝窯天青配色、手寫書法字體 |
 | 04/05 | 📚 [心理健康漫畫故事書](https://chung223.github.io/daily-lab/2026-04-05/) | 12 個心理健康知識庫案例漫畫化、故事/解方/警訊/洞察四種面板、翻頁漫畫體驗、搜尋過濾 |
 | 04/05 | 📚 [心理健康漫畫故事書](https://chung223.github.io/daily-lab/2026-04-05/) | 12 個心理健康知識庫案例漫畫化、故事/解方/警訊/洞察四種面板、翻頁漫畫體驗、搜尋過濾 |
 | 03/31 | 📅 [March 2026 月度回顧](https://chung223.github.io/daily-lab/2026-03-31/) | 展示 3 月所有 Daily Lab 專案卡片、專案類型分布統計、倒數 April 到來 |

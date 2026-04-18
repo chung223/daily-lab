@@ -1,0 +1,1001 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>決策河流 — Decision River</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600&family=Noto+Serif+TC:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --river-blue: #7fb5c4;
+      --river-dark: #4a8fa3;
+      --river-light: #c5dde5;
+      --sand: #f5efe6;
+      --ink: #2d3436;
+      --blush: #e8b4b8;
+      --sage: #a8b5a0;
+      --gold: #d4a574;
+    }
+
+    body {
+      font-family: 'Noto Serif TC', serif;
+      background: var(--sand);
+      min-height: 100vh;
+      overflow-x: hidden;
+      color: var(--ink);
+    }
+
+    /* 水彩背景 */
+    .watercolor-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.4;
+    }
+
+    .watercolor-blob {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(60px);
+      animation: float 20s ease-in-out infinite;
+    }
+
+    .blob-1 {
+      width: 400px;
+      height: 400px;
+      background: var(--river-light);
+      top: -100px;
+      right: -100px;
+      animation-delay: 0s;
+    }
+
+    .blob-2 {
+      width: 300px;
+      height: 300px;
+      background: var(--blush);
+      bottom: 10%;
+      left: -50px;
+      animation-delay: -5s;
+    }
+
+    .blob-3 {
+      width: 250px;
+      height: 250px;
+      background: var(--sage);
+      top: 50%;
+      right: 10%;
+      animation-delay: -10s;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      25% { transform: translate(20px, -30px) scale(1.05); }
+      50% { transform: translate(-10px, 20px) scale(0.95); }
+      75% { transform: translate(30px, 10px) scale(1.02); }
+    }
+
+    /* 禪繞線條裝飾 */
+    .zentangle-lines {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+      opacity: 0.08;
+    }
+
+    .zentangle-line {
+      position: absolute;
+      background: var(--ink);
+    }
+
+    .line-1 {
+      width: 2px;
+      height: 150px;
+      top: 10%;
+      left: 5%;
+      transform: rotate(-15deg);
+    }
+
+    .line-2 {
+      width: 80px;
+      height: 2px;
+      top: 25%;
+      right: 8%;
+      transform: rotate(10deg);
+    }
+
+    .line-3 {
+      width: 2px;
+      height: 100px;
+      bottom: 20%;
+      right: 15%;
+      transform: rotate(20deg);
+    }
+
+    .line-4 {
+      width: 60px;
+      height: 2px;
+      bottom: 35%;
+      left: 12%;
+      transform: rotate(-8deg);
+    }
+
+    /* 禪繞圓圈裝飾 */
+    .zentangle-circle {
+      position: absolute;
+      border: 1.5px solid var(--ink);
+      border-radius: 50%;
+      opacity: 0.1;
+    }
+
+    .circle-1 {
+      width: 80px;
+      height: 80px;
+      top: 60%;
+      left: 3%;
+    }
+
+    .circle-2 {
+      width: 50px;
+      height: 50px;
+      bottom: 15%;
+      right: 5%;
+    }
+
+    .circle-3 {
+      width: 120px;
+      height: 120px;
+      top: 5%;
+      right: 20%;
+    }
+
+    /* 主容器 */
+    .container {
+      position: relative;
+      z-index: 10;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 40px 24px;
+      min-height: 100vh;
+    }
+
+    /* 標題區 */
+    header {
+      text-align: center;
+      margin-bottom: 48px;
+      padding-top: 40px;
+    }
+
+    .subtitle {
+      font-family: 'Caveat', cursive;
+      font-size: 1.1rem;
+      color: var(--river-dark);
+      letter-spacing: 2px;
+      margin-bottom: 8px;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 600;
+      color: var(--ink);
+      letter-spacing: 8px;
+      margin-bottom: 16px;
+    }
+
+    .tagline {
+      font-size: 1rem;
+      color: var(--ink);
+      opacity: 0.6;
+      font-style: italic;
+    }
+
+    /* 河流 SVG 動畫 */
+    .river-header {
+      width: 120px;
+      height: 40px;
+      margin: 24px auto;
+    }
+
+    .river-svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    .river-path {
+      fill: none;
+      stroke: var(--river-blue);
+      stroke-width: 3;
+      stroke-linecap: round;
+      stroke-dasharray: 200;
+      stroke-dashoffset: 200;
+      animation: drawRiver 3s ease-in-out forwards;
+    }
+
+    @keyframes drawRiver {
+      to { stroke-dashoffset: 0; }
+    }
+
+    /* 輸入區 */
+    .input-section {
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      padding: 32px;
+      margin-bottom: 32px;
+      border: 1px solid rgba(127, 181, 196, 0.3);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05);
+    }
+
+    .input-label {
+      font-size: 0.95rem;
+      color: var(--ink);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .input-icon {
+      width: 20px;
+      height: 20px;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 80px;
+      padding: 16px;
+      border: 2px solid var(--river-light);
+      border-radius: 12px;
+      font-family: 'Noto Serif TC', serif;
+      font-size: 1rem;
+      color: var(--ink);
+      background: rgba(255, 255, 255, 0.8);
+      resize: vertical;
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
+
+    textarea:focus {
+      outline: none;
+      border-color: var(--river-blue);
+      box-shadow: 0 0 0 4px rgba(127, 181, 196, 0.2);
+    }
+
+    textarea::placeholder {
+      color: var(--ink);
+      opacity: 0.4;
+    }
+
+    .start-btn {
+      width: 100%;
+      padding: 16px 32px;
+      margin-top: 20px;
+      background: var(--river-blue);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-family: 'Noto Serif TC', serif;
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: all 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .start-btn:hover {
+      background: var(--river-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(127, 181, 196, 0.4);
+    }
+
+    .start-btn:disabled {
+      background: var(--river-light);
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    /* 河流區域 */
+    .river-container {
+      display: none;
+      margin-bottom: 32px;
+    }
+
+    .river-container.active {
+      display: block;
+      animation: fadeIn 0.6s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .question-display {
+      text-align: center;
+      padding: 24px;
+      background: rgba(255, 255, 255, 0.6);
+      border-radius: 16px;
+      margin-bottom: 32px;
+      border-left: 4px solid var(--river-blue);
+    }
+
+    .question-label {
+      font-size: 0.85rem;
+      color: var(--ink);
+      opacity: 0.6;
+      margin-bottom: 8px;
+    }
+
+    .question-text {
+      font-size: 1.25rem;
+      color: var(--ink);
+      font-weight: 600;
+    }
+
+    /* 決策分流卡片 */
+    .river-branches {
+      position: relative;
+      padding: 40px 0;
+    }
+
+    /* 河流主幹線 */
+    .river-trunk {
+      position: absolute;
+      left: 50%;
+      top: 0;
+      width: 4px;
+      height: 40px;
+      background: linear-gradient(to bottom, var(--river-blue), var(--river-light));
+      transform: translateX(-50%);
+      border-radius: 2px;
+    }
+
+    .branch-card {
+      background: rgba(255, 255, 255, 0.85);
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 24px;
+      border: 1px solid rgba(127, 181, 196, 0.3);
+      cursor: pointer;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .branch-card::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      height: 100%;
+      width: 4px;
+      background: var(--river-blue);
+      transform: scaleY(0);
+      transition: transform 0.3s;
+    }
+
+    .branch-card:hover {
+      transform: translateX(8px);
+      box-shadow: 0 8px 24px rgba(127, 181, 196, 0.2);
+    }
+
+    .branch-card:hover::before {
+      transform: scaleY(1);
+    }
+
+    .branch-card:active {
+      transform: translateX(4px) scale(0.98);
+    }
+
+    .branch-question {
+      font-size: 1.05rem;
+      color: var(--ink);
+      margin-bottom: 12px;
+      font-weight: 600;
+    }
+
+    .branch-options {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .branch-option {
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      transition: all 0.3s;
+    }
+
+    .option-yes {
+      background: rgba(127, 181, 196, 0.2);
+      color: var(--river-dark);
+    }
+
+    .option-no {
+      background: rgba(232, 180, 184, 0.2);
+      color: #a87078;
+    }
+
+    .option-neutral {
+      background: rgba(168, 181, 160, 0.2);
+      color: #6b7a60;
+    }
+
+    .branch-number {
+      position: absolute;
+      top: -12px;
+      left: 24px;
+      width: 24px;
+      height: 24px;
+      background: var(--river-blue);
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    /* 決策結果 */
+    .decision-result {
+      display: none;
+      text-align: center;
+      padding: 40px 32px;
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 24px;
+      border: 2px solid var(--river-light);
+      animation: revealResult 0.8s ease-out;
+    }
+
+    .decision-result.active {
+      display: block;
+    }
+
+    @keyframes revealResult {
+      from { 
+        opacity: 0; 
+        transform: scale(0.9) translateY(20px);
+      }
+      to { 
+        opacity: 1; 
+        transform: scale(1) translateY(0);
+      }
+    }
+
+    .result-icon {
+      font-size: 4rem;
+      margin-bottom: 16px;
+      animation: floatIcon 3s ease-in-out infinite;
+    }
+
+    @keyframes floatIcon {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    .result-title {
+      font-size: 1.5rem;
+      color: var(--ink);
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
+
+    .result-subtitle {
+      font-family: 'Caveat', cursive;
+      font-size: 1.2rem;
+      color: var(--river-dark);
+      margin-bottom: 24px;
+    }
+
+    .result-advice {
+      font-size: 1.1rem;
+      line-height: 1.8;
+      color: var(--ink);
+      max-width: 500px;
+      margin: 0 auto 24px;
+    }
+
+    .result-quote {
+      font-style: italic;
+      color: var(--ink);
+      opacity: 0.7;
+      padding: 16px;
+      border-left: 3px solid var(--river-blue);
+      margin: 24px 0;
+      text-align: left;
+      background: rgba(127, 181, 196, 0.05);
+      border-radius: 0 8px 8px 0;
+    }
+
+    .result-actions {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 24px;
+    }
+
+    .result-btn {
+      padding: 12px 24px;
+      border-radius: 10px;
+      font-family: 'Noto Serif TC', serif;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.3s;
+      border: none;
+    }
+
+    .btn-restart {
+      background: var(--river-blue);
+      color: white;
+    }
+
+    .btn-restart:hover {
+      background: var(--river-dark);
+      transform: translateY(-2px);
+    }
+
+    .btn-share {
+      background: transparent;
+      color: var(--river-dark);
+      border: 2px solid var(--river-blue);
+    }
+
+    .btn-share:hover {
+      background: var(--river-blue);
+      color: white;
+    }
+
+    /* 底部引言 */
+    .footer-quote {
+      text-align: center;
+      padding: 40px 24px;
+      margin-top: 48px;
+      border-top: 1px solid rgba(127, 181, 196, 0.3);
+    }
+
+    .footer-quote p {
+      font-size: 1rem;
+      line-height: 1.8;
+      color: var(--ink);
+      opacity: 0.7;
+      font-style: italic;
+      max-width: 500px;
+      margin: 0 auto 16px;
+    }
+
+    .footer-quote cite {
+      font-family: 'Caveat', cursive;
+      font-size: 1.1rem;
+      color: var(--river-dark);
+      font-style: normal;
+    }
+
+    /* 響應式 */
+    @media (max-width: 600px) {
+      h1 {
+        font-size: 1.8rem;
+        letter-spacing: 4px;
+      }
+
+      .input-section {
+        padding: 24px;
+      }
+
+      .branch-card {
+        padding: 20px;
+      }
+
+      .branch-options {
+        flex-direction: column;
+      }
+
+      .branch-option {
+        text-align: center;
+      }
+
+      .result-actions {
+        flex-direction: column;
+      }
+
+      .result-btn {
+        width: 100%;
+      }
+    }
+
+    /* 流動的水波動畫 */
+    .ripple {
+      position: absolute;
+      border-radius: 50%;
+      border: 2px solid var(--river-light);
+      animation: rippleAnim 2s ease-out forwards;
+      pointer-events: none;
+    }
+
+    @keyframes rippleAnim {
+      0% {
+        width: 0;
+        height: 0;
+        opacity: 1;
+      }
+      100% {
+        width: 100px;
+        height: 100px;
+        opacity: 0;
+        margin: -50px 0 0 -50px;
+      }
+    }
+
+    /* 水滴裝飾 */
+    .water-drop {
+      position: fixed;
+      width: 8px;
+      height: 12px;
+      background: var(--river-light);
+      border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+      opacity: 0.4;
+      animation: dropFall 4s ease-in infinite;
+      pointer-events: none;
+    }
+
+    .drop-1 { left: 10%; animation-delay: 0s; }
+    .drop-2 { left: 25%; animation-delay: 1.3s; }
+    .drop-3 { left: 75%; animation-delay: 0.7s; }
+    .drop-4 { left: 90%; animation-delay: 2.1s; }
+
+    @keyframes dropFall {
+      0% { top: -20px; opacity: 0; }
+      10% { opacity: 0.4; }
+      90% { opacity: 0.4; }
+      100% { top: 100vh; opacity: 0; }
+    }
+  </style>
+</head>
+<body>
+  <!-- 水彩背景裝飾 -->
+  <div class="watercolor-bg">
+    <div class="watercolor-blob blob-1"></div>
+    <div class="watercolor-blob blob-2"></div>
+    <div class="watercolor-blob blob-3"></div>
+  </div>
+
+  <!-- 禪繞線條裝飾 -->
+  <div class="zentangle-lines">
+    <div class="zentangle-line line-1"></div>
+    <div class="zentangle-line line-2"></div>
+    <div class="zentangle-line line-3"></div>
+    <div class="zentangle-line line-4"></div>
+    <div class="zentangle-circle circle-1"></div>
+    <div class="zentangle-circle circle-2"></div>
+    <div class="zentangle-circle circle-3"></div>
+  </div>
+
+  <!-- 水滴裝飾 -->
+  <div class="water-drop drop-1"></div>
+  <div class="water-drop drop-2"></div>
+  <div class="water-drop drop-3"></div>
+  <div class="water-drop drop-4"></div>
+
+  <div class="container">
+    <header>
+      <p class="subtitle">～ A Decision Visualization Tool ～</p>
+      <h1>決策河流</h1>
+      <p class="tagline">河流不問方向，姿態比方向更真實</p>
+      
+      <!-- 河流 SVG 動畫 -->
+      <div class="river-header">
+        <svg class="river-svg" viewBox="0 0 120 40">
+          <path class="river-path" d="M60 5 Q 70 15, 60 20 T 60 35" />
+        </svg>
+      </div>
+    </header>
+
+    <!-- 輸入區 -->
+    <section class="input-section" id="inputSection">
+      <label class="input-label">
+        <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"/>
+          <path d="M12 16v-4M12 8h.01"/>
+        </svg>
+        今天你在掙扎什麼？
+      </label>
+      <textarea 
+        id="questionInput" 
+        placeholder="例如：要不要接受那份offer..."
+      ></textarea>
+      <button class="start-btn" id="startBtn" onclick="startRiver()">
+        讓河流帶你探索
+      </button>
+    </section>
+
+    <!-- 河流區域 -->
+    <section class="river-container" id="riverContainer">
+      <div class="question-display">
+        <p class="question-label">你的問題是</p>
+        <p class="question-text" id="displayQuestion"></p>
+      </div>
+      
+      <div class="river-branches">
+        <div class="river-trunk"></div>
+        <!-- 分支卡片會動態插入 -->
+      </div>
+    </section>
+
+    <!-- 決策結果 -->
+    <section class="decision-result" id="decisionResult">
+      <div class="result-icon" id="resultIcon">🌊</div>
+      <h2 class="result-title" id="resultTitle">河流找到了方向</h2>
+      <p class="result-subtitle" id="resultSubtitle">Decision River</p>
+      <p class="result-advice" id="resultAdvice"></p>
+      <div class="result-quote" id="resultQuote"></div>
+      <div class="result-actions">
+        <button class="result-btn btn-restart" onclick="restartRiver()">再流一次 🌊</button>
+        <button class="result-btn btn-share" onclick="shareResult()">分享這次探索 ✨</button>
+      </div>
+    </section>
+
+    <!-- 底部引言 -->
+    <footer class="footer-quote">
+      <p>「策略不是藍圖而是傾向，河流不需要地圖，姿態比方向更真實。」</p>
+      <cite>— 三色蛋，河流不問方向，2026-04-18</cite>
+    </footer>
+  </div>
+
+  <script>
+    // 決策問題庫
+    const branchQuestions = [
+      {
+        question: "這個選擇是出於恐懼，還是出於渴望？",
+        options: [
+          { text: "恐懼居多 😰", type: "no" },
+          { text: "渴望居多 ✨", type: "yes" },
+          { text: "兩者都有", type: "neutral" }
+        ],
+        advice: {
+          no: "恐懼是嚮導，不是終點。先承認恐懼的存在，然後問自己：即使害怕，我還是想要什麼？",
+          yes: "渴望是燃料。讓這份渴望再清晰一點——具體是什麼？誰？什麼場景？",
+          neutral: "恐懼與渴望並存是成熟的標誌。試著把它們分開處理，先問：「如果沒有恐懼，我會選什麼？」"
+        }
+      },
+      {
+        question: "如果選項B（不做選擇）是一個人，他會說什麼？",
+        options: [
+          { text: "「再等等」⏳", type: "no" },
+          { text: "「我很好，別擔心」😌", type: "yes" },
+          { text: "沈默不語 🤫", type: "neutral" }
+        ],
+        advice: {
+          no: "「再等等」有時是智慧，有時是拖延的偽裝。問問自己：在等什麼？是更多資訊，還是更多勇氣？",
+          yes: "如果B選項說「我很好」，也許現在的狀態已經是一個答案。",
+          neutral: "沈默有時意味著這個決定沒那麼緊迫。也許可以放一放，讓問題自己沉澱。"
+        }
+      },
+      {
+        question: "你願意為這個選擇付出多少代價？",
+        options: [
+          { text: "全力以赴 💪", type: "yes" },
+          { text: "淺嘗即止 🏃", type: "no" },
+          { text: "視情況而定 🎯", type: "neutral" }
+        ],
+        advice: {
+          yes: "全力以赴是一種宣言。當你願意付出代價，代價就變成了投資。",
+          no: "淺嘗即止有時是明智的風險管理。但問問自己：這個目標值得半心半意嗎？",
+          neutral: "視情況是一種彈性。關鍵是：什麼情況？底線在哪裡？"
+        }
+      },
+      {
+        question: "這個決定在三年後的你眼裡，會是什麼形狀？",
+        options: [
+          { text: "必經之路 🌟", type: "yes" },
+          { text: "無關緊要 🪶", type: "no" },
+          { text: "看不清 🔮", type: "neutral" }
+        ],
+        advice: {
+          yes: "如果這條路在三年後看起來是必經的，那現在就是起點。勇敢邁出第一步。",
+          no: "如果它無關緊要，也許可以放下執著。時間會淡化大多數「重要決定」的重量。",
+          neutral: "未來本來就充滿迷霧。不需要看清楚，只需要選定一個方向，讓河流帶你去。"
+        }
+      },
+      {
+        question: "你直覺最強烈的那個聲音，在說什麼？",
+        options: [
+          { text: "「去！」🚀", type: "yes" },
+          { text: "「停！」🛑", type: "no" },
+          { text: "「問問別人」🤔", type: "neutral" }
+        ],
+        advice: {
+          yes: "直覺是身體儲存的智慧。當它說「去」，通常已經有了答案，只是還沒被翻譯成語言。",
+          no: "直覺在說停。這個停，也許是保護。聽聽它在保護你什麼。",
+          neutral: "有時候直覺還在下載資訊。不急，讓問題在意識底層慢慢沉澱。"
+        }
+      }
+    ];
+
+    // 結果引言庫
+    const resultQuotes = [
+      {
+        quote: "河流不需要地圖，姿態比方向更真實。",
+        source: "三色蛋"
+      },
+      {
+        quote: "當你不知道自己要去哪裡時，每條路都會帶你到達。",
+        source: "Lewis Carroll"
+      },
+      {
+        quote: "重要的不是你在哪裡，而是你朝向哪裡。",
+        source: "奧地利諺語"
+      },
+      {
+        quote: "抉擇比選擇更真實。抉擇是行動，選擇只是願望。",
+        source: "存在主義"
+      },
+      {
+        quote: "河流從不急於抵達，它只是持續流動。",
+        source: "禪語"
+      }
+    ];
+
+    // 結果標題與圖示
+    const resultData = [
+      { icon: "🌊", title: "河流找到了方向", subtitle: "Decision River" },
+      { icon: "✨", title: "姿態已經是答案", subtitle: "Flow State" },
+      { icon: "🌀", title: "讓河流帶你去", subtitle: "Surrender" },
+      { icon: "🌱", title: "新的可能正在展開", subtitle: "Emergence" },
+      { icon: "🎯", title: "答案就在問題裡", subtitle: "Insight" }
+    ];
+
+    let currentBranchIndex = 0;
+    let accumulatedAdvice = [];
+    let question = "";
+
+    function startRiver() {
+      const input = document.getElementById('questionInput');
+      question = input.value.trim();
+
+      if (!question) {
+        input.style.borderColor = '#e8b4b8';
+        input.placeholder = '請先說出你的掙扎...';
+        setTimeout(() => {
+          input.style.borderColor = '';
+          input.placeholder = '例如：要不要接受那份offer...';
+        }, 1500);
+        return;
+      }
+
+      // 隱藏輸入區，顯示河流
+      document.getElementById('inputSection').style.display = 'none';
+      document.getElementById('riverContainer').classList.add('active');
+      document.getElementById('displayQuestion').textContent = question;
+
+      // 打亂問題順序並選擇前3個
+      const shuffled = [...branchQuestions].sort(() => Math.random() - 0.5);
+      currentBranchIndex = 0;
+      accumulatedAdvice = [];
+
+      renderNextBranch(shuffled);
+    }
+
+    function renderNextBranch(shuffled) {
+      const container = document.querySelector('.river-branches');
+      
+      // 清除舊分支（保留主幹線）
+      const oldBranches = container.querySelectorAll('.branch-card');
+      oldBranches.forEach(b => b.remove());
+
+      if (currentBranchIndex >= 3) {
+        showResult();
+        return;
+      }
+
+      const branch = shuffled[currentBranchIndex];
+      const card = document.createElement('div');
+      card.className = 'branch-card';
+      card.style.animation = 'fadeIn 0.5s ease-out';
+
+      card.innerHTML = `
+        <span class="branch-number">${currentBranchIndex + 1}</span>
+        <p class="branch-question">${branch.question}</p>
+        <div class="branch-options">
+          ${branch.options.map(opt => `
+            <span class="branch-option option-${opt.type}" 
+                  onclick="selectOption('${opt.type}', '${opt.text}', ${JSON.stringify(branch.advice[opt.type]).replace(/"/g, '&quot;')}', ${currentBranchIndex}, ${JSON.stringify(shuffled).replace(/"/g, '&quot;')})">
+              ${opt.text}
+            </span>
+          `).join('')}
+        </div>
+      `;
+
+      container.appendChild(card);
+    }
+
+    function selectOption(type, text, advice, index, shuffled) {
+      accumulatedAdvice.push(advice);
+      currentBranchIndex++;
+
+      // 添加漣漪效果
+      const card = document.querySelector('.branch-card');
+      createRipple(card);
+
+      setTimeout(() => {
+        renderNextBranch(shuffled);
+      }, 400);
+    }
+
+    function createRipple(element) {
+      const ripple = document.createElement('div');
+      ripple.className = 'ripple';
+      ripple.style.left = '50%';
+      ripple.style.top = '50%';
+      element.appendChild(ripple);
+      setTimeout(() => ripple.remove(), 2000);
+    }
+
+    function showResult() {
+      document.getElementById('riverContainer').classList.remove('active');
+      const result = document.getElementById('decisionResult');
+      result.classList.add('active');
+
+      // 隨機選擇結果
+      const resultInfo = resultData[Math.floor(Math.random() * resultData.length)];
+      const quoteInfo = resultQuotes[Math.floor(Math.random() * resultQuotes.length)];
+
+      document.getElementById('resultIcon').textContent = resultInfo.icon;
+      document.getElementById('resultTitle').textContent = resultInfo.title;
+      document.getElementById('resultSubtitle').textContent = resultInfo.subtitle;
+
+      // 組合所有建議
+      const fullAdvice = accumulatedAdvice.join('\n\n');
+      document.getElementById('resultAdvice').textContent = fullAdvice;
+      document.getElementById('resultQuote').innerHTML = 
+        `"${quoteInfo.quote}"<br><cite>— ${quoteInfo.source}`;
+    }
+
+    function restartRiver() {
+      document.getElementById('decisionResult').classList.remove('active');
+      document.getElementById('riverContainer').classList.remove('active');
+      document.getElementById('inputSection').style.display = 'block';
+      document.getElementById('questionInput').value = '';
+      currentBranchIndex = 0;
+      accumulatedAdvice = [];
+    }
+
+    function shareResult() {
+      const text = `🌊 決策河流探索\n\n問題：${question}\n\n結果：${document.getElementById('resultTitle').textContent}\n\n"${resultQuotes[0].quote}"\n\n#決策河流 #DecisionRiver`;
+
+      if (navigator.share) {
+        navigator.share({
+          title: '決策河流',
+          text: text
+        });
+      } else {
+        navigator.clipboard.writeText(text).then(() => {
+          alert('已複製到剪貼簿！');
+        });
+      }
+    }
+
+    // 輸入框即時更新按鈕狀態
+    document.getElementById('questionInput').addEventListener('input', function() {
+      const btn = document.getElementById('startBtn');
+      btn.disabled = !this.value.trim();
+    });
+  </script>
+</body>
+</html>
