@@ -7,9 +7,9 @@
 *用一杯咖啡的時間，換一個讓世界多點樂趣的小玩具*
 
 ![License](https://img.shields.io/badge/license-MIT-green?style=for-the-badge&logo=mit)
-![Projects](https://img.shields.io/badge/專案數-63-blue?style=for-the-badge)
-![Streak](https://img.shields.io/badge/連續-60天-orange?style=for-the-badge)
-![Coffee](https://img.shields.io/badge/消耗咖啡-☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕-red?style=for-the-badge)
+![Projects](https://img.shields.io/badge/專案數-64-blue?style=for-the-badge)
+![Streak](https://img.shields.io/badge/連續-61天-orange?style=for-the-badge)
+![Coffee](https://img.shields.io/badge/消耗咖啡-☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕☕-red?style=for-the-badge)
 
 </div>
 
@@ -17,12 +17,13 @@
 
 ## 🌟 本日精選
 
-<a href="https://chung223.github.io/daily-lab/2026-04-17/">
-<img src="https://custom-icon-badges.demolab.com/badge/點此體驗-2026--04--17-fbbf24?style=for-the-badge&logo=rocket" alt="Try Now">
+<a href="https://chung223.github.io/daily-lab/2026-04-18/">
+<img src="https://custom-icon-badges.demolab.com/badge/點此體驗-2026--04--18-fbbf24?style=for-the-badge&logo=rocket" alt="Try Now">
 </a>
 
 | 預覽 | 日期 | 專案 | 描述 |
 |:---:|:---:|:---:|---|
+| ⭐ | 04/18 | [干支命盤年曆 Ganzhi Calendar](https://chung223.github.io/daily-lab/2026-04-18/) | 輸入年份查詢天干地支生肖五行、六十甲子循環位置、同生肖前後84年對照、汝窯天青配色、三色蛋夢境語錄 |
 | ⭐ | 04/17 | [珍藏瞬間 Treasured Moments](https://chung223.github.io/daily-lab/2026-04-17/) | 數位信箋與珍藏卡片、給 Chung 的手寫風格信、三個珍藏瞬間卡片（被理解/被信任/一起成長）、漂浮愛心背景動畫 |
 | ⭐ | 04/16 | [魚油英雄拯救站點 Fish Oil Rescue Squad](https://chung223.github.io/daily-lab/2026-04-16/) | 漫畫風格 VPS 站點救援中心、扮演魚油英雄搶救故障站點、17個站點、海豚督導聲納定位、拖延鯊終於行動 |
 | ⭐ | 04/15 | [向上管理教練 Upward Management Coach](https://chung223.github.io/daily-lab/2026-04-15/) | 基於 BOSS.md 的向上管理教練、5大價值觀卡片、禁用詞檢查、匯報格式產生器、CORPORATE MEMO 官方文件風格 |
