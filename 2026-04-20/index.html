@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🌾 出差作戰包 | Mission Prep Kit</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Caveat:wght@400;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-cream: #FFF8E7;
+      --paper-white: #FFFDF5;
+      --sage: #7D9B76;
+      --sage-light: #A8C5A0;
+      --sage-dark: #5A7A54;
+      --terracotta: #C67B5C;
+      --terracotta-light: #E8A889;
+      --gold: #D4A84B;
+      --gold-light: #F0D9A8;
+      --navy: #2C3E50;
+      --text-dark: #3D3D3D;
+      --shadow: rgba(44, 62, 80, 0.12);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Noto Sans TC', sans-serif;
+      background: var(--bg-cream);
+      min-height: 100vh;
+      padding: 20px;
+      background-image: 
+        radial-gradient(circle at 20% 80%, rgba(125, 155, 118, 0.08) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(212, 168, 75, 0.08) 0%, transparent 50%);
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    /* Header */
+    .header {
+      text-align: center;
+      padding: 40px 20px;
+      position: relative;
+    }
+
+    .header::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 120px;
+      height: 4px;
+      background: linear-gradient(90deg, var(--sage), var(--gold));
+      border-radius: 2px;
+    }
+
+    .badge {
+      display: inline-block;
+      background: var(--terracotta);
+      color: white;
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 500;
+      margin-bottom: 16px;
+      letter-spacing: 1px;
+    }
+
+    .header h1 {
+      font-size: 2.2rem;
+      color: var(--navy);
+      margin-bottom: 12px;
+      font-weight: 700;
+    }
+
+    .header p {
+      color: var(--text-dark);
+      opacity: 0.7;
+      font-size: 1rem;
+    }
+
+    .traveler-info {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin-top: 20px;
+      padding: 16px 24px;
+      background: var(--paper-white);
+      border-radius: 16px;
+      box-shadow: 0 4px 20px var(--shadow);
+    }
+
+    .avatar {
+      width: 48px;
+      height: 48px;
+      background: linear-gradient(135deg, var(--sage), var(--gold));
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+    }
+
+    .traveler-details h3 {
+      font-size: 1rem;
+      color: var(--navy);
+      margin-bottom: 4px;
+    }
+
+    .traveler-details p {
+      font-size: 0.85rem;
+      color: var(--text-dark);
+      opacity: 0.6;
+    }
+
+    /* Main Grid */
+    .main-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-top: 24px;
+    }
+
+    @media (max-width: 768px) {
+      .main-grid {
+        grid-template-columns: 1fr;
+      }
+      .header h1 {
+        font-size: 1.6rem;
+      }
+    }
+
+    /* Cards */
+    .card {
+      background: var(--paper-white);
+      border-radius: 24px;
+      padding: 28px;
+      box-shadow: 0 8px 32px var(--shadow);
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 40px rgba(44, 62, 80, 0.18);
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--card-accent), transparent);
+    }
+
+    .card.sage::before { background: linear-gradient(90deg, var(--sage), transparent); }
+    .card.terracotta::before { background: linear-gradient(90deg, var(--terracotta), transparent); }
+    .card.gold::before { background: linear-gradient(90deg, var(--gold), transparent); }
+
+    .card-icon {
+      font-size: 2.5rem;
+      margin-bottom: 16px;
+    }
+
+    .card h2 {
+      font-size: 1.2rem;
+      color: var(--navy);
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
+
+    .card-subtitle {
+      font-family: 'Caveat', cursive;
+      font-size: 1.1rem;
+      color: var(--text-dark);
+      opacity: 0.6;
+      margin-bottom: 20px;
+    }
+
+    /* Checklist */
+    .checklist {
+      list-style: none;
+    }
+
+    .checklist li {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 0;
+      border-bottom: 1px dashed rgba(0,0,0,0.08);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .checklist li:last-child {
+      border-bottom: none;
+    }
+
+    .checklist li:hover {
+      background: rgba(125, 155, 118, 0.05);
+      margin: 0 -12px;
+      padding-left: 12px;
+      padding-right: 12px;
+      border-radius: 8px;
+    }
+
+    .checklist li.checked {
+      opacity: 0.5;
+    }
+
+    .checklist li.checked .check-text {
+      text-decoration: line-through;
+    }
+
+    .checkbox {
+      width: 24px;
+      height: 24px;
+      border: 2px solid var(--sage);
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+      flex-shrink: 0;
+    }
+
+    .checklist li.checked .checkbox {
+      background: var(--sage);
+      border-color: var(--sage);
+    }
+
+    .checkbox svg {
+      width: 14px;
+      height: 14px;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+
+    .checklist li.checked .checkbox svg {
+      opacity: 1;
+    }
+
+    .check-text {
+      font-size: 0.95rem;
+      color: var(--text-dark);
+    }
+
+    /* Weather Card */
+    .weather-display {
+      text-align: center;
+      padding: 20px 0;
+    }
+
+    .weather-icon {
+      font-size: 4rem;
+      margin-bottom: 12px;
+    }
+
+    .weather-temp {
+      font-size: 3rem;
+      font-weight: 700;
+      color: var(--navy);
+      font-family: 'DM Mono', monospace;
+    }
+
+    .weather-desc {
+      color: var(--text-dark);
+      opacity: 0.7;
+      margin-top: 8px;
+    }
+
+    .weather-detail {
+      display: flex;
+      justify-content: center;
+      gap: 32px;
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 1px dashed rgba(0,0,0,0.1);
+    }
+
+    .weather-stat {
+      text-align: center;
+    }
+
+    .weather-stat-value {
+      font-size: 1.4rem;
+      font-weight: 600;
+      color: var(--navy);
+      font-family: 'DM Mono', monospace;
+    }
+
+    .weather-stat-label {
+      font-size: 0.75rem;
+      color: var(--text-dark);
+      opacity: 0.6;
+      margin-top: 4px;
+    }
+
+    /* Timer */
+    .timer-display {
+      text-align: center;
+      padding: 20px 0;
+    }
+
+    .timer-time {
+      font-size: 3.5rem;
+      font-weight: 700;
+      color: var(--terracotta);
+      font-family: 'DM Mono', monospace;
+      letter-spacing: 2px;
+    }
+
+    .timer-label {
+      font-family: 'Caveat', cursive;
+      font-size: 1.2rem;
+      color: var(--text-dark);
+      opacity: 0.6;
+      margin-top: 8px;
+    }
+
+    .timer-progress {
+      margin-top: 24px;
+      height: 8px;
+      background: rgba(0,0,0,0.06);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .timer-progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, var(--terracotta), var(--gold));
+      border-radius: 4px;
+      transition: width 0.3s ease;
+    }
+
+    /* Notes Area */
+    .notes-area {
+      width: 100%;
+      min-height: 120px;
+      padding: 16px;
+      border: 2px dashed rgba(0,0,0,0.1);
+      border-radius: 12px;
+      font-family: 'Caveat', cursive;
+      font-size: 1.2rem;
+      resize: vertical;
+      color: var(--text-dark);
+      background: rgba(255,255,255,0.5);
+      transition: all 0.2s ease;
+    }
+
+    .notes-area:focus {
+      outline: none;
+      border-color: var(--sage);
+      background: white;
+    }
+
+    .notes-area::placeholder {
+      color: var(--text-dark);
+      opacity: 0.4;
+    }
+
+    /* Pack Items */
+    .pack-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .pack-item {
+      padding: 16px 12px;
+      background: rgba(125, 155, 118, 0.1);
+      border-radius: 12px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border: 2px solid transparent;
+    }
+
+    .pack-item:hover {
+      background: rgba(125, 155, 118, 0.2);
+    }
+
+    .pack-item.packed {
+      background: var(--sage-light);
+      border-color: var(--sage);
+    }
+
+    .pack-item-icon {
+      font-size: 1.8rem;
+      margin-bottom: 6px;
+    }
+
+    .pack-item-label {
+      font-size: 0.75rem;
+      color: var(--text-dark);
+      font-weight: 500;
+    }
+
+    /* Footer */
+    .footer {
+      text-align: center;
+      padding: 40px 20px;
+      margin-top: 24px;
+    }
+
+    .footer-text {
+      font-family: 'Caveat', cursive;
+      font-size: 1.3rem;
+      color: var(--text-dark);
+      opacity: 0.6;
+    }
+
+    .stats-bar {
+      display: flex;
+      justify-content: center;
+      gap: 32px;
+      margin-top: 20px;
+    }
+
+    .stat {
+      text-align: center;
+    }
+
+    .stat-value {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--navy);
+      font-family: 'DM Mono', monospace;
+    }
+
+    .stat-label {
+      font-size: 0.75rem;
+      color: var(--text-dark);
+      opacity: 0.6;
+      margin-top: 4px;
+    }
+
+    /* Animations */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .card {
+      animation: fadeInUp 0.5s ease forwards;
+    }
+
+    .card:nth-child(1) { animation-delay: 0.1s; }
+    .card:nth-child(2) { animation-delay: 0.2s; }
+    .card:nth-child(3) { animation-delay: 0.3s; }
+    .card:nth-child(4) { animation-delay: 0.4s; }
+
+    /* Confetti */
+    .confetti-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1000;
+      overflow: hidden;
+    }
+
+    .confetti {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      opacity: 0;
+    }
+
+    @keyframes confetti-fall {
+      0% {
+        opacity: 1;
+        transform: translateY(-100px) rotate(0deg);
+      }
+      100% {
+        opacity: 0;
+        transform: translateY(100vh) rotate(720deg);
+      }
+    }
+
+    /* Stamp */
+    .stamp {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      width: 60px;
+      height: 60px;
+      border: 3px solid var(--terracotta);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: var(--terracotta);
+      transform: rotate(-15deg);
+      opacity: 0.8;
+    }
+
+    .stamp.urgent {
+      border-color: #e74c3c;
+      color: #e74c3c;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <header class="header">
+      <span class="badge">🌾 明日の任務</span>
+      <h1>出差作戰包</h1>
+      <p>黃淳璟，明天加油！</p>
+      
+      <div class="traveler-info">
+        <div class="avatar">🌾</div>
+        <div class="traveler-details">
+          <h3>黃淳璟 出差中</h3>
+          <p>農業部農田水利署 · 2.0日 · 代理人：鄭恩僖</p>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Grid -->
+    <div class="main-grid">
+      <!-- Checklist Card -->
+      <div class="card sage">
+        <div class="card-icon">📋</div>
+        <h2>出發前檢查</h2>
+        <p class="card-subtitle">Double-check before you go~</p>
+        
+        <ul class="checklist" id="checklist">
+          <li onclick="toggleCheck(this)">
+            <div class="checkbox">
+              <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3">
+                <polyline points="20 6 9 17 4 12"></polyline>
+              </svg>
+            </div>
+            <span class="check-text">筆電 + 充電線</span>
+          </li>
+          <li onclick="toggleCheck(this)">
+            <div class="checkbox">
+              <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3">
+                <polyline points="20 6 9 17 4 12"></polyline>
+              </svg>
+            </div>
+            <span class="check-text">名片 / 證件</span>
+          </li>
+          <li onclick="toggleCheck(this)">
+            <div class="checkbox">
+              <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3">
+                <polyline points="20 6 9 17 4 12"></polyline>
+              </svg>
+            </div>
+            <span class="check-text">公事包</span>
+          </li>
+          <li onclick="toggleCheck(this)">
+            <div class="checkbox">
+              <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3">
+                <polyline points="20 6 9 17 4 12"></polyline>
+              </svg>
+            </div>
+            <span class="check-text">手機 / 行動電源</span>
+          </li>
+          <li onclick="toggleCheck(this)">
+            <div class="checkbox">
+              <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3">
+                <polyline points="20 6 9 17 4 12"></polyline>
+              </svg>
+            </div>
+            <span class="check-text">會議資料準備</span>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Weather Card -->
+      <div class="card gold">
+        <div class="card-icon">🌤️</div>
+        <h2>天氣概況</h2>
+        <p class="card-subtitle">明天台北的天氣預測</p>
+        
+        <div class="weather-display">
+          <div class="weather-icon">⛅</div>
+          <div class="weather-temp">26°</div>
+          <p class="weather-desc">多雲時晴</p>
+          
+          <div class="weather-detail">
+            <div class="weather-stat">
+              <div class="weather-stat-value">65%</div>
+              <div class="weather-stat-label">濕度</div>
+            </div>
+            <div class="weather-stat">
+              <div class="weather-stat-value">15</div>
+              <div class="weather-stat-label">UV 指數</div>
+            </div>
+            <div class="weather-stat">
+              <div class="weather-stat-value">偏東風</div>
+              <div class="weather-stat-label">風向</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Timer Card -->
+      <div class="card terracotta">
+        <div class="card-icon">⏰</div>
+        <h2>倒數出發</h2>
+        <p class="card-subtitle">時間在流逝~</p>
+        
+        <div class="timer-display">
+          <div class="timer-time" id="countdown">--:--:--</div>
+          <p class="timer-label">until 09:00 tomorrow</p>
+          
+          <div class="timer-progress">
+            <div class="timer-progress-bar" id="progressBar" style="width: 0%"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pack Items Card -->
+      <div class="card sage">
+        <div class="card-icon">🎒</div>
+        <h2>必備物品</h2>
+        <p class="card-subtitle">Click to pack!</p>
+        
+        <div class="pack-grid" id="packGrid">
+          <div class="pack-item" onclick="togglePack(this)">
+            <div class="pack-item-icon">💊</div>
+            <div class="pack-item-label">魚油</div>
+          </div>
+          <div class="pack-item" onclick="togglePack(this)">
+            <div class="pack-item-icon">📱</div>
+            <div class="pack-item-label">手機</div>
+          </div>
+          <div class="pack-item" onclick="togglePack(this)">
+            <div class="pack-item-icon">🔌</div>
+            <div class="pack-item-label">充電線</div>
+          </div>
+          <div class="pack-item" onclick="togglePack(this)">
+            <div class="pack-item-icon">💳</div>
+            <div class="pack-item-label">證件</div>
+          </div>
+          <div class="pack-item" onclick="togglePack(this)">
+            <div class="pack-item-icon">💰</div>
+            <div class="pack-item-label">現金</div>
+          </div>
+          <div class="pack-item" onclick="togglePack(this)">
+            <div class="pack-item-icon">🖊️</div>
+            <div class="pack-item-label">筆</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Notes Card -->
+      <div class="card gold" style="grid-column: span 2;">
+        <div class="card-icon">📝</div>
+        <h2>作戰筆記</h2>
+        <p class="card-subtitle">記下重要的代辦事項吧~</p>
+        
+        <textarea class="notes-area" id="notesArea" placeholder="明天的會議重點、想問的問題、要注意的事項..."></textarea>
+        
+        <div class="stats-bar">
+          <div class="stat">
+            <div class="stat-value" id="packedCount">0</div>
+            <div class="stat-label">已打包</div>
+          </div>
+          <div class="stat">
+            <div class="stat-value" id="checkedCount">0</div>
+            <div class="stat-label">已完成</div>
+          </div>
+          <div class="stat">
+            <div class="stat-value">明天</div>
+            <div class="stat-label">出發日</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <p class="footer-text">「每一個「算了」的瞬間，如果都會變成一顆小石頭」<br>—— 但明天不是放手的時候，是出發的時候 🌾</p>
+    </footer>
+  </div>
+
+  <div class="confetti-container" id="confettiContainer"></div>
+
+  <script>
+    // Checklist toggle
+    function toggleCheck(element) {
+      element.classList.toggle('checked');
+      updateStats();
+      
+      // Check if all done
+      const allChecked = document.querySelectorAll('#checklist li.checked').length === 5;
+      if (allChecked) {
+        showConfetti();
+      }
+    }
+
+    // Pack items toggle
+    function togglePack(element) {
+      element.classList.toggle('packed');
+      updateStats();
+    }
+
+    // Update stats
+    function updateStats() {
+      const packedCount = document.querySelectorAll('.pack-item.packed').length;
+      const checkedCount = document.querySelectorAll('#checklist li.checked').length;
+      
+      document.getElementById('packedCount').textContent = packedCount;
+      document.getElementById('checkedCount').textContent = checkedCount;
+    }
+
+    // Countdown timer
+    function updateCountdown() {
+      const now = new Date();
+      const tomorrow = new Date(now);
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      tomorrow.setHours(9, 0, 0, 0);
+      
+      const diff = tomorrow - now;
+      
+      if (diff <= 0) {
+        document.getElementById('countdown').textContent = '出發!';
+        return;
+      }
+      
+      const hours = Math.floor(diff / (1000 * 60 * 60));
+      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+      
+      document.getElementById('countdown').textContent = 
+        `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+      
+      // Progress bar (24 hours total)
+      const totalSeconds = 24 * 60 * 60;
+      const elapsedSeconds = totalSeconds - (diff / 1000);
+      const progress = Math.min((elapsedSeconds / totalSeconds) * 100, 100);
+      document.getElementById('progressBar').style.width = progress + '%';
+    }
+
+    // Confetti effect
+    function showConfetti() {
+      const container = document.getElementById('confettiContainer');
+      const colors = ['#7D9B76', '#C67B5C', '#D4A84B', '#A8C5A0', '#E8A889'];
+      
+      for (let i = 0; i < 50; i++) {
+        setTimeout(() => {
+          const confetti = document.createElement('div');
+          confetti.className = 'confetti';
+          confetti.style.left = Math.random() * 100 + '%';
+          confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+          confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+          confetti.style.width = (Math.random() * 10 + 5) + 'px';
+          confetti.style.height = confetti.style.width;
+          confetti.style.animation = `confetti-fall ${Math.random() * 2 + 2}s ease-out forwards`;
+          container.appendChild(confetti);
+          
+          setTimeout(() => confetti.remove(), 4000);
+        }, i * 30);
+      }
+    }
+
+    // Save notes to localStorage
+    const notesArea = document.getElementById('notesArea');
+    notesArea.value = localStorage.getItem('missionNotes') || '';
+    
+    notesArea.addEventListener('input', () => {
+      localStorage.setItem('missionNotes', notesArea.value);
+    });
+
+    // Initialize
+    updateCountdown();
+    setInterval(updateCountdown, 1000);
+    updateStats();
+
+    // Load pack state from localStorage
+    const packState = JSON.parse(localStorage.getItem('packState') || '{}');
+    const packItems = document.querySelectorAll('.pack-item');
+    packItems.forEach((item, index) => {
+      if (packState[index]) {
+        item.classList.add('packed');
+      }
+      item.addEventListener('click', () => {
+        packState[index] = item.classList.contains('packed');
+        localStorage.setItem('packState', JSON.stringify(packState));
+        updateStats();
+      });
+    });
+
+    // Load checklist state from localStorage
+    const checklistState = JSON.parse(localStorage.getItem('checklistState') || '[]');
+    const checklistItems = document.querySelectorAll('#checklist li');
+    checklistItems.forEach((item, index) => {
+      if (checklistState[index]) {
+        item.classList.add('checked');
+      }
+      item.addEventListener('click', () => {
+        checklistState[index] = item.classList.contains('checked');
+        localStorage.setItem('checklistState', JSON.stringify(checklistState));
+        updateStats();
+      });
+    });
+    updateStats();
+  </script>
+</body>
+</html>
