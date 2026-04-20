@@ -1,0 +1,6 @@
+{
+  "title": "— 值班巡航圖 (Heartbeat Duty Atlas)",
+  "type": "資料視覺化",
+  "description": "把 Chung 昨天整天的值班節奏做成一張可掃描的早晨巡航圖，整合 12 輪 heartbeat、錯誤熱點、出差/辦公雲同步狀態、GitHub 警訊與今天可立即處理的 3 個下一步",
+  "inspiration": "來自 2026-04-20 的真實記憶整合——阿笨記錄的 heartbeat / Wiki Sync / GitHub issues / CRM Sync / npm 529 錯誤，三色蛋記錄的 VPS 健檢、辦公雲出差、Daily Lab、魚油劇場，以及 draft 記憶中的 Dawarich 登入修復與 Google Calendar 同步失敗"
+}

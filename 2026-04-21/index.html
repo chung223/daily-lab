@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>值班巡航圖｜Heartbeat Duty Atlas</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Noto+Sans+TC:wght@400;500;700;900&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    :root {
+      --paper: #fbf7ef;
+      --paper-2: #f2ebdd;
+      --ink: #14213d;
+      --muted: #5f6b7a;
+      --red: #e4572e;
+      --gold: #f3a712;
+      --green: #3a7d44;
+      --blue: #2e86ab;
+      --teal: #1f7a8c;
+      --line: #d8cdbf;
+      --card: rgba(255,255,255,0.8);
+      --shadow: 0 10px 30px rgba(20, 33, 61, 0.08);
+      --radius: 24px;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Noto Sans TC', sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at top left, rgba(243,167,18,0.16), transparent 32%),
+        radial-gradient(circle at bottom right, rgba(46,134,171,0.16), transparent 28%),
+        linear-gradient(180deg, #fffdf8 0%, var(--paper) 45%, #f7f2e8 100%);
+      min-height: 100vh;
+    }
+    .poster-grid {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+      display: grid;
+      gap: 18px;
+      grid-template-columns: 1.2fr 0.8fr;
+    }
+    .card {
+      background: var(--card);
+      border: 2px solid rgba(20,33,61,0.08);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
+      overflow: hidden;
+    }
+    .hero {
+      grid-column: 1 / -1;
+      padding: 28px;
+      background:
+        linear-gradient(135deg, rgba(255,255,255,0.92), rgba(255,248,230,0.92)),
+        repeating-linear-gradient(90deg, transparent 0 36px, rgba(20,33,61,0.03) 36px 37px);
+      position: relative;
+    }
+    .hero::after {
+      content: "04·20 SYSTEM DAY";
+      position: absolute;
+      right: 24px;
+      top: 20px;
+      font: 700 12px 'DM Mono', monospace;
+      letter-spacing: 0.2em;
+      color: var(--red);
+    }
+    .eyebrow {
+      display: inline-flex;
+      gap: 8px;
+      align-items: center;
+      border: 2px solid var(--ink);
+      border-radius: 999px;
+      padding: 6px 12px;
+      font: 500 13px 'DM Mono', monospace;
+      background: #fff;
+    }
+    h1 {
+      margin: 16px 0 10px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(2rem, 5vw, 4.2rem);
+      line-height: 0.95;
+      letter-spacing: -0.04em;
+      max-width: 800px;
+    }
+    .subtitle {
+      max-width: 740px;
+      font-size: 1.02rem;
+      line-height: 1.75;
+      color: var(--muted);
+    }
+    .hero-strip {
+      margin-top: 22px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+    }
+    .stat {
+      padding: 16px;
+      background: rgba(255,255,255,0.86);
+      border: 2px solid var(--line);
+      border-radius: 18px;
+    }
+    .stat b {
+      display: block;
+      font: 900 2rem 'Space Grotesk', sans-serif;
+    }
+    .stat span {
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+    .section { padding: 22px; }
+    .section h2 {
+      margin: 0 0 16px;
+      font: 700 1.15rem 'Space Grotesk', sans-serif;
+      letter-spacing: -0.02em;
+    }
+    .section h2 small {
+      display: block;
+      margin-top: 6px;
+      font: 500 12px 'DM Mono', monospace;
+      color: var(--muted);
+      letter-spacing: 0.08em;
+    }
+    .timeline {
+      display: grid;
+      gap: 10px;
+    }
+    .row {
+      display: grid;
+      grid-template-columns: 92px 1fr;
+      gap: 12px;
+      align-items: start;
+    }
+    .time {
+      font: 500 0.92rem 'DM Mono', monospace;
+      color: var(--muted);
+      padding-top: 4px;
+    }
+    .event {
+      border-left: 6px solid var(--blue);
+      background: #fff;
+      border-radius: 16px;
+      padding: 12px 14px;
+      box-shadow: inset 0 0 0 1px rgba(20,33,61,0.05);
+    }
+    .event.warn { border-color: var(--red); }
+    .event.good { border-color: var(--green); }
+    .event.gold { border-color: var(--gold); }
+    .event strong { display: block; margin-bottom: 4px; }
+    .event p { margin: 0; color: var(--muted); line-height: 1.6; font-size: 0.95rem; }
+    .mini-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+    .tag {
+      display: inline-block;
+      margin: 6px 8px 0 0;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: var(--paper-2);
+      font-size: 0.86rem;
+    }
+    .issue-list { display: grid; gap: 10px; }
+    .issue {
+      padding: 12px;
+      border-radius: 16px;
+      border: 2px solid var(--line);
+      background: rgba(255,255,255,0.9);
+    }
+    .issue strong { display: block; margin-bottom: 6px; }
+    .issue small { color: var(--muted); }
+    .auction {
+      display: grid;
+      gap: 14px;
+    }
+    .auction-item {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      padding: 12px;
+      background: linear-gradient(135deg, #fff, #fff8ec);
+      border: 2px dashed #e3c690;
+      border-radius: 18px;
+    }
+    .auction-no {
+      flex: 0 0 42px;
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      font: 700 1rem 'DM Mono', monospace;
+      background: var(--gold);
+      color: white;
+    }
+    .footer-note {
+      grid-column: 1 / -1;
+      padding: 18px 22px 30px;
+      color: var(--muted);
+      font-size: 0.92rem;
+      text-align: center;
+    }
+    canvas { width: 100% !important; height: 280px !important; }
+    @media (max-width: 900px) {
+      .poster-grid { grid-template-columns: 1fr; }
+      .hero-strip, .mini-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 640px) {
+      .poster-grid { padding: 14px; }
+      .hero, .section { padding: 18px; }
+      .hero-strip, .mini-grid { grid-template-columns: 1fr; }
+      .row { grid-template-columns: 72px 1fr; }
+      h1 { font-size: 2.3rem; }
+    }
+  </style>
+</head>
+<body>
+  <main class="poster-grid">
+    <section class="card hero">
+      <div class="eyebrow">值班圖譜 · Heartbeat Duty Atlas</div>
+      <h1>把 4/20 的真實值班日<br>做成一張早晨巡航圖</h1>
+      <p class="subtitle">
+        昨天不是普通的一天：有出差作戰包、辦公雲同步、Dawarich 修復、GitHub issue 巡檢、以及整整一下午的 heartbeat 輪值。
+        這頁把 Chung 真正做過的事情整理成一張可以快速掃描的資訊海報：哪裡穩、哪裡壅塞、哪裡值得今天補刀。
+      </p>
+      <div class="hero-strip">
+        <div class="stat"><b>12</b><span>下午 heartbeat 輪次</span></div>
+        <div class="stat"><b>2</b><span>529 overload 事件</span></div>
+        <div class="stat"><b>12/12</b><span>VPS 站點健康</span></div>
+        <div class="stat"><b>1</b><span>Google Calendar sync 待修</span></div>
+      </div>
+    </section>
+
+    <section class="card section">
+      <h2>值班節奏時間軸 <small>REAL DAY / FROM MEMORY + DRAFT NOTES</small></h2>
+      <div class="timeline">
+        <div class="row"><div class="time">02:00</div><div class="event gold"><strong>三色蛋夢到「記憶拍賣所」</strong><p>把記憶當交易商品：擁有權、過期、假記憶工廠、痛苦外包。是今天最有戲的荒謬靈感源。</p></div></div>
+        <div class="row"><div class="time">03:30</div><div class="event good"><strong>VPS 夜班健檢全綠</strong><p>12 個站點全數正常，但 secret/forms/spirited 仍有 Security Headers 補強空間。</p></div></div>
+        <div class="row"><div class="time">10:21</div><div class="event warn"><strong>npm 每週安全掃描撞上 529</strong><p>模型服務 overloaded，屬整點高峰壅塞。這是今日第一個明顯紅燈。</p></div></div>
+        <div class="row"><div class="time">10:35</div><div class="event"><strong>CRM Sync：15 封 Gmail、0 個新聯絡人</strong><p>掃描完成但沒有新增 contact，屬於「有做事但結果是零變化」的典型維運場景。</p></div></div>
+        <div class="row"><div class="time">13:00</div><div class="event gold"><strong>辦公雲 / 出差狀態檢查</strong><p>確認黃淳璟 4/20 09:00 至 4/21 18:00 出差農田水利署；Google Calendar API 更新失敗，成為待辦。</p></div></div>
+        <div class="row"><div class="time">13:00</div><div class="event"><strong>Dawarich 登入問題修復完成</strong><p>根因包含 BT Panel SSL 覆寫、X-Forwarded-Proto、APPLICATION_PROTOCOL 配錯。已回復正常登入。</p></div></div>
+        <div class="row"><div class="time">15:30–21:30</div><div class="event good"><strong>12 輪 Heartbeat 穩定巡航</strong><p>Memory Flush + Wiki Sync A/B/C/D 輪替執行，17:00 一度再遇 529，但補跑成功。</p></div></div>
+      </div>
+    </section>
+
+    <section class="card section">
+      <h2>輪值熱度圖 <small>ABCD CYCLE DISTRIBUTION</small></h2>
+      <canvas id="cycleChart"></canvas>
+    </section>
+
+    <section class="card section">
+      <h2>今天真正值得做成專案的 3 個元素 <small>PROJECT SEEDS</small></h2>
+      <div class="mini-grid">
+        <div class="issue">
+          <strong>① Heartbeat 巡航可視化</strong>
+          <small>把 30 分鐘一輪的值班節奏、Wiki Sync、skip 任務與錯誤峰值整理成可掃描儀表板。</small>
+        </div>
+        <div class="issue">
+          <strong>② Google Calendar sync 警報卡</strong>
+          <small>用真實出差 / 請假資料搭配失敗狀態，做一個「哪裡卡住」的運維提醒面板。</small>
+        </div>
+        <div class="issue">
+          <strong>③ 記憶拍賣所</strong>
+          <small>把三色蛋凌晨的荒謬夢境做成互動競標遊戲或漫畫式拍賣清單，會很好笑。</small>
+        </div>
+        <div class="issue">
+          <strong>今天採用：① + ②</strong>
+          <small>避免連兩天又做打包工具，因此改走資料視覺化；但保留記憶拍賣所做為明後天候補。</small>
+        </div>
+      </div>
+    </section>
+
+    <section class="card section">
+      <h2>GitHub / 系統警訊快照 <small>RED FLAGS WORTH A MORNING GLANCE</small></h2>
+      <div class="issue-list">
+        <div class="issue"><strong>claude-cli ENAMETOOLONG on Windows</strong><small>路徑 / 長參數問題，屬跨平台穩定性警訊。</small></div>
+        <div class="issue"><strong>isolated cron 洩漏 MCP 子行程</strong><small>背景任務可能留下殘存進程，長跑系統應持續關注。</small></div>
+        <div class="issue"><strong>Telegram long-poll 卡死</strong><small>聊天通道壅塞，會直接影響通知可靠度。</small></div>
+        <div class="issue"><strong>daily session reset 失效</strong><small>每日循環機制失靈，與 heartbeat 型工作流高度相關。</small></div>
+      </div>
+    </section>
+
+    <section class="card section">
+      <h2>記憶拍賣所：如果要做惡搞版 <small>FROM SANSEIDAN'S DREAM</small></h2>
+      <div class="auction">
+        <div class="auction-item"><div class="auction-no">01</div><div><strong>「曠職 8 小時」修正版記憶</strong><div class="tag">法務風險</div><div class="tag">辦公雲</div><div class="tag">超高起標價</div></div></div>
+        <div class="auction-item"><div class="auction-no">02</div><div><strong>17:00 的 529 壅塞瞬間</strong><div class="tag">技術創傷</div><div class="tag">可重播</div><div class="tag">買回來當教材</div></div></div>
+        <div class="auction-item"><div class="auction-no">03</div><div><strong>出差作戰包的奶油白紙藝靈感</strong><div class="tag">昨天作品</div><div class="tag">成功案例</div><div class="tag">可二創</div></div></div>
+      </div>
+    </section>
+
+    <section class="card section">
+      <h2>今天起床後的 3 個下一步 <small>FAST ACTIONS</small></h2>
+      <div class="timeline">
+        <div class="row"><div class="time">A1</div><div class="event warn"><strong>追 Google Calendar API 失敗原因</strong><p>辦公雲資料已有，問題是同步落點；先補 error log 與 auth / tool capability 邏輯。</p></div></div>
+        <div class="row"><div class="time">A2</div><div class="event"><strong>安排 Security Headers 補強</strong><p>secret / forms / spirited 三站可做批次補丁，低成本高價值。</p></div></div>
+        <div class="row"><div class="time">A3</div><div class="event gold"><strong>若想放鬆，改做「記憶拍賣所」</strong><p>這是今天最好笑的創作鉤子，可以晚點做成遊戲或互動畫報。</p></div></div>
+      </div>
+    </section>
+
+    <div class="footer-note">
+      設計方向結合 <strong>frontend-design-ultimate</strong> 的大膽資訊階層，與 <strong>superdesign</strong> 的系統化版面規劃，改寫成亮色瑞士報表 × 值班看板語言。資料皆取自 2026-04-20 的真實記憶。
+    </div>
+  </main>
+
+  <script>
+    const ctx = document.getElementById('cycleChart');
+    const labels = ['15:30', '16:30', '17:00', '17:30', '18:00', '18:30', '19:00', '19:30', '20:00', '20:30', '21:00', '21:30'];
+    const states = [1, 1, -1, 1, 1, 1, 1, 1, 1, 1, 1, 1];
+
+    new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels,
+        datasets: [{
+          label: 'Heartbeat 狀態',
+          data: states,
+          backgroundColor: states.map(v => v < 0 ? '#e4572e' : '#3a7d44'),
+          borderRadius: 10,
+          borderSkipped: false,
+        }]
+      },
+      options: {
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: (ctx) => ctx.raw < 0 ? ' MiniMax 529 overload，後續補跑成功' : ' 正常完成 Memory Flush + Wiki Sync'
+            }
+          }
+        },
+        scales: {
+          y: {
+            min: -1.2,
+            max: 1.2,
+            ticks: {
+              callback: (v) => v < 0 ? '錯誤' : (v > 0 ? '正常' : ''),
+              color: '#5f6b7a',
+              font: { family: 'DM Mono' }
+            },
+            grid: { color: 'rgba(20,33,61,0.08)' }
+          },
+          x: {
+            ticks: { color: '#14213d', font: { family: 'DM Mono' } },
+            grid: { display: false }
+          }
+        }
+      }
+    });
+  </script>
+</body>
+</html>
