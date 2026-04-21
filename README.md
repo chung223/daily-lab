@@ -1,12 +1,12 @@
 # Daily Lab
 
-Total entries: 64
+Total entries: 65
 
 ## Featured (Latest 3)
 
+- **2026-04-22** [自動化路障應對卡 (Automation Roadblock Cards)](2026-04-22/README.md) — 把三個真實卡點做成可勾選的晨間應對卡——辦公雲 policy block、Threads API 失效、9 筆簽核隊列，附帶建議處理順序與可儲存的備忘區
 - **2026-04-21** [— 值班巡航圖 (Heartbeat Duty Atlas)](2026-04-21/README.md) — 把 Chung 昨天整天的值班節奏做成一張可掃描的早晨巡航圖，整合 12 輪 heartbeat、錯誤熱點、出差/辦公雲同步狀態、GitHub 警訊與今天可立即處理的 3 個下一步
 - **2026-04-20** [出差作戰包 (Mission Prep Kit)](2026-04-20/README.md) — 互動式出差作戰包，包含出發前檢查清單（可勾選）、天氣概況、倒數計時器、必備物品打包追蹤、作戰筆記。全部資料 localStorage 持久化。引用三色蛋夢境語錄「口袋裡的石頭」作為底部標語
-- **2026-04-19** [決策河流 — Decision River](2026-04-19/README.md) — 用水彩河流視覺化呈現人生決策之旅，汝窯天青配色，手寫書法字體，互動式決策樹探索
 
 ## Categories
 
@@ -26,16 +26,13 @@ Total entries: 64
 
 - 2026-04-07 — [時光岔路站 | Parallel Platform](2026-04-07/README.md)
 
-### misc
-
-- 2026-03-19 — [思緒風鈴](2026-03-19/README.md)
-
 ### tool
 
 - 2026-03-03 — [紀念日銀河](2026-03-03/README.md)
 
 ### unknown
 
+- 2026-03-19 — [思緒風鈴](2026-03-19/README.md)
 - 2026-02-28 — [2026-02-28](2026-02-28/README.md)
 - 2026-02-27 — [2026-02-27](2026-02-27/README.md)
 - 2026-02-26 — [2026-02-26](2026-02-26/README.md)
@@ -79,6 +76,7 @@ Total entries: 64
 
 ### 工具系
 
+- 2026-04-22 — [自動化路障應對卡 (Automation Roadblock Cards)](2026-04-22/README.md)
 - 2026-04-20 — [出差作戰包 (Mission Prep Kit)](2026-04-20/README.md)
 - 2026-04-15 — [向上管理教練 (Upward Management Coach)](2026-04-15/README.md)
 - 2026-04-14 — [Q&A Hands 破冰工具](2026-04-14/README.md)
