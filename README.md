@@ -1,12 +1,12 @@
 # Daily Lab
 
-Total entries: 65
+Total entries: 66
 
 ## Featured (Latest 3)
 
+- **2026-04-23** [OCR 勇者冒險 (mlx-ocr 戰鬥系統)](2026-04-23/README.md) — RPG 勇者冒險風格，使用 mlx-ocr 辨識圖片文字進行戰鬥互動，包含角色卡屬性面板、怪物挑戰、技能系統
 - **2026-04-22** [自動化路障應對卡 (Automation Roadblock Cards)](2026-04-22/README.md) — 把三個真實卡點做成可勾選的晨間應對卡——辦公雲 policy block、Threads API 失效、9 筆簽核隊列，附帶建議處理順序與可儲存的備忘區
 - **2026-04-21** [— 值班巡航圖 (Heartbeat Duty Atlas)](2026-04-21/README.md) — 把 Chung 昨天整天的值班節奏做成一張可掃描的早晨巡航圖，整合 12 輪 heartbeat、錯誤熱點、出差/辦公雲同步狀態、GitHub 警訊與今天可立即處理的 3 個下一步
-- **2026-04-20** [出差作戰包 (Mission Prep Kit)](2026-04-20/README.md) — 互動式出差作戰包，包含出發前檢查清單（可勾選）、天氣概況、倒數計時器、必備物品打包追蹤、作戰筆記。全部資料 localStorage 持久化。引用三色蛋夢境語錄「口袋裡的石頭」作為底部標語
 
 ## Categories
 
@@ -16,6 +16,7 @@ Total entries: 65
 
 ### game
 
+- 2026-04-23 — [OCR 勇者冒險 (mlx-ocr 戰鬥系統)](2026-04-23/README.md)
 - 2026-03-02 — [幸運拉霸](2026-03-02/README.md)
 
 ### healing
@@ -125,6 +126,7 @@ Total entries: 65
 
 ### 遊戲系
 
+- 2026-04-23 — [OCR 勇者冒險 (mlx-ocr 戰鬥系統)](2026-04-23/README.md)
 - 2026-04-16 — [魚油英雄拯救站點 (Fish Oil Rescue Squad)](2026-04-16/README.md)
 - 2026-03-28 — [🎲 Cyber Dice Roller - 命運骰子](2026-03-28/README.md)
 - 2026-03-23 — [Memory Echo 記憶迴聲](2026-03-23/README.md)
