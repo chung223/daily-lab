@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>晨間決策羅盤 | Morning Decision Compass</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600&family=Noto+Sans+TC:wght@300;400;500;700&family=Playfair+Display:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-cream: #FFF8F3;
+      --bg-warm: #FEF6ED;
+      --peach: #FFBE98;
+      --coral: #FF8A6A;
+      --sage: #8FAE8B;
+      --gold: #D4A84B;
+      --ink: #2D2A26;
+      --ink-light: #6B6560;
+      --card-shadow: 0 4px 24px rgba(45, 42, 38, 0.08);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Noto Sans TC', sans-serif;
+      background: linear-gradient(180deg, var(--bg-cream) 0%, var(--bg-warm) 100%);
+      min-height: 100vh;
+      color: var(--ink);
+      overflow-x: hidden;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 24px 20px 60px;
+    }
+
+    /* Header */
+    header {
+      text-align: center;
+      margin-bottom: 32px;
+      animation: fadeInDown 0.6s ease-out;
+    }
+
+    .header-icon {
+      width: 64px;
+      height: 64px;
+      margin-bottom: 16px;
+    }
+
+    h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      font-weight: 600;
+      color: var(--ink);
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      font-size: 0.95rem;
+      color: var(--ink-light);
+      letter-spacing: 0.5px;
+    }
+
+    /* Time Display */
+    .time-display {
+      background: white;
+      border-radius: 16px;
+      padding: 20px 24px;
+      margin-bottom: 24px;
+      box-shadow: var(--card-shadow);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      animation: fadeInUp 0.5s ease-out 0.1s both;
+    }
+
+    .current-time {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.5rem;
+      font-weight: 600;
+      color: var(--coral);
+    }
+
+    .date-info {
+      text-align: right;
+    }
+
+    .date-day {
+      font-size: 1.1rem;
+      font-weight: 500;
+      color: var(--ink);
+    }
+
+    .date-lunar {
+      font-size: 0.85rem;
+      color: var(--ink-light);
+      margin-top: 4px;
+    }
+
+    /* Compass Section */
+    .compass-section {
+      background: white;
+      border-radius: 24px;
+      padding: 32px 24px;
+      margin-bottom: 24px;
+      box-shadow: var(--card-shadow);
+      text-align: center;
+      animation: fadeInUp 0.5s ease-out 0.2s both;
+    }
+
+    .compass-container {
+      position: relative;
+      width: 260px;
+      height: 260px;
+      margin: 0 auto 24px;
+    }
+
+    .compass-ring {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: 3px solid var(--peach);
+      border-radius: 50%;
+      animation: compassPulse 3s ease-in-out infinite;
+    }
+
+    .compass-ring.inner {
+      width: 85%;
+      height: 85%;
+      top: 7.5%;
+      left: 7.5%;
+      border-color: var(--sage);
+      animation-delay: 0.5s;
+    }
+
+    .compass-needle {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 8px;
+      height: 140px;
+      transform-origin: center bottom;
+      transform: translate(-50%, -100%) rotate(var(--rotation, 0deg));
+      transition: transform 1.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+      z-index: 10;
+    }
+
+    .compass-needle::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0;
+      height: 0;
+      border-left: 12px solid transparent;
+      border-right: 12px solid transparent;
+      border-bottom: 70px solid var(--coral);
+      filter: drop-shadow(0 4px 8px rgba(255, 138, 106, 0.4));
+    }
+
+    .compass-needle::after {
+      content: '';
+      position: absolute;
+      bottom: -20px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0;
+      height: 0;
+      border-left: 8px solid transparent;
+      border-right: 8px solid transparent;
+      border-top: 50px solid var(--ink-light);
+      opacity: 0.6;
+    }
+
+    .compass-center {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 24px;
+      height: 24px;
+      background: var(--gold);
+      border-radius: 50%;
+      z-index: 11;
+      box-shadow: 0 2px 8px rgba(212, 168, 75, 0.4);
+    }
+
+    .compass-direction {
+      position: absolute;
+      font-family: 'Playfair Display', serif;
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--ink-light);
+    }
+
+    .compass-direction.n { top: 8px; left: 50%; transform: translateX(-50%); color: var(--coral); }
+    .compass-direction.s { bottom: 8px; left: 50%; transform: translateX(-50%); }
+    .compass-direction.e { right: 12px; top: 50%; transform: translateY(-50%); }
+    .compass-direction.w { left: 12px; top: 50%; transform: translateY(-50%); }
+
+    .compass-result {
+      font-size: 1.1rem;
+      color: var(--ink);
+      padding: 12px 20px;
+      background: var(--bg-warm);
+      border-radius: 12px;
+      display: inline-block;
+      min-height: 48px;
+      line-height: 1.5;
+    }
+
+    .compass-result .choice {
+      color: var(--coral);
+      font-weight: 600;
+    }
+
+    /* Decision Input */
+    .decision-input {
+      background: white;
+      border-radius: 20px;
+      padding: 24px;
+      margin-bottom: 24px;
+      box-shadow: var(--card-shadow);
+      animation: fadeInUp 0.5s ease-out 0.3s both;
+    }
+
+    .input-group {
+      margin-bottom: 16px;
+    }
+
+    .input-label {
+      display: block;
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--ink);
+      margin-bottom: 8px;
+    }
+
+    .input-field {
+      width: 100%;
+      padding: 14px 16px;
+      font-size: 1rem;
+      font-family: 'Noto Sans TC', sans-serif;
+      border: 2px solid var(--bg-warm);
+      border-radius: 12px;
+      background: var(--bg-cream);
+      color: var(--ink);
+      transition: all 0.3s ease;
+    }
+
+    .input-field:focus {
+      outline: none;
+      border-color: var(--peach);
+      background: white;
+    }
+
+    .input-field::placeholder {
+      color: var(--ink-light);
+      opacity: 0.6;
+    }
+
+    textarea.input-field {
+      min-height: 80px;
+      resize: vertical;
+    }
+
+    /* Options Builder */
+    .options-builder {
+      margin-top: 20px;
+    }
+
+    .option-item {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 10px;
+      animation: fadeIn 0.3s ease-out;
+    }
+
+    .option-item input {
+      flex: 1;
+    }
+
+    .remove-btn {
+      width: 40px;
+      height: 48px;
+      border: none;
+      background: var(--bg-warm);
+      color: var(--ink-light);
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 1.2rem;
+      transition: all 0.2s ease;
+    }
+
+    .remove-btn:hover {
+      background: var(--coral);
+      color: white;
+    }
+
+    .add-option-btn {
+      width: 100%;
+      padding: 12px;
+      border: 2px dashed var(--peach);
+      background: transparent;
+      color: var(--coral);
+      border-radius: 12px;
+      font-size: 0.95rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-top: 8px;
+    }
+
+    .add-option-btn:hover {
+      background: var(--peach);
+      color: white;
+      border-style: solid;
+    }
+
+    .spin-btn {
+      width: 100%;
+      padding: 16px 24px;
+      background: linear-gradient(135deg, var(--coral), var(--peach));
+      border: none;
+      border-radius: 16px;
+      color: white;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 20px;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 16px rgba(255, 138, 106, 0.3);
+    }
+
+    .spin-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 24px rgba(255, 138, 106, 0.4);
+    }
+
+    .spin-btn:active {
+      transform: translateY(0);
+    }
+
+    .spin-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* History Section */
+    .history-section {
+      background: white;
+      border-radius: 20px;
+      padding: 24px;
+      box-shadow: var(--card-shadow);
+      animation: fadeInUp 0.5s ease-out 0.4s both;
+    }
+
+    .history-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .history-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.3rem;
+      font-weight: 600;
+    }
+
+    .clear-history-btn {
+      padding: 8px 16px;
+      background: var(--bg-warm);
+      border: none;
+      border-radius: 8px;
+      color: var(--ink-light);
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .clear-history-btn:hover {
+      background: var(--coral);
+      color: white;
+    }
+
+    .history-list {
+      max-height: 300px;
+      overflow-y: auto;
+    }
+
+    .history-empty {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--ink-light);
+    }
+
+    .history-empty-icon {
+      font-size: 3rem;
+      margin-bottom: 12px;
+      opacity: 0.5;
+    }
+
+    .history-item {
+      padding: 16px;
+      background: var(--bg-cream);
+      border-radius: 12px;
+      margin-bottom: 10px;
+      border-left: 4px solid var(--peach);
+    }
+
+    .history-item:last-child {
+      margin-bottom: 0;
+    }
+
+    .history-question {
+      font-weight: 500;
+      margin-bottom: 8px;
+      color: var(--ink);
+    }
+
+    .history-answer {
+      color: var(--coral);
+      font-weight: 600;
+      font-size: 1.05rem;
+    }
+
+    .history-time {
+      font-size: 0.8rem;
+      color: var(--ink-light);
+      margin-top: 6px;
+    }
+
+    /* Animations */
+    @keyframes fadeInDown {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes compassPulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.6; }
+    }
+
+    /* Spinning Animation */
+    .spinning .compass-needle {
+      animation: spinNeedle 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+
+    @keyframes spinNeedle {
+      0% { transform: translate(-50%, -100%) rotate(0deg); }
+      100% { transform: translate(-50%, -100%) rotate(var(--target-rotation, 720deg)); }
+    }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      .container {
+        padding: 16px 16px 40px;
+      }
+
+      h1 {
+        font-size: 1.6rem;
+      }
+
+      .current-time {
+        font-size: 2rem;
+      }
+
+      .compass-container {
+        width: 220px;
+        height: 220px;
+      }
+
+      .compass-needle {
+        height: 120px;
+      }
+
+      .compass-needle::before {
+        border-left-width: 10px;
+        border-right-width: 10px;
+        border-bottom-width: 60px;
+      }
+
+      .compass-needle::after {
+        border-left-width: 6px;
+        border-right-width: 6px;
+        border-top-width: 40px;
+        bottom: -16px;
+      }
+
+      .time-display {
+        flex-direction: column;
+        text-align: center;
+        gap: 12px;
+      }
+
+      .date-info {
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <svg class="header-icon" viewBox="0 0 64 64" fill="none">
+        <circle cx="32" cy="32" r="28" stroke="#FFBE98" stroke-width="3"/>
+        <circle cx="32" cy="32" r="20" stroke="#8FAE8B" stroke-width="2"/>
+        <polygon points="32,12 36,32 32,36 28,32" fill="#FF8A6A"/>
+        <polygon points="32,52 36,32 32,28 28,32" fill="#6B6560"/>
+        <circle cx="32" cy="32" r="4" fill="#D4A84B"/>
+      </svg>
+      <h1>晨間決策羅盤</h1>
+      <p class="subtitle">當命運需要一點指引 ✨</p>
+    </header>
+
+    <div class="time-display">
+      <div class="current-time" id="currentTime">--:--</div>
+      <div class="date-info">
+        <div class="date-day" id="dateDay">星期？</div>
+        <div class="date-lunar" id="dateLunar">農曆？</div>
+      </div>
+    </div>
+
+    <div class="compass-section">
+      <div class="compass-container" id="compassContainer">
+        <div class="compass-ring"></div>
+        <div class="compass-ring inner"></div>
+        <div class="compass-needle" id="compassNeedle">
+          <div class="compass-direction n">N</div>
+          <div class="compass-direction s">S</div>
+          <div class="compass-direction e">E</div>
+          <div class="compass-direction w">W</div>
+        </div>
+        <div class="compass-center"></div>
+      </div>
+      <div class="compass-result" id="compassResult">
+        新的一天，先輸入你的選擇...
+      </div>
+    </div>
+
+    <div class="decision-input">
+      <div class="input-group">
+        <label class="input-label">今天你在猶豫什麼？</label>
+        <input type="text" class="input-field" id="questionInput" placeholder="例如：早餐吃什麼？要不要運動？先處理哪件任務？">
+      </div>
+
+      <div class="options-builder">
+        <label class="input-label">選項（至少 2 個）</label>
+        <div id="optionsContainer">
+          <div class="option-item">
+            <input type="text" class="input-field option-input" placeholder="選項 A">
+            <button class="remove-btn" onclick="removeOption(this)" style="visibility: hidden;">×</button>
+          </div>
+          <div class="option-item">
+            <input type="text" class="input-field option-input" placeholder="選項 B">
+            <button class="remove-btn" onclick="removeOption(this)">×</button>
+          </div>
+        </div>
+        <button class="add-option-btn" onclick="addOption()">+ 加入更多選項</button>
+      </div>
+
+      <button class="spin-btn" id="spinBtn" onclick="spinCompass()">
+        🎯 轉動命運羅盤
+      </button>
+    </div>
+
+    <div class="history-section">
+      <div class="history-header">
+        <span class="history-title">📜 決策紀錄</span>
+        <button class="clear-history-btn" onclick="clearHistory()">清除</button>
+      </div>
+      <div class="history-list" id="historyList">
+        <div class="history-empty">
+          <div class="history-empty-icon">🧭</div>
+          <p>還沒有決策紀錄</p>
+          <p style="font-size: 0.85rem; margin-top: 4px;">讓羅盤幫你做出第一個選擇吧</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // State
+    let history = JSON.parse(localStorage.getItem('compassHistory') || '[]');
+    let currentRotation = 0;
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', () => {
+      updateTime();
+      setInterval(updateTime, 1000);
+      renderHistory();
+    });
+
+    // Time Display
+    function updateTime() {
+      const now = new Date();
+      const timeStr = now.toLocaleTimeString('zh-TW', { hour: '2-digit', minute: '2-digit', hour12: false });
+      document.getElementById('currentTime').textContent = timeStr;
+
+      const days = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
+      const dayStr = days[now.getDay()];
+      const dateStr = now.toLocaleDateString('zh-TW', { month: 'long', day: 'numeric' });
+      document.getElementById('dateDay').textContent = `${dayStr} · ${dateStr}`;
+
+      // Simplified lunar (just show year info)
+      const monthNames = ['正', '二', '三', '四', '五', '六', '七', '八', '九', '十', '冬', '臘'];
+      const lunarMonth = monthNames[now.getMonth()];
+      const lunarDay = now.getDate();
+      document.getElementById('dateLunar').textContent = `農曆 ${lunarMonth}月${lunarDay}日`;
+    }
+
+    // Options Management
+    function addOption() {
+      const container = document.getElementById('optionsContainer');
+      const item = document.createElement('div');
+      item.className = 'option-item';
+      item.innerHTML = `
+        <input type="text" class="input-field option-input" placeholder="選項 ${container.children.length + 1}">
+        <button class="remove-btn" onclick="removeOption(this)">×</button>
+      `;
+      container.appendChild(item);
+      item.querySelector('input').focus();
+    }
+
+    function removeOption(btn) {
+      const container = document.getElementById('optionsContainer');
+      if (container.children.length > 2) {
+        btn.parentElement.remove();
+      }
+    }
+
+    // Spin Compass
+    function spinCompass() {
+      const question = document.getElementById('questionInput').value.trim();
+      const options = Array.from(document.querySelectorAll('.option-input'))
+        .map(input => input.value.trim())
+        .filter(v => v);
+
+      if (!question) {
+        alert('請先輸入你在猶豫的問題 🙏');
+        return;
+      }
+
+      if (options.length < 2) {
+        alert('請至少輸入 2 個選項 🙏');
+        return;
+      }
+
+      const btn = document.getElementById('spinBtn');
+      btn.disabled = true;
+
+      // Random selection
+      const winnerIndex = Math.floor(Math.random() * options.length);
+      const winner = options[winnerIndex];
+
+      // Calculate rotation (multiple full spins + target)
+      const extraSpins = 3 + Math.random() * 2;
+      const optionAngle = 360 / options.length;
+      const targetRotation = currentRotation + (extraSpins * 360) + (winnerIndex * optionAngle) + (optionAngle / 2);
+
+      // Animate
+      const needle = document.getElementById('compassNeedle');
+      const container = document.getElementById('compassContainer');
+      container.classList.add('spinning');
+      needle.style.setProperty('--target-rotation', `${targetRotation}deg`);
+      needle.style.setProperty('--rotation', `${targetRotation}deg`);
+
+      // Show result after animation
+      setTimeout(() => {
+        container.classList.remove('spinning');
+        currentRotation = targetRotation;
+
+        document.getElementById('compassResult').innerHTML = `
+          羅盤指向：<span class="choice">${winner}</span>
+        `;
+
+        // Save to history
+        saveToHistory(question, winner);
+        btn.disabled = false;
+      }, 1600);
+    }
+
+    // History Management
+    function saveToHistory(question, answer) {
+      const entry = {
+        question,
+        answer,
+        time: new Date().toISOString()
+      };
+      history.unshift(entry);
+      if (history.length > 20) history.pop();
+      localStorage.setItem('compassHistory', JSON.stringify(history));
+      renderHistory();
+    }
+
+    function renderHistory() {
+      const list = document.getElementById('historyList');
+
+      if (history.length === 0) {
+        list.innerHTML = `
+          <div class="history-empty">
+            <div class="history-empty-icon">🧭</div>
+            <p>還沒有決策紀錄</p>
+            <p style="font-size: 0.85rem; margin-top: 4px;">讓羅盤幫你做出第一個選擇吧</p>
+          </div>
+        `;
+        return;
+      }
+
+      list.innerHTML = history.map(entry => {
+        const time = new Date(entry.time);
+        const timeStr = time.toLocaleString('zh-TW', {
+          month: 'numeric',
+          day: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit'
+        });
+        return `
+          <div class="history-item">
+            <div class="history-question">${escapeHtml(entry.question)}</div>
+            <div class="history-answer">→ ${escapeHtml(entry.answer)}</div>
+            <div class="history-time">${timeStr}</div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function clearHistory() {
+      if (confirm('確定要清除所有決策紀錄嗎？')) {
+        history = [];
+        localStorage.removeItem('compassHistory');
+        renderHistory();
+      }
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+  </script>
+</body>
+</html>
