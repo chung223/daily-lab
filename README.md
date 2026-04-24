@@ -1,12 +1,12 @@
 # Daily Lab
 
-Total entries: 67
+Total entries: 68
 
 ## Featured (Latest 3)
 
+- **2026-04-25** [晨間快報 (Morning Express)](2026-04-25/README.md) — 報紙頭版風格的晨間快報，展示昨夜 Heartbeat 值勤報告（即時循環狀態、運行時數）、現在時刻、週末待辦勾選清單、距離週一上班倒數。全部資料 localStorage 持久化
 - **2026-04-24** [晨間決策羅盤 (Morning Decision Compass)](2026-04-24/README.md) — 互動式決策羅盤，輸入猶豫的問題和選項，轉動羅盤隨機選擇，記錄決策歷史到 localStorage。包含即時時鐘、農曆顯示、指針動畫、決策歷史面板
 - **2026-04-23** [OCR 勇者冒險 (mlx-ocr 戰鬥系統)](2026-04-23/README.md) — RPG 勇者冒險風格，使用 mlx-ocr 辨識圖片文字進行戰鬥互動，包含角色卡屬性面板、怪物挑戰、技能系統
-- **2026-04-22** [自動化路障應對卡 (Automation Roadblock Cards)](2026-04-22/README.md) — 把三個真實卡點做成可勾選的晨間應對卡——辦公雲 policy block、Threads API 失效、9 筆簽核隊列，附帶建議處理順序與可儲存的備忘區
 
 ## Categories
 
@@ -77,6 +77,7 @@ Total entries: 67
 
 ### 工具系
 
+- 2026-04-25 — [晨間快報 (Morning Express)](2026-04-25/README.md)
 - 2026-04-24 — [晨間決策羅盤 (Morning Decision Compass)](2026-04-24/README.md)
 - 2026-04-22 — [自動化路障應對卡 (Automation Roadblock Cards)](2026-04-22/README.md)
 - 2026-04-20 — [出差作戰包 (Mission Prep Kit)](2026-04-20/README.md)
