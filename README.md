@@ -1,12 +1,12 @@
 # Daily Lab
 
-Total entries: 68
+Total entries: 69
 
 ## Featured (Latest 3)
 
-- **2026-04-25** [晨間快報 (Morning Express)](2026-04-25/README.md) — 報紙頭版風格的晨間快報，展示昨夜 Heartbeat 值勤報告（即時循環狀態、運行時數）、現在時刻、週末待辦勾選清單、距離週一上班倒數。全部資料 localStorage 持久化
-- **2026-04-24** [晨間決策羅盤 (Morning Decision Compass)](2026-04-24/README.md) — 互動式決策羅盤，輸入猶豫的問題和選項，轉動羅盤隨機選擇，記錄決策歷史到 localStorage。包含即時時鐘、農曆顯示、指針動畫、決策歷史面板
-- **2026-04-23** [OCR 勇者冒險 (mlx-ocr 戰鬥系統)](2026-04-23/README.md) — RPG 勇者冒險風格，使用 mlx-ocr 辨識圖片文字進行戰鬥互動，包含角色卡屬性面板、怪物挑戰、技能系統
+- **2026-04-26** [✨ 意外連結星圖 (Unexpected Connections Constellation)](2026-04-26/README.md) — 把夢境中的 8 個意外連結概念（珊瑚/骨頭/群論/拱門/病毒/程式碼/睡眠/拓撲）做成可點擊探索的星圖，每個概念有隱藏的連結，點擊顯示連結解釋與經典語錄
+- **2026-04-25** [📰 晨間快報 (Morning Express)](2026-04-25/README.md) — 報紙頭版風格的晨間快報，展示昨夜 Heartbeat 值勤報告（即時循環狀態、運行時數）、現在時刻、週末待辦勾選清單、距離週一上班倒數。全部資料 localStorage 持久化
+- **2026-04-24** [🧭 晨間決策羅盤 (Morning Decision Compass)](2026-04-24/README.md) — 互動式決策羅盤，輸入猶豫的問題和選項，轉動羅盤隨機選擇，記錄決策歷史到 localStorage。包含即時時鐘、農曆顯示、指針動畫、決策歷史面板
 
 ## Categories
 
@@ -125,6 +125,11 @@ Total entries: 68
 ### 趣味系
 
 - 2026-04-01 — [拖延鯊魚油大作戰 — 愚人節特別版](2026-04-01/README.md)
+
+### 學習系
+
+- 2026-04-26 — [✨ 意外連結星圖 (Unexpected Connections Constellation)](2026-04-26/README.md)
+- 2026-04-23 — [⚔️ OCR 勇者冒險 (mlx-ocr 戰鬥系統)](2026-04-23/README.md)
 
 ### 遊戲系
 

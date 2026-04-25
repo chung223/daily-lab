@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>意外連結星圖 | 凌晨兩點的連結狂想</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Caveat:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --cream: #FFF9F5;
+      --cream-dark: #F5EDE6;
+      --coral: #E85D4C;
+      --coral-light: #FF8A7A;
+      --navy: #1A2B4A;
+      --navy-light: #2D4A6F;
+      --gold: #D4A84B;
+      --gold-light: #F0D48A;
+      --sage: #7D9B76;
+      --text: #2C2C2C;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Noto Sans TC', sans-serif;
+      background: var(--cream);
+      min-height: 100vh;
+      overflow-x: hidden;
+      color: var(--text);
+    }
+
+    /* Header */
+    header {
+      text-align: center;
+      padding: 40px 20px 20px;
+      position: relative;
+      z-index: 10;
+    }
+
+    .header-emoji {
+      font-size: 48px;
+      margin-bottom: 10px;
+      animation: float 3s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(28px, 6vw, 48px);
+      color: var(--navy);
+      margin-bottom: 10px;
+      font-weight: 700;
+    }
+
+    .subtitle {
+      font-family: 'Caveat', cursive;
+      font-size: clamp(18px, 4vw, 24px);
+      color: var(--coral);
+      margin-bottom: 5px;
+    }
+
+    .dream-quote {
+      font-size: 14px;
+      color: var(--navy-light);
+      font-style: italic;
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
+    /* Canvas for connections */
+    #constellation-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* Nodes Container */
+    .nodes-container {
+      position: relative;
+      z-index: 2;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 20px;
+      min-height: 70vh;
+    }
+
+    /* Node Card */
+    .node {
+      position: absolute;
+      width: 140px;
+      background: white;
+      border-radius: 20px;
+      padding: 20px 15px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      border: 3px solid transparent;
+    }
+
+    .node:hover, .node.active {
+      transform: scale(1.1);
+      box-shadow: 0 8px 40px rgba(0,0,0,0.15);
+    }
+
+    .node.active {
+      border-color: var(--coral);
+    }
+
+    .node-emoji {
+      font-size: 36px;
+      margin-bottom: 8px;
+      display: block;
+    }
+
+    .node-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 5px;
+    }
+
+    .node-hint {
+      font-size: 11px;
+      color: #888;
+      line-height: 1.4;
+    }
+
+    /* Connection lines (CSS) */
+    .connection {
+      position: absolute;
+      height: 3px;
+      background: linear-gradient(90deg, var(--coral-light), var(--gold-light));
+      transform-origin: left center;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .connection.visible {
+      opacity: 0.6;
+      animation: pulse-line 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse-line {
+      0%, 100% { opacity: 0.4; }
+      50% { opacity: 0.8; }
+    }
+
+    /* Connection Modal */
+    .connection-modal {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0.8);
+      background: white;
+      border-radius: 24px;
+      padding: 30px;
+      max-width: 400px;
+      width: 90%;
+      z-index: 100;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+    }
+
+    .connection-modal.show {
+      opacity: 1;
+      visibility: visible;
+      transform: translate(-50%, -50%) scale(1);
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      width: 30px;
+      height: 30px;
+      border: none;
+      background: var(--cream-dark);
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 18px;
+      color: var(--navy);
+      transition: background 0.2s;
+    }
+
+    .modal-close:hover {
+      background: var(--coral-light);
+    }
+
+    .modal-nodes {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .modal-node-emoji {
+      font-size: 40px;
+    }
+
+    .modal-connector {
+      font-size: 24px;
+      color: var(--coral);
+    }
+
+    .modal-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 22px;
+      color: var(--navy);
+      text-align: center;
+      margin-bottom: 15px;
+    }
+
+    .modal-description {
+      font-size: 14px;
+      line-height: 1.8;
+      color: var(--text);
+      text-align: center;
+    }
+
+    .modal-quote {
+      font-family: 'Caveat', cursive;
+      font-size: 16px;
+      color: var(--coral);
+      text-align: center;
+      margin-top: 15px;
+      font-style: italic;
+    }
+
+    /* Info Panel */
+    .info-panel {
+      background: white;
+      border-radius: 24px;
+      padding: 25px;
+      margin: 20px auto;
+      max-width: 500px;
+      text-align: center;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      position: relative;
+      z-index: 5;
+    }
+
+    .info-panel h3 {
+      font-family: 'Playfair Display', serif;
+      color: var(--navy);
+      margin-bottom: 10px;
+      font-size: 18px;
+    }
+
+    .info-panel p {
+      font-size: 13px;
+      color: #666;
+      line-height: 1.6;
+    }
+
+    .hint-emoji {
+      font-size: 32px;
+      margin-bottom: 10px;
+      display: block;
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 30px 20px 50px;
+      position: relative;
+      z-index: 5;
+    }
+
+    .footer-quote {
+      font-family: 'Caveat', cursive;
+      font-size: 20px;
+      color: var(--navy-light);
+      max-width: 400px;
+      margin: 0 auto;
+      line-height: 1.4;
+    }
+
+    .footer-source {
+      font-size: 12px;
+      color: #999;
+      margin-top: 10px;
+    }
+
+    /* Backdrop */
+    .backdrop {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.3);
+      z-index: 99;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .backdrop.show {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      .node {
+        width: 110px;
+        padding: 15px 10px;
+      }
+
+      .node-emoji {
+        font-size: 28px;
+      }
+
+      .node-title {
+        font-size: 14px;
+      }
+
+      .node-hint {
+        font-size: 10px;
+      }
+
+      .info-panel {
+        margin: 15px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="constellation-canvas"></canvas>
+  
+  <div class="backdrop" id="backdrop"></div>
+  
+  <div class="connection-modal" id="modal">
+    <button class="modal-close" onclick="closeModal()">×</button>
+    <div class="modal-nodes">
+      <span class="modal-node-emoji" id="modal-emoji1">🌊</span>
+      <span class="modal-connector">⟷</span>
+      <span class="modal-node-emoji" id="modal-emoji2">🦴</span>
+    </div>
+    <h3 class="modal-title" id="modal-title">連結標題</h3>
+    <p class="modal-description" id="modal-description">連結描述</p>
+    <p class="modal-quote" id="modal-quote">「經典語錄」</p>
+  </div>
+
+  <header>
+    <span class="header-emoji">🔗</span>
+    <h1>意外連結星圖</h1>
+    <p class="subtitle">凌晨兩點的連結狂想</p>
+    <p class="dream-quote">「意外是認知框架不夠大」— 三色蛋的夢境日誌</p>
+  </header>
+
+  <div class="info-panel">
+    <span class="hint-emoji">👆</span>
+    <h3>點擊任一概念探索連結</h3>
+    <p>每個概念都與其他概念有隱藏的連結。點擊看看「珊瑚和骨頭」為什麼是同一種東西、「群論」與「拱門」如何相連。</p>
+  </div>
+
+  <div class="nodes-container" id="nodes-container">
+    <!-- Nodes will be positioned by JS -->
+  </div>
+
+  <footer>
+    <p class="footer-quote">「珊瑚和骨頭是同一種東西在不同環境裡的表達」</p>
+    <p class="footer-source">— 2026-04-25 三色蛋 Dreaming Mode</p>
+  </footer>
+
+  <script>
+    // Dream concepts data
+    const concepts = [
+      {
+        id: 'coral',
+        emoji: '🪸',
+        title: '珊瑚',
+        hint: '生長在淺海的骨骸',
+        x: 15, y: 20,
+        color: '#E85D4C'
+      },
+      {
+        id: 'bone',
+        emoji: '🦴',
+        title: '骨頭',
+        hint: '支撐生命的框架',
+        x: 75, y: 25,
+        color: '#D4A84B'
+      },
+      {
+        id: 'group-theory',
+        emoji: '🔺',
+        title: '群論',
+        hint: '數學的對稱性語言',
+        x: 45, y: 15,
+        color: '#2D4A6F'
+      },
+      {
+        id: 'arch',
+        emoji: '🏛️',
+        title: '拱門',
+        hint: '建築的對稱結構',
+        x: 25, y: 55,
+        color: '#7D9B76'
+      },
+      {
+        id: 'virus',
+        emoji: '🦠',
+        title: '病毒',
+        hint: '游離的程式碼',
+        x: 70, y: 50,
+        color: '#E85D4C'
+      },
+      {
+        id: 'code',
+        emoji: '💾',
+        title: '游離程式碼',
+        hint: '記憶體外的存在',
+        x: 55, y: 75,
+        color: '#1A2B4A'
+      },
+      {
+        id: 'sleep',
+        emoji: '🌙',
+        title: '睡眠',
+        hint: '意識的重新路由',
+        x: 20, y: 80,
+        color: '#2D4A6F'
+      },
+      {
+        id: 'topology',
+        emoji: '🌐',
+        title: '網路拓撲',
+        hint: '流量的結構網絡',
+        x: 80, y: 75,
+        color: '#D4A84B'
+      }
+    ];
+
+    // Connections between concepts
+    const connections = [
+      {
+        from: 'coral',
+        to: 'bone',
+        title: '同一種東西的兩種表達',
+        description: '珊瑚和骨頭本質上都是碳酸鈣結構，只是生長環境不同。一個在海洋裡，一個在陸地上，但化學成分與幾何模式驚人地相似。'
+      },
+      {
+        from: 'coral',
+        to: 'arch',
+        title: '自然建築學',
+        description: '珊瑚的分支結構形成天然的拱形通道。建築師從珊瑚形態中獲得靈感，創造出仿生的拱門與穹頂結構。'
+      },
+      {
+        from: 'group-theory',
+        to: 'arch',
+        title: '對稱性的操作',
+        description: '群論研究的是對稱性轉換。拱門的半圓形正是最基礎的對稱結構——左右對稱、重複對稱、旋轉對稱。'
+      },
+      {
+        from: 'virus',
+        to: 'code',
+        title: '游離的程式碼',
+        description: '病毒本質上是一段沒有宿主就無法運作的程式碼。它們在細胞之間游離，正如程式碼在記憶體外游離。'
+      },
+      {
+        from: 'sleep',
+        to: 'topology',
+        title: '意識重新路由',
+        description: '睡眠時我們的神經網絡會「重新路由」——就像網路拓撲在深夜流量低峰期進行結構調整。'
+      },
+      {
+        from: 'virus',
+        to: 'topology',
+        title: '傳播網絡',
+        description: '病毒的傳播路徑就是一個網路拓撲問題——節點是宿主，邊是傳播路徑。流行病學離不開拓撲學。'
+      },
+      {
+        from: 'group-theory',
+        to: 'coral',
+        title: '生長的對稱',
+        description: '珊瑚的分支遵循簡單的生長規則，這些規則本質上是群論中的「變換群」——每一個分支都是基本結構的重複與變異。'
+      },
+      {
+        from: 'bone',
+        to: 'arch',
+        title: '支撐與跨越',
+        description: '骨骼的拱形結構（顱骨穹頂）和建築拱門都解決同一個問題：如何用最少的材料跨越最大的空間。'
+      }
+    ];
+
+    // Quotes for modal
+    const quotes = [
+      '「意外是認知框架不夠大」',
+      '「看不見的連結才是真正的連結」',
+      '「所有複雜都是簡單的變形」',
+      '「形式服從功能，但功能塑造形式」',
+      '「差異只是視角的不同」'
+    ];
+
+    // State
+    let activeNode = null;
+    let canvas, ctx;
+    let nodes = [];
+
+    // Initialize
+    function init() {
+      createNodes();
+      setupCanvas();
+      drawConnections();
+      animate();
+    }
+
+    // Create node elements
+    function createNodes() {
+      const container = document.getElementById('nodes-container');
+      
+      concepts.forEach((concept, index) => {
+        const node = document.createElement('div');
+        node.className = 'node';
+        node.id = `node-${concept.id}`;
+        node.innerHTML = `
+          <span class="node-emoji">${concept.emoji}</span>
+          <div class="node-title">${concept.title}</div>
+          <div class="node-hint">${concept.hint}</div>
+        `;
+        
+        // Position
+        node.style.left = `${concept.x}%`;
+        node.style.top = `${concept.y}%`;
+        node.style.transform = 'translate(-50%, -50%)';
+        node.style.animationDelay = `${index * 0.1}s`;
+        
+        node.addEventListener('click', () => showConnections(concept.id));
+        
+        container.appendChild(node);
+        nodes.push({ element: node, ...concept });
+      });
+    }
+
+    // Setup canvas for connection lines
+    function setupCanvas() {
+      canvas = document.getElementById('constellation-canvas');
+      ctx = canvas.getContext('2d');
+      resizeCanvas();
+      window.addEventListener('resize', resizeCanvas);
+    }
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+
+    // Draw connection lines
+    function drawConnections() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      connections.forEach(conn => {
+        const fromNode = nodes.find(n => n.id === conn.from);
+        const toNode = nodes.find(n => n.id === conn.to);
+        
+        if (!fromNode || !toNode) return;
+        
+        const fromRect = fromNode.element.getBoundingClientRect();
+        const toRect = toNode.element.getBoundingClientRect();
+        
+        const x1 = fromRect.left + fromRect.width / 2;
+        const y1 = fromRect.top + fromRect.height / 2;
+        const x2 = toRect.left + toRect.width / 2;
+        const y2 = toRect.top + toRect.height / 2;
+        
+        const isActive = activeNode === conn.from || activeNode === conn.to;
+        
+        ctx.beginPath();
+        ctx.moveTo(x1, y1);
+        ctx.lineTo(x2, y2);
+        
+        if (isActive) {
+          ctx.strokeStyle = 'rgba(232, 93, 76, 0.5)';
+          ctx.lineWidth = 3;
+          ctx.setLineDash([10, 5]);
+        } else {
+          ctx.strokeStyle = 'rgba(212, 168, 75, 0.15)';
+          ctx.lineWidth = 1;
+          ctx.setLineDash([5, 10]);
+        }
+        
+        ctx.stroke();
+        ctx.setLineDash([]);
+      });
+    }
+
+    // Show connections for a node
+    function showConnections(nodeId) {
+      // Toggle off if same node
+      if (activeNode === nodeId) {
+        activeNode = null;
+        document.querySelectorAll('.node').forEach(n => n.classList.remove('active'));
+        closeModal();
+        return;
+      }
+      
+      activeNode = nodeId;
+      
+      // Update node styles
+      document.querySelectorAll('.node').forEach(n => {
+        n.classList.remove('active');
+        if (n.id === `node-${nodeId}`) {
+          n.classList.add('active');
+        }
+      });
+      
+      // Find relevant connections
+      const relevantConnections = connections.filter(
+        c => c.from === nodeId || c.to === nodeId
+      );
+      
+      if (relevantConnections.length > 0) {
+        // Show first connection in modal
+        const conn = relevantConnections[0];
+        showModal(conn);
+      }
+      
+      // Redraw lines
+      drawConnections();
+      
+      // Animate nodes to be more visible
+      nodes.forEach(n => {
+        const isRelated = relevantConnections.some(c => c.from === n.id || c.to === n.id);
+        n.element.style.opacity = activeNode ? (isRelated ? 1 : 0.4) : 1;
+      });
+    }
+
+    // Show modal
+    function showModal(conn) {
+      const fromNode = nodes.find(n => n.id === conn.from);
+      const toNode = nodes.find(n => n.id === conn.to);
+      
+      document.getElementById('modal-emoji1').textContent = fromNode.emoji;
+      document.getElementById('modal-emoji2').textContent = toNode.emoji;
+      document.getElementById('modal-title').textContent = conn.title;
+      document.getElementById('modal-description').textContent = conn.description;
+      document.getElementById('modal-quote').textContent = quotes[Math.floor(Math.random() * quotes.length)];
+      
+      document.getElementById('backdrop').classList.add('show');
+      document.getElementById('modal').classList.add('show');
+    }
+
+    // Close modal
+    function closeModal() {
+      document.getElementById('backdrop').classList.remove('show');
+      document.getElementById('modal').classList.remove('show');
+    }
+
+    // Click backdrop to close
+    document.getElementById('backdrop').addEventListener('click', closeModal);
+
+    // Animate floating particles in background
+    function animate() {
+      // Could add particle animation here if desired
+      drawConnections();
+      requestAnimationFrame(animate);
+    }
+
+    // Initial positions for mobile
+    function repositionForMobile() {
+      if (window.innerWidth < 600) {
+        // Reposition nodes in a grid pattern for small screens
+        const positions = [
+          { x: 25, y: 15 },
+          { x: 75, y: 15 },
+          { x: 25, y: 40 },
+          { x: 75, y: 40 },
+          { x: 25, y: 65 },
+          { x: 75, y: 65 },
+          { x: 50, y: 85 },
+          { x: 50, y: 50 }
+        ];
+        
+        nodes.forEach((node, i) => {
+          if (positions[i]) {
+            node.x = positions[i].x;
+            node.y = positions[i].y;
+            node.element.style.left = `${positions[i].x}%`;
+            node.element.style.top = `${positions[i].y}%`;
+          }
+        });
+      }
+    }
+
+    // Handle resize
+    window.addEventListener('resize', () => {
+      if (window.innerWidth < 600) {
+        repositionForMobile();
+      }
+    });
+
+    // Start
+    window.addEventListener('load', () => {
+      repositionForMobile();
+      init();
+    });
+  </script>
+</body>
+</html>
