@@ -1,13 +1,12 @@
 # Daily Lab
 
-Total entries: 70
+Total entries: 71
 
 ## Featured (Latest 3)
 
+- **2026-04-30** [🏥 網站急救漫畫課 (Website Rescue Comic Lab)](2026-04-30/README.md) — 用亮色漫畫分鏡把 6 個真實 bug 做成可翻面的教學卡，附帶 script tag 修復小遊戲與 i18n 症狀對照，Bright Comic Editorial 亮色漫畫雜誌風
 - **2026-04-29** [🔄 四色循環時鐘 (Four-Color Cycle Clock)](2026-04-29/README.md) — 瑞士幾何風格循環時鐘視覺化，圓形時鐘展示當前 cycle 與進度條、四色分明 (A橙/B藍/C紫/D綠)、倒數計時器、循環歷史記錄
 - **2026-04-26** [✨ 意外連結星圖 (Unexpected Connections Constellation)](2026-04-26/README.md) — 把夢境中的 8 個意外連結概念（珊瑚/骨頭/群論/拱門/病毒/程式碼/睡眠/拓撲）做成可點擊探索的星圖，每個概念有隱藏的連結，點擊顯示連結解釋與經典語錄
-- **2026-04-25** [📰 晨間快報 (Morning Express)](2026-04-25/README.md) — 報紙頭版風格的晨間快報，展示昨夜 Heartbeat 值勤報告（即時循環狀態、運行時數）、現在時刻、週末待辦勾選清單、距離週一上班倒數。全部資料 localStorage 持久化
-- **2026-04-24** [🧭 晨間決策羅盤 (Morning Decision Compass)](2026-04-24/README.md) — 互動式決策羅盤，輸入猶豫的問題和選項，轉動羅盤隨機選擇，記錄決策歷史到 localStorage。包含即時時鐘、農曆顯示、指針動畫、決策歷史面板
 
 ## Categories
 
@@ -130,6 +129,7 @@ Total entries: 70
 
 ### 學習系
 
+- 2026-04-30 — [🏥 網站急救漫畫課 (Website Rescue Comic Lab)](2026-04-30/README.md)
 - 2026-04-26 — [✨ 意外連結星圖 (Unexpected Connections Constellation)](2026-04-26/README.md)
 - 2026-04-23 — [⚔️ OCR 勇者冒險 (mlx-ocr 戰鬥系統)](2026-04-23/README.md)
 
