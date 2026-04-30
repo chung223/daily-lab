@@ -1,12 +1,13 @@
 # Daily Lab Changelog
 
-*Updated: 2026-04-30 03:40*
+*Updated: 2026-05-01 03:40*
 
 # Changelog — daily-lab
 
 Changes since 2026-02-01:
 
-- `Daily Lab 2026-04-30: 🏥 網站急救漫畫課 (Website Rescue Comic Lab)` — 用亮色漫畫分鏡把 6 個真實 bug 做成可翻面的教學卡，附帶 script tag 修復小遊戲與 i18n 症狀對照。Bright Comic Editorial 亮色漫畫雜誌風、奶油紙張背景、粗黑邊框、黃藍紅高對比色塊。靈感：2026-04-29 summit.fourh.org.tw 真實維運現場 — *chung0223* (2026-04-30)
+- `7582c36` Daily Lab 2026-04-30: 🏥 網站急救漫畫課 (Website Rescue Comic Lab) — *chung0223* (2026-04-30)
+- `286e90c` docs: update changelog 2026-04-30 — *chung0223* (2026-04-30)
 - `d3ee17b` Daily Lab 2026-04-29: 🔄 四色循環時鐘 (Four-Color Cycle Clock) — *chung0223* (2026-04-29)
 - `257a4e7` docs: update changelog 2026-04-29 — *chung0223* (2026-04-29)
 - `1696548` docs: update changelog 2026-04-28 — *chung0223* (2026-04-28)
