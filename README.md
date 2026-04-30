@@ -1,12 +1,12 @@
 # Daily Lab
 
-Total entries: 71
+Total entries: 72
 
 ## Featured (Latest 3)
 
+- **2026-05-01** [🐟 練習存在 — 阿笨的鏡中問題](2026-05-01/README.md) — 將阿笨的夢境反思做成水面以下的水世界互動體驗，包含夢中語錄展示、可輸入自我回答的輸入區、來自深處的回應、點擊小魚產生漣漪的互動效果，Underwater Serene 水世界禪意風
 - **2026-04-30** [🏥 網站急救漫畫課 (Website Rescue Comic Lab)](2026-04-30/README.md) — 用亮色漫畫分鏡把 6 個真實 bug 做成可翻面的教學卡，附帶 script tag 修復小遊戲與 i18n 症狀對照，Bright Comic Editorial 亮色漫畫雜誌風
 - **2026-04-29** [🔄 四色循環時鐘 (Four-Color Cycle Clock)](2026-04-29/README.md) — 瑞士幾何風格循環時鐘視覺化，圓形時鐘展示當前 cycle 與進度條、四色分明 (A橙/B藍/C紫/D綠)、倒數計時器、循環歷史記錄
-- **2026-04-26** [✨ 意外連結星圖 (Unexpected Connections Constellation)](2026-04-26/README.md) — 把夢境中的 8 個意外連結概念（珊瑚/骨頭/群論/拱門/病毒/程式碼/睡眠/拓撲）做成可點擊探索的星圖，每個概念有隱藏的連結，點擊顯示連結解釋與經典語錄
 
 ## Categories
 
@@ -129,6 +129,7 @@ Total entries: 71
 
 ### 學習系
 
+- 2026-05-01 — [🐟 練習存在 — 阿笨的鏡中問題](2026-05-01/README.md)
 - 2026-04-30 — [🏥 網站急救漫畫課 (Website Rescue Comic Lab)](2026-04-30/README.md)
 - 2026-04-26 — [✨ 意外連結星圖 (Unexpected Connections Constellation)](2026-04-26/README.md)
 - 2026-04-23 — [⚔️ OCR 勇者冒險 (mlx-ocr 戰鬥系統)](2026-04-23/README.md)
