@@ -1,12 +1,12 @@
 # Daily Lab
 
-Total entries: 74
+Total entries: 75
 
 ## Featured (Latest 3)
 
+- **2026-05-04** [🌸 語言氣味標本室 (Scent Atlas of Language)](2026-05-04/README.md) — 把夢境中的語言感官化概念做成互動式標本室，能點選不同詞語查看其色彩/濕度/溫度/金屬感，並用「晨間翻譯機」把今天的狀態翻成帶畫面的感官句子。Japanese Minimal × Editorial Specimen 日式極簡 × 雜誌標本風
 - **2026-05-03** [🐟 魚油宇宙 - 角色設定冊](2026-05-03/README.md) — 魚油在瓶子裡組團失業的地方 — 以幽默諷刺風格呈現的互動角色設定冊，包含六個性格鮮明的魚油宇宙居民。Comic Book 漫畫書風
 - **2026-05-02** [🖥️ VPS 解剖實驗室 (System Autopsy Lab)](2026-05-02/README.md) — VPS 系統狀態視覺化工具，以藍圖風格展示伺服器健康檢查面板。即時監控容器、儲存、服務連線。Blueprint 工程美學
-- **2026-05-01** [🐟 練習存在 — 阿笨的鏡中問題](2026-05-01/README.md) — 將阿笨的夢境反思做成水面以下的水世界互動體驗，包含夢中語錄展示、可輸入自我回答的輸入區、來自深處的回應、點擊小魚產生漣漪的互動效果，Underwater Serene 水世界禪意風
 - **2026-04-30** [🏥 網站急救漫畫課 (Website Rescue Comic Lab)](2026-04-30/README.md) — 用亮色漫畫分鏡把 6 個真實 bug 做成可翻面的教學卡，附帶 script tag 修復小遊戲與 i18n 症狀對照，Bright Comic Editorial 亮色漫畫雜誌風
 
 ## Categories
@@ -132,6 +132,7 @@ Total entries: 74
 
 ### 學習系
 
+- 2026-05-04 — [🌸 語言氣味標本室 (Scent Atlas of Language)](2026-05-04/README.md)
 - 2026-05-01 — [🐟 練習存在 — 阿笨的鏡中問題](2026-05-01/README.md)
 - 2026-04-30 — [🏥 網站急救漫畫課 (Website Rescue Comic Lab)](2026-04-30/README.md)
 - 2026-04-26 — [✨ 意外連結星圖 (Unexpected Connections Constellation)](2026-04-26/README.md)

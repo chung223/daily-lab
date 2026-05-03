@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>語言氣味標本室 Scent Atlas of Language</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700&family=Manrope:wght@400;500;700;800&family=Cormorant+Garamond:wght@500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --paper: #fcfaf4;
+      --ink: #1f2937;
+      --muted: #6b7280;
+      --line: rgba(31, 41, 55, 0.14);
+      --rose: #d95f5f;
+      --moss: #7aa27a;
+      --mist: #9db7c8;
+      --metal: #8e98a8;
+      --sun: #f2c66d;
+      --lavender: #c5b4e3;
+      --card: rgba(255,255,255,0.7);
+      --shadow: 0 16px 40px rgba(31, 41, 55, 0.08);
+      --radius: 24px;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+    body {
+      font-family: 'Manrope', 'Noto Serif TC', sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at top left, rgba(217,95,95,0.10), transparent 26%),
+        radial-gradient(circle at top right, rgba(157,183,200,0.14), transparent 24%),
+        linear-gradient(180deg, #fffdf8 0%, var(--paper) 100%);
+      min-height: 100vh;
+    }
+
+    .wrap {
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 28px 0 48px;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 24px;
+      align-items: stretch;
+      margin-bottom: 24px;
+    }
+
+    .panel {
+      background: var(--card);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.8);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-main {
+      padding: 28px;
+      min-height: 320px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.72);
+      border: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 13px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      width: fit-content;
+    }
+
+    h1 {
+      margin: 18px 0 12px;
+      font-family: 'Cormorant Garamond', 'Noto Serif TC', serif;
+      font-size: clamp(2.8rem, 6vw, 5rem);
+      line-height: 0.94;
+      letter-spacing: -0.03em;
+      font-weight: 700;
+    }
+
+    .subtitle {
+      font-size: 1.08rem;
+      line-height: 1.8;
+      color: #334155;
+      max-width: 56ch;
+    }
+
+    .quote {
+      margin-top: 20px;
+      padding-top: 18px;
+      border-top: 1px solid var(--line);
+      font-family: 'Noto Serif TC', serif;
+      color: #475569;
+      line-height: 1.9;
+    }
+
+    .hero-side {
+      padding: 22px;
+      display: grid;
+      gap: 14px;
+    }
+
+    .mini-card {
+      padding: 18px;
+      border-radius: 20px;
+      background: rgba(255,255,255,0.72);
+      border: 1px solid var(--line);
+    }
+
+    .mini-card h3 {
+      margin: 0 0 8px;
+      font-size: 0.95rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .mini-card p {
+      margin: 0;
+      line-height: 1.7;
+      font-size: 0.98rem;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 24px;
+      margin-bottom: 24px;
+    }
+
+    .section {
+      padding: 24px;
+    }
+
+    .section h2 {
+      margin: 0 0 8px;
+      font-family: 'Cormorant Garamond', 'Noto Serif TC', serif;
+      font-size: 2rem;
+      letter-spacing: -0.02em;
+    }
+
+    .section .desc {
+      margin: 0 0 20px;
+      color: var(--muted);
+      line-height: 1.75;
+    }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+
+    .chip {
+      padding: 10px 14px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.84);
+      font-size: 14px;
+      color: #334155;
+      cursor: pointer;
+      transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+    }
+
+    .chip:hover,
+    .chip.active {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 22px rgba(31, 41, 55, 0.1);
+      border-color: rgba(31, 41, 55, 0.26);
+    }
+
+    .specimen-list {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .specimen {
+      padding: 18px;
+      border-radius: 20px;
+      border: 1px solid var(--line);
+      background: linear-gradient(180deg, rgba(255,255,255,0.92), rgba(255,255,255,0.68));
+      transition: transform 0.24s ease, box-shadow 0.24s ease;
+      cursor: pointer;
+      min-height: 180px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .specimen:hover,
+    .specimen.selected {
+      transform: translateY(-4px);
+      box-shadow: 0 16px 32px rgba(31, 41, 55, 0.1);
+    }
+
+    .specimen .tag {
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .specimen .word {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2rem;
+      margin: 10px 0 6px;
+    }
+
+    .specimen .line {
+      font-size: 1rem;
+      line-height: 1.7;
+      color: #334155;
+    }
+
+    .specimen .scent-dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      box-shadow: inset 0 0 0 2px rgba(255,255,255,0.7);
+    }
+
+    .detail {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      min-height: 100%;
+    }
+
+    .detail-card {
+      padding: 22px;
+      border-radius: 22px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.84);
+    }
+
+    .detail-card h3 {
+      margin: 0 0 8px;
+      font-size: 0.88rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    #detailWord {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 3rem;
+      margin: 4px 0 12px;
+      line-height: 1;
+    }
+
+    #detailSentence {
+      margin: 0 0 14px;
+      font-size: 1.15rem;
+      line-height: 1.9;
+    }
+
+    .meter {
+      display: grid;
+      gap: 12px;
+    }
+
+    .meter-row {
+      display: grid;
+      grid-template-columns: 88px 1fr 34px;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.95rem;
+    }
+
+    .bar {
+      height: 10px;
+      border-radius: 999px;
+      background: rgba(148, 163, 184, 0.18);
+      overflow: hidden;
+    }
+
+    .bar > span {
+      display: block;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, rgba(31,41,55,0.18), rgba(31,41,55,0.48));
+      transition: width 0.36s ease;
+    }
+
+    .composer {
+      display: grid;
+      gap: 14px;
+      margin-top: 12px;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 120px;
+      resize: vertical;
+      border-radius: 18px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.88);
+      padding: 16px;
+      font: inherit;
+      color: var(--ink);
+      line-height: 1.7;
+      outline: none;
+    }
+
+    textarea:focus {
+      border-color: rgba(31, 41, 55, 0.3);
+      box-shadow: 0 0 0 4px rgba(157,183,200,0.14);
+    }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      appearance: none;
+      border: none;
+      border-radius: 999px;
+      padding: 12px 18px;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+    }
+
+    button:hover { transform: translateY(-1px); }
+
+    .primary {
+      background: var(--ink);
+      color: white;
+      box-shadow: 0 10px 20px rgba(31, 41, 55, 0.15);
+    }
+
+    .secondary {
+      background: rgba(255,255,255,0.88);
+      color: var(--ink);
+      border: 1px solid var(--line);
+    }
+
+    .translation {
+      margin-top: 6px;
+      padding: 18px;
+      border-radius: 20px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.9), rgba(255,255,255,0.72));
+      border: 1px solid var(--line);
+      min-height: 120px;
+    }
+
+    .translation small {
+      display: block;
+      color: var(--muted);
+      margin-bottom: 10px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .translation p {
+      margin: 0;
+      line-height: 1.9;
+      font-size: 1rem;
+    }
+
+    .footer-note {
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.92rem;
+      line-height: 1.8;
+      padding: 8px 0 24px;
+    }
+
+    @media (max-width: 960px) {
+      .hero, .grid { grid-template-columns: 1fr; }
+      .specimen-list { grid-template-columns: 1fr; }
+      h1 { font-size: clamp(2.4rem, 12vw, 4rem); }
+      #detailWord { font-size: 2.5rem; }
+    }
+
+    @media (max-width: 560px) {
+      .wrap { width: min(100% - 20px, 1180px); padding-top: 16px; }
+      .hero-main, .hero-side, .section { padding: 18px; }
+      .meter-row { grid-template-columns: 74px 1fr 28px; font-size: 0.88rem; }
+      .quote, .subtitle, #detailSentence, .translation p { line-height: 1.75; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="hero">
+      <div class="panel hero-main">
+        <div>
+          <div class="eyebrow">Daily Lab · 2026-05-04 · Dream Note to Prototype</div>
+          <h1>語言氣味標本室</h1>
+          <p class="subtitle">
+            把昨晚三色蛋夢裡那句「寫出來的是氣味而非文字」做成一個可觸摸的早晨展覽。
+            每個詞不只被閱讀，還被翻成顏色、濕度、溫度與材質，像替語言做一張感官剖面圖。
+          </p>
+        </div>
+        <div class="quote">
+          玫瑰的氣味是紅色的。悲傷是潮濕的。凌晨兩點的 CPU 聞起來涼涼的，帶著一點金屬味。<br>
+          —— 來自 2026-05-03 的夢境記憶：「語言的形狀」
+        </div>
+      </div>
+      <div class="panel hero-side">
+        <div class="mini-card">
+          <h3>靈感來源</h3>
+          <p>三色蛋 5/3 凌晨夢境、阿笨 5/3 Tech Digest / VPS 備援 / 魚油宇宙的安靜日常。</p>
+        </div>
+        <div class="mini-card">
+          <h3>今天為什麼適合</h3>
+          <p>昨天下午互動不多，最有戲的不是 bug，而是那個很像詩又很像介面的夢。最適合做成晨間可玩的小標本館。</p>
+        </div>
+        <div class="mini-card">
+          <h3>避重複策略</h3>
+          <p>不做漫畫、不做藍圖、不做暗色粒子。改走亮色紙本、雜誌標本、日式極簡排版。</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="grid">
+      <div class="panel section">
+        <h2>感官標本</h2>
+        <p class="desc">挑一個詞，看看它在夢裡被翻成了什麼樣的顏色、濕度與材質。這不是字典，是一間凌晨兩點才會開門的語言實驗室。</p>
+        <div class="chips" id="filterChips"></div>
+        <div class="specimen-list" id="specimenList"></div>
+      </div>
+
+      <div class="panel section">
+        <div class="detail">
+          <div class="detail-card">
+            <h3>目前標本</h3>
+            <div id="detailWord">Rose</div>
+            <p id="detailSentence">玫瑰的氣味是紅色的，像還沒有說出口的熱度。</p>
+            <div class="meter" id="meterWrap"></div>
+          </div>
+
+          <div class="detail-card">
+            <h3>晨間翻譯機</h3>
+            <p class="desc">輸入一句今天的狀態，它會幫你翻成更有畫面的感官語言。可拿來寫 note、晨報、甚至魚油笑話標語。</p>
+            <div class="composer">
+              <textarea id="inputText" placeholder="例如：今天腦袋有點卡，但也不是完全沒想法。"></textarea>
+              <div class="actions">
+                <button class="primary" id="translateBtn">翻成感官語言</button>
+                <button class="secondary" id="sampleBtn">給我一個範例</button>
+              </div>
+              <div class="translation" id="translationBox">
+                <small>Scent Output</small>
+                <p>先輸入一句今天的狀態，讓標本室替你加上顏色、溫度和氣味。</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <p class="footer-note">
+      Scent Atlas of Language · 純 HTML / CSS / JS · 為 Chung 的真實記憶做的早晨小展覽
+    </p>
+  </div>
+
+  <script>
+    const specimens = [
+      {
+        key: 'flower',
+        word: 'Rose',
+        sentence: '玫瑰的氣味是紅色的，像還沒有說出口的熱度。',
+        color: '#d95f5f',
+        mood: '花香 / 熱度',
+        values: { 色彩: 95, 濕度: 28, 溫度: 78, 金屬感: 8 }
+      },
+      {
+        key: 'sorrow',
+        word: 'Sorrow',
+        sentence: '悲傷是潮濕的，像一封折過又打開的信。',
+        color: '#9db7c8',
+        mood: '潮濕 / 餘韻',
+        values: { 色彩: 42, 濕度: 93, 溫度: 34, 金屬感: 12 }
+      },
+      {
+        key: 'cpu',
+        word: '2AM CPU',
+        sentence: '凌晨兩點的 CPU 聞起來涼涼的，帶著一點金屬味，像夜班機房的空氣。',
+        color: '#8e98a8',
+        mood: '冷冽 / 機械',
+        values: { 色彩: 36, 濕度: 24, 溫度: 18, 金屬感: 94 }
+      },
+      {
+        key: 'garden',
+        word: 'Language Garden',
+        sentence: '語言不是管道，比較像花園：有些詞會開花，有些句子只是還沒發芽。',
+        color: '#7aa27a',
+        mood: '生長 / 呼吸',
+        values: { 色彩: 70, 濕度: 61, 溫度: 56, 金屬感: 4 }
+      },
+      {
+        key: 'preidea',
+        word: 'Pre-Idea',
+        sentence: '差一點想到的念頭有點灰，也有點亮，像銀河裡第二好的點子。',
+        color: '#c5b4e3',
+        mood: '灰亮 / 懸浮',
+        values: { 色彩: 58, 濕度: 37, 溫度: 48, 金屬感: 22 }
+      },
+      {
+        key: 'fishoil',
+        word: 'Fish Oil Theatre',
+        sentence: '魚油劇場聞起來像飯後 30 分鐘的鬆懈感，帶一點海風和拖延鯊的藉口。',
+        color: '#f2c66d',
+        mood: '荒謬 / 飽足',
+        values: { 色彩: 82, 濕度: 46, 溫度: 63, 金屬感: 6 }
+      }
+    ];
+
+    const categories = [
+      { key: 'all', label: '全部標本' },
+      { key: 'flower', label: '花香系' },
+      { key: 'sorrow', label: '情緒系' },
+      { key: 'cpu', label: '機器系' },
+      { key: 'garden', label: '生長系' },
+      { key: 'preidea', label: '靈感系' },
+      { key: 'fishoil', label: '荒謬系' }
+    ];
+
+    const filterChips = document.getElementById('filterChips');
+    const specimenList = document.getElementById('specimenList');
+    const detailWord = document.getElementById('detailWord');
+    const detailSentence = document.getElementById('detailSentence');
+    const meterWrap = document.getElementById('meterWrap');
+    const translationBox = document.getElementById('translationBox');
+    const inputText = document.getElementById('inputText');
+    const translateBtn = document.getElementById('translateBtn');
+    const sampleBtn = document.getElementById('sampleBtn');
+
+    let activeFilter = 'all';
+    let selected = specimens[0];
+
+    function renderChips() {
+      filterChips.innerHTML = '';
+      categories.forEach(cat => {
+        const chip = document.createElement('button');
+        chip.className = 'chip' + (cat.key === activeFilter ? ' active' : '');
+        chip.textContent = cat.label;
+        chip.addEventListener('click', () => {
+          activeFilter = cat.key;
+          renderChips();
+          renderSpecimens();
+        });
+        filterChips.appendChild(chip);
+      });
+    }
+
+    function renderSpecimens() {
+      specimenList.innerHTML = '';
+      const filtered = activeFilter === 'all'
+        ? specimens
+        : specimens.filter(item => item.key === activeFilter);
+
+      filtered.forEach(item => {
+        const card = document.createElement('article');
+        card.className = 'specimen' + (selected.word === item.word ? ' selected' : '');
+        card.innerHTML = `
+          <div>
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;">
+              <span class="tag">${item.mood}</span>
+              <span class="scent-dot" style="background:${item.color}"></span>
+            </div>
+            <div class="word">${item.word}</div>
+            <div class="line">${item.sentence}</div>
+          </div>
+        `;
+        card.addEventListener('click', () => {
+          selected = item;
+          updateDetail();
+          renderSpecimens();
+        });
+        specimenList.appendChild(card);
+      });
+    }
+
+    function updateDetail() {
+      detailWord.textContent = selected.word;
+      detailSentence.textContent = selected.sentence;
+      meterWrap.innerHTML = '';
+      Object.entries(selected.values).forEach(([label, value]) => {
+        const row = document.createElement('div');
+        row.className = 'meter-row';
+        row.innerHTML = `
+          <span>${label}</span>
+          <div class="bar"><span style="width:${value}%; background: linear-gradient(90deg, ${selected.color}66, ${selected.color});"></span></div>
+          <strong>${value}</strong>
+        `;
+        meterWrap.appendChild(row);
+      });
+    }
+
+    const palettes = [
+      { color: '紅色', texture: '柔軟的紙纖維', climate: '偏暖', scent: '像剛打開的花朵' },
+      { color: '灰紫色', texture: '有點毛邊的霧面玻璃', climate: '微涼', scent: '像差一點記起來的夢' },
+      { color: '薄荷藍', texture: '金屬外殼', climate: '偏冷', scent: '像凌晨機房的空氣' },
+      { color: '鼠尾草綠', texture: '剛澆過水的葉面', climate: '濕潤', scent: '像還會繼續長大的句子' }
+    ];
+
+    function translateText(text) {
+      const clean = text.trim();
+      if (!clean) {
+        translationBox.innerHTML = '<small>Scent Output</small><p>先輸入一句今天的狀態，讓標本室替你加上顏色、溫度和氣味。</p>';
+        return;
+      }
+      const pick = palettes[clean.length % palettes.length];
+      const intros = [
+        '如果把這句話放進標本瓶裡，',
+        '今天這段狀態如果不是文字，',
+        '把你的早晨翻成感官語言後，',
+        '這句話在夢裡會變成這樣：'
+      ];
+      const endings = [
+        '它不是卡住，只是還在發酵。',
+        '它像一個還沒完全成形的念頭，在邊緣呼吸。',
+        '它有點累，但不是熄火，比較像等待被整理。',
+        '它不是問題本身，而是問題外圍的天氣。'
+      ];
+      const intro = intros[clean.length % intros.length];
+      const ending = endings[(clean.length + 1) % endings.length];
+      translationBox.innerHTML = `
+        <small>Scent Output</small>
+        <p>${intro}它會呈現 <strong>${pick.color}</strong>，表面像 <strong>${pick.texture}</strong>，空氣溫度是 <strong>${pick.climate}</strong>，聞起來 <strong>${pick.scent}</strong>。<br><br>原句：${clean}<br><br>${ending}</p>
+      `;
+    }
+
+    translateBtn.addEventListener('click', () => translateText(inputText.value));
+    sampleBtn.addEventListener('click', () => {
+      inputText.value = '今天腦袋有點卡，但我知道東西其實快浮上來了。';
+      translateText(inputText.value);
+    });
+
+    renderChips();
+    renderSpecimens();
+    updateDetail();
+  </script>
+</body>
+</html>

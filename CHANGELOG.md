@@ -1,11 +1,12 @@
 # Daily Lab Changelog
 
-*Updated: 2026-05-04 03:40*
+*Updated: 2026-05-04 04:15*
 
 # Changelog — daily-lab
 
 Changes since 2026-02-01:
 
+- `???????` Daily Lab 2026-05-04: 🌸 語言氣味標本室 (Scent Atlas of Language) — 把夢境中的語言感官化概念做成互動式標本室，能點選不同詞語查看其色彩/濕度/溫度/金屬感，並用「晨間翻譯機」把今天的狀態翻成帶畫面的感官句子。Japanese Minimal × Editorial Specimen 日式極簡 × 雜誌標本風、亮色紙本背景、襯線大標、玻璃卡片、柔和植物與霧感配色。靈感：來自 2026-05-03 三色蛋夢境「語言的形狀」 — *chung0223* (2026-05-04)
 - `fc25ede` Daily Lab 2026-05-03: 🐟 魚油宇宙 - 角色設定冊 — *chung0223* (2026-05-03)
 - `347618b` docs: update changelog 2026-05-03 — *chung0223* (2026-05-03)
 - `e4c4bd6` Daily Lab 2026-05-02: 🖥️ VPS 解剖實驗室 (System Autopsy Lab) — *chung0223* (2026-05-02)
