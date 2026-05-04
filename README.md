@@ -1,9 +1,10 @@
 # Daily Lab
 
-Total entries: 75
+Total entries: 76
 
 ## Featured (Latest 3)
 
+- **2026-05-05** [💡 靈感便利貼](2026-05-05/README.md) — 輸入靈感化為便利貼，深色佈告欄配隨機傾斜掉落動畫。即時時鐘、隨機名言、localStorage 持久化。Interactive 互動工具風
 - **2026-05-04** [🌸 語言氣味標本室 (Scent Atlas of Language)](2026-05-04/README.md) — 把夢境中的語言感官化概念做成互動式標本室，能點選不同詞語查看其色彩/濕度/溫度/金屬感，並用「晨間翻譯機」把今天的狀態翻成帶畫面的感官句子。Japanese Minimal × Editorial Specimen 日式極簡 × 雜誌標本風
 - **2026-05-03** [🐟 魚油宇宙 - 角色設定冊](2026-05-03/README.md) — 魚油在瓶子裡組團失業的地方 — 以幽默諷刺風格呈現的互動角色設定冊，包含六個性格鮮明的魚油宇宙居民。Comic Book 漫畫書風
 - **2026-05-02** [🖥️ VPS 解剖實驗室 (System Autopsy Lab)](2026-05-02/README.md) — VPS 系統狀態視覺化工具，以藍圖風格展示伺服器健康檢查面板。即時監控容器、儲存、服務連線。Blueprint 工程美學
@@ -26,6 +27,7 @@ Total entries: 75
 
 ### interactive
 
+- 2026-05-05 — [💡 靈感便利貼](2026-05-05/README.md)
 - 2026-04-07 — [時光岔路站 | Parallel Platform](2026-04-07/README.md)
 
 ### tool
