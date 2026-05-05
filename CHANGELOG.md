@@ -1,12 +1,14 @@
 # Daily Lab Changelog
 
-*Updated: 2026-05-05 04:15*
+*Updated: 2026-05-06 03:40*
 
 # Changelog — daily-lab
 
 Changes since 2026-02-01:
 
-- `------` Daily Lab 2026-05-05: 💡 靈感便利貼 — *chung0223* (2026-05-05)
+- `fd3b478` Daily Lab 2026-05-05: 💡 靈感便利貼 — *chung0223* (2026-05-05)
+- `da545b4` docs: update changelog 2026-05-05 — *chung0223* (2026-05-05)
+- `7403a9e` Daily Lab 2026-05-04: 🌸 語言氣味標本室 (Scent Atlas of Language) — *chung0223* (2026-05-04)
 - `8b13732` docs: update changelog 2026-05-04 — *chung0223* (2026-05-04)
 - `fc25ede` Daily Lab 2026-05-03: 🐟 魚油宇宙 - 角色設定冊 — *chung0223* (2026-05-03)
 - `347618b` docs: update changelog 2026-05-03 — *chung0223* (2026-05-03)
