@@ -1,17 +1,19 @@
 # Daily Lab
 
-Total entries: 77
+Total entries: 78
 
 ## Featured (Latest 3)
 
+- **2026-05-07** [🐟 魚油期限拯救中心 (Fish Oil Rescue Center)](2026-05-07/README.md) — 魚油劇場荒謬情境做成互動拯救中心，包含4個角色卡片、15種藉口生成器、4步驟拯救任務系統。Bright Comic Action 亮色漫畫動作風
 - **2026-05-06** [🏛️ 越南獨立宮時光機 (Vietnam Independence Palace Time Machine)](2026-05-06/README.md) — 用報紙/博物館文件風格呈現獨立宮的 4 個時代——從法屬時期到今日博物館，包含可點擊的時間軸、視覺檔案卡片、關鍵數據面板。Vintage Editorial Newsprint 復古報紙文件風
-- **2026-05-05** [💡 靈感便利貼](2026-05-05/README.md) — 輸入靈感化為便利貼，深色佈告欄配隨機傾斜掉落動畫。即時時鐘、隨機名言、localStorage 持久化。Interactive 互動工具風
-- **2026-05-04** [🌸 語言氣味標本室 (Scent Atlas of Language)](2026-05-04/README.md) — 把夢境中的語言感官化概念做成互動式標本室，能點選不同詞語查看其色彩/濕度/溫度/金屬感，並用「晨間翻譯機」把今天的狀態翻成帶畫面的感官句子。Japanese Minimal × Editorial Specimen 日式極簡 × 雜誌標本風
-- **2026-05-03** [🐟 魚油宇宙 - 角色設定冊](2026-05-03/README.md) — 魚油在瓶子裡組團失業的地方 — 以幽默諷刺風格呈現的互動角色設定冊，包含六個性格鮮明的魚油宇宙居民。Comic Book 漫畫書風
-- **2026-05-02** [🖥️ VPS 解剖實驗室 (System Autopsy Lab)](2026-05-02/README.md) — VPS 系統狀態視覺化工具，以藍圖風格展示伺服器健康檢查面板。即時監控容器、儲存、服務連線。Blueprint 工程美學
-- **2026-04-30** [🏥 網站急救漫畫課 (Website Rescue Comic Lab)](2026-04-30/README.md) — 用亮色漫畫分鏡把 6 個真實 bug 做成可翻面的教學卡，附帶 script tag 修復小遊戲與 i18n 症狀對照，Bright Comic Editorial 亮色漫畫雜誌風
+- **2026-05-05** [💡 靈感便利貼](2026-05-05/README.md) — 輸入靈感化為便利貼，深色佈告欄配隨機傾斜掉落動畫。即時時鐘、隨機名言、localStorage 持久化。Interactive 互動工具風)
 
 ## Categories
+
+### 惡搞系
+
+- 2026-05-07 — [🐟 魚油期限拯救中心 (Fish Oil Rescue Center)](2026-05-07/README.md)
+- 2026-03-14 — [幹話產生器](2026-03-14/README.md)
 
 ### fortune
 
