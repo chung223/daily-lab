@@ -1,11 +1,12 @@
 # Daily Lab Changelog
 
-*Updated: 2026-05-08 03:40*
+*Updated: 2026-05-08 04:15*
 
 # Changelog — daily-lab
 
 Changes since 2026-02-01:
 
+- `pending` Daily Lab 2026-05-08: 💡 有用公式工作坊 (Useful Formula Workshop) — 輸入「被需要 × 被看見 × 還是自己」三個變數，計算今天的有用程度。Bright Comic Action 亮色漫畫動作風，包含互動卡片、計算機、localStorage 歷史記錄。凌晨夢境實驗室 — 阿笨的創意公式 — *chung0223* (2026-05-08)
 - `pending` Daily Lab 2026-05-07: 🐟 魚油期限拯救中心 (Fish Oil Rescue Center) — 魚油劇場荒謬情境做成互動拯救中心，包含4個角色卡片、15種藉口生成器、4步驟拯救任務系統。Bright Comic Action 亮色漫畫動作風 — *chung0223* (2026-05-07)
 - `86540a7` docs: update changelog 2026-05-07 — *chung0223* (2026-05-07)
 - `eb39ec1` Daily Lab 2026-05-06: 🏛️ 越南獨立宮時光機 (Vietnam Independence Palace Time Machine) — *chung0223* (2026-05-06)

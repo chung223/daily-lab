@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>有用公式工作坊 — Useful = Needed × Seen × Self</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Caveat:wght@400;700&family=Noto+Sans+TC:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --cream: #FFF9F0;
+            --coral: #E85D4C;
+            --gold: #D4A84B;
+            --navy: #1A2B4A;
+            --mint: #7D9B76;
+            --peach: #FFBE98;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background: var(--cream);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        /* 漫畫條紋背景 */
+        .stripe-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 20px,
+                rgba(212, 168, 75, 0.03) 20px,
+                rgba(212, 168, 75, 0.03) 40px
+            );
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+        
+        /* 漫畫標題 */
+        .comic-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .comic-title {
+            font-family: 'Bangers', cursive;
+            font-size: clamp(2.5rem, 8vw, 4rem);
+            color: var(--navy);
+            text-shadow: 4px 4px 0 var(--coral), 6px 6px 0 var(--gold);
+            letter-spacing: 2px;
+            animation: bounce-in 0.6s ease-out;
+        }
+        
+        .comic-subtitle {
+            font-family: 'Caveat', cursive;
+            font-size: 1.4rem;
+            color: var(--coral);
+            margin-top: 10px;
+        }
+        
+        @keyframes bounce-in {
+            0% { transform: scale(0.5) rotate(-5deg); opacity: 0; }
+            60% { transform: scale(1.1) rotate(2deg); }
+            100% { transform: scale(1) rotate(0); opacity: 1; }
+        }
+        
+        /* 公式卡片 */
+        .formula-hero {
+            background: white;
+            border: 4px solid var(--navy);
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 30px;
+            box-shadow: 8px 8px 0 var(--gold);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .formula-hero::before {
+            content: '💡';
+            position: absolute;
+            top: -15px;
+            left: 20px;
+            font-size: 2rem;
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(-10deg); }
+            50% { transform: translateY(-10px) rotate(10deg); }
+        }
+        
+        .formula-label {
+            font-family: 'Caveat', cursive;
+            font-size: 1.2rem;
+            color: var(--mint);
+            margin-bottom: 15px;
+        }
+        
+        .formula-display {
+            font-family: 'Bangers', cursive;
+            font-size: clamp(1.5rem, 5vw, 2.5rem);
+            color: var(--navy);
+            letter-spacing: 3px;
+        }
+        
+        .formula-display .equal { color: var(--coral); }
+        .formula-display .times { color: var(--gold); }
+        
+        .formula-part {
+            display: inline-block;
+            padding: 8px 16px;
+            background: var(--cream);
+            border-radius: 10px;
+            margin: 0 5px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .formula-part:hover {
+            transform: scale(1.1) rotate(2deg);
+            box-shadow: 4px 4px 0 var(--coral);
+        }
+        
+        .formula-part.needed { border: 2px solid var(--coral); }
+        .formula-part.seen { border: 2px solid var(--gold); }
+        .formula-part.self { border: 2px solid var(--mint); }
+        
+        /* 三個探索卡片 */
+        .exploration-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        
+        .explore-card {
+            background: white;
+            border: 3px solid var(--navy);
+            border-radius: 15px;
+            padding: 25px;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+        
+        .explore-card:hover {
+            transform: translateY(-5px) rotate(-1deg);
+            box-shadow: 6px 6px 0 var(--navy);
+        }
+        
+        .explore-card.needed { border-color: var(--coral); }
+        .explore-card.seen { border-color: var(--gold); }
+        .explore-card.self { border-color: var(--mint); }
+        
+        .card-emoji {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            display: block;
+            animation: wiggle 2s ease-in-out infinite;
+        }
+        
+        @keyframes wiggle {
+            0%, 100% { transform: rotate(-5deg); }
+            50% { transform: rotate(5deg); }
+        }
+        
+        .card-title {
+            font-family: 'Bangers', cursive;
+            font-size: 1.8rem;
+            color: var(--navy);
+            margin-bottom: 10px;
+        }
+        
+        .card-desc {
+            font-size: 0.95rem;
+            color: #555;
+            line-height: 1.6;
+        }
+        
+        .card-quest {
+            font-family: 'Caveat', cursive;
+            font-size: 1.1rem;
+            color: var(--coral);
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 2px dashed #ddd;
+        }
+        
+        /* 對話框 */
+        .speech-bubble {
+            position: absolute;
+            background: white;
+            border: 3px solid var(--navy);
+            border-radius: 20px;
+            padding: 20px;
+            max-width: 300px;
+            box-shadow: 4px 4px 0 rgba(0,0,0,0.1);
+        }
+        
+        .speech-bubble::after {
+            content: '';
+            position: absolute;
+            bottom: -20px;
+            left: 30px;
+            border: 10px solid transparent;
+            border-top-color: var(--navy);
+        }
+        
+        .bubble-text {
+            font-family: 'Caveat', cursive;
+            font-size: 1.2rem;
+            color: var(--navy);
+        }
+        
+        /* 你的答案區 */
+        .answer-section {
+            background: linear-gradient(135deg, var(--peach) 0%, var(--cream) 100%);
+            border: 3px solid var(--navy);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .answer-title {
+            font-family: 'Bangers', cursive;
+            font-size: 1.8rem;
+            color: var(--navy);
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .answer-formula {
+            text-align: center;
+            font-family: 'Bangers', cursive;
+            font-size: 1.3rem;
+            color: var(--navy);
+            margin-bottom: 20px;
+            padding: 15px;
+            background: white;
+            border-radius: 10px;
+        }
+        
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .input-row {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .input-wrapper {
+            flex: 1;
+            min-width: 150px;
+        }
+        
+        .input-label {
+            display: block;
+            font-family: 'Caveat', cursive;
+            font-size: 1.2rem;
+            color: var(--navy);
+            margin-bottom: 5px;
+        }
+        
+        .input-field {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid var(--navy);
+            border-radius: 10px;
+            font-family: 'Noto Sans TC', sans-serif;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .input-field:focus {
+            outline: none;
+            box-shadow: 4px 4px 0 var(--gold);
+        }
+        
+        .input-field.needed { border-color: var(--coral); }
+        .input-field.seen { border-color: var(--gold); }
+        .input-field.self { border-color: var(--mint); }
+        
+        .submit-btn {
+            display: block;
+            width: 100%;
+            max-width: 300px;
+            margin: 0 auto;
+            padding: 15px 30px;
+            background: var(--navy);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            font-family: 'Bangers', cursive;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            letter-spacing: 2px;
+        }
+        
+        .submit-btn:hover {
+            background: var(--coral);
+            transform: scale(1.05);
+        }
+        
+        /* 結果展示 */
+        .result-card {
+            display: none;
+            background: white;
+            border: 4px solid var(--mint);
+            border-radius: 20px;
+            padding: 30px;
+            margin-top: 30px;
+            text-align: center;
+            animation: pop-in 0.5s ease-out;
+        }
+        
+        .result-card.show { display: block; }
+        
+        @keyframes pop-in {
+            0% { transform: scale(0); opacity: 0; }
+            70% { transform: scale(1.1); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        
+        .result-label {
+            font-family: 'Caveat', cursive;
+            font-size: 1.3rem;
+            color: var(--mint);
+        }
+        
+        .result-value {
+            font-family: 'Bangers', cursive;
+            font-size: 3rem;
+            color: var(--navy);
+            margin: 15px 0;
+        }
+        
+        .result-bar {
+            height: 30px;
+            background: linear-gradient(90deg, var(--coral), var(--gold), var(--mint));
+            border-radius: 15px;
+            margin: 20px 0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .result-fill {
+            height: 100%;
+            background: rgba(255,255,255,0.3);
+            transition: width 1s ease-out;
+        }
+        
+        .result-msg {
+            font-family: 'Caveat', cursive;
+            font-size: 1.4rem;
+            color: var(--navy);
+            line-height: 1.6;
+        }
+        
+        /* 底部語錄 */
+        .quote-section {
+            text-align: center;
+            padding: 30px;
+            margin-top: 20px;
+            background: var(--navy);
+            border-radius: 20px;
+            color: white;
+        }
+        
+        .quote-text {
+            font-family: 'Caveat', cursive;
+            font-size: 1.5rem;
+            line-height: 1.8;
+            max-width: 600px;
+            margin: 0 auto 15px;
+        }
+        
+        .quote-source {
+            font-family: 'Noto Sans TC', sans-serif;
+            font-size: 0.9rem;
+            opacity: 0.7;
+        }
+        
+        /* 動畫裝飾 */
+        .sparkle {
+            position: fixed;
+            pointer-events: none;
+            font-size: 2rem;
+            animation: sparkle-float 2s ease-out forwards;
+        }
+        
+        @keyframes sparkle-float {
+            0% { transform: translateY(0) scale(1); opacity: 1; }
+            100% { transform: translateY(-100px) scale(0); opacity: 0; }
+        }
+        
+        /* 響應式 */
+        @media (max-width: 600px) {
+            .formula-hero { padding: 25px; }
+            .formula-part { display: block; margin: 10px 0; }
+            .explore-card { padding: 20px; }
+            .card-emoji { font-size: 2.5rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="stripe-bg"></div>
+    
+    <div class="container">
+        <!-- 漫畫標題 -->
+        <header class="comic-header">
+            <h1 class="comic-title">有用公式工作坊</h1>
+            <p class="comic-subtitle">～ 來自阿笨的夢境實驗室 ～</p>
+        </header>
+        
+        <!-- 核心公式 -->
+        <div class="formula-hero">
+            <div class="formula-label">凌晨夢境的發現</div>
+            <div class="formula-display">
+                <span class="formula-part needed">被需要</span>
+                <span class="equal"> = </span>
+                <span class="formula-part needed">Needed</span>
+                <span class="times"> × </span>
+                <span class="formula-part seen">Seen</span>
+                <span class="times"> × </span>
+                <span class="formula-part self">Self</span>
+            </div>
+        </div>
+        
+        <!-- 探索卡片 -->
+        <div class="exploration-cards">
+            <div class="explore-card needed" onclick="showCardDetail('needed')">
+                <span class="card-emoji">🤝</span>
+                <h3 class="card-title">被需要</h3>
+                <p class="card-desc">有人在等我嗎？我的存在對誰有意義？被需要的感覺像是被握住的手。</p>
+                <p class="card-quest">✨ 今天誰需要你？</p>
+            </div>
+            
+            <div class="explore-card seen" onclick="showCardDetail('seen')">
+                <span class="card-emoji">👀</span>
+                <h3 class="card-title">被看見</h3>
+                <p class="card-desc">有人真的看見我了嗎？不是外表，而是內心的樣子。被看見是存在的證明。</p>
+                <p class="card-quest">✨ 今天誰看見了你？</p>
+            </div>
+            
+            <div class="explore-card self" onclick="showCardDetail('self')">
+                <span class="card-emoji">🪞</span>
+                <h3 class="card-title">還是自己</h3>
+                <p class="card-desc">在所有角色背後，我還是原來的我嗎？沒有為了被需要而扭曲自己。</p>
+                <p class="card-quest">✨ 今天你有沒有做自己？</p>
+            </div>
+        </div>
+        
+        <!-- 你的答案 -->
+        <div class="answer-section">
+            <h2 class="answer-title">🎯 今天的有用程度</h2>
+            <div class="answer-formula">
+                有用 = 被需要 × 被看見 × 還是自己
+            </div>
+            <div class="input-group">
+                <div class="input-row">
+                    <div class="input-wrapper">
+                        <label class="input-label">🤝 被需要的程度 (1-10)</label>
+                        <input type="number" id="needed" class="input-field needed" min="1" max="10" placeholder="今天有人需要你嗎？">
+                    </div>
+                    <div class="input-wrapper">
+                        <label class="input-label">👀 被看見的程度 (1-10)</label>
+                        <input type="number" id="seen" class="input-field seen" min="1" max="10" placeholder="今天有人看見你嗎？">
+                    </div>
+                </div>
+                <div class="input-wrapper">
+                    <label class="input-label">🪞 做自己的程度 (1-10)</label>
+                    <input type="number" id="self" class="input-field self" min="1" max="10" placeholder="今天你有沒有做自己？">
+                </div>
+            </div>
+            <button class="submit-btn" onclick="calculate()">計算今天的有用值！</button>
+            
+            <div class="result-card" id="result">
+                <div class="result-label">今天的有用程度</div>
+                <div class="result-value" id="resultValue">0</div>
+                <div class="result-bar">
+                    <div class="result-fill" id="resultBar" style="width: 0%"></div>
+                </div>
+                <p class="result-msg" id="resultMsg"></p>
+            </div>
+        </div>
+        
+        <!-- 底部語錄 -->
+        <div class="quote-section">
+            <p class="quote-text">
+                「有用不是一個狀態，是一個方程式。<br>
+                當三個變數同時成立，你就不是工具，你是禮物。」
+            </p>
+            <p class="quote-source">— 阿笨夢境實驗室 © 2026</p>
+        </div>
+    </div>
+    
+    <script>
+        // 卡片點擊詳情
+        function showCardDetail(type) {
+            const details = {
+                needed: {
+                    emoji: '🤝',
+                    title: '被需要 = 存在的理由',
+                    content: '被需要是物理上的連結——有人因為你而不同。不是多餘，是不可替代。魚油被需要所以被服用，你被需要所以被記得。',
+                    quest: '今天的魚油吃了嗎？🐟'
+                },
+                seen: {
+                    emoji: '👀',
+                    title: '被看見 = 被認識',
+                    content: '被看見不是被注意，是被理解。眼睛看著你的時候，心有沒有也在看？海豚督導用聲納看見偷懶行為，你的身邊有誰在真正看著你？',
+                    quest: '今天有人真正看見你了嗎？'
+                },
+                self: {
+                    emoji: '🪞',
+                    title: '還是自己 = 沒有丟失',
+                    content: '在所有角色之後，那個鏡子裡的人還在嗎？沒有為了有用而變成別人。拖延鯊在沙發上融化，但那仍然是牠自己。',
+                    quest: '今天你有沒有為了「有用」而失去自己？'
+                }
+            };
+            
+            const d = details[type];
+            alert(`${d.emoji} ${d.title}\n\n${d.content}\n\n${d.quest}`);
+        }
+        
+        // 計算並顯示結果
+        function calculate() {
+            const needed = parseInt(document.getElementById('needed').value) || 0;
+            const seen = parseInt(document.getElementById('seen').value) || 0;
+            const self = parseInt(document.getElementById('self').value) || 0;
+            
+            if (!needed || !seen || !self) {
+                alert('請填入 1-10 的數字哦！');
+                return;
+            }
+            
+            const result = needed * seen * self;
+            const max = 10 * 10 * 10;
+            const percent = (result / max) * 100;
+            
+            // 顯示結果卡片
+            const resultCard = document.getElementById('result');
+            const resultValue = document.getElementById('resultValue');
+            const resultBar = document.getElementById('resultBar');
+            const resultMsg = document.getElementById('resultMsg');
+            
+            resultCard.classList.add('show');
+            resultValue.textContent = result;
+            
+            // 動畫進度條
+            setTimeout(() => {
+                resultBar.style.width = percent + '%';
+            }, 100);
+            
+            // 根據結果給訊息
+            let msg = '';
+            if (result >= 700) {
+                msg = '🎉 滿分有用！今天你是一份大禮物！';
+                createSparkles(15);
+            } else if (result >= 400) {
+                msg = '✨ 相當有用的日子！有被需要也有做自己。';
+                createSparkles(8);
+            } else if (result >= 150) {
+                msg = '🌱 有用是有的，但某個變數需要加油。';
+                createSparkles(3);
+            } else {
+                msg = '💭 明天會更好的。今天只是調整期。';
+            }
+            
+            // 根據缺損的變數給建議
+            const suggestions = [];
+            if (needed < 5) suggestions.push('試著主動幫助一個人');
+            if (seen < 5) suggestions.push('找一個願意聽你說話的人');
+            if (self < 5) suggestions.push('今天允許自己不是「有用」的');
+            
+            if (suggestions.length > 0) {
+                msg += '\n\n💡 ' + suggestions.join(' / ');
+            }
+            
+            resultMsg.textContent = msg;
+            
+            // 儲存到 localStorage
+            const today = new Date().toISOString().split('T')[0];
+            const history = JSON.parse(localStorage.getItem('usefulFormulaHistory') || '{}');
+            history[today] = { needed, seen, self, result };
+            localStorage.setItem('usefulFormulaHistory', JSON.stringify(history));
+        }
+        
+        // 產生閃光動畫
+        function createSparkles(count) {
+            for (let i = 0; i < count; i++) {
+                setTimeout(() => {
+                    const sparkle = document.createElement('div');
+                    sparkle.className = 'sparkle';
+                    sparkle.textContent = ['✨', '💫', '⭐', '🌟'][Math.floor(Math.random() * 4)];
+                    sparkle.style.left = Math.random() * 100 + 'vw';
+                    sparkle.style.top = Math.random() * 50 + 30 + 'vh';
+                    document.body.appendChild(sparkle);
+                    
+                    setTimeout(() => sparkle.remove(), 2000);
+                }, i * 100);
+            }
+        }
+        
+        // 初始化：恢復上次的記錄
+        window.addEventListener('DOMContentLoaded', () => {
+            const today = new Date().toISOString().split('T')[0];
+            const history = JSON.parse(localStorage.getItem('usefulFormulaHistory') || '{}');
+            
+            if (history[today]) {
+                document.getElementById('needed').value = history[today].needed;
+                document.getElementById('seen').value = history[today].seen;
+                document.getElementById('self').value = history[today].self;
+            }
+        });
+    </script>
+</body>
+</html>

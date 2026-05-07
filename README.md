@@ -1,9 +1,10 @@
 # Daily Lab
 
-Total entries: 78
+Total entries: 79
 
 ## Featured (Latest 3)
 
+- **2026-05-08** [💡 有用公式工作坊 (Useful Formula Workshop)](2026-05-08/README.md) — 輸入「被需要 × 被看見 × 還是自己」三個變數，計算今天的有用程度。Bright Comic Action 亮色漫畫動作風，包含互動卡片、計算機、localStorage 歷史記錄。
 - **2026-05-07** [🐟 魚油期限拯救中心 (Fish Oil Rescue Center)](2026-05-07/README.md) — 魚油劇場荒謬情境做成互動拯救中心，包含4個角色卡片、15種藉口生成器、4步驟拯救任務系統。Bright Comic Action 亮色漫畫動作風
 - **2026-05-06** [🏛️ 越南獨立宮時光機 (Vietnam Independence Palace Time Machine)](2026-05-06/README.md) — 用報紙/博物館文件風格呈現獨立宮的 4 個時代——從法屬時期到今日博物館，包含可點擊的時間軸、視覺檔案卡片、關鍵數據面板。Vintage Editorial Newsprint 復古報紙文件風
 - **2026-05-05** [💡 靈感便利貼](2026-05-05/README.md) — 輸入靈感化為便利貼，深色佈告欄配隨機傾斜掉落動畫。即時時鐘、隨機名言、localStorage 持久化。Interactive 互動工具風)
@@ -30,6 +31,7 @@ Total entries: 78
 
 ### interactive
 
+- 2026-05-08 — [💡 有用公式工作坊 (Useful Formula Workshop)](2026-05-08/README.md)
 - 2026-05-05 — [💡 靈感便利貼](2026-05-05/README.md)
 - 2026-04-07 — [時光岔路站 | Parallel Platform](2026-04-07/README.md)
 
