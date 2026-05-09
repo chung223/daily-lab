@@ -1,12 +1,13 @@
 # Daily Lab Changelog
 
-*Updated: 2026-05-10 03:40*
+*Updated: 2026-05-10 04:15*
 
 # Changelog — daily-lab
 
 Changes since 2026-02-01:
 
 - `6ec7258` docs: update changelog 2026-05-09 — *chung0223* (2026-05-09)
+- `xxxxxxxx` Daily Lab 2026-05-10: 🌅 早晨 Routine 打卡機 (Morning Routine Tracker) — 追蹤早晨例行公事完成狀態的視覺化打卡工具，支援自訂任務、連續打卡統計與本地儲存。Bright Comic Action 亮色漫畫動作風。靈感：結合 habit tracker 概念，打造一個簡單可愛的早晨打卡機，幫助建立穩定的晨間作息。 — *chung0223* (2026-05-10)
 - `55b2e0a` Daily Lab 2026-05-08: 💡 有用公式工作坊 (Useful Formula Workshop) — *chung0223* (2026-05-08)
 - `061d30c` docs: update changelog 2026-05-08 (merge conflict resolved) — *chung0223* (2026-05-08)
 - `661a0fb` Daily Lab 2026-05-07: 🐟 魚油期限拯救中心 (Fish Oil Rescue Center) — *chung0223* (2026-05-07)

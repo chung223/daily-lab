@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌅 早晨 Routine 打卡機</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #FFFDF7;
+            --paper: #FFFEF9;
+            --ink: #2D2A26;
+            --ink-light: #6B6560;
+            --sunrise: #FF6B4A;
+            --morning: #FFB347;
+            --sky: #87CEEB;
+            --mint: #98D9B6;
+            --lavender: #C5B4E3;
+            --rose: #FFB5C5;
+            --shadow: rgba(45, 42, 38, 0.08);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background: var(--bg);
+            color: var(--ink);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Hand-drawn border effect */
+        .hand-drawn-border {
+            background: var(--paper);
+            border: 3px solid var(--ink);
+            border-radius: 12px;
+            box-shadow: 
+                4px 4px 0 var(--ink),
+                -2px -2px 0 var(--sunrise);
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            padding: 40px 20px 30px;
+            background: linear-gradient(180deg, #FFF5E6 0%, var(--bg) 100%);
+            position: relative;
+        }
+
+        .header::before {
+            content: '☀️';
+            font-size: 60px;
+            display: block;
+            margin-bottom: 10px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .header h1 {
+            font-family: 'Quicksand', sans-serif;
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--ink);
+            letter-spacing: -0.5px;
+        }
+
+        .header .subtitle {
+            font-size: 0.95rem;
+            color: var(--ink-light);
+            margin-top: 8px;
+        }
+
+        .current-time {
+            font-family: 'Quicksand', sans-serif;
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--sunrise);
+            margin: 15px 0;
+        }
+
+        .current-date {
+            font-size: 1rem;
+            color: var(--ink-light);
+        }
+
+        /* Progress Bar */
+        .progress-section {
+            max-width: 500px;
+            margin: 0 auto 30px;
+            padding: 0 20px;
+        }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+            color: var(--ink-light);
+        }
+
+        .progress-bar {
+            height: 12px;
+            background: #EEE;
+            border-radius: 6px;
+            overflow: hidden;
+            border: 2px solid var(--ink);
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--sunrise), var(--morning));
+            border-radius: 4px;
+            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Routine Grid */
+        .routine-container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .routine-grid {
+            display: grid;
+            gap: 16px;
+        }
+
+        .routine-card {
+            background: var(--paper);
+            border: 2.5px solid var(--ink);
+            border-radius: 16px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .routine-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 4px 4px 0 var(--ink);
+        }
+
+        .routine-card.completed {
+            background: linear-gradient(135deg, #E8F5E9 0%, #C8E6C9 100%);
+            border-color: #4CAF50;
+        }
+
+        .routine-card.completed::after {
+            content: '✓';
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.5rem;
+            color: #4CAF50;
+            font-weight: bold;
+        }
+
+        .routine-card.skipped {
+            background: linear-gradient(135deg, #FFF3E0 0%, #FFE0B2 100%);
+            border-color: var(--morning);
+            opacity: 0.7;
+        }
+
+        .routine-card.skipped::after {
+            content: '→';
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.5rem;
+            color: var(--morning);
+            font-weight: bold;
+        }
+
+        .routine-emoji {
+            font-size: 2.5rem;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #FFF;
+            border-radius: 50%;
+            border: 2px solid var(--ink);
+            flex-shrink: 0;
+        }
+
+        .routine-info {
+            flex: 1;
+        }
+
+        .routine-name {
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: 4px;
+        }
+
+        .routine-time {
+            font-size: 0.85rem;
+            color: var(--ink-light);
+        }
+
+        .routine-status {
+            font-size: 0.8rem;
+            padding: 4px 10px;
+            border-radius: 20px;
+            background: #EEE;
+            color: var(--ink-light);
+        }
+
+        .routine-card.completed .routine-status {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .routine-card.skipped .routine-status {
+            background: var(--morning);
+            color: white;
+        }
+
+        /* Click effect */
+        .ripple {
+            position: absolute;
+            border-radius: 50%;
+            background: var(--sunrise);
+            opacity: 0.3;
+            transform: scale(0);
+            animation: ripple-effect 0.6s linear;
+            pointer-events: none;
+        }
+
+        @keyframes ripple-effect {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
+
+        /* Stats Panel */
+        .stats-panel {
+            max-width: 500px;
+            margin: 30px auto;
+            padding: 20px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            text-align: center;
+        }
+
+        .stat-box {
+            background: var(--paper);
+            border: 2px solid var(--ink);
+            border-radius: 12px;
+            padding: 15px 10px;
+        }
+
+        .stat-value {
+            font-family: 'Quicksand', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--sunrise);
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: var(--ink-light);
+            margin-top: 4px;
+        }
+
+        /* Streak calendar */
+        .streak-section {
+            max-width: 500px;
+            margin: 20px auto 40px;
+            padding: 0 20px;
+        }
+
+        .streak-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .streak-title {
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .streak-fire {
+            font-size: 1.2rem;
+        }
+
+        .streak-calendar {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .streak-day {
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
+            background: #EEE;
+            border: 1.5px solid var(--ink);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            color: var(--ink-light);
+        }
+
+        .streak-day.done {
+            background: linear-gradient(135deg, var(--mint), #7BC9A3);
+            color: white;
+            border-color: #4CAF50;
+        }
+
+        .streak-day.today {
+            border: 2px solid var(--sunrise);
+            box-shadow: 0 0 0 2px rgba(255, 107, 74, 0.3);
+        }
+
+        /* Add task modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal {
+            background: var(--paper);
+            border: 3px solid var(--ink);
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 400px;
+            width: 90%;
+            transform: translateY(20px);
+            transition: transform 0.3s ease;
+        }
+
+        .modal-overlay.active .modal {
+            transform: translateY(0);
+        }
+
+        .modal h3 {
+            font-family: 'Quicksand', sans-serif;
+            font-size: 1.4rem;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .modal-input {
+            width: 100%;
+            padding: 12px 16px;
+            font-size: 1rem;
+            border: 2px solid var(--ink);
+            border-radius: 10px;
+            font-family: inherit;
+            margin-bottom: 15px;
+        }
+
+        .modal-time {
+            width: 100%;
+            padding: 12px 16px;
+            font-size: 1rem;
+            border: 2px solid var(--ink);
+            border-radius: 10px;
+            font-family: inherit;
+            margin-bottom: 20px;
+            background: white;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .modal-btn {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid var(--ink);
+            border-radius: 10px;
+            font-size: 1rem;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .modal-btn.cancel {
+            background: #EEE;
+        }
+
+        .modal-btn.confirm {
+            background: var(--sunrise);
+            color: white;
+            border-color: var(--sunrise);
+        }
+
+        .modal-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        /* Floating action button */
+        .fab {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--sunrise);
+            color: white;
+            border: 3px solid var(--ink);
+            font-size: 2rem;
+            cursor: pointer;
+            box-shadow: 4px 4px 0 var(--ink);
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .fab:hover {
+            transform: translateY(-2px);
+            box-shadow: 6px 6px 0 var(--ink);
+        }
+
+        .fab:active {
+            transform: translateY(0);
+            box-shadow: 2px 2px 0 var(--ink);
+        }
+
+        /* Confetti */
+        .confetti-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 999;
+        }
+
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            border-radius: 2px;
+            animation: confetti-fall 3s ease-out forwards;
+        }
+
+        @keyframes confetti-fall {
+            0% {
+                transform: translateY(-100%) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .header h1 {
+                font-size: 1.8rem;
+            }
+            .current-time {
+                font-size: 2.5rem;
+            }
+            .routine-card {
+                padding: 16px;
+            }
+            .routine-emoji {
+                width: 50px;
+                height: 50px;
+                font-size: 2rem;
+            }
+            .stats-panel {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .stat-box:last-child {
+                grid-column: span 2;
+            }
+        }
+
+        /* Reset button */
+        .reset-btn {
+            display: block;
+            margin: 20px auto;
+            padding: 10px 24px;
+            background: var(--ink);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .reset-btn:hover {
+            background: var(--sunrise);
+            transform: translateY(-2px);
+        }
+
+        /* Motivational message */
+        .motivation {
+            text-align: center;
+            padding: 20px;
+            font-size: 1.1rem;
+            color: var(--ink-light);
+            font-style: italic;
+        }
+
+        .motivation strong {
+            color: var(--sunrise);
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <h1>🌅 早晨 Routine 打卡機</h1>
+        <p class="subtitle">每天早起，從打卡開始</p>
+        <div class="current-time" id="currentTime">--:--</div>
+        <div class="current-date" id="currentDate">----年--月--日</div>
+    </header>
+
+    <div class="progress-section">
+        <div class="progress-label">
+            <span>今日進度</span>
+            <span id="progressText">0 / 0 完成</span>
+        </div>
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+        </div>
+    </div>
+
+    <div class="routine-container">
+        <div class="routine-grid" id="routineGrid"></div>
+        
+        <div class="motivation" id="motivation">
+            <strong>💪 加油！</strong> 完成今天的Routine
+        </div>
+
+        <button class="reset-btn" onclick="resetToday()">🔄 重置今天的打卡</button>
+    </div>
+
+    <div class="stats-panel">
+        <div class="stat-box">
+            <div class="stat-value" id="streakCount">0</div>
+            <div class="stat-label">連續天數 🔥</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-value" id="totalCompleted">0</div>
+            <div class="stat-label">總完成次數</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-value" id="weekAvg">0%</div>
+            <div class="stat-label">本週平均</div>
+        </div>
+    </div>
+
+    <div class="streak-section">
+        <div class="streak-header">
+            <span class="streak-title">📅 本週打卡記錄</span>
+            <span class="streak-fire">🔥 <span id="weekStreak">0</span> 天</span>
+        </div>
+        <div class="streak-calendar" id="weekCalendar"></div>
+    </div>
+
+    <button class="fab" onclick="openModal()">+</button>
+
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal hand-drawn-border">
+            <h3>✨ 新增Routine</h3>
+            <input type="text" class="modal-input" id="taskName" placeholder="任務名稱（例：魚油時間）" maxlength="20">
+            <input type="text" class="modal-input" id="taskEmoji" placeholder=" emoji（例：🐟）" maxlength="5">
+            <input type="time" class="modal-time" id="taskTime" value="08:00">
+            <div class="modal-buttons">
+                <button class="modal-btn cancel" onclick="closeModal()">取消</button>
+                <button class="modal-btn confirm" onclick="addRoutine()">新增</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="confetti-container" id="confettiContainer"></div>
+
+    <script>
+        // Default routines based on Chung's real daily schedule
+        const defaultRoutines = [
+            { id: 'fish-oil', name: '🐟 魚油時間', time: '08:00', status: 'pending', emoji: '🐟' },
+            { id: 'morning-report', name: '📊 晨報', time: '06:30', status: 'pending', emoji: '📊' },
+            { id: 'tech-news', name: '📡 Tech News', time: '07:00', status: 'pending', emoji: '📡' },
+            { id: 'readmoo', name: '📚 Readmoo特惠', time: '08:00', status: 'pending', emoji: '📚' },
+            { id: 'notion-sync', name: '🔄 Notion同步', time: '10:30', status: 'pending', emoji: '🔄' },
+            { id: 'crm-sync', name: '💾 CRM同步', time: '10:30', status: 'pending', emoji: '💾' },
+        ];
+
+        let routines = JSON.parse(localStorage.getItem('routines')) || [...defaultRoutines];
+        let completedToday = JSON.parse(localStorage.getItem('completedToday')) || {};
+        let lastResetDate = localStorage.getItem('lastResetDate') || '';
+        let totalCompleted = parseInt(localStorage.getItem('totalCompleted')) || 0;
+        let streakDays = JSON.parse(localStorage.getItem('streakDays')) || [];
+
+        // Check if it's a new day
+        function checkNewDay() {
+            const today = new Date().toISOString().split('T')[0];
+            if (lastResetDate !== today) {
+                // Save yesterday's progress before reset
+                if (lastResetDate) {
+                    const completedCount = Object.values(completedToday).filter(s => s === 'completed').length;
+                    if (completedCount === routines.length) {
+                        addStreakDay(lastResetDate);
+                    }
+                }
+                // Reset for new day
+                completedToday = {};
+                routines.forEach(r => r.status = 'pending');
+                lastResetDate = today;
+                localStorage.setItem('completedToday', JSON.stringify(completedToday));
+                localStorage.setItem('lastResetDate', today);
+                localStorage.setItem('routines', JSON.stringify(routines));
+            }
+        }
+
+        function addStreakDay(date) {
+            if (!streakDays.includes(date)) {
+                streakDays.push(date);
+                localStorage.setItem('streakDays', JSON.stringify(streakDays));
+            }
+        }
+
+        function getCurrentStreak() {
+            let streak = 0;
+            const today = new Date();
+            for (let i = 0; i < 30; i++) {
+                const checkDate = new Date(today);
+                checkDate.setDate(checkDate.getDate() - i);
+                const dateStr = checkDate.toISOString().split('T')[0];
+                if (streakDays.includes(dateStr)) {
+                    streak++;
+                } else if (i > 0) {
+                    break;
+                }
+            }
+            return streak;
+        }
+
+        function getWeekProgress() {
+            const today = new Date();
+            let total = 0, completed = 0;
+            for (let i = 0; i < 7; i++) {
+                const checkDate = new Date(today);
+                checkDate.setDate(checkDate.getDate() - i);
+                const dateStr = checkDate.toISOString().split('T')[0];
+                if (streakDays.includes(dateStr)) {
+                    completed++;
+                }
+                total++;
+            }
+            return total > 0 ? Math.round((completed / total) * 100) : 0;
+        }
+
+        function renderWeekCalendar() {
+            const container = document.getElementById('weekCalendar');
+            container.innerHTML = '';
+            const today = new Date();
+            const dayNames = ['日', '一', '二', '三', '四', '五', '六'];
+            
+            for (let i = 6; i >= 0; i--) {
+                const date = new Date(today);
+                date.setDate(date.getDate() - i);
+                const dateStr = date.toISOString().split('T')[0];
+                const dayEl = document.createElement('div');
+                dayEl.className = 'streak-day';
+                if (streakDays.includes(dateStr)) dayEl.classList.add('done');
+                if (i === 0) dayEl.classList.add('today');
+                dayEl.textContent = dayNames[date.getDay()];
+                container.appendChild(dayEl);
+            }
+
+            document.getElementById('weekStreak').textContent = getCurrentStreak();
+        }
+
+        function updateTime() {
+            const now = new Date();
+            document.getElementById('currentTime').textContent = 
+                now.toLocaleTimeString('zh-TW', { hour: '2-digit', minute: '2-digit' });
+            document.getElementById('currentDate').textContent = 
+                `${now.getFullYear()}年${now.getMonth()+1}月${now.getDate()}日`;
+        }
+
+        function renderRoutines() {
+            const grid = document.getElementById('routineGrid');
+            grid.innerHTML = '';
+
+            // Sort by time
+            const sorted = [...routines].sort((a, b) => a.time.localeCompare(b.time));
+
+            sorted.forEach((routine, index) => {
+                const card = document.createElement('div');
+                card.className = `routine-card ${routine.status}`;
+                card.dataset.id = routine.id;
+                card.innerHTML = `
+                    <div class="routine-emoji">${routine.emoji}</div>
+                    <div class="routine-info">
+                        <div class="routine-name">${routine.name}</div>
+                        <div class="routine-time">⏰ ${routine.time}</div>
+                    </div>
+                    <div class="routine-status">${getStatusText(routine.status)}</div>
+                `;
+
+                card.addEventListener('click', () => toggleRoutine(routine.id, card));
+                grid.appendChild(card);
+            });
+
+            updateProgress();
+            updateStats();
+        }
+
+        function getStatusText(status) {
+            switch(status) {
+                case 'completed': return '已完成 ✓';
+                case 'skipped': return '跳過';
+                default: return '待完成';
+            }
+        }
+
+        function toggleRoutine(id, card) {
+            const routine = routines.find(r => r.id === id);
+            if (!routine) return;
+
+            // Cycle through: pending → completed → skipped → pending
+            if (routine.status === 'pending') {
+                routine.status = 'completed';
+                completedToday[id] = 'completed';
+                totalCompleted++;
+                card.classList.add('completed');
+                showRipple(card);
+                spawnConfetti(card);
+            } else if (routine.status === 'completed') {
+                routine.status = 'skipped';
+                completedToday[id] = 'skipped';
+                card.classList.remove('completed');
+                card.classList.add('skipped');
+            } else {
+                routine.status = 'pending';
+                completedToday[id] = 'pending';
+                card.classList.remove('skipped');
+            }
+
+            card.querySelector('.routine-status').textContent = getStatusText(routine.status);
+            
+            localStorage.setItem('routines', JSON.stringify(routines));
+            localStorage.setItem('completedToday', JSON.stringify(completedToday));
+            localStorage.setItem('totalCompleted', totalCompleted);
+            
+            updateProgress();
+            updateStats();
+        }
+
+        function showRipple(card) {
+            const ripple = document.createElement('span');
+            ripple.className = 'ripple';
+            ripple.style.left = '50%';
+            ripple.style.top = '50%';
+            ripple.style.width = '20px';
+            ripple.style.height = '20px';
+            ripple.style.marginLeft = '-10px';
+            ripple.style.marginTop = '-10px';
+            card.appendChild(ripple);
+            setTimeout(() => ripple.remove(), 600);
+        }
+
+        function spawnConfetti(element) {
+            const container = document.getElementById('confettiContainer');
+            const rect = element.getBoundingClientRect();
+            const colors = ['#FF6B4A', '#FFB347', '#98D9B6', '#C5B4E3', '#FFB5C5'];
+            
+            for (let i = 0; i < 15; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = rect.left + rect.width/2 + (Math.random() - 0.5) * 100 + 'px';
+                confetti.style.top = rect.top + 'px';
+                confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.animationDelay = Math.random() * 0.3 + 's';
+                container.appendChild(confetti);
+                setTimeout(() => confetti.remove(), 3000);
+            }
+        }
+
+        function updateProgress() {
+            const total = routines.length;
+            const completed = routines.filter(r => r.status === 'completed').length;
+            const percent = total > 0 ? Math.round((completed / total) * 100) : 0;
+            
+            document.getElementById('progressFill').style.width = percent + '%';
+            document.getElementById('progressText').textContent = `${completed} / ${total} 完成`;
+
+            const motivation = document.getElementById('motivation');
+            if (percent === 100) {
+                motivation.innerHTML = '<strong>🎉 太棒了！</strong> 今天的所有任務都完成啦！';
+            } else if (percent >= 50) {
+                motivation.innerHTML = '<strong>💪 加油！</strong> 過了一半了，繼續保持！';
+            } else {
+                motivation.innerHTML = '<strong>🌅 新的一天</strong> 從打卡開始！';
+            }
+        }
+
+        function updateStats() {
+            document.getElementById('streakCount').textContent = getCurrentStreak();
+            document.getElementById('totalCompleted').textContent = totalCompleted;
+            document.getElementById('weekAvg').textContent = getWeekProgress() + '%';
+        }
+
+        function openModal() {
+            document.getElementById('modalOverlay').classList.add('active');
+            document.getElementById('taskName').value = '';
+            document.getElementById('taskEmoji').value = '';
+            document.getElementById('taskTime').value = '08:00';
+            document.getElementById('taskName').focus();
+        }
+
+        function closeModal() {
+            document.getElementById('modalOverlay').classList.remove('active');
+        }
+
+        function addRoutine() {
+            const name = document.getElementById('taskName').value.trim();
+            const emoji = document.getElementById('taskEmoji').value.trim() || '📌';
+            const time = document.getElementById('taskTime').value;
+
+            if (!name) {
+                alert('請輸入任務名稱');
+                return;
+            }
+
+            const id = 'custom-' + Date.now();
+            routines.push({ id, name, time, status: 'pending', emoji });
+            localStorage.setItem('routines', JSON.stringify(routines));
+            
+            closeModal();
+            renderRoutines();
+        }
+
+        function resetToday() {
+            if (!confirm('確定要重置今天的打卡嗎？')) return;
+            routines.forEach(r => r.status = 'pending');
+            completedToday = {};
+            localStorage.setItem('routines', JSON.stringify(routines));
+            localStorage.setItem('completedToday', JSON.stringify(completedToday));
+            renderRoutines();
+        }
+
+        // Event listeners
+        document.getElementById('modalOverlay').addEventListener('click', (e) => {
+            if (e.target.id === 'modalOverlay') closeModal();
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeModal();
+        });
+
+        // Initialize
+        checkNewDay();
+        updateTime();
+        setInterval(updateTime, 1000);
+        renderRoutines();
+        renderWeekCalendar();
+    </script>
+</body>
+</html>
