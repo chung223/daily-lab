@@ -1,9 +1,10 @@
 # Daily Lab
 
-Total entries: 80
+Total entries: 81
 
 ## Featured (Latest 3)
 
+- **2026-05-11** [🏥 301 急診室 — 網站リダイレクト調査](2026-05-11/README.md) — 用急診室病歷報告風格呈現網站 301 redirect loop 的除錯流程，包含 6 步驟診斷時間軸、互動式症狀過濾、處方箋建議。
 - **2026-05-10** [🌅 早晨 Routine 打卡機](2026-05-10/README.md) — 追蹤早晨例行公事完成狀態的視覺化打卡工具，支援自訂任務、連續打卡統計與本地儲存。
 - **2026-05-08** [💡 有用公式工作坊 (Useful Formula Workshop)](2026-05-08/README.md) — 輸入「被需要 × 被看見 × 還是自己」三個變數，計算今天的有用程度。Bright Comic Action 亮色漫畫動作風，包含互動卡片、計算機、localStorage 歷史記錄。
 - **2026-05-07** [🐟 魚油期限拯救中心 (Fish Oil Rescue Center)](2026-05-07/README.md) — 魚油劇場荒謬情境做成互動拯救中心，包含4個角色卡片、15種藉口生成器、4步驟拯救任務系統。Bright Comic Action 亮色漫畫動作風
@@ -41,6 +42,7 @@ Total entries: 80
 
 ### tool
 
+- 2026-05-11 — [🏥 301 急診室 — 網站リダイレクト調査](2026-05-11/README.md)
 - 2026-03-03 — [紀念日銀河](2026-03-03/README.md)
 
 ### unknown

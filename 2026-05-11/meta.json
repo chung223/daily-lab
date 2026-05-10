@@ -1,0 +1,6 @@
+{
+  "title": "301 急診室 — 網站リダイレクト調査",
+  "type": "tool",
+  "description": "用急診室病歷報告風格呈現網站 301 redirect loop 的除錯流程，包含 DNS/Curl/SSL/CF 診斷時間軸、互動式症狀過濾、處方箋建議、localStorage 偵探筆記儲存。Brighter Comic Action 亮色漫畫動作風。",
+  "inspiration": "gpt.chung.men 301 redirect loop 問題除錯記錄，以急診室病歷風格呈現推理過程"
+}

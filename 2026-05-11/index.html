@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>301 急診室 — 網站リダイレクト調査</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&family=DM+Mono:wght@400;500&family=Bangers&family=Caveat:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #FFFDF7;
+      --cream: #F5F0E6;
+      --navy: #1A2B4A;
+      --coral: #E85D4C;
+      --gold: #D4A84B;
+      --mint: #98D9B6;
+      --shadow: rgba(26, 43, 74, 0.1);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Noto Sans TC', sans-serif;
+      background: var(--bg);
+      color: var(--navy);
+      min-height: 100vh;
+      padding: 20px;
+      background-image: 
+        radial-gradient(circle at 20% 80%, rgba(152, 217, 182, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(232, 93, 76, 0.1) 0%, transparent 50%);
+    }
+
+    .header {
+      text-align: center;
+      padding: 30px 20px;
+      position: relative;
+    }
+
+    .badge {
+      display: inline-block;
+      background: var(--coral);
+      color: white;
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      margin-bottom: 15px;
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+
+    h1 {
+      font-family: 'Bangers', cursive;
+      font-size: clamp(2.5rem, 8vw, 4rem);
+      color: var(--navy);
+      letter-spacing: 3px;
+      margin-bottom: 10px;
+      text-shadow: 3px 3px 0 var(--gold);
+    }
+
+    .subtitle {
+      font-family: 'DM Mono', monospace;
+      font-size: 14px;
+      color: var(--coral);
+      letter-spacing: 1px;
+    }
+
+    .case-file {
+      max-width: 900px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 10px 40px var(--shadow);
+      overflow: hidden;
+    }
+
+    .case-header {
+      background: var(--navy);
+      color: white;
+      padding: 25px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .case-icon {
+      width: 60px;
+      height: 60px;
+      background: var(--coral);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 30px;
+      animation: shake 0.5s ease-in-out infinite;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: rotate(-5deg); }
+      50% { transform: rotate(5deg); }
+    }
+
+    .case-info h2 {
+      font-family: 'Bangers', cursive;
+      font-size: 1.8rem;
+      letter-spacing: 2px;
+    }
+
+    .case-info p {
+      font-family: 'DM Mono', monospace;
+      font-size: 13px;
+      opacity: 0.8;
+      margin-top: 5px;
+    }
+
+    .patient-info {
+      background: var(--cream);
+      padding: 20px 25px;
+      border-bottom: 3px dashed var(--gold);
+    }
+
+    .patient-info h3 {
+      font-size: 14px;
+      color: var(--coral);
+      margin-bottom: 12px;
+      letter-spacing: 2px;
+    }
+
+    .patient-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+    }
+
+    .patient-item {
+      background: white;
+      padding: 12px 15px;
+      border-radius: 10px;
+      border-left: 4px solid var(--mint);
+    }
+
+    .patient-item label {
+      font-size: 11px;
+      color: #888;
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .patient-item span {
+      font-weight: 700;
+      font-size: 14px;
+    }
+
+    .symptom-section {
+      padding: 25px;
+    }
+
+    .section-title {
+      font-family: 'Bangers', cursive;
+      font-size: 1.5rem;
+      color: var(--navy);
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .symptom-timeline {
+      position: relative;
+      padding-left: 30px;
+    }
+
+    .symptom-timeline::before {
+      content: '';
+      position: absolute;
+      left: 8px;
+      top: 0;
+      bottom: 0;
+      width: 4px;
+      background: linear-gradient(to bottom, var(--coral), var(--gold), var(--mint));
+      border-radius: 2px;
+    }
+
+    .symptom-item {
+      position: relative;
+      margin-bottom: 25px;
+      padding: 20px;
+      background: var(--cream);
+      border-radius: 15px;
+      border: 2px solid transparent;
+      transition: all 0.3s ease;
+    }
+
+    .symptom-item:hover {
+      border-color: var(--coral);
+      transform: translateX(10px);
+    }
+
+    .symptom-item::before {
+      content: attr(data-step);
+      position: absolute;
+      left: -38px;
+      top: 20px;
+      width: 30px;
+      height: 30px;
+      background: var(--navy);
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .symptom-item h4 {
+      color: var(--coral);
+      margin-bottom: 8px;
+      font-size: 15px;
+    }
+
+    .symptom-item .command {
+      font-family: 'DM Mono', monospace;
+      background: var(--navy);
+      color: var(--mint);
+      padding: 10px 15px;
+      border-radius: 8px;
+      font-size: 13px;
+      margin: 10px 0;
+      overflow-x: auto;
+    }
+
+    .symptom-item .result {
+      font-size: 13px;
+      color: #666;
+      padding: 10px;
+      background: white;
+      border-radius: 8px;
+      border-left: 3px solid var(--gold);
+    }
+
+    .symptom-item .finding {
+      display: inline-block;
+      background: var(--coral);
+      color: white;
+      padding: 4px 12px;
+      border-radius: 15px;
+      font-size: 12px;
+      font-weight: 700;
+      margin-top: 10px;
+    }
+
+    .diagnosis {
+      background: linear-gradient(135deg, var(--navy), #2a3b5a);
+      color: white;
+      padding: 25px;
+      margin: 0 25px 25px;
+      border-radius: 15px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .diagnosis::before {
+      content: '🔍';
+      position: absolute;
+      right: -20px;
+      top: -20px;
+      font-size: 120px;
+      opacity: 0.1;
+    }
+
+    .diagnosis h3 {
+      font-family: 'Bangers', cursive;
+      font-size: 1.3rem;
+      margin-bottom: 15px;
+      letter-spacing: 2px;
+    }
+
+    .diagnosis-list {
+      list-style: none;
+    }
+
+    .diagnosis-list li {
+      padding: 8px 0;
+      padding-left: 25px;
+      position: relative;
+      font-size: 14px;
+    }
+
+    .diagnosis-list li::before {
+      content: '⚠️';
+      position: absolute;
+      left: 0;
+    }
+
+    .prescription {
+      padding: 25px;
+      background: var(--cream);
+    }
+
+    .prescription-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 15px;
+      margin-top: 15px;
+    }
+
+    .prescription-card {
+      background: white;
+      padding: 20px;
+      border-radius: 15px;
+      border-top: 4px solid var(--coral);
+      transition: all 0.3s ease;
+    }
+
+    .prescription-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 30px var(--shadow);
+    }
+
+    .prescription-card h4 {
+      color: var(--navy);
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .prescription-card p {
+      font-size: 13px;
+      color: #666;
+      line-height: 1.6;
+    }
+
+    .prescription-card .action {
+      display: inline-block;
+      background: var(--mint);
+      color: var(--navy);
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 700;
+      margin-top: 10px;
+    }
+
+    .notes-section {
+      padding: 25px;
+      border-top: 2px dashed var(--gold);
+    }
+
+    .notes-input {
+      width: 100%;
+      min-height: 100px;
+      border: 2px solid var(--cream);
+      border-radius: 15px;
+      padding: 15px;
+      font-family: 'Caveat', cursive;
+      font-size: 18px;
+      resize: vertical;
+      transition: border-color 0.3s ease;
+    }
+
+    .notes-input:focus {
+      outline: none;
+      border-color: var(--coral);
+    }
+
+    .notes-input::placeholder {
+      color: #aaa;
+    }
+
+    .footer {
+      text-align: center;
+      padding: 30px;
+      font-family: 'Caveat', cursive;
+      font-size: 18px;
+      color: #888;
+    }
+
+    .footer .emoji {
+      font-size: 24px;
+      margin-bottom: 10px;
+    }
+
+    @media (max-width: 600px) {
+      .case-header {
+        flex-direction: column;
+        text-align: center;
+      }
+      
+      .symptom-timeline {
+        padding-left: 20px;
+      }
+      
+      .symptom-item::before {
+        left: -28px;
+        width: 24px;
+        height: 24px;
+        font-size: 10px;
+      }
+    }
+
+    .animated-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      pointer-events: none;
+      z-index: -1;
+      overflow: hidden;
+    }
+
+    .floating-shape {
+      position: absolute;
+      border-radius: 50%;
+      animation: float 20s ease-in-out infinite;
+      opacity: 0.3;
+    }
+
+    .floating-shape:nth-child(1) {
+      width: 100px;
+      height: 100px;
+      background: var(--coral);
+      top: 10%;
+      left: 10%;
+      animation-delay: 0s;
+    }
+
+    .floating-shape:nth-child(2) {
+      width: 60px;
+      height: 60px;
+      background: var(--gold);
+      top: 60%;
+      right: 15%;
+      animation-delay: -5s;
+    }
+
+    .floating-shape:nth-child(3) {
+      width: 80px;
+      height: 80px;
+      background: var(--mint);
+      bottom: 20%;
+      left: 20%;
+      animation-delay: -10s;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translate(0, 0) rotate(0deg); }
+      25% { transform: translate(30px, -30px) rotate(90deg); }
+      50% { transform: translate(0, -60px) rotate(180deg); }
+      75% { transform: translate(-30px, -30px) rotate(270deg); }
+    }
+
+    .timeline-nav {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .timeline-nav button {
+      background: white;
+      border: 2px solid var(--navy);
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .timeline-nav button:hover,
+    .timeline-nav button.active {
+      background: var(--navy);
+      color: white;
+    }
+
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="animated-bg">
+    <div class="floating-shape"></div>
+    <div class="floating-shape"></div>
+    <div class="floating-shape"></div>
+  </div>
+
+  <div class="header">
+    <div class="badge">🚨 急診案例</div>
+    <h1>301 急診室</h1>
+    <p class="subtitle">gpt.chung.men Redirect Loop Investigation</p>
+  </div>
+
+  <div class="case-file">
+    <div class="case-header">
+      <div class="case-icon">🏥</div>
+      <div class="case-info">
+        <h2>病例編號 #20260510-001</h2>
+        <p>發病時間：2026-05-10 15:00｜報告人：三色蛋｜嚴重程度：🟡 中</p>
+      </div>
+    </div>
+
+    <div class="patient-info">
+      <h3>📋 患者資料</h3>
+      <div class="patient-grid">
+        <div class="patient-item">
+          <label>網址</label>
+          <span>gpt.chung.men</span>
+        </div>
+        <div class="patient-item">
+          <label>DNS</label>
+          <span>A → 104.21.x.x / 172.67.x.x</span>
+        </div>
+        <div class="patient-item">
+          <label>Proxy 狀態</label>
+          <span>☁️ Cloudflare Proxy 開啟</span>
+        </div>
+        <div class="patient-item">
+          <label>主機</label>
+          <span>JP1 (158.101.146.213)</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="symptom-section">
+      <h3 class="section-title">🩺 症狀 Timeline</h3>
+      
+      <div class="timeline-nav">
+        <button class="active" onclick="showStep('all')">全部</button>
+        <button onclick="showStep('dns')">DNS 階段</button>
+        <button onclick="showStep('curl')">Curl 階段</button>
+        <button onclick="showStep('ssl')">SSL 階段</button>
+        <button onclick="showStep('cf')">CF 階段</button>
+      </div>
+
+      <div class="symptom-timeline">
+        <div class="symptom-item" data-step="1" data-category="dns">
+          <h4>🔍 Step 1: DNS 現況確認</h4>
+          <div class="command">$ curl https://gpt.chung.men/</div>
+          <div class="result">
+            <strong>觀察：</strong>curl 出現 <code>301 location: https://gpt.chung.men/</code> 無限循環
+          </div>
+        </div>
+
+        <div class="symptom-item" data-step="2" data-category="curl">
+          <h4>🔍 Step 2: 直接打 JP1 公網 IP</h4>
+          <div class="command">$ curl http://158.101.146.213/</div>
+          <div class="result">
+            <strong>發現：</strong>port 80 流量被導向 Cloudflare，回傳 <code>server: cloudflare</code>
+          </div>
+        </div>
+
+        <div class="symptom-item" data-step="3" data-category="ssl">
+          <h4>🔍 Step 3: JP1:443 + Host Header</h4>
+          <div class="command">$ curl -k https://158.101.146.213/ -H "Host: gpt.chung.men"</div>
+          <div class="result">
+            <strong>發現：</strong>cert 是 <code>agh.chung.men</code>（非預期！）但主機回 HTTP/2 200
+          </div>
+          <span class="finding">❌ nginx vhost 綁定異常</span>
+        </div>
+
+        <div class="symptom-item" data-step="4" data-category="ssl">
+          <h4>🔍 Step 4: Cloudflare SSL 查證</h4>
+          <div class="command">$ curl -I https://gpt.chung.men/</div>
+          <div class="result">
+            <strong>發現：</strong>Cloudflare SSL cert 為 Google Trust Services (<code>CN=chung.men</code>)，是 Cloudflare Universal SSL，非 Let's Encrypt
+          </div>
+        </div>
+
+        <div class="symptom-item" data-step="5" data-category="cf">
+          <h4>🔍 Step 5: JP1 本機自我測試</h4>
+          <div class="command">$ curl https://gpt.chung.men/ (from JP1)</div>
+          <div class="result">
+            <strong>確認：</strong>JP1 自己打也是 301 loop，問題不在客戶端 DNS
+          </div>
+        </div>
+
+        <div class="symptom-item" data-step="6" data-category="cf">
+          <h4>🔍 Step 6: nginx access log 確認</h4>
+          <div class="command">/var/log/nginx/access.log</div>
+          <div class="result">
+            <strong>確認：</strong>Cloudflare IPs (<code>172.67.x.x</code>) 確實有請求進來，代表流量有通過 CF
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="diagnosis">
+      <h3>🩻 初步診斷</h3>
+      <ul class="diagnosis-list">
+        <li><strong>嫌疑人一號：</strong>Cloudflare SSL/TLS Mode 可能為 <code>Flexible</code> — CF 與 origin 之間用 HTTP 而非 HTTPS，觸發 HTTPS always redirect</li>
+        <li><strong>嫌疑人二号：</strong>存在 Page Rule 設定 <code>Always Use HTTPS</code>，導致 CF 自己攔截並 redirect</li>
+        <li><strong>嫌疑人三號：</strong>JP1 nginx vhost <code>agh.chung.men</code> 搶答，gpt.chung.men 無正確綁定</li>
+      </ul>
+    </div>
+
+    <div class="prescription">
+      <h3 class="section-title">💊 處方箋</h3>
+      <div class="prescription-grid">
+        <div class="prescription-card">
+          <h4>📸 處方 1：取得 CF 截圖</h4>
+          <p>需要用戶提供 Cloudflare Dashboard 的 SSL/TLS mode 截圖，確認設定值（Off / Flexible / Full / Full Strict）</p>
+          <span class="action">🎯 最可能的原因</span>
+        </div>
+        <div class="prescription-card">
+          <h4>🔧 處方 2：檢查 nginx vhost</h4>
+          <p>確認 gpt.chung.men 的 nginx vhost 設定，檢查 listen 443 的 server_name 是否正確綁定</p>
+          <span class="action">⚠️ cert 異常需處理</span>
+        </div>
+        <div class="prescription-card">
+          <h4>🛡️ 處方 3：建議 SSL Mode</h4>
+          <p>如果目前是 Flexible，建議改為 Full 或 Full Strict（origin 需有有效 cert）</p>
+          <span class="action">✅ 最安全設定</span>
+        </div>
+        <div class="prescription-card">
+          <h4>📋 處方 4：待確認事項</h4>
+          <p>Cloudflare DNS 何時開啟 Proxy？之前是否為 DNS-only（灰色雲）？這可能是觸發因素</p>
+          <span class="action">❓ 需進一步了解</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="notes-section">
+      <h3 class="section-title">📝 偵探筆記</h3>
+      <textarea class="notes-input" id="notes" placeholder="在這裡記錄你的偵察筆記..."></textarea>
+    </div>
+  </div>
+
+  <div class="footer">
+    <div class="emoji">🕵️‍♂️</div>
+    <p>Case #20260510-001 | 301 急診室 | 網站リダイレクト調査</p>
+  </div>
+
+  <script>
+    // Save notes to localStorage
+    const notes = document.getElementById('notes');
+    const savedNotes = localStorage.getItem('301-er-notes');
+    if (savedNotes) {
+      notes.value = savedNotes;
+    }
+
+    notes.addEventListener('input', () => {
+      localStorage.setItem('301-er-notes', notes.value);
+    });
+
+    // Timeline filter
+    function showStep(category) {
+      const items = document.querySelectorAll('.symptom-item');
+      const buttons = document.querySelectorAll('.timeline-nav button');
+      
+      buttons.forEach(btn => btn.classList.remove('active'));
+      event.target.classList.add('active');
+      
+      items.forEach(item => {
+        if (category === 'all') {
+          item.classList.remove('hidden');
+        } else {
+          if (item.dataset.category === category) {
+            item.classList.remove('hidden');
+          } else {
+            item.classList.add('hidden');
+          }
+        }
+      });
+    }
+
+    // Add some interactive flair
+    document.querySelectorAll('.symptom-item').forEach(item => {
+      item.addEventListener('mouseenter', () => {
+        item.style.borderColor = 'var(--coral)';
+      });
+      item.addEventListener('mouseleave', () => {
+        item.style.borderColor = 'transparent';
+      });
+    });
+  </script>
+</body>
+</html>
