@@ -1,18 +1,23 @@
 # Daily Lab
 
-Total entries: 82
+Total entries: 83
 
 ## Featured (Latest 3)
+
+- **2026-05-13** [🛫 釜山倒數 — Busan Countdown](2026-05-13/README.md) — 端午連假出發倒數工具，護照風格卡片設計，內建待辦清單與隨機推薦功能
 
 - **2026-05-12** [🔮 乙酉木日晨間占卜](2026-05-12/README.md) — 結合易經干支與塔羅占卜的每日晨間占卜工具，帶有互動式翻牌動畫與系統狀態整合
 
 - **2026-05-11** [🏥 301 急診室 — 網站リダイレクト調査](2026-05-11/README.md) — 用急診室病歷報告風格呈現網站 301 redirect loop 的除錯流程，包含 6 步驟診斷時間軸、互動式症狀過濾、處方箋建議。
-- **2026-05-10** [🌅 早晨 Routine 打卡機](2026-05-10/README.md) — 追蹤早晨例行公事完成狀態的視覺化打卡工具，支援自訂任務、連續打卡統計與本地儲存。
 - **2026-05-08** [💡 有用公式工作坊 (Useful Formula Workshop)](2026-05-08/README.md) — 輸入「被需要 × 被看見 × 還是自己」三個變數，計算今天的有用程度。Bright Comic Action 亮色漫畫動作風，包含互動卡片、計算機、localStorage 歷史記錄。
 - **2026-05-07** [🐟 魚油期限拯救中心 (Fish Oil Rescue Center)](2026-05-07/README.md) — 魚油劇場荒謬情境做成互動拯救中心，包含4個角色卡片、15種藉口生成器、4步驟拯救任務系統。Bright Comic Action 亮色漫畫動作風
 - **2026-05-06** [🏛️ 越南獨立宮時光機 (Vietnam Independence Palace Time Machine)](2026-05-06/README.md) — 用報紙/博物館文件風格呈現獨立宮的 4 個時代——從法屬時期到今日博物館，包含可點擊的時間軸、視覺檔案卡片、關鍵數據面板。Vintage Editorial Newsprint 復古報紙文件風
 
 ## Categories
+
+### travel
+
+- 2026-05-13 — [🛫 釜山倒數 — Busan Countdown](2026-05-13/README.md)
 
 ### 惡搞系
 
