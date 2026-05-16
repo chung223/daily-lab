@@ -1,12 +1,14 @@
 # Daily Lab
 
-Total entries: 84
+Total entries: 85
 
 ## Featured (Latest 3)
 
 - **2026-05-16** [🌙 凌晨矛盾簿 | Midnight Contradiction Journal](2026-05-16/README.md) — 記錄凌晨頭腦最誠實的矛盾時刻，輸入「我想做」vs「真正想做」，用滑桿調整矛盾指數。Memphis 普普風格卡片設計，localStorage 持久化矛盾檔案庫
 
 - **2026-05-13** [🛫 釜山倒數 — Busan Countdown](2026-05-13/README.md) — 端午連假出發倒數工具，護照風格卡片設計，內建待辦清單與隨機推薦功能
+
+- **2026-05-12** [🔮 乙酉木日晨間占卜](2026-05-12/README.md) — 每日晨間占卜工具，干支命理與五行能量解讀
 
 ## Categories
 
@@ -39,6 +41,9 @@ Total entries: 84
 ### interactive
 
 - 2026-05-16 — [🌙 凌晨矛盾簿 | Midnight Contradiction Journal](2026-05-16/README.md)
+- 2026-05-13 — [🛫 釜山倒數 — Busan Countdown](2026-05-13/README.md)
+- 2026-05-12 — [🔮 乙酉木日晨間占卜](2026-05-12/README.md)
+- 2026-05-10 — [🌅 早晨 Routine 打卡機](2026-05-10/README.md)
 - 2026-05-08 — [💡 有用公式工作坊 (Useful Formula Workshop)](2026-05-08/README.md)
 - 2026-05-05 — [💡 靈感便利貼](2026-05-05/README.md)
 - 2026-04-07 — [時光岔路站 | Parallel Platform](2026-04-07/README.md)

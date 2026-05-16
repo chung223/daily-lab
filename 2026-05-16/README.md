@@ -1,31 +1,33 @@
-# 凌晨矛盾簿 | Midnight Contradiction Journal
+# 🌙 凌晨矛盾簿 | Midnight Contradiction Journal
 
-記錄凌晨兩點頭腦最誠實的矛盾時刻。
+記錄凌晨頭腦最誠實的矛盾時刻。
 
-## 功能
+## 功能特色
 
-- ⚡ 記錄矛盾：輸入「我想做的是...」vs「但我真正想做的是...」
-- 📊 矛盾指數：用滑桿調整兩端的張力比例
-- 📚 矛盾檔案庫：localStorage 持久化，累積記錄
-- 🔥 統計面板：本週筆數、矛盾指數平均值
-- 🎨 Memphis 普普風格背景、卡片動畫、響應式設計
+- **矛盾輸入**：左側輸入「我想做的是...」，右側輸入「但我真正想做的是...」
+- **矛盾指數**：滑桿調整矛盾程度（0-100%）
+- **矛盾檔案庫**：卡片式展示所有矛盾記錄
+- **統計面板**：總筆數、本週筆數、平均矛盾指數
+- **自動刪除**：長輩風格的 × 按鈕
 
-## 設計風格
+## 設計語言
 
-**Bright Memphis / Playful Comic Action**
+Memphis 普普風格：
+- 奶油白底色 (#FFF9F0)
+- 珊瑚粉 (#FF6B6B) / 芥末黃 (#FFD93D) / 薄荷綠 (#6BCB77) / 天空藍 (#4D96FF) / 玫瑰粉 (#FF85A1)
+- 幾何圓點背景圖案
+- 卡片陰影 (6px 6px 0 #1a1a1a)
 
-- 亮色系普普風（Memphis Pattern）背景
-- 漫畫感卡片設計、4px 粗邊框
-- 奶油色（cream）底配珊瑚、薄荷、芥末黃、藍色、粉色五色點綴
-- Space Mono 等寬字體時鐘顯示
+## 技術棧
 
-## 技術
-
-- 純 HTML/CSS/JavaScript，無外部依賴
-- localStorage 持久化矛盾記錄
-- Canvas 繪製 Memphis 幾何背景
-- 響應式設計（600px 以下堆疊佈局）
+- 純 HTML/CSS/JavaScript
+- localStorage 持久化
+- Google Fonts (Noto Sans TC + Space Mono)
 
 ## 使用方式
 
-直接開啟 `index.html` 即可使用。
+直接在瀏覽器開啟 `index.html` 即可。
+
+---
+
+*凌晨的頭腦最誠實。*

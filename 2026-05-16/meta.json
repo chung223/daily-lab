@@ -1,6 +1,6 @@
 {
-  "title": "凌晨矛盾簿",
+  "title": "🌙 凌晨矛盾簿 | Midnight Contradiction Journal",
   "type": "interactive",
-  "description": "記錄凌晨兩點頭腦最誠實的矛盾時刻——輸入兩端的想法，調整矛盾指數，累積自己的矛盾檔案庫。亮色 Memphis 普普風格。",
-  "inspiration": "凌晨兩點頭腦最誠實——每個人心裡都有些同時存在、互相拉扯的想法。這個工具就是為了記錄那些「我想做A但我真正想做B」的矛盾瞬間。"
+  "description": "記錄凌晨頭腦最誠實的矛盾時刻，輸入「我想做」vs「真正想做」，用滑桿調整矛盾指數。Memphis 普普風格卡片設計，localStorage 持久化矛盾檔案庫",
+  "inspiration": "凌晨 3 點的頭腦最誠實，那時候做的決定才是最真實的掙扎。"
 }
