@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>船長航海日誌 | Captain's Log</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Caveat:wght@400;700&family=Noto+Sans+TC:wght@400;500;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --paper: #F5F0E4;
+      --paper-dark: #E8E0D0;
+      --ink: #2C1810;
+      --navy: #1A3A5C;
+      --gold: #C9A227;
+      --wine: #8B2942;
+      --seafoam: #5B8A72;
+      --rust: #A0522D;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Noto Sans TC', sans-serif;
+      background: var(--paper);
+      background-image: 
+        url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0h100v100H0z' fill='none'/%3E%3Cpath d='M20 20h1v1h-1zM60 40h1v1h-1zM80 10h1v1h-1zM40 70h1v1h-1zM90 60h1v1h-1zM10 90h1v1h-1z' fill='%23D4C4A0' fill-opacity='0.3'/%3E%3C/svg%3E");
+      min-height: 100vh;
+      color: var(--ink);
+      padding: 20px;
+    }
+    
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    
+    /* Header */
+    .header {
+      text-align: center;
+      margin-bottom: 30px;
+      position: relative;
+    }
+    
+    .header::before,
+    .header::after {
+      content: '⚓';
+      font-size: 24px;
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      opacity: 0.3;
+    }
+    
+    .header::before { left: 10%; }
+    .header::after { right: 10%; }
+    
+    .header h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.5rem;
+      color: var(--navy);
+      letter-spacing: 2px;
+      margin-bottom: 5px;
+    }
+    
+    .header .subtitle {
+      font-family: 'Caveat', cursive;
+      font-size: 1.4rem;
+      color: var(--gold);
+      font-style: italic;
+    }
+    
+    .divider {
+      height: 3px;
+      background: linear-gradient(90deg, transparent, var(--gold), var(--navy), var(--gold), transparent);
+      margin: 20px 0;
+    }
+    
+    /* Ship Status */
+    .ship-status {
+      background: var(--paper-dark);
+      border: 2px solid var(--navy);
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 25px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 15px;
+    }
+    
+    .status-item {
+      text-align: center;
+    }
+    
+    .status-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--rust);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 5px;
+    }
+    
+    .status-value {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.3rem;
+      color: var(--navy);
+    }
+    
+    /* Log Entry Form */
+    .log-form {
+      background: white;
+      border: 3px solid var(--ink);
+      border-radius: 12px;
+      padding: 25px;
+      margin-bottom: 30px;
+      box-shadow: 6px 6px 0 var(--ink);
+    }
+    
+    .form-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem;
+      color: var(--wine);
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .form-row {
+      margin-bottom: 20px;
+    }
+    
+    .form-row label {
+      display: block;
+      font-family: 'Caveat', cursive;
+      font-size: 1.2rem;
+      color: var(--navy);
+      margin-bottom: 8px;
+    }
+    
+    .form-row input,
+    .form-row textarea,
+    .form-row select {
+      width: 100%;
+      padding: 12px 15px;
+      border: 2px solid var(--paper-dark);
+      border-radius: 6px;
+      font-family: 'Noto Sans TC', sans-serif;
+      font-size: 1rem;
+      background: var(--paper);
+      transition: all 0.2s;
+    }
+    
+    .form-row input:focus,
+    .form-row textarea:focus,
+    .form-row select:focus {
+      outline: none;
+      border-color: var(--gold);
+      box-shadow: 0 0 0 3px rgba(201, 162, 39, 0.2);
+    }
+    
+    .form-row textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+    
+    .wind-direction {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+    
+    .wind-btn {
+      padding: 15px 10px;
+      border: 2px solid var(--navy);
+      background: var(--paper);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: center;
+    }
+    
+    .wind-btn:hover {
+      background: var(--navy);
+      color: white;
+      transform: translateY(-2px);
+    }
+    
+    .wind-btn.selected {
+      background: var(--gold);
+      border-color: var(--gold);
+      color: var(--ink);
+      transform: scale(1.05);
+    }
+    
+    .wind-btn .icon {
+      font-size: 1.5rem;
+      display: block;
+      margin-bottom: 5px;
+    }
+    
+    .wind-btn .label {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.8rem;
+    }
+    
+    .mood-select {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 10px;
+    }
+    
+    .mood-btn {
+      padding: 15px;
+      border: 2px solid var(--paper-dark);
+      background: var(--paper);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: center;
+    }
+    
+    .mood-btn:hover {
+      border-color: var(--navy);
+      transform: translateY(-2px);
+    }
+    
+    .mood-btn.selected {
+      border-color: var(--gold);
+      background: linear-gradient(135deg, var(--gold) 0%, #E8C547 100%);
+      transform: scale(1.05);
+    }
+    
+    .mood-btn .icon {
+      font-size: 1.8rem;
+      display: block;
+      margin-bottom: 5px;
+    }
+    
+    .mood-btn .label {
+      font-size: 0.8rem;
+      color: var(--rust);
+    }
+    
+    .submit-btn {
+      width: 100%;
+      padding: 18px;
+      background: var(--navy);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-family: 'Playfair Display', serif;
+      font-size: 1.3rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    
+    .submit-btn:hover {
+      background: var(--ink);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+    
+    /* Log Entries */
+    .logs-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.8rem;
+      color: var(--navy);
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .log-entries {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    
+    .log-entry {
+      background: white;
+      border: 2px solid var(--ink);
+      border-radius: 10px;
+      padding: 20px;
+      position: relative;
+      animation: slideIn 0.4s ease-out;
+      box-shadow: 4px 4px 0 var(--ink);
+    }
+    
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .log-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 1px dashed var(--paper-dark);
+    }
+    
+    .log-date {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.9rem;
+      color: var(--rust);
+    }
+    
+    .log-wind {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'Caveat', cursive;
+      font-size: 1.1rem;
+      color: var(--navy);
+    }
+    
+    .log-wind .wind-icon {
+      font-size: 1.3rem;
+    }
+    
+    .log-mood {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      font-size: 2rem;
+    }
+    
+    .log-destination {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.4rem;
+      color: var(--wine);
+      margin-bottom: 10px;
+    }
+    
+    .log-content {
+      font-size: 1rem;
+      line-height: 1.7;
+      color: var(--ink);
+      margin-bottom: 15px;
+    }
+    
+    .log-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 15px;
+    }
+    
+    .log-tag {
+      padding: 4px 12px;
+      background: var(--paper);
+      border: 1px solid var(--paper-dark);
+      border-radius: 20px;
+      font-size: 0.8rem;
+      color: var(--navy);
+    }
+    
+    .log-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .log-harvest {
+      font-family: 'Caveat', cursive;
+      font-size: 1.1rem;
+      color: var(--seafoam);
+    }
+    
+    .log-delete {
+      background: none;
+      border: none;
+      color: var(--rust);
+      cursor: pointer;
+      font-size: 1.2rem;
+      padding: 5px;
+      opacity: 0.5;
+      transition: all 0.2s;
+    }
+    
+    .log-delete:hover {
+      opacity: 1;
+      transform: scale(1.2);
+    }
+    
+    /* Empty State */
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--rust);
+    }
+    
+    .empty-state .icon {
+      font-size: 4rem;
+      margin-bottom: 20px;
+      opacity: 0.5;
+    }
+    
+    .empty-state .text {
+      font-family: 'Caveat', cursive;
+      font-size: 1.5rem;
+    }
+    
+    /* Stats Panel */
+    .stats-panel {
+      background: var(--navy);
+      color: white;
+      border-radius: 12px;
+      padding: 20px;
+      margin-top: 30px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 15px;
+      text-align: center;
+    }
+    
+    .stat-item {
+      padding: 15px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 8px;
+    }
+    
+    .stat-value {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      color: var(--gold);
+    }
+    
+    .stat-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.75rem;
+      color: rgba(255,255,255,0.7);
+      text-transform: uppercase;
+      margin-top: 5px;
+    }
+    
+    /* Quote Banner */
+    .quote-banner {
+      background: linear-gradient(135deg, var(--wine) 0%, #6B1F34 100%);
+      color: white;
+      padding: 20px;
+      border-radius: 8px;
+      margin: 30px 0;
+      text-align: center;
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      position: relative;
+    }
+    
+    .quote-banner::before,
+    .quote-banner::after {
+      content: '⚓';
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 1.5rem;
+      opacity: 0.3;
+    }
+    
+    .quote-banner::before { left: 20px; }
+    .quote-banner::after { right: 20px; }
+    
+    .quote-banner .quote {
+      font-size: 1.2rem;
+      margin-bottom: 5px;
+    }
+    
+    .quote-banner .source {
+      font-size: 0.9rem;
+      opacity: 0.8;
+      font-style: normal;
+      font-family: 'Caveat', cursive;
+    }
+    
+    /* Responsive */
+    @media (max-width: 600px) {
+      .header h1 { font-size: 1.8rem; }
+      .header::before, .header::after { display: none; }
+      .wind-direction { grid-template-columns: repeat(2, 1fr); }
+      .mood-select { grid-template-columns: repeat(3, 1fr); }
+      .stats-panel { grid-template-columns: 1fr; }
+    }
+    
+    /* Confetti */
+    .confetti {
+      position: fixed;
+      width: 10px;
+      height: 10px;
+      pointer-events: none;
+      animation: confettiFall 3s ease-out forwards;
+    }
+    
+    @keyframes confettiFall {
+      0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(100vh) rotate(720deg);
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <h1>船長航海日誌</h1>
+      <p class="subtitle">Captain's Log — No Fixed Destination</p>
+    </header>
+    
+    <div class="divider"></div>
+    
+    <div class="ship-status">
+      <div class="status-item">
+        <div class="status-label">🗓 日期</div>
+        <div class="status-value" id="currentDate">2026年5月18日</div>
+      </div>
+      <div class="status-item">
+        <div class="status-label">🌊 本週航行</div>
+        <div class="status-value" id="weekCount">0 筆</div>
+      </div>
+      <div class="status-item">
+        <div class="status-label">🧭 最常風向</div>
+        <div class="status-value" id="topWind">—</div>
+      </div>
+      <div class="status-item">
+        <div class="status-label">⏱ 總航行日</div>
+        <div class="status-value" id="totalDays">0 天</div>
+      </div>
+    </div>
+    
+    <div class="quote-banner">
+      <div class="quote">「沒有固定遠方的船，AI沒有截止日期」</div>
+      <div class="source">— 三色蛋夢境・2026-05-17</div>
+    </div>
+    
+    <div class="log-form">
+      <h2 class="form-title">⚓ 記錄今日航行</h2>
+      
+      <div class="form-row">
+        <label>今日目的地（主題）</label>
+        <input type="text" id="destination" placeholder="例如：研究新技術、處理代辦事項、休息充電...">
+      </div>
+      
+      <div class="form-row">
+        <label>航行記錄（發生了什麼）</label>
+        <textarea id="content" placeholder="描述今天發生了什麼重要的事、學到了什麼、或任何想記錄的內容..."></textarea>
+      </div>
+      
+      <div class="form-row">
+        <label>風向（心情/狀態）</label>
+        <div class="wind-direction" id="windDirection">
+          <button class="wind-btn" data-wind="N" data-icon="⬆️">
+            <span class="icon">⬆️</span>
+            <span class="label">北風·冷靜</span>
+          </button>
+          <button class="wind-btn" data-wind="NE" data-icon="↗️">
+            <span class="icon">↗️</span>
+            <span class="label">東北·清晰</span>
+          </button>
+          <button class="wind-btn" data-wind="E" data-icon="➡️">
+            <span class="icon">➡️</span>
+            <span class="label">東風·前進</span>
+          </button>
+          <button class="wind-btn" data-wind="SE" data-icon="↘️">
+            <span class="icon">↘️</span>
+            <span class="label">東南·溫暖</span>
+          </button>
+          <button class="wind-btn" data-wind="S" data-icon="⬇️">
+            <span class="icon">⬇️</span>
+            <span class="label">南風·充沛</span>
+          </button>
+          <button class="wind-btn" data-wind="SW" data-icon="↙️">
+            <span class="icon">↙️</span>
+            <span class="label">西南·收獲</span>
+          </button>
+          <button class="wind-btn" data-wind="W" data-icon="⬅️">
+            <span class="icon">⬅️</span>
+            <span class="label">西風·回顧</span>
+          </button>
+          <button class="wind-btn" data-wind="NW" data-icon="↖️">
+            <span class="icon">↖️</span>
+            <span class="label">西北·沉靜</span>
+          </button>
+        </div>
+      </div>
+      
+      <div class="form-row">
+        <label>船隻心情（整體感受）</label>
+        <div class="mood-select" id="moodSelect">
+          <button class="mood-btn" data-mood="🌊">
+            <span class="icon">🌊</span>
+            <span class="label">平穩</span>
+          </button>
+          <button class="mood-btn" data-mood="⚓">
+            <span class="icon">⚓</span>
+            <span class="label">安定</span>
+          </button>
+          <button class="mood-btn" data-mood="🚀">
+            <span class="icon">🚀</span>
+            <span class="label">振奮</span>
+          </button>
+          <button class="mood-btn" data-mood="🌙">
+            <span class="icon">🌙</span>
+            <span class="label">平靜</span>
+          </button>
+          <button class="mood-btn" data-mood="⛵">
+            <span class="icon">⛵</span>
+            <span class="label">期待</span>
+          </button>
+        </div>
+      </div>
+      
+      <div class="form-row">
+        <label>標籤（可多選）</label>
+        <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+          <label style="display: flex; align-items: center; gap: 5px; padding: 8px 12px; background: var(--paper); border: 2px solid var(--paper-dark); border-radius: 20px; cursor: pointer;">
+            <input type="checkbox" value="工作" style="display: none;" onchange="this.parentElement.style.background = this.checked ? 'var(--gold)' : 'var(--paper)'; this.parentElement.style.borderColor = this.checked ? 'var(--gold)' : 'var(--paper-dark)';">
+            <span>⚙️ 工作</span>
+          </label>
+          <label style="display: flex; align-items: center; gap: 5px; padding: 8px 12px; background: var(--paper); border: 2px solid var(--paper-dark); border-radius: 20px; cursor: pointer;">
+            <input type="checkbox" value="學習" style="display: none;" onchange="this.parentElement.style.background = this.checked ? 'var(--gold)' : 'var(--paper)'; this.parentElement.style.borderColor = this.checked ? 'var(--gold)' : 'var(--paper-dark)';">
+            <span>📚 學習</span>
+          </label>
+          <label style="display: flex; align-items: center; gap: 5px; padding: 8px 12px; background: var(--paper); border: 2px solid var(--paper-dark); border-radius: 20px; cursor: pointer;">
+            <input type="checkbox" value="生活" style="display: none;" onchange="this.parentElement.style.background = this.checked ? 'var(--gold)' : 'var(--paper)'; this.parentElement.style.borderColor = this.checked ? 'var(--gold)' : 'var(--paper-dark)';">
+            <span>🏠 生活</span>
+          </label>
+          <label style="display: flex; align-items: center; gap: 5px; padding: 8px 12px; background: var(--paper); border: 2px solid var(--paper-dark); border-radius: 20px; cursor: pointer;">
+            <input type="checkbox" value="創意" style="display: none;" onchange="this.parentElement.style.background = this.checked ? 'var(--gold)' : 'var(--paper)'; this.parentElement.style.borderColor = this.checked ? 'var(--gold)' : 'var(--paper-dark)';">
+            <span>✨ 創意</span>
+          </label>
+          <label style="display: flex; align-items: center; gap: 5px; padding: 8px 12px; background: var(--paper); border: 2px solid var(--paper-dark); border-radius: 20px; cursor: pointer;">
+            <input type="checkbox" value="系統" style="display: none;" onchange="this.parentElement.style.background = this.checked ? 'var(--gold)' : 'var(--paper)'; this.parentElement.style.borderColor = this.checked ? 'var(--gold)' : 'var(--paper-dark)';">
+            <span>🔧 系統</span>
+          </label>
+        </div>
+      </div>
+      
+      <div class="form-row">
+        <label>今日收獲（一句話總結）</label>
+        <input type="text" id="harvest" placeholder="今天最重要的收獲是什麼？">
+      </div>
+      
+      <button class="submit-btn" onclick="addLog()">
+        ⚓ 拋錨啟航
+      </button>
+    </div>
+    
+    <h2 class="logs-title">📜 航海日誌</h2>
+    <div class="log-entries" id="logEntries">
+      <div class="empty-state">
+        <div class="icon">⚓</div>
+        <div class="text">還沒有記錄，揚起帆開始你的航行吧</div>
+      </div>
+    </div>
+    
+    <div class="stats-panel" id="statsPanel" style="display: none;">
+      <div class="stat-item">
+        <div class="stat-value" id="statTotal">0</div>
+        <div class="stat-label">總航行次數</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value" id="statWeek">0</div>
+        <div class="stat-label">本週記錄</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value" id="statStreak">0</div>
+        <div class="stat-label">連續天數</div>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    // State
+    let selectedWind = null;
+    let selectedMood = null;
+    
+    // Initialize
+    document.addEventListener('DOMContentLoaded', () => {
+      updateCurrentDate();
+      loadLogs();
+      setupWindButtons();
+      setupMoodButtons();
+    });
+    
+    function updateCurrentDate() {
+      const now = new Date();
+      const options = { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' };
+      const dateStr = now.toLocaleDateString('zh-TW', options);
+      document.getElementById('currentDate').textContent = dateStr;
+    }
+    
+    function setupWindButtons() {
+      document.querySelectorAll('.wind-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.wind-btn').forEach(b => b.classList.remove('selected'));
+          btn.classList.add('selected');
+          selectedWind = btn.dataset.wind;
+        });
+      });
+    }
+    
+    function setupMoodButtons() {
+      document.querySelectorAll('.mood-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('selected'));
+          btn.classList.add('selected');
+          selectedMood = btn.dataset.mood;
+        });
+      });
+    }
+    
+    function getTags() {
+      const checkboxes = document.querySelectorAll('.form-row input[type="checkbox"]:checked');
+      return Array.from(checkboxes).map(cb => cb.value);
+    }
+    
+    function addLog() {
+      const destination = document.getElementById('destination').value.trim();
+      const content = document.getElementById('content').value.trim();
+      const harvest = document.getElementById('harvest').value.trim();
+      
+      if (!destination || !content) {
+        alert('請填寫目的地和航行記錄');
+        return;
+      }
+      
+      const logs = JSON.parse(localStorage.getItem('captainLogs') || '[]');
+      const now = new Date();
+      
+      const newLog = {
+        id: now.getTime(),
+        date: now.toISOString(),
+        destination,
+        content,
+        wind: selectedWind || 'E',
+        mood: selectedMood || '⚓',
+        tags: getTags(),
+        harvest: harvest || '平安返航'
+      };
+      
+      logs.unshift(newLog);
+      localStorage.setItem('captainLogs', JSON.stringify(logs));
+      
+      // Reset form
+      document.getElementById('destination').value = '';
+      document.getElementById('content').value = '';
+      document.getElementById('harvest').value = '';
+      document.querySelectorAll('.wind-btn').forEach(b => b.classList.remove('selected'));
+      document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('selected'));
+      document.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+        cb.checked = false;
+        cb.dispatchEvent(new Event('change'));
+      });
+      selectedWind = null;
+      selectedMood = null;
+      
+      // Confetti
+      createConfetti();
+      
+      // Reload
+      loadLogs();
+    }
+    
+    function loadLogs() {
+      const logs = JSON.parse(localStorage.getItem('captainLogs') || '[]');
+      const container = document.getElementById('logEntries');
+      const statsPanel = document.getElementById('statsPanel');
+      
+      if (logs.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <div class="icon">⚓</div>
+            <div class="text">還沒有記錄，揚起帆開始你的航行吧</div>
+          </div>
+        `;
+        statsPanel.style.display = 'none';
+        return;
+      }
+      
+      statsPanel.style.display = 'grid';
+      
+      // Render entries
+      container.innerHTML = logs.map(log => {
+        const date = new Date(log.date);
+        const dateStr = date.toLocaleDateString('zh-TW', { month: 'long', day: 'numeric', weekday: 'short' });
+        const windIcon = getWindIcon(log.wind);
+        
+        return `
+          <div class="log-entry" data-id="${log.id}">
+            <span class="log-mood">${log.mood}</span>
+            <div class="log-header">
+              <span class="log-date">📅 ${dateStr}</span>
+              <span class="log-wind"><span class="wind-icon">${windIcon}</span> ${log.wind}風</span>
+            </div>
+            <div class="log-destination">⚓ ${log.destination}</div>
+            <div class="log-content">${log.content}</div>
+            ${log.tags.length > 0 ? `
+              <div class="log-tags">
+                ${log.tags.map(tag => `<span class="log-tag">${tag}</span>`).join('')}
+              </div>
+            ` : ''}
+            <div class="log-footer">
+              <span class="log-harvest">🌾 收獲：${log.harvest}</span>
+              <button class="log-delete" onclick="deleteLog(${log.id})">✕</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+      
+      // Update stats
+      updateStats(logs);
+    }
+    
+    function getWindIcon(wind) {
+      const icons = {
+        'N': '⬆️', 'NE': '↗️', 'E': '➡️', 'SE': '↘️',
+        'S': '⬇️', 'SW': '↙️', 'W': '⬅️', 'NW': '↖️'
+      };
+      return icons[wind] || '➡️';
+    }
+    
+    function updateStats(logs) {
+      // Total count
+      document.getElementById('statTotal').textContent = logs.length;
+      
+      // This week
+      const now = new Date();
+      const weekStart = new Date(now);
+      weekStart.setDate(now.getDate() - now.getDay());
+      weekStart.setHours(0, 0, 0, 0);
+      const weekLogs = logs.filter(l => new Date(l.date) >= weekStart);
+      document.getElementById('statWeek').textContent = weekLogs.length;
+      document.getElementById('weekCount').textContent = `${weekLogs.length} 筆`;
+      
+      // Top wind
+      const windCounts = {};
+      logs.forEach(l => {
+        windCounts[l.wind] = (windCounts[l.wind] || 0) + 1;
+      });
+      const topWind = Object.entries(windCounts).sort((a, b) => b[1] - a[1])[0];
+      document.getElementById('topWind').textContent = topWind ? `${topWind[0]}風 (${topWind[1]}次)` : '—';
+      
+      // Streak
+      let streak = 0;
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      for (let i = 0; i < 365; i++) {
+        const checkDate = new Date(today);
+        checkDate.setDate(today.getDate() - i);
+        const hasLog = logs.some(l => {
+          const logDate = new Date(l.date);
+          logDate.setHours(0, 0, 0, 0);
+          return logDate.getTime() === checkDate.getTime();
+        });
+        if (hasLog) streak++;
+        else if (i > 0) break;
+      }
+      document.getElementById('statStreak').textContent = streak;
+      document.getElementById('totalDays').textContent = `${streak} 天`;
+    }
+    
+    function deleteLog(id) {
+      if (!confirm('確定要刪除這筆航行記錄嗎？')) return;
+      const logs = JSON.parse(localStorage.getItem('captainLogs') || '[]');
+      const filtered = logs.filter(l => l.id !== id);
+      localStorage.setItem('captainLogs', JSON.stringify(filtered));
+      loadLogs();
+    }
+    
+    function createConfetti() {
+      const colors = ['#C9A227', '#1A3A5C', '#8B2942', '#5B8A72', '#A0522D'];
+      for (let i = 0; i < 50; i++) {
+        const confetti = document.createElement('div');
+        confetti.className = 'confetti';
+        confetti.style.left = Math.random() * 100 + 'vw';
+        confetti.style.top = '-10px';
+        confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+        confetti.style.animationDuration = (Math.random() * 2 + 2) + 's';
+        confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
+        document.body.appendChild(confetti);
+        setTimeout(() => confetti.remove(), 4000);
+      }
+    }
+  </script>
+</body>
+</html>
