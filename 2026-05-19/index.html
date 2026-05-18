@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>午餐辯論俱樂部 — Lunch Debate Club</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Caveat:wght@400;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --cream: #FFF9F0;
+      --tomato: #FF6B6B;
+      --mustard: #FFD93D;
+      --navy: #1A2B4A;
+      --coral: #FF8A6A;
+      --sage: #98D9B6;
+      --shadow: rgba(26, 43, 74, 0.15);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Noto Sans TC', sans-serif;
+      background: var(--cream);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Animated diagonal stripes background */
+    .bg-pattern {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: repeating-linear-gradient(
+        45deg,
+        transparent,
+        transparent 20px,
+        rgba(255, 107, 107, 0.03) 20px,
+        rgba(255, 107, 107, 0.03) 40px
+      );
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .container {
+      position: relative;
+      z-index: 1;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    /* Header */
+    .header {
+      text-align: center;
+      padding: 30px 0 20px;
+    }
+
+    .logo-badge {
+      display: inline-block;
+      background: var(--tomato);
+      color: white;
+      padding: 8px 24px;
+      border-radius: 20px;
+      font-family: 'Bangers', cursive;
+      font-size: 1.2rem;
+      letter-spacing: 2px;
+      transform: rotate(-2deg);
+      box-shadow: 3px 3px 0 var(--navy);
+      margin-bottom: 15px;
+    }
+
+    .title {
+      font-family: 'Bangers', cursive;
+      font-size: clamp(2.5rem, 8vw, 4rem);
+      color: var(--navy);
+      letter-spacing: 3px;
+      text-shadow: 4px 4px 0 var(--mustard);
+      line-height: 1.1;
+    }
+
+    .subtitle {
+      font-family: 'Caveat', cursive;
+      font-size: 1.4rem;
+      color: var(--coral);
+      margin-top: 10px;
+    }
+
+    /* Clock */
+    .clock {
+      background: var(--navy);
+      color: var(--mustard);
+      padding: 15px 25px;
+      border-radius: 15px;
+      font-family: 'Caveat', cursive;
+      font-size: 1.8rem;
+      text-align: center;
+      margin: 20px auto;
+      display: inline-block;
+      box-shadow: 0 8px 0 rgba(26, 43, 74, 0.3);
+    }
+
+    .clock-section {
+      text-align: center;
+    }
+
+    /* New Debate Section */
+    .new-debate {
+      background: white;
+      border-radius: 25px;
+      padding: 30px;
+      margin: 25px 0;
+      box-shadow: 0 8px 25px var(--shadow);
+      border: 4px solid var(--navy);
+    }
+
+    .section-title {
+      font-family: 'Bangers', cursive;
+      font-size: 1.8rem;
+      color: var(--navy);
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .debate-question {
+      width: 100%;
+      padding: 20px;
+      font-size: 1.1rem;
+      border: 3px solid var(--coral);
+      border-radius: 15px;
+      font-family: 'Noto Sans TC', sans-serif;
+      resize: none;
+      margin-bottom: 15px;
+      transition: all 0.3s;
+    }
+
+    .debate-question:focus {
+      outline: none;
+      border-color: var(--tomato);
+      box-shadow: 0 0 0 4px rgba(255, 107, 107, 0.2);
+    }
+
+    .options-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .option-input {
+      padding: 15px 20px;
+      font-size: 1rem;
+      border: 3px solid var(--sage);
+      border-radius: 15px;
+      font-family: 'Noto Sans TC', sans-serif;
+      transition: all 0.3s;
+    }
+
+    .option-input:focus {
+      outline: none;
+      border-color: var(--navy);
+      background: #f8fff8;
+    }
+
+    .option-input::placeholder {
+      color: #aaa;
+    }
+
+    .option-input.a {
+      background: linear-gradient(135deg, #fff5f5, #ffe8e8);
+    }
+
+    .option-input.b {
+      background: linear-gradient(135deg, #f5f8ff, #e8f0ff);
+    }
+
+    .submit-btn {
+      width: 100%;
+      padding: 20px;
+      background: linear-gradient(135deg, var(--tomato), var(--coral));
+      color: white;
+      border: none;
+      border-radius: 20px;
+      font-family: 'Bangers', cursive;
+      font-size: 1.5rem;
+      letter-spacing: 2px;
+      cursor: pointer;
+      transition: all 0.3s;
+      box-shadow: 0 6px 0 #c44;
+    }
+
+    .submit-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 9px 0 #c44;
+    }
+
+    .submit-btn:active {
+      transform: translateY(3px);
+      box-shadow: 0 3px 0 #c44;
+    }
+
+    /* Voting Section */
+    .voting-section {
+      margin: 25px 0;
+    }
+
+    .debate-card {
+      background: white;
+      border-radius: 25px;
+      padding: 25px;
+      margin-bottom: 20px;
+      box-shadow: 0 8px 25px var(--shadow);
+      border: 4px solid var(--navy);
+      animation: slideIn 0.4s ease-out;
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .debate-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+
+    .debate-date {
+      font-family: 'Caveat', cursive;
+      color: #888;
+      font-size: 1.1rem;
+    }
+
+    .debate-status {
+      background: var(--sage);
+      color: var(--navy);
+      padding: 5px 15px;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      font-weight: 700;
+    }
+
+    .debate-status.closed {
+      background: var(--mustard);
+    }
+
+    .debate-question-text {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 20px;
+      line-height: 1.5;
+    }
+
+    .vote-options {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+    }
+
+    .vote-btn {
+      padding: 20px;
+      border-radius: 20px;
+      border: 4px solid;
+      cursor: pointer;
+      transition: all 0.3s;
+      text-align: center;
+      font-family: 'Bangers', cursive;
+      font-size: 1.3rem;
+      letter-spacing: 1px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .vote-btn.option-a {
+      background: linear-gradient(135deg, #fff5f5, #ffe8e8);
+      border-color: var(--tomato);
+      color: var(--tomato);
+    }
+
+    .vote-btn.option-b {
+      background: linear-gradient(135deg, #f5f8ff, #e8f0ff);
+      border-color: var(--navy);
+      color: var(--navy);
+    }
+
+    .vote-btn:hover {
+      transform: scale(1.05);
+    }
+
+    .vote-btn.voted {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+
+    .vote-btn.winner {
+      border-width: 5px;
+      transform: scale(1.02);
+    }
+
+    .vote-count {
+      font-family: 'Caveat', cursive;
+      font-size: 1rem;
+      margin-top: 8px;
+      color: #666;
+    }
+
+    .winner-badge {
+      position: absolute;
+      top: -10px;
+      right: -10px;
+      background: var(--mustard);
+      color: var(--navy);
+      padding: 5px 15px;
+      border-radius: 15px;
+      font-size: 0.8rem;
+      transform: rotate(15deg);
+    }
+
+    /* Results Bar */
+    .results-bar {
+      display: flex;
+      height: 15px;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-top: 15px;
+      background: #eee;
+    }
+
+    .result-a {
+      background: var(--tomato);
+      transition: width 0.5s ease;
+    }
+
+    .result-b {
+      background: var(--navy);
+      transition: width 0.5s ease;
+    }
+
+    /* History Section */
+    .history-section {
+      margin: 30px 0;
+    }
+
+    .history-card {
+      background: white;
+      border-radius: 20px;
+      padding: 20px;
+      margin-bottom: 15px;
+      box-shadow: 0 5px 15px var(--shadow);
+      border-left: 6px solid;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .history-card.option-a {
+      border-color: var(--tomato);
+    }
+
+    .history-card.option-b {
+      border-color: var(--navy);
+    }
+
+    .history-card:hover {
+      transform: translateX(10px);
+    }
+
+    .history-question {
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 8px;
+    }
+
+    .history-meta {
+      font-family: 'Caveat', cursive;
+      color: #888;
+      font-size: 1rem;
+    }
+
+    .history-choice {
+      font-family: 'Bangers', cursive;
+      font-size: 1.1rem;
+      margin-top: 5px;
+    }
+
+    .history-card.option-a .history-choice {
+      color: var(--tomato);
+    }
+
+    .history-card.option-b .history-choice {
+      color: var(--navy);
+    }
+
+    /* Stats Panel */
+    .stats-panel {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 15px;
+      margin: 30px 0;
+    }
+
+    .stat-card {
+      background: white;
+      border-radius: 20px;
+      padding: 20px;
+      text-align: center;
+      box-shadow: 0 5px 15px var(--shadow);
+      border-top: 5px solid;
+    }
+
+    .stat-card:nth-child(1) { border-color: var(--tomato); }
+    .stat-card:nth-child(2) { border-color: var(--navy); }
+    .stat-card:nth-child(3) { border-color: var(--mustard); }
+    .stat-card:nth-child(4) { border-color: var(--sage); }
+
+    .stat-number {
+      font-family: 'Bangers', cursive;
+      font-size: 2.5rem;
+      color: var(--navy);
+    }
+
+    .stat-label {
+      font-family: 'Caveat', cursive;
+      color: #888;
+      font-size: 1.1rem;
+      margin-top: 5px;
+    }
+
+    /* Confetti */
+    .confetti {
+      position: fixed;
+      pointer-events: none;
+      z-index: 100;
+    }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      .options-grid,
+      .vote-options {
+        grid-template-columns: 1fr;
+      }
+
+      .stats-panel {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .title {
+        font-size: 2rem;
+      }
+
+      .vote-btn {
+        padding: 15px;
+        font-size: 1.1rem;
+      }
+    }
+
+    /* Empty state */
+    .empty-state {
+      text-align: center;
+      padding: 40px;
+      color: #888;
+    }
+
+    .empty-icon {
+      font-size: 4rem;
+      margin-bottom: 15px;
+    }
+
+    .empty-text {
+      font-family: 'Caveat', cursive;
+      font-size: 1.5rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-pattern"></div>
+  
+  <div class="container">
+    <header class="header">
+      <div class="logo-badge">🍽️ 今天吃什麼?</div>
+      <h1 class="title">午餐辯論俱樂部</h1>
+      <p class="subtitle">「漢堡」vs「拉麵」— 這個世紀難題有解嗎?</p>
+    </header>
+
+    <div class="clock-section">
+      <div class="clock" id="clock">--:--:--</div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-panel">
+      <div class="stat-card">
+        <div class="stat-number" id="totalDebates">0</div>
+        <div class="stat-label">總辯論數</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" id="totalVotes">0</div>
+        <div class="stat-label">總投票數</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" id="streak">0</div>
+        <div class="stat-label">連續天數</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" id="todayVotes">0</div>
+        <div class="stat-label">今日投票</div>
+      </div>
+    </div>
+
+    <!-- New Debate Form -->
+    <div class="new-debate">
+      <h2 class="section-title">🗳️ 發起新辯論</h2>
+      <textarea class="debate-question" id="debateQuestion" rows="2" placeholder="今天的世紀難題是...? 例如：漢堡 vs 拉麵、躺 vs 卷、先洗澡 vs 後洗澡"></textarea>
+      <div class="options-grid">
+        <input type="text" class="option-input a" id="optionA" placeholder="選項 A">
+        <input type="text" class="option-input b" id="optionB" placeholder="選項 B">
+      </div>
+      <button class="submit-btn" onclick="createDebate()">⚡ 發起辯論!</button>
+    </div>
+
+    <!-- Active Debates -->
+    <div class="voting-section" id="activeDebates">
+      <h2 class="section-title">🔥 等待你的裁決</h2>
+      <div id="debatesContainer"></div>
+    </div>
+
+    <!-- History -->
+    <div class="history-section">
+      <h2 class="section-title">📜 裁決歷史</h2>
+      <div id="historyContainer"></div>
+    </div>
+  </div>
+
+  <script>
+    // State
+    let debates = JSON.parse(localStorage.getItem('lunchDebates') || '[]');
+    let history = JSON.parse(localStorage.getItem('lunchHistory') || '[]');
+
+    // Clock
+    function updateClock() {
+      const now = new Date();
+      const time = now.toLocaleTimeString('zh-TW', { hour12: false });
+      const date = now.toLocaleDateString('zh-TW', { month: 'long', day: 'numeric', weekday: 'short' });
+      document.getElementById('clock').textContent = `${date} ${time}`;
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    // Stats
+    function updateStats() {
+      const today = new Date().toDateString();
+      const todayVotes = history.filter(h => new Date(h.timestamp).toDateString() === today).length;
+      
+      document.getElementById('totalDebates').textContent = debates.length + history.length;
+      document.getElementById('totalVotes').textContent = history.length;
+      document.getElementById('todayVotes').textContent = todayVotes;
+      
+      // Calculate streak
+      let streak = 0;
+      let checkDate = new Date();
+      while (true) {
+        const dateStr = checkDate.toDateString();
+        const hasActivity = [...debates, ...history].some(item => 
+          new Date(item.timestamp || item.createdAt).toDateString() === dateStr
+        );
+        if (hasActivity) {
+          streak++;
+          checkDate.setDate(checkDate.getDate() - 1);
+        } else {
+          break;
+        }
+      }
+      document.getElementById('streak').textContent = streak;
+    }
+
+    // Create Debate
+    function createDebate() {
+      const question = document.getElementById('debateQuestion').value.trim();
+      const optionA = document.getElementById('optionA').value.trim();
+      const optionB = document.getElementById('optionB').value.trim();
+
+      if (!question || !optionA || !optionB) {
+        alert('請填寫完整：問題 + 兩個選項');
+        return;
+      }
+
+      const newDebate = {
+        id: Date.now(),
+        question,
+        optionA,
+        optionB,
+        votesA: 0,
+        votesB: 0,
+        voters: [],
+        createdAt: new Date().toISOString(),
+        timestamp: new Date().toISOString()
+      };
+
+      debates.unshift(newDebate);
+      localStorage.setItem('lunchDebates', JSON.stringify(debates));
+      
+      document.getElementById('debateQuestion').value = '';
+      document.getElementById('optionA').value = '';
+      document.getElementById('optionB').value = '';
+      
+      renderDebates();
+      updateStats();
+      createConfetti();
+    }
+
+    // Vote
+    function vote(debateId, choice) {
+      const debate = debates.find(d => d.id === debateId);
+      if (!debate) return;
+      
+      if (debate.voters.includes('user')) {
+        alert('你已經投過票了!');
+        return;
+      }
+
+      if (choice === 'A') {
+        debate.votesA++;
+      } else {
+        debate.votesB++;
+      }
+      debate.voters.push('user');
+
+      // Move to history
+      const historyEntry = {
+        id: debate.id,
+        question: debate.question,
+        choice: choice === 'A' ? debate.optionA : debate.optionB,
+        optionA: debate.optionA,
+        optionB: debate.optionB,
+        votesA: debate.votesA,
+        votesB: debate.votesB,
+        timestamp: new Date().toISOString()
+      };
+      history.unshift(historyEntry);
+
+      debates = debates.filter(d => d.id !== debateId);
+      localStorage.setItem('lunchDebates', JSON.stringify(debates));
+      localStorage.setItem('lunchHistory', JSON.stringify(history));
+
+      renderDebates();
+      renderHistory();
+      updateStats();
+      createConfetti();
+    }
+
+    // Render Debates
+    function renderDebates() {
+      const container = document.getElementById('debatesContainer');
+      
+      if (debates.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-icon">🍜</div>
+            <div class="empty-text">沒有正在進行的辯論<br>發起一個吧!</div>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = debates.map(debate => {
+        const total = debate.votesA + debate.votesB;
+        const percentA = total > 0 ? (debate.votesA / total * 100).toFixed(0) : 0;
+        const percentB = total > 0 ? (debate.votesB / total * 100).toFixed(0) : 0;
+        const hasVoted = debate.voters.includes('user');
+
+        return `
+          <div class="debate-card">
+            <div class="debate-header">
+              <span class="debate-date">${new Date(debate.timestamp).toLocaleDateString('zh-TW')}</span>
+              <span class="debate-status">${total === 0 ? '火熱進行中' : total + ' 票'}</span>
+            </div>
+            <div class="debate-question-text">${debate.question}</div>
+            <div class="vote-options">
+              <button class="vote-btn option-a ${hasVoted ? 'voted' : ''}" onclick="vote(${debate.id}, 'A')" ${hasVoted ? 'disabled' : ''}>
+                <div>${debate.optionA}</div>
+                <div class="vote-count">${debate.votesA} 票 (${percentA}%)</div>
+              </button>
+              <button class="vote-btn option-b ${hasVoted ? 'voted' : ''}" onclick="vote(${debate.id}, 'B')" ${hasVoted ? 'disabled' : ''}>
+                <div>${debate.optionB}</div>
+                <div class="vote-count">${debate.votesB} 票 (${percentB}%)</div>
+              </button>
+            </div>
+            <div class="results-bar">
+              <div class="result-a" style="width: ${percentA}%"></div>
+              <div class="result-b" style="width: ${percentB}%"></div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // Render History
+    function renderHistory() {
+      const container = document.getElementById('historyContainer');
+      
+      if (history.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-icon">📋</div>
+            <div class="empty-text">還沒有裁決記錄</div>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = history.map(entry => {
+        const choiceClass = entry.choice === entry.optionA ? 'option-a' : 'option-b';
+        return `
+          <div class="history-card ${choiceClass}">
+            <div class="history-question">${entry.question}</div>
+            <div class="history-meta">${new Date(entry.timestamp).toLocaleDateString('zh-TW')} • ${entry.votesA + entry.votesB} 票</div>
+            <div class="history-choice">✓ ${entry.choice}</div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // Confetti
+    function createConfetti() {
+      const colors = ['#FF6B6B', '#FFD93D', '#1A2B4A', '#98D9B6', '#FF8A6A'];
+      for (let i = 0; i < 50; i++) {
+        const confetti = document.createElement('div');
+        confetti.className = 'confetti';
+        confetti.style.cssText = `
+          position: fixed;
+          left: ${Math.random() * 100}vw;
+          top: -20px;
+          width: ${Math.random() * 10 + 5}px;
+          height: ${Math.random() * 10 + 5}px;
+          background: ${colors[Math.floor(Math.random() * colors.length)]};
+          border-radius: ${Math.random() > 0.5 ? '50%' : '0'};
+          animation: fall ${Math.random() * 2 + 2}s linear forwards;
+        `;
+        document.body.appendChild(confetti);
+        setTimeout(() => confetti.remove(), 4000);
+      }
+    }
+
+    // Add fall animation
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes fall {
+        to {
+          transform: translateY(100vh) rotate(720deg);
+          opacity: 0;
+        }
+      }
+    `;
+    document.head.appendChild(style);
+
+    // Init
+    renderDebates();
+    renderHistory();
+    updateStats();
+  </script>
+</body>
+</html>
