@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>味道翻譯機 | Flavor Translator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;700&family=Shippori+Mincho:wght@400;600&family=Caveat:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --cream: #FDF8F3;
+      --warm-brown: #8B6F47;
+      --matcha: #7A9E7E;
+      --sakura: #E8B4B8;
+      --ink: #2C2416;
+      --gold: #C4A35A;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Noto Serif TC', 'Shippori Mincho', serif;
+      background: var(--cream);
+      color: var(--ink);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Decorative background pattern */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-image: 
+        radial-gradient(circle at 20% 80%, rgba(200, 180, 160, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(122, 158, 126, 0.08) 0%, transparent 40%),
+        repeating-linear-gradient(
+          90deg,
+          transparent,
+          transparent 100px,
+          rgba(139, 111, 71, 0.03) 100px,
+          rgba(139, 111, 71, 0.03) 101px
+        );
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 40px 20px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Header */
+    header {
+      text-align: center;
+      margin-bottom: 50px;
+      opacity: 0;
+      animation: fadeInUp 0.8s ease forwards;
+    }
+
+    h1 {
+      font-family: 'Noto Serif TC', serif;
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: 8px;
+      letter-spacing: 0.1em;
+    }
+
+    .subtitle {
+      font-family: 'Caveat', cursive;
+      font-size: 1.4rem;
+      color: var(--warm-brown);
+      margin-bottom: 20px;
+    }
+
+    .intro-card {
+      background: white;
+      border-radius: 20px;
+      padding: 30px;
+      box-shadow: 0 4px 20px rgba(139, 111, 71, 0.1);
+      max-width: 600px;
+      margin: 0 auto;
+      border: 1px solid rgba(139, 111, 71, 0.1);
+    }
+
+    .intro-card p {
+      font-size: 1.1rem;
+      line-height: 1.8;
+      color: var(--ink);
+    }
+
+    .dream-quote {
+      font-family: 'Caveat', cursive;
+      font-size: 1.3rem;
+      color: var(--warm-brown);
+      text-align: center;
+      margin-top: 15px;
+      padding-top: 15px;
+      border-top: 1px dashed var(--sakura);
+    }
+
+    /* Input Section */
+    .input-section {
+      margin: 40px 0;
+      opacity: 0;
+      animation: fadeInUp 0.8s ease 0.2s forwards;
+    }
+
+    .input-card {
+      background: white;
+      border-radius: 24px;
+      padding: 35px;
+      box-shadow: 0 8px 40px rgba(139, 111, 71, 0.12);
+      border: 1px solid rgba(139, 111, 71, 0.08);
+    }
+
+    .input-label {
+      font-family: 'Caveat', cursive;
+      font-size: 1.5rem;
+      color: var(--warm-brown);
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .input-wrapper {
+      position: relative;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 120px;
+      padding: 20px;
+      font-family: 'Noto Serif TC', serif;
+      font-size: 1.1rem;
+      border: 2px solid rgba(139, 111, 71, 0.2);
+      border-radius: 16px;
+      resize: vertical;
+      background: var(--cream);
+      color: var(--ink);
+      transition: border-color 0.3s ease;
+    }
+
+    textarea:focus {
+      outline: none;
+      border-color: var(--matcha);
+    }
+
+    textarea::placeholder {
+      color: rgba(139, 111, 71, 0.5);
+    }
+
+    .btn-translate {
+      width: 100%;
+      padding: 18px 30px;
+      margin-top: 20px;
+      font-family: 'Noto Serif TC', serif;
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: white;
+      background: linear-gradient(135deg, var(--matcha) 0%, #5A7E5E 100%);
+      border: none;
+      border-radius: 14px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(122, 158, 126, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .btn-translate:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 25px rgba(122, 158, 126, 0.4);
+    }
+
+    .btn-translate:active {
+      transform: translateY(0);
+    }
+
+    .btn-translate:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* Result Section */
+    .result-section {
+      margin: 40px 0;
+      display: none;
+      opacity: 0;
+    }
+
+    .result-section.show {
+      display: block;
+      animation: fadeInUp 0.6s ease forwards;
+    }
+
+    .result-card {
+      background: white;
+      border-radius: 24px;
+      padding: 40px;
+      box-shadow: 0 12px 50px rgba(139, 111, 71, 0.15);
+      border: 1px solid rgba(139, 111, 71, 0.1);
+    }
+
+    .result-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 30px;
+      padding-bottom: 20px;
+      border-bottom: 1px dashed rgba(139, 111, 71, 0.2);
+    }
+
+    .result-title {
+      font-family: 'Noto Serif TC', serif;
+      font-size: 1.4rem;
+      color: var(--ink);
+    }
+
+    .result-badge {
+      font-family: 'Caveat', cursive;
+      font-size: 1rem;
+      color: var(--matcha);
+      background: rgba(122, 158, 126, 0.1);
+      padding: 6px 16px;
+      border-radius: 20px;
+    }
+
+    /* Translation Layers */
+    .translation-layer {
+      margin-bottom: 25px;
+      padding: 25px;
+      border-radius: 18px;
+      background: var(--cream);
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    .translation-layer.visible {
+      animation: fadeInUp 0.5s ease forwards;
+    }
+
+    .layer-icon {
+      font-size: 2rem;
+      margin-bottom: 10px;
+    }
+
+    .layer-label {
+      font-family: 'Caveat', cursive;
+      font-size: 1.2rem;
+      color: var(--warm-brown);
+      margin-bottom: 8px;
+    }
+
+    .layer-value {
+      font-family: 'Noto Serif TC', serif;
+      font-size: 1.3rem;
+      color: var(--ink);
+      line-height: 1.6;
+    }
+
+    /* Color Palette Display */
+    .color-palette {
+      display: flex;
+      gap: 12px;
+      margin-top: 15px;
+      flex-wrap: wrap;
+    }
+
+    .color-chip {
+      width: 50px;
+      height: 50px;
+      border-radius: 12px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .color-chip::after {
+      content: attr(data-name);
+      position: absolute;
+      bottom: -25px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-family: 'Caveat', cursive;
+      font-size: 0.85rem;
+      color: var(--warm-brown);
+      white-space: nowrap;
+    }
+
+    .color-chip:hover {
+      transform: scale(1.1);
+      transition: transform 0.2s ease;
+    }
+
+    /* Texture Display */
+    .texture-display {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+      margin-top: 15px;
+    }
+
+    .texture-tag {
+      font-family: 'Caveat', cursive;
+      font-size: 1.1rem;
+      padding: 8px 18px;
+      background: white;
+      border-radius: 25px;
+      border: 2px solid;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+    }
+
+    /* Example Cards */
+    .examples-section {
+      margin: 50px 0;
+      opacity: 0;
+      animation: fadeInUp 0.8s ease 0.4s forwards;
+    }
+
+    .examples-title {
+      font-family: 'Caveat', cursive;
+      font-size: 1.5rem;
+      color: var(--warm-brown);
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .examples-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+    }
+
+    .example-card {
+      background: white;
+      border-radius: 18px;
+      padding: 25px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(139, 111, 71, 0.08);
+      border: 1px solid transparent;
+    }
+
+    .example-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 30px rgba(139, 111, 71, 0.15);
+      border-color: var(--sakura);
+    }
+
+    .example-label {
+      font-family: 'Caveat', cursive;
+      font-size: 1.1rem;
+      color: var(--matcha);
+      margin-bottom: 8px;
+    }
+
+    .example-text {
+      font-family: 'Noto Serif TC', serif;
+      font-size: 1.05rem;
+      color: var(--ink);
+      line-height: 1.5;
+    }
+
+    /* History */
+    .history-section {
+      margin: 40px 0;
+      opacity: 0;
+      animation: fadeInUp 0.8s ease 0.6s forwards;
+    }
+
+    .history-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .history-title {
+      font-family: 'Caveat', cursive;
+      font-size: 1.4rem;
+      color: var(--warm-brown);
+    }
+
+    .history-list {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .history-item {
+      background: white;
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 3px 12px rgba(139, 111, 71, 0.08);
+      border-left: 4px solid var(--matcha);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .history-item:hover {
+      background: rgba(250, 248, 243, 0.8);
+    }
+
+    .history-content {
+      flex: 1;
+    }
+
+    .history-text {
+      font-family: 'Noto Serif TC', serif;
+      font-size: 1rem;
+      color: var(--ink);
+      margin-bottom: 5px;
+    }
+
+    .history-time {
+      font-family: 'Caveat', cursive;
+      font-size: 0.9rem;
+      color: rgba(139, 111, 71, 0.6);
+    }
+
+    .history-delete {
+      background: none;
+      border: none;
+      font-size: 1.2rem;
+      cursor: pointer;
+      color: rgba(139, 111, 71, 0.4);
+      padding: 5px 10px;
+      border-radius: 8px;
+      transition: all 0.2s ease;
+    }
+
+    .history-delete:hover {
+      background: rgba(232, 180, 184, 0.2);
+      color: var(--sakura);
+    }
+
+    .empty-history {
+      text-align: center;
+      padding: 40px 20px;
+      color: rgba(139, 111, 71, 0.5);
+      font-family: 'Caveat', cursive;
+      font-size: 1.2rem;
+    }
+
+    /* Stats */
+    .stats-bar {
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      padding: 20px;
+      margin-top: 40px;
+      background: rgba(255, 255, 255, 0.7);
+      border-radius: 16px;
+      backdrop-filter: blur(10px);
+    }
+
+    .stat-item {
+      text-align: center;
+    }
+
+    .stat-value {
+      font-family: 'Noto Serif TC', serif;
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--matcha);
+    }
+
+    .stat-label {
+      font-family: 'Caveat', cursive;
+      font-size: 1rem;
+      color: var(--warm-brown);
+    }
+
+    /* Animations */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+
+    @keyframes sparkle {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.7; transform: scale(1.2); }
+    }
+
+    .sparking {
+      animation: float 3s ease-in-out infinite;
+    }
+
+    /* Celebration particles */
+    .particle {
+      position: fixed;
+      pointer-events: none;
+      z-index: 1000;
+      font-size: 1.5rem;
+      animation: sparkle 1s ease-in-out;
+    }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      .container {
+        padding: 25px 15px;
+      }
+
+      .input-card, .result-card {
+        padding: 25px 20px;
+      }
+
+      .stats-bar {
+        gap: 25px;
+      }
+
+      .stat-value {
+        font-size: 1.5rem;
+      }
+
+      .color-chip {
+        width: 40px;
+        height: 40px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <header>
+      <h1>味道翻譯機</h1>
+      <p class="subtitle">Flavor Translator</p>
+      
+      <div class="intro-card">
+        <p>有些感覺很難用文字描述——孤單的味道、凌晨的氣息、回憶的溫度。這個工具幫你把任何抽象的感受，翻譯成看得見的色彩、觸得到的質感。</p>
+        <p class="dream-quote">「品嚐的人決定了味道」—— 阿笨，2026-05-20</p>
+      </div>
+    </header>
+
+    <!-- Input Section -->
+    <section class="input-section">
+      <div class="input-card">
+        <label class="input-label">
+          <span>🍜</span> 描述一種味道或感覺
+        </label>
+        <div class="input-wrapper">
+          <textarea id="flavorInput" placeholder="例如：孤單的味道、凌晨工作時 CPU 的金屬味、回憶中奶奶的厨房..."></textarea>
+        </div>
+        <button class="btn-translate" id="translateBtn" onclick="translateFlavor()">
+          <span>✨</span> 翻譯味道
+        </button>
+      </div>
+    </section>
+
+    <!-- Result Section -->
+    <section class="result-section" id="resultSection">
+      <div class="result-card">
+        <div class="result-header">
+          <h2 class="result-title" id="resultTitle">翻譯完成</h2>
+          <span class="result-badge">味道標本 #<span id="resultCount">1</span></span>
+        </div>
+        
+        <div class="translation-layer" id="layerColor">
+          <div class="layer-icon">🎨</div>
+          <div class="layer-label">色彩譯本</div>
+          <div class="layer-value" id="colorResult"></div>
+          <div class="color-palette" id="colorPalette"></div>
+        </div>
+        
+        <div class="translation-layer" id="layerTemp">
+          <div class="layer-icon">🌡️</div>
+          <div class="layer-label">溫度譯本</div>
+          <div class="layer-value" id="tempResult"></div>
+        </div>
+        
+        <div class="translation-layer" id="layerTexture">
+          <div class="layer-icon">✨</div>
+          <div class="layer-label">質感譯本</div>
+          <div class="layer-value" id="textureResult"></div>
+          <div class="texture-display" id="textureDisplay"></div>
+        </div>
+        
+        <div class="translation-layer" id="layerMood">
+          <div class="layer-icon">🌙</div>
+          <div class="layer-label">情緒譯本</div>
+          <div class="layer-value" id="moodResult"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Examples -->
+    <section class="examples-section">
+      <h3 class="examples-title">試試這些味道</h3>
+      <div class="examples-grid">
+        <div class="example-card" onclick="useExample('孤單的味道')">
+          <div class="example-label">🫧 情緒</div>
+          <div class="example-text">孤單的味道</div>
+        </div>
+        <div class="example-card" onclick="useExample('凌晨三點的咖啡')">
+          <div class="example-label">☕ 時間</div>
+          <div class="example-text">凌晨三點的咖啡</div>
+        </div>
+        <div class="example-card" onclick="useExample('初雪的触感')">
+          <div class="example-label">❄️ 自然</div>
+          <div class="example-text">初雪的觸感</div>
+        </div>
+        <div class="example-card" onclick="useExample('奶奶厨房的味道')">
+          <div class="example-label">👵 記憶</div>
+          <div class="example-text">奶奶廚房的味道</div>
+        </div>
+        <div class="example-card" onclick="useExample('失戀的顏色')">
+          <div class="example-label">💔 情感</div>
+          <div class="example-text">失戀的顏色</div>
+        </div>
+        <div class="example-card" onclick="useExample('成功時的空氣')">
+          <div class="example-label">🏆 成就</div>
+          <div class="example-text">成功時的空氣</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- History -->
+    <section class="history-section" id="historySection">
+      <div class="history-header">
+        <h3 class="history-title">📜 味道標本冊</h3>
+      </div>
+      <div id="historyList"></div>
+    </section>
+
+    <!-- Stats -->
+    <div class="stats-bar">
+      <div class="stat-item">
+        <div class="stat-value" id="totalCount">0</div>
+        <div class="stat-label">已翻譯</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value" id="todayCount">0</div>
+        <div class="stat-label">今日</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Translation database
+    const colorThemes = [
+      { colors: ['#4A5568', '#718096', '#A0AEC0'], name: '灰藍', desc: '像清晨的薄霧，安靜而深邃' },
+      { colors: ['#E53E3E', '#FC8181', '#FEB2B2'], name: '珊瑚紅', desc: '像心跳的溫度，強烈而真實' },
+      { colors: ['#D69E2E', '#F6E05E', '#FAF089'], name: '琥珀金', desc: '像被陽光親吻過的痕跡' },
+      { colors: ['#38A169', '#68D391', '#9AE6B4'], name: '薄荷綠', desc: '像雨後草地，清新而重生' },
+      { colors: ['#805AD5', '#B794F4', '#D6BCFA'], name: '紫羅蘭', desc: '像夢境與現實的邊界' },
+      { colors: ['#3182CE', '#63B3ED', '#90CDF4'], name: '天空藍', desc: '像無限的可能性延伸' },
+      { colors: ['#DD6B20', '#F6AD55', '#FBD38D'], name: '日落橙', desc: '像結束也是開始的溫暖' },
+      { colors: ['#2D3748', '#4A5568', '#718096'], name: '墨水灰', desc: '像深夜寫下的心事' },
+      { colors: ['#E8B4B8', '#F8C8D0', '#FFE4E8'], name: '櫻花粉', desc: '像初綻的柔軟和脆弱' },
+      { colors: ['#0D9488', '#14B8A6', '#5EEAD4'], name: '翡翠綠', desc: '像深海裡的光芒' },
+    ];
+
+    const tempThemes = [
+      { value: '冰冷', icon: '🧊', desc: '像冬夜裡的第一口呼吸' },
+      { value: '微溫', icon: '🌡️', desc: '像被窩裡殘存的體溫' },
+      { value: '熾熱', icon: '🔥', desc: '像心跳加速時的血液沸騰' },
+      { value: '涼爽', icon: '🍃', desc: '像傍晚的微風穿過髮梢' },
+      { value: '灼燒', icon: '⚡', desc: '像情緒在胸口燃燒' },
+      { value: '溫柔', icon: '🫧', desc: '像棉花糖在舌尖融化' },
+      { value: '燥熱', icon: '🌞', desc: '像沙漠中渴求的期待' },
+      { value: '清冷', icon: '❄️', desc: '像高山上的第一縷曙光' },
+    ];
+
+    const textureTags = [
+      { tag: '絲滑', color: '#E8B4B8', border: '#E8B4B8' },
+      { tag: '粗糙', color: '#8B6F47', border: '#8B6F47' },
+      { tag: '黏稠', color: '#D69E2E', border: '#D69E2E' },
+      { tag: '輕盈', color: '#90CDF4', border: '#90CDF4' },
+      { tag: '厚重', color: '#4A5568', border: '#4A5568' },
+      { tag: '顆粒', color: '#DD6B20', border: '#DD6B20' },
+      { tag: '流動', color: '#38A169', border: '#38A169' },
+      { tag: '尖銳', color: '#805AD5', border: '#805AD5' },
+      { tag: '柔軟', color: '#FED7E2', border: '#FED7E2' },
+      { tag: '彈性', color: '#68D391', border: '#68D391' },
+    ];
+
+    const moodMap = {
+      positive: [
+        '像被陽光擁抱的早晨',
+        '像達成目標時的暢快',
+        '像與老友重逢的溫暖',
+        '像完成喜愛事物的滿足',
+      ],
+      negative: [
+        '像独自在雨中漫步',
+        '像深夜無法入睡的焦慮',
+        '像失去某人的空虛',
+        '像被誤解的委屈',
+      ],
+      neutral: [
+        '像圖書館裡的靜謐',
+        '像平靜湖面的倒影',
+        '像老電影的懷舊色調',
+        '像禪定時的空靈',
+      ],
+      complex: [
+        '像苦後回甘的茶香',
+        '像傷痛中成長的勇氣',
+        '像分離也是重逢的開始',
+        '像眼淚也是洗禮的儀式',
+      ],
+    };
+
+    // Initialize
+    let history = JSON.parse(localStorage.getItem('flavorHistory') || '[]');
+    let totalTranslations = parseInt(localStorage.getItem('totalTranslations') || '0');
+    
+    updateStats();
+    renderHistory();
+
+    function useExample(text) {
+      document.getElementById('flavorInput').value = text;
+      translateFlavor();
+    }
+
+    function translateFlavor() {
+      const input = document.getElementById('flavorInput').value.trim();
+      if (!input) return;
+
+      const btn = document.getElementById('translateBtn');
+      btn.disabled = true;
+      btn.innerHTML = '<span>🌀</span> 翻譯中...';
+
+      setTimeout(() => {
+        // Generate translation
+        const colorTheme = colorThemes[Math.floor(Math.random() * colorThemes.length)];
+        const tempTheme = tempThemes[Math.floor(Math.random() * tempThemes.length)];
+        
+        // Pick 2-3 random textures
+        const shuffledTextures = [...textureTags].sort(() => 0.5 - Math.random());
+        const selectedTextures = shuffledTextures.slice(0, 2 + Math.floor(Math.random() * 2));
+
+        // Determine mood based on keywords
+        const positiveWords = ['愛', '幸福', '快樂', '成功', '温暖', '甜蜜', '希望', '奶奶', '外婆', '初雪', '陽光'];
+        const negativeWords = ['孤單', '寂寞', '失戀', '悲傷', '傷痛', '焦慮', '失敗'];
+        
+        let moodType = 'complex';
+        if (positiveWords.some(w => input.includes(w))) moodType = 'positive';
+        else if (negativeWords.some(w => input.includes(w))) moodType = 'negative';
+
+        const moodResult = moodMap[moodType][Math.floor(Math.random() * moodMap[moodType].length)];
+
+        // Display results
+        showResult({
+          text: input,
+          colorTheme,
+          tempTheme,
+          textures: selectedTextures,
+          moodResult,
+        });
+
+        // Save to history
+        saveToHistory({
+          text: input,
+          colorTheme,
+          tempTheme,
+          textures: selectedTextures,
+          moodResult,
+          time: new Date().toISOString(),
+        });
+
+        btn.disabled = false;
+        btn.innerHTML = '<span>✨</span> 翻譯味道';
+
+        // Celebration
+        celebrate();
+
+      }, 800);
+    }
+
+    function showResult(result) {
+      const section = document.getElementById('resultSection');
+      section.classList.add('show');
+
+      document.getElementById('resultTitle').textContent = result.text;
+      document.getElementById('resultCount').textContent = totalTranslations + 1;
+      
+      // Color layer
+      document.getElementById('colorResult').textContent = result.colorTheme.desc;
+      const colorPalette = document.getElementById('colorPalette');
+      colorPalette.innerHTML = result.colorTheme.colors.map((c, i) => 
+        `<div class="color-chip" style="background: ${c}" data-name="${result.colorTheme.name[i] || ''}"></div>`
+      ).join('');
+
+      // Temp layer
+      document.getElementById('tempResult').textContent = `${result.tempTheme.icon} ${result.tempTheme.value} — ${result.tempTheme.desc}`;
+
+      // Texture layer
+      document.getElementById('textureResult').textContent = '這種感覺摸起來像...';
+      const textureDisplay = document.getElementById('textureDisplay');
+      textureDisplay.innerHTML = result.textures.map(t => 
+        `<span class="texture-tag" style="color: ${t.color}; border-color: ${t.border};">${t.tag}</span>`
+      ).join('');
+
+      // Mood layer
+      document.getElementById('moodResult').textContent = `🌙 ${result.moodResult}`;
+
+      // Animate layers
+      const layers = document.querySelectorAll('.translation-layer');
+      layers.forEach((layer, i) => {
+        layer.classList.remove('visible');
+        setTimeout(() => layer.classList.add('visible'), i * 150);
+      });
+
+      // Scroll to result
+      section.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    function saveToHistory(result) {
+      history.unshift(result);
+      if (history.length > 20) history = history.slice(0, 20);
+      
+      localStorage.setItem('flavorHistory', JSON.stringify(history));
+      totalTranslations++;
+      localStorage.setItem('totalTranslations', totalTranslations.toString());
+      
+      updateStats();
+      renderHistory();
+    }
+
+    function updateStats() {
+      const today = new Date().toDateString();
+      const todayCount = history.filter(h => new Date(h.time).toDateString() === today).length;
+      
+      document.getElementById('totalCount').textContent = totalTranslations;
+      document.getElementById('todayCount').textContent = todayCount;
+    }
+
+    function renderHistory() {
+      const list = document.getElementById('historyList');
+      
+      if (history.length === 0) {
+        list.innerHTML = '<div class="empty-history">還沒有翻譯記錄，開始探索味道吧 🌸</div>';
+        return;
+      }
+
+      list.innerHTML = history.map((item, i) => {
+        const time = new Date(item.time);
+        const timeStr = time.toLocaleDateString('zh-TW', { month: 'short', day: 'numeric' }) + 
+                       ' ' + time.toLocaleTimeString('zh-TW', { hour: '2-digit', minute: '2-digit' });
+        
+        return `
+          <div class="history-item">
+            <div class="history-content">
+              <div class="history-text">${item.text}</div>
+              <div class="history-time">${timeStr}</div>
+            </div>
+            <button class="history-delete" onclick="deleteHistory(${i})" title="刪除">✕</button>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function deleteHistory(index) {
+      history.splice(index, 1);
+      localStorage.setItem('flavorHistory', JSON.stringify(history));
+      renderHistory();
+    }
+
+    function celebrate() {
+      const emojis = ['✨', '🌸', '💫', '🌺', '🍃', '💕'];
+      for (let i = 0; i < 8; i++) {
+        setTimeout(() => {
+          const particle = document.createElement('div');
+          particle.className = 'particle';
+          particle.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+          particle.style.left = Math.random() * 100 + 'vw';
+          particle.style.top = Math.random() * 50 + 30 + 'vh';
+          document.body.appendChild(particle);
+          
+          setTimeout(() => particle.remove(), 1000);
+        }, i * 100);
+      }
+    }
+
+    // Allow Enter to submit (Shift+Enter for newline)
+    document.getElementById('flavorInput').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        translateFlavor();
+      }
+    });
+  </script>
+</body>
+</html>
