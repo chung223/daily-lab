@@ -1,11 +1,12 @@
 # Daily Lab Changelog
 
-*Updated: 2026-05-21 03:40*
+*Updated: 2026-05-21 04:16*
 
 # Changelog — daily-lab
 
 Changes since 2026-02-01:
 
+- `TBD` Daily Lab 2026-05-21: 🏥 漏洞急診室 (Vulnerability ER) — *chung0223* (2026-05-21)
 - `767f45f` Daily Lab 2026-05-20: 🥘 味道翻譯機 (Flavor Translator) — *chung0223* (2026-05-20)
 - `2a64c32` docs: update changelog 2026-05-20 — *chung0223* (2026-05-20)
 - `bca88ba` Daily Lab 2026-05-19: 🥗 午餐辯論俱樂部 (Lunch Debate Club) — *chung0223* (2026-05-19)

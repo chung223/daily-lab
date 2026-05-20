@@ -1,8 +1,10 @@
 # Daily Lab
 
-Total entries: 88
+Total entries: 89
 
 ## Featured (Latest 3)
+
+- **2026-05-21** [🏥 漏洞急診室 | Vulnerability ER](2026-05-21/README.md) — 漫畫風格急診室，把 5 個 GitHub Issues 做成病患卡片，包含嚴重程度 badge、三格漫畫面板、護理處方箋、已處理按鈕。Bright Comic Medical 亮色漫畫醫療風
 
 - **2026-05-20** [🥘 味道翻譯機 | Flavor Translator](2026-05-20/README.md) — 將食物的「感受」翻譯成人人都懂的日常語言。和風紙藝設計、localStorage 翻譯歷史記錄。Warm Paper Craft 溫暖紙藝風
 
@@ -49,6 +51,7 @@ Total entries: 88
 
 ### tool
 
+- 2026-05-21 — [🏥 漏洞急診室 | Vulnerability ER](2026-05-21/README.md)
 - 2026-05-20 — [🥘 味道翻譯機 | Flavor Translator](2026-05-20/README.md)
 - 2026-05-11 — [🏥 301 急診室 — 網站リダイレクト調査](2026-05-11/README.md)
 - 2026-03-03 — [紀念日銀河](2026-03-03/README.md)

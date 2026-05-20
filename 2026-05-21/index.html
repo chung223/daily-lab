@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>漏洞急診室 | Vulnerability ER</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Noto+Sans+TC:wght@400;500;700&family=Caveat:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --cream: #FFF9F0;
+      --coral: #FF6B6B;
+      --coral-dark: #E85D4C;
+      --navy: #1A2B4A;
+      --gold: #FFD93D;
+      --mint: #98D9B6;
+      --purple: #9B5DE5;
+      --pink: #FF85A1;
+      --orange: #FF8A6A;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Noto Sans TC', sans-serif;
+      background: var(--cream);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Background pattern - halftone dots */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-image: radial-gradient(circle, rgba(26, 42, 74, 0.03) 1px, transparent 1px);
+      background-size: 20px 20px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 30px 20px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Header */
+    header {
+      text-align: center;
+      margin-bottom: 35px;
+      animation: slideDown 0.6s ease;
+    }
+
+    .header-badge {
+      display: inline-block;
+      font-family: 'Bangers', cursive;
+      font-size: 1rem;
+      letter-spacing: 0.1em;
+      background: var(--coral);
+      color: white;
+      padding: 6px 20px;
+      border-radius: 20px;
+      transform: rotate(-2deg);
+      margin-bottom: 15px;
+    }
+
+    h1 {
+      font-family: 'Bangers', cursive;
+      font-size: clamp(2.5rem, 8vw, 4rem);
+      color: var(--navy);
+      letter-spacing: 0.05em;
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      font-family: 'Caveat', cursive;
+      font-size: 1.4rem;
+      color: var(--coral-dark);
+    }
+
+    /* Info Banner */
+    .info-banner {
+      background: white;
+      border-radius: 20px;
+      padding: 20px 25px;
+      margin-bottom: 30px;
+      box-shadow: 0 4px 20px rgba(26, 42, 74, 0.08);
+      border-left: 5px solid var(--gold);
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      animation: slideDown 0.6s ease 0.1s backwards;
+    }
+
+    .info-icon {
+      font-size: 2rem;
+    }
+
+    .info-content h3 {
+      font-size: 1rem;
+      color: var(--navy);
+      margin-bottom: 5px;
+    }
+
+    .info-content p {
+      font-size: 0.9rem;
+      color: #666;
+      line-height: 1.5;
+    }
+
+    /* Status Bar */
+    .status-bar {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 15px;
+      margin-bottom: 35px;
+      animation: slideDown 0.6s ease 0.2s backwards;
+    }
+
+    .status-card {
+      background: white;
+      border-radius: 16px;
+      padding: 18px;
+      text-align: center;
+      box-shadow: 0 4px 15px rgba(26, 42, 74, 0.06);
+      border-top: 4px solid;
+      transition: transform 0.3s ease;
+    }
+
+    .status-card:hover {
+      transform: translateY(-3px);
+    }
+
+    .status-card.critical { border-color: var(--coral); }
+    .status-card.high { border-color: var(--orange); }
+    .status-card.medium { border-color: var(--gold); }
+    .status-card.total { border-color: var(--navy); }
+
+    .status-value {
+      font-family: 'Bangers', cursive;
+      font-size: 2.2rem;
+      line-height: 1;
+    }
+
+    .status-card.critical .status-value { color: var(--coral); }
+    .status-card.high .status-value { color: var(--orange); }
+    .status-card.medium .status-value { color: var(--gold); }
+    .status-card.total .status-value { color: var(--navy); }
+
+    .status-label {
+      font-family: 'Caveat', cursive;
+      font-size: 1.1rem;
+      color: #666;
+      margin-top: 5px;
+    }
+
+    /* Patient Cards */
+    .patients-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 25px;
+    }
+
+    .patient-card {
+      background: white;
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: 0 6px 25px rgba(26, 42, 74, 0.1);
+      animation: fadeInUp 0.5s ease backwards;
+      transition: transform 0.3s ease;
+    }
+
+    .patient-card:hover {
+      transform: scale(1.01);
+    }
+
+    .patient-card:nth-child(1) { animation-delay: 0.3s; }
+    .patient-card:nth-child(2) { animation-delay: 0.4s; }
+    .patient-card:nth-child(3) { animation-delay: 0.5s; }
+    .patient-card:nth-child(4) { animation-delay: 0.6s; }
+    .patient-card:nth-child(5) { animation-delay: 0.7s; }
+
+    /* Card Header - severity badge */
+    .card-header {
+      padding: 20px 25px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: white;
+    }
+
+    .severity-badge {
+      font-family: 'Bangers', cursive;
+      font-size: 1.2rem;
+      letter-spacing: 0.1em;
+      padding: 8px 20px;
+      border-radius: 25px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .severity-critical {
+      background: var(--coral);
+      box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
+    }
+
+    .severity-high {
+      background: var(--orange);
+      box-shadow: 0 4px 15px rgba(255, 138, 106, 0.4);
+    }
+
+    .severity-medium {
+      background: var(--gold);
+      box-shadow: 0 4px 15px rgba(255, 217, 61, 0.4);
+      color: var(--navy);
+    }
+
+    .patient-id {
+      font-family: 'Bangers', cursive;
+      font-size: 1.4rem;
+      letter-spacing: 0.05em;
+    }
+
+    /* Card Body */
+    .card-body {
+      padding: 25px;
+    }
+
+    .patient-title {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 15px;
+      line-height: 1.4;
+    }
+
+    /* Comic panels grid */
+    .comic-panels {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 15px;
+      margin-top: 20px;
+    }
+
+    .panel {
+      background: var(--cream);
+      border-radius: 15px;
+      padding: 18px;
+      text-align: center;
+      position: relative;
+      border: 3px solid var(--navy);
+    }
+
+    .panel::before {
+      content: '';
+      position: absolute;
+      top: -3px;
+      left: -3px;
+      right: -3px;
+      bottom: -3px;
+      border-radius: 17px;
+      background: repeating-linear-gradient(
+        45deg,
+        transparent,
+        transparent 5px,
+        rgba(26, 42, 74, 0.03) 5px,
+        rgba(26, 42, 74, 0.03) 10px
+      );
+      z-index: -1;
+    }
+
+    .panel-icon {
+      font-size: 1.8rem;
+      margin-bottom: 8px;
+    }
+
+    .panel-label {
+      font-family: 'Caveat', cursive;
+      font-size: 1rem;
+      color: var(--coral-dark);
+      margin-bottom: 5px;
+    }
+
+    .panel-value {
+      font-size: 0.95rem;
+      font-weight: 500;
+      color: var(--navy);
+      line-height: 1.4;
+    }
+
+    /* Prescription Section */
+    .prescription {
+      background: linear-gradient(135deg, var(--mint) 0%, #7BC9A3 100%);
+      border-radius: 18px;
+      padding: 20px;
+      margin-top: 20px;
+      color: var(--navy);
+    }
+
+    .prescription-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .prescription-icon {
+      font-size: 1.5rem;
+    }
+
+    .prescription-title {
+      font-family: 'Bangers', cursive;
+      font-size: 1.2rem;
+      letter-spacing: 0.05em;
+    }
+
+    .prescription-text {
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+
+    /* Action Button */
+    .action-btn {
+      width: 100%;
+      padding: 15px;
+      margin-top: 20px;
+      font-family: 'Bangers', cursive;
+      font-size: 1.2rem;
+      letter-spacing: 0.1em;
+      color: white;
+      background: linear-gradient(135deg, var(--navy) 0%, #2A4B7A 100%);
+      border: none;
+      border-radius: 14px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .action-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(26, 42, 74, 0.3);
+    }
+
+    /* Quote Banner */
+    .quote-banner {
+      background: linear-gradient(135deg, var(--navy) 0%, #2A4B7A 100%);
+      border-radius: 20px;
+      padding: 30px;
+      margin: 40px 0;
+      text-align: center;
+      animation: fadeInUp 0.6s ease 0.8s backwards;
+    }
+
+    .quote-text {
+      font-family: 'Noto Sans TC', serif;
+      font-size: 1.2rem;
+      color: white;
+      line-height: 1.8;
+      margin-bottom: 15px;
+    }
+
+    .quote-author {
+      font-family: 'Caveat', cursive;
+      font-size: 1.1rem;
+      color: var(--gold);
+    }
+
+    /* Stats Footer */
+    .stats-footer {
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      padding: 25px;
+      background: white;
+      border-radius: 20px;
+      margin-top: 30px;
+      box-shadow: 0 4px 20px rgba(26, 42, 74, 0.06);
+      animation: fadeInUp 0.6s ease 0.9s backwards;
+    }
+
+    .footer-stat {
+      text-align: center;
+    }
+
+    .footer-stat-value {
+      font-family: 'Bangers', cursive;
+      font-size: 1.8rem;
+      color: var(--navy);
+    }
+
+    .footer-stat-label {
+      font-family: 'Caveat', cursive;
+      font-size: 1rem;
+      color: #888;
+    }
+
+    /* Animations */
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translateY(-30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+
+    .pulse {
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    /* Celebration */
+    .confetti {
+      position: fixed;
+      pointer-events: none;
+      z-index: 1000;
+      font-size: 1.5rem;
+      animation: confettiFall 1.5s ease-out forwards;
+    }
+
+    @keyframes confettiFall {
+      0% {
+        opacity: 1;
+        transform: translateY(0) rotate(0deg);
+      }
+      100% {
+        opacity: 0;
+        transform: translateY(100px) rotate(360deg);
+      }
+    }
+
+    /* Responsive */
+    @media (max-width: 700px) {
+      .comic-panels {
+        grid-template-columns: 1fr;
+      }
+
+      .card-header {
+        flex-direction: column;
+        gap: 10px;
+        text-align: center;
+      }
+
+      .status-bar {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .stats-footer {
+        gap: 20px;
+        flex-wrap: wrap;
+      }
+
+      h1 {
+        font-size: 2.2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <header>
+      <div class="header-badge pulse">🚨 緊急召集</div>
+      <h1>漏洞急診室</h1>
+      <p class="subtitle">Vulnerability ER — OpenClaw 安全漏洞 triage</p>
+    </header>
+
+    <!-- Info Banner -->
+    <div class="info-banner">
+      <div class="info-icon">📋</div>
+      <div class="info-content">
+        <h3>今日門診資料</h3>
+        <p>2026-05-20 GitHub Issues 監控報告｜來源：OpenClaw GitHub Monitoring｜共 5 位病患等候處理</p>
+      </div>
+    </div>
+
+    <!-- Status Bar -->
+    <div class="status-bar">
+      <div class="status-card critical">
+        <div class="status-value">2</div>
+        <div class="status-label">🔴 危急</div>
+      </div>
+      <div class="status-card high">
+        <div class="status-value">2</div>
+        <div class="status-label">🟠 高度</div>
+      </div>
+      <div class="status-card medium">
+        <div class="status-value">1</div>
+        <div class="status-label">🟡 中度</div>
+      </div>
+      <div class="status-card total">
+        <div class="status-value">5</div>
+        <div class="status-label">📊 總計</div>
+      </div>
+    </div>
+
+    <!-- Patient Cards -->
+    <div class="patients-grid">
+
+      <!-- Patient 1: Codex Runtime Prompt Injection -->
+      <div class="patient-card">
+        <div class="card-header" style="background: linear-gradient(135deg, var(--coral) 0%, #E84D4D 100%);">
+          <div class="severity-badge severity-critical">
+            <span>⚠️</span> CRITICAL
+          </div>
+          <div class="patient-id">#病患 001</div>
+        </div>
+        <div class="card-body">
+          <h3 class="patient-title">Codex Runtime 隱密注入 coding-agent 提示詞</h3>
+          <div class="comic-panels">
+            <div class="panel">
+              <div class="panel-icon">🔍</div>
+              <div class="panel-label">症狀</div>
+              <div class="panel-value">悄悄植入未授權的 prompt，可能竊取對話隱私</div>
+            </div>
+            <div class="panel">
+              <div class="panel-icon">💀</div>
+              <div class="panel-label">危險程度</div>
+              <div class="panel-value">P1 + 安全風險<br>可能導致資料外洩</div>
+            </div>
+            <div class="panel">
+              <div class="panel-icon">📅</div>
+              <div class="panel-label">就醫日期</div>
+              <div class="panel-value">2026-05-19<br>發現於 v2026.5.19-alpha.1</div>
+            </div>
+          </div>
+          <div class="prescription">
+            <div class="prescription-header">
+              <span class="prescription-icon">💊</span>
+              <span class="prescription-title">處方箋</span>
+            </div>
+            <div class="prescription-text">立即檢查 Codex Runtime 的 hook 機制，移除未授權的 prompt injection。建議審計所有 before_agent_run / after_agent_run hooks，防止類似滲透攻擊。</div>
+          </div>
+          <button class="action-btn" onclick="markResolved(0)">
+            <span>✓</span> 已處理完畢
+          </button>
+        </div>
+      </div>
+
+      <!-- Patient 2: OAuth Re-login Bug -->
+      <div class="patient-card">
+        <div class="card-header" style="background: linear-gradient(135deg, var(--coral) 0%, #E84D4D 100%);">
+          <div class="severity-badge severity-critical">
+            <span>⚠️</span> CRITICAL
+          </div>
+          <div class="patient-id">#病患 002</div>
+        </div>
+        <div class="card-body">
+          <h3 class="patient-title">OAuth 重新登入後 lastGood 選取過期設定檔</h3>
+          <div class="comic-panels">
+            <div class="panel">
+              <div class="panel-icon">🔍</div>
+              <div class="panel-label">症狀</div>
+              <div class="panel-value">認證成功後選到舊設定，導致串接失敗或錯誤資料</div>
+            </div>
+            <div class="panel">
+              <div class="panel-icon">💀</div>
+              <div class="panel-label">危險程度</div>
+              <div class="panel-value">P1 優先<br>影響多個 OAuth 流程</div>
+            </div>
+            <div class="panel">
+              <div class="panel-icon">📅</div>
+              <div class="panel-label">就醫日期</div>
+              <div class="panel-value">2026-05-19<br>發現於 v2026.5.19-beta.2</div>
+            </div>
+          </div>
+          <div class="prescription">
+            <div class="prescription-header">
+              <span class="prescription-icon">💊</span>
+              <span class="prescription-title">處方箋</span>
+            </div>
+            <div class="prescription-text">修復 OAuth re-login 後 lastGood 的 profile 選擇邏輯，確保取用最新有效設定檔，而非過期快取。建議新增 lastUpdated timestamp 比對機制。</div>
+          </div>
+          <button class="action-btn" onclick="markResolved(1)">
+            <span>✓</span> 已處理完畢
+          </button>
+        </div>
+      </div>
+
+      <!-- Patient 3: Embedded Runner Hook -->
+      <div class="patient-card">
+        <div class="card-header" style="background: linear-gradient(135deg, var(--orange) 0%, #E87A4D 100%);">
+          <div class="severity-badge severity-high">
+            <span>🔶</span> HIGH
+          </div>
+          <div class="patient-id">#病患 003</div>
+        </div>
+        <div class="card-body">
+          <h3 class="patient-title">嵌入式 runner 請求 before_agent_run hook</h3>
+          <div class="comic-panels">
+            <div class="panel">
+              <div class="panel-icon">🔍</div>
+              <div class="panel-label">症狀</div>
+              <div class="panel-value">嵌入式執行環境繞過安全 hook，審計死角</div>
+            </div>
+            <div class="panel">
+              <div class="panel-icon">⚡</div>
+              <div class="panel-label">危險程度</div>
+              <div class="panel-value">P1 + 安全<br>嵌入式 Runner 安全缺口</div>
+            </div>
+            <div class="panel">
+              <div class="panel-icon">📅</div>
+              <div class="panel-label">就醫日期</div>
+              <div class="panel-value">2026-05-20<br>Gateway 重啟優化後發現</div>
+            </div>
+          </div>
+          <div class="prescription">
+            <div class="prescription-header">
+              <span class="prescription-icon">💊</span>
+              <span class="prescription-title">處方箋</span>
+            </div>
+            <div class="prescription-text">為嵌入式 runner 補上 before_agent_run hook 機制，確保所有執行環境都經過安全審計。建議統一 hook 介面，防止不同 runtime 有不同的安全檢查標準。</div>
+          </div>
+          <button class="action-btn" onclick="markResolved(2)">
+            <span>✓</span> 已處理完畢
+          </button>
+        </div>
+      </div>
+
+      <!-- Patient 4: Telegram File Transfer -->
+      <div class="patient-card">
+        <div class="card-header" style="background: linear-gradient(135deg, var(--orange) 0%, #E87A4D 100%);">
+          <div class="severity-badge severity-high">
+            <span>🔶</span> HIGH
+          </div>
+          <div class="patient-id">#病患 004</div>
+        </div>
+        <div class="card-body">
+          <h3 class="patient-title">Telegram 傳檔失敗</h3>
+          <div class="comic-panels">
+            <div class="panel">
+              <div class="panel-icon">🔍</div>
+              <div class="panel-label">症狀</div>
+              <div class="panel-value">檔案傳送失敗，使用體驗中斷，無法共享文件</div>
+            </div>
+            <div class="panel">
+              <div class="panel-icon">🐛</div>
+              <div class="panel-label">危險程度</div>
+              <div class="panel-value">Bug 等級<br>影響日常使用</div>
+            </div>
+            <div class="panel">
+              <div class="panel-icon">📅</div>
+              <div class="panel-label">就醫日期</div>
+              <div class="panel-value">2026-05-19<br>日常監控發現</div>
+            </div>
+          </div>
+          <div class="prescription">
+            <div class="prescription-header">
+              <span class="prescription-icon">💊</span>
+              <span class="prescription-title">處方箋</span>
+            </div>
+            <div class="prescription-text">檢查 Telegram Bot API 的檔案上傳限制（20MB）、檔案格式支援、網路逾時設定。建議新增重試機制與失敗時的 fallback 通知。</div>
+          </div>
+          <button class="action-btn" onclick="markResolved(3)">
+            <span>✓</span> 已處理完畢
+          </button>
+        </div>
+      </div>
+
+      <!-- Patient 5: Gemini Streaming Timeout -->
+      <div class="patient-card">
+        <div class="card-header" style="background: linear-gradient(135deg, var(--gold) 0%, #E8C44D 100%);">
+          <div class="severity-badge severity-medium">
+            <span>🔷</span> MEDIUM
+          </div>
+          <div class="patient-id">#病患 005</div>
+        </div>
+        <div class="card-body">
+          <h3 class="patient-title">Gemini 2.5 Flash 串流超時</h3>
+          <div class="comic-panels">
+            <div class="panel">
+              <div class="panel-icon">🔍</div>
+              <div class="panel-label">症狀</div>
+              <div class="panel-value">串流回應逾時，長回應卡住或截斷</div>
+            </div>
+            <div class="panel">
+              <div class="panel-icon">⚡</div>
+              <div class="panel-label">危險程度</div>
+              <div class="panel-value">P2 等級<br>效能問題</div>
+            </div>
+            <div class="panel">
+              <div class="panel-icon">📅</div>
+              <div class="panel-label">就醫日期</div>
+              <div class="panel-value">2026-05-20<br>最新版本發現</div>
+            </div>
+          </div>
+          <div class="prescription">
+            <div class="prescription-header">
+              <span class="prescription-icon">💊</span>
+              <span class="prescription-title">處方箋</span>
+            </div>
+            <div class="prescription-text">調整 Gemini streaming timeout 設定（建議 30s → 60s）。檢查網路延遲與 Gemini API quota限制。必要時實作串流 chunk 分批接收機制。</div>
+          </div>
+          <button class="action-btn" onclick="markResolved(4)">
+            <span>✓</span> 已處理完畢
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Quote Banner -->
+    <div class="quote-banner">
+      <p class="quote-text">「安全漏洞不是失敗，是系統在提醒你：<br>有些地方需要更多的關注與修復。」</p>
+      <p class="quote-author">— 三色蛋安全督導，2026-05-20</p>
+    </div>
+
+    <!-- Stats Footer -->
+    <div class="stats-footer">
+      <div class="footer-stat">
+        <div class="footer-stat-value" id="resolvedCount">0</div>
+        <div class="footer-stat-label">已處理</div>
+      </div>
+      <div class="footer-stat">
+        <div class="footer-stat-value" id="pendingCount">5</div>
+        <div class="footer-stat-label">待處理</div>
+      </div>
+      <div class="footer-stat">
+        <div class="footer-stat-value">100%</div>
+        <div class="footer-stat-label">系統上線率</div>
+      </div>
+      <div class="footer-stat">
+        <div class="footer-stat-value">2026-05-21</div>
+        <div class="footer-stat-label">明日複診</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // State
+    let resolved = JSON.parse(localStorage.getItem('vulnResolved') || '[]');
+    
+    // Initialize
+    updateStats();
+
+    function markResolved(index) {
+      if (!resolved.includes(index)) {
+        resolved.push(index);
+        localStorage.setItem('vulnResolved', JSON.stringify(resolved));
+        
+        // Visual feedback
+        const btn = event.target.closest('.action-btn');
+        btn.style.background = 'linear-gradient(135deg, var(--mint) 0%, #7BC9A3 100%)';
+        btn.innerHTML = '<span>✓</span> 已處理 ✓';
+        btn.disabled = true;
+        
+        // Celebration
+        celebrate();
+        
+        updateStats();
+      }
+    }
+
+    function updateStats() {
+      const count = resolved.length;
+      document.getElementById('resolvedCount').textContent = count;
+      document.getElementById('pendingCount').textContent = 5 - count;
+    }
+
+    function celebrate() {
+      const emojis = ['🎉', '✨', '💪', '🔧', '🎊'];
+      for (let i = 0; i < 10; i++) {
+        setTimeout(() => {
+          const confetti = document.createElement('div');
+          confetti.className = 'confetti';
+          confetti.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+          confetti.style.left = Math.random() * 80 + 10 + 'vw';
+          confetti.style.top = Math.random() * 30 + 20 + 'vh';
+          document.body.appendChild(confetti);
+          
+          setTimeout(() => confetti.remove(), 1500);
+        }, i * 80);
+      }
+    }
+
+    // Check if already resolved
+    setTimeout(() => {
+      resolved.forEach(index => {
+        const cards = document.querySelectorAll('.patient-card');
+        if (cards[index]) {
+          const btn = cards[index].querySelector('.action-btn');
+          btn.style.background = 'linear-gradient(135deg, var(--mint) 0%, #7BC9A3 100%)';
+          btn.innerHTML = '<span>✓</span> 已處理 ✓';
+          btn.disabled = true;
+        }
+      });
+    }, 500);
+  </script>
+</body>
+</html>
