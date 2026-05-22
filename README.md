@@ -1,8 +1,10 @@
 # Daily Lab
 
-Total entries: 89
+Total entries: 90
 
 ## Featured (Latest 3)
+
+- **2026-05-22** [✨ 知識星河 — Knowledge Constellation](2026-05-22/README.md) — 將每日思維軌跡轉化為互動式星座圖和時間軸，視覺化呈現 Brain Heartbeat、Wiki Sync、Memory Recall 等系統數據。Cosmic Night 宇宙星空風
 
 - **2026-05-21** [🏥 漏洞急診室 | Vulnerability ER](2026-05-21/README.md) — 漫畫風格急診室，把 5 個 GitHub Issues 做成病患卡片，包含嚴重程度 badge、三格漫畫面板、護理處方箋、已處理按鈕。Bright Comic Medical 亮色漫畫醫療風
 
@@ -80,6 +82,7 @@ Total entries: 89
 
 ### visualization
 
+- 2026-05-22 — [✨ 知識星河 — Knowledge Constellation](2026-05-22/README.md)
 - 2026-04-11 — [健康報告卡 Blood Test Report Card](2026-04-11/README.md)
 - 2026-04-05 — [心理健康漫畫故事書](2026-04-05/README.md)
 
