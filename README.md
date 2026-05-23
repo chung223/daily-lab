@@ -1,16 +1,14 @@
 # Daily Lab
 
-Total entries: 90
+Total entries: 91
 
 ## Featured (Latest 3)
+
+- **2026-05-23** [✨ 知識星河 (Knowledge Constellation)](2026-05-23/README.md) — 深色宇宙風格的知識星座圖，可切換不同日期查看每日 24 小時思維時間軸、知識節點星座圖、Wiki Sync 四領域輪替視覺化、_topic 分佈長條圖、知識時間線列表。Cosmic Deep Space 宇宙深空風
 
 - **2026-05-22** [✨ 知識星河 — Knowledge Constellation](2026-05-22/README.md) — 將每日思維軌跡轉化為互動式星座圖和時間軸，視覺化呈現 Brain Heartbeat、Wiki Sync、Memory Recall 等系統數據。Cosmic Night 宇宙星空風
 
 - **2026-05-21** [🏥 漏洞急診室 | Vulnerability ER](2026-05-21/README.md) — 漫畫風格急診室，把 5 個 GitHub Issues 做成病患卡片，包含嚴重程度 badge、三格漫畫面板、護理處方箋、已處理按鈕。Bright Comic Medical 亮色漫畫醫療風
-
-- **2026-05-20** [🥘 味道翻譯機 | Flavor Translator](2026-05-20/README.md) — 將食物的「感受」翻譯成人人都懂的日常語言。和風紙藝設計、localStorage 翻譯歷史記錄。Warm Paper Craft 溫暖紙藝風
-
-- **2026-05-19** [🥗 午餐辯論俱樂部 (Lunch Debate Club)](2026-05-19/README.md) — 漫畫風格的午餐辯論平台，發起二選一辯論、投票、產生結果條、裁決歷史追蹤、統計面板（總辯論數/連續天數）。Bright Comic Action 亮色漫畫動作風
 
 ## Categories
 
@@ -161,6 +159,7 @@ Total entries: 90
 
 ### 學習系
 
+- **2026-05-23** — [✨ 知識星河 (Knowledge Constellation)](2026-05-23/README.md)
 - 2026-05-06 — [🏛️ 越南獨立宮時光機 (Vietnam Independence Palace Time Machine)](2026-05-06/README.md)
 - 2026-05-04 — [🌸 語言氣味標本室 (Scent Atlas of Language)](2026-05-04/README.md)
 - 2026-05-01 — [🐟 練習存在 — 阿笨的鏡中問題](2026-05-01/README.md)

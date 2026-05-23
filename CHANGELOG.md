@@ -6,6 +6,7 @@
 
 Changes since 2026-02-01:
 
+- `pending` Daily Lab 2026-05-23: ✨ 知識星河 (Knowledge Constellation) — 深色宇宙風格的知識星座圖，可切換不同日期查看每日 24 小時思維時間軸、知識節點星座圖、Wiki Sync 四領域輪替視覺化、_topic 分佈長條圖、知識時間線列表。Cosmic Deep Space 宇宙深空風 — *chung0223* (2026-05-23)
 - `TBD` Daily Lab 2026-05-22: ✨ 知識星河 — Knowledge Constellation — *chung0223* (2026-05-22)
 - `5411a2b` Daily Lab 2026-05-21: 🏥 漏洞急診室 (Vulnerability ER) — *chung0223* (2026-05-21)
 - `d89aecb` docs: update changelog 2026-05-21 — *chung0223* (2026-05-21)
@@ -244,7 +245,7 @@ Changes since 2026-02-01:
 - `3910f4b` Daily Lab 2026-02-20 — *chung0223* (2026-02-20)
 - `77f754c` docs: update changelog 2026-02-19 — *chung0223* (2026-02-19)
 - `c821260` Daily Lab 2026-02-19 — *chung0223* (2026-02-19)
-- `28e94a3` docs: update changelog 2026-02-18 — *chung0223* (2026-02-18)
+- `28e94a3` docs: update changelog 2026-03-20 — *chung0223* (2026-03-20)
 - `34148e7` feat: 加入專案分類、統計數據、互動式折疊 — *chung0223* (2026-02-18)
 - `fb2d5ec` chore: 現代化 README 設計 — *chung0223* (2026-02-18)
 - `8940efe` Fix folder structure: remove duplicate project-* folders — *chung0223* (2026-02-18)
