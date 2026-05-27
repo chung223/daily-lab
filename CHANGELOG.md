@@ -1,11 +1,12 @@
 # Daily Lab Changelog
 
-*Updated: 2026-05-28 03:40*
+*Updated: 2026-05-28 04:15*
 
 # Changelog — daily-lab
 
 Changes since 2026-02-01:
 
+- `pending` Daily Lab 2026-05-28: ✨ Tangent Collector — 擦肩而過的靈感收集器 — 明亮的靈感收集器，輸入「差一點就要想到」的念頭，儲存到 localStorage 並顯示時間軸。背景有 CSS tangent 斜線動畫，統計面板展示今日/總收集/連續天數。Warm Paper Craft 溫暖紙藝編輯風 — *chung0223* (2026-05-28)
 - `pending` Daily Lab 2026-05-23: ✨ 知識星河 (Knowledge Constellation) — 深色宇宙風格的知識星座圖，可切換不同日期查看每日 24 小時思維時間軸、知識節點星座圖、Wiki Sync 四領域輪替視覺化、_topic 分佈長條圖、知識時間線列表。Cosmic Deep Space 宇宙深空風 — *chung0223* (2026-05-23)
 - `TBD` Daily Lab 2026-05-22: ✨ 知識星河 — Knowledge Constellation — *chung0223* (2026-05-22)
 - `5411a2b` Daily Lab 2026-05-21: 🏥 漏洞急診室 (Vulnerability ER) — *chung0223* (2026-05-21)

@@ -1,8 +1,10 @@
 # Daily Lab
 
-Total entries: 91
+Total entries: 92
 
 ## Featured (Latest 3)
+
+- **2026-05-28** [✨ Tangent Collector — 擦肩而過的靈感收集器](2026-05-28/README.md) — 明亮溫暖的靈感收集器，輸入「差一點就要想到」的念頭，儲存到 localStorage 並顯示時間軸。背景有 CSS tangent 斜線動畫，統計面板展示今日/總收集/連續天數。Warm Paper Craft 溫暖紙藝編輯風
 
 - **2026-05-23** [✨ 知識星河 (Knowledge Constellation)](2026-05-23/README.md) — 深色宇宙風格的知識星座圖，可切換不同日期查看每日 24 小時思維時間軸、知識節點星座圖、Wiki Sync 四領域輪替視覺化、_topic 分佈長條圖、知識時間線列表。Cosmic Deep Space 宇宙深空風
 
@@ -105,6 +107,7 @@ Total entries: 91
 
 ### 工具系
 
+- 2026-05-28 — [✨ Tangent Collector — 擦肩而過的靈感收集器](2026-05-28/README.md)
 - 2026-05-19 — [🥗 午餐辯論俱樂部 (Lunch Debate Club)](2026-05-19/README.md)
 - 2026-05-02 — [🖥️ VPS 解剖實驗室 (System Autopsy Lab)](2026-05-02/README.md)
 - 2026-04-29 — [四色循環時鐘 (Four-Color Cycle Clock)](2026-04-29/README.md)
