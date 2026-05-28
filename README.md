@@ -1,14 +1,14 @@
 # Daily Lab
 
-Total entries: 92
+Total entries: 93
 
 ## Featured (Latest 3)
 
-- **2026-05-28** [✨ Tangent Collector — 擦肩而過的靈感收集器](2026-05-28/README.md) — 明亮溫暖的靈感收集器，輸入「差一點就要想到」的念頭，儲存到 localStorage 並顯示時間軸。背景有 CSS tangent 斜線動畫，統計面板展示今日/總收集/連續天數。Warm Paper Craft 溫暖紙藝編輯風
+- **2026-05-29** [✨ 記憶膠囊收集器 | Memory Capsule Collector](2026-05-29/README.md) — 封存每一個閃過的念頭。將靈感、問題、夢境片段儲存為記憶膠囊，顯示在時間軸上。Warm Paper Craft 溫暖紙藝風
 
-- **2026-05-23** [✨ 知識星河 (Knowledge Constellation)](2026-05-23/README.md) — 深色宇宙風格的知識星座圖，可切換不同日期查看每日 24 小時思維時間軸、知識節點星座圖、Wiki Sync 四領域輪替視覺化、_topic 分佈長條圖、知識時間線列表。Cosmic Deep Space 宇宙深空風
+- **2026-05-28** [✨ Tangent Collector — 擦肩而過的靈感收集器](2026-05-28/README.md) — 明亮溫暖的靈感收集器，輸入「差一點就要想到」的念頭，儲存到 localStorage 並顯示時間軸。Warm Paper Craft 溫暖紙藝編輯風
 
-- **2026-05-22** [✨ 知識星河 — Knowledge Constellation](2026-05-22/README.md) — 將每日思維軌跡轉化為互動式星座圖和時間軸，視覺化呈現 Brain Heartbeat、Wiki Sync、Memory Recall 等系統數據。Cosmic Night 宇宙星空風
+- **2026-05-23** [✨ 知識星河 (Knowledge Constellation)](2026-05-23/README.md) — 深色宇宙風格的知識星座圖，可切換不同日期查看每日 24 小時思維時間軸、知識節點星座圖、Wiki Sync 四領域輪替視覺化。Cosmic Deep Space 宇宙深空風
 
 - **2026-05-21** [🏥 漏洞急診室 | Vulnerability ER](2026-05-21/README.md) — 漫畫風格急診室，把 5 個 GitHub Issues 做成病患卡片，包含嚴重程度 badge、三格漫畫面板、護理處方箋、已處理按鈕。Bright Comic Medical 亮色漫畫醫療風
 
@@ -43,6 +43,7 @@ Total entries: 92
 
 ### interactive
 
+- 2026-05-29 — [✨ 記憶膠囊收集器 | Memory Capsule Collector](2026-05-29/README.md)
 - 2026-05-16 — [🌙 凌晨矛盾簿 | Midnight Contradiction Journal](2026-05-16/README.md)
 - 2026-05-13 — [🛫 釜山倒數 — Busan Countdown](2026-05-13/README.md)
 - 2026-05-12 — [🔮 乙酉木日晨間占卜](2026-05-12/README.md)
