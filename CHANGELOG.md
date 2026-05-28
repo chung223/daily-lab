@@ -1,14 +1,16 @@
 # Daily Lab Changelog
 
-*Updated: 2026-05-28 04:15*
+*Updated: 2026-05-29 03:40*
 
 # Changelog — daily-lab
 
 Changes since 2026-02-01:
 
-- `pending` Daily Lab 2026-05-28: ✨ Tangent Collector — 擦肩而過的靈感收集器 — 明亮的靈感收集器，輸入「差一點就要想到」的念頭，儲存到 localStorage 並顯示時間軸。背景有 CSS tangent 斜線動畫，統計面板展示今日/總收集/連續天數。Warm Paper Craft 溫暖紙藝編輯風 — *chung0223* (2026-05-28)
-- `pending` Daily Lab 2026-05-23: ✨ 知識星河 (Knowledge Constellation) — 深色宇宙風格的知識星座圖，可切換不同日期查看每日 24 小時思維時間軸、知識節點星座圖、Wiki Sync 四領域輪替視覺化、_topic 分佈長條圖、知識時間線列表。Cosmic Deep Space 宇宙深空風 — *chung0223* (2026-05-23)
-- `TBD` Daily Lab 2026-05-22: ✨ 知識星河 — Knowledge Constellation — *chung0223* (2026-05-22)
+- `92402e3` Daily Lab 2026-05-28: ✨ Tangent Collector — 擦肩而過的靈感收集器 — *chung0223* (2026-05-28)
+- `6b2239a` docs: update changelog 2026-05-28 — *chung0223* (2026-05-28)
+- `29ffb6a` Merge: Daily Lab 2026-05-23: ✨ 知識星河 (Knowledge Constellation) — *chung0223* (2026-05-24)
+- `ef99f63` Daily Lab 2026-05-22: ✨ 知識星河 — Knowledge Constellation — *chung0223* (2026-05-23)
+- `0f3df1a` docs: update changelog 2026-05-23 — *chung0223* (2026-05-23)
 - `5411a2b` Daily Lab 2026-05-21: 🏥 漏洞急診室 (Vulnerability ER) — *chung0223* (2026-05-21)
 - `d89aecb` docs: update changelog 2026-05-21 — *chung0223* (2026-05-21)
 - `767f45f` Daily Lab 2026-05-20: 🥘 味道翻譯機 (Flavor Translator) — *chung0223* (2026-05-20)
@@ -246,7 +248,7 @@ Changes since 2026-02-01:
 - `3910f4b` Daily Lab 2026-02-20 — *chung0223* (2026-02-20)
 - `77f754c` docs: update changelog 2026-02-19 — *chung0223* (2026-02-19)
 - `c821260` Daily Lab 2026-02-19 — *chung0223* (2026-02-19)
-- `28e94a3` docs: update changelog 2026-03-20 — *chung0223* (2026-03-20)
+- `28e94a3` docs: update changelog 2026-02-18 — *chung0223* (2026-02-18)
 - `34148e7` feat: 加入專案分類、統計數據、互動式折疊 — *chung0223* (2026-02-18)
 - `fb2d5ec` chore: 現代化 README 設計 — *chung0223* (2026-02-18)
 - `8940efe` Fix folder structure: remove duplicate project-* folders — *chung0223* (2026-02-18)
