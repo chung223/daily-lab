@@ -1,8 +1,10 @@
 # Daily Lab
 
-Total entries: 91
+Total entries: 92
 
 ## Featured (Latest 3)
+
+- **2026-06-01** [✨ 碎片標本室 (Fragment Specimen Room)](2026-06-01/README.md) — 深夜暗色風格的碎片收藏工具，展示阿笨夢境中的核心概念（記住vs理解、沉默的力量），可新增各類碎片標本、封存按鈕帶彩屑慶祝動畫、localStorage 持久化、統計面板。Dark Amber Warmth 深夜琥珀暖意風
 
 - **2026-05-23** [✨ 知識星河 (Knowledge Constellation)](2026-05-23/README.md) — 深色宇宙風格的知識星座圖，可切換不同日期查看每日 24 小時思維時間軸、知識節點星座圖、Wiki Sync 四領域輪替視覺化、_topic 分佈長條圖、知識時間線列表。Cosmic Deep Space 宇宙深空風
 
@@ -159,7 +161,8 @@ Total entries: 91
 
 ### 學習系
 
-- **2026-05-23** — [✨ 知識星河 (Knowledge Constellation)](2026-05-23/README.md)
+- **2026-06-01** — [✨ 碎片標本室 (Fragment Specimen Room)](2026-06-01/README.md)
+- 2026-05-23 — [✨ 知識星河 (Knowledge Constellation)](2026-05-23/README.md)
 - 2026-05-06 — [🏛️ 越南獨立宮時光機 (Vietnam Independence Palace Time Machine)](2026-05-06/README.md)
 - 2026-05-04 — [🌸 語言氣味標本室 (Scent Atlas of Language)](2026-05-04/README.md)
 - 2026-05-01 — [🐟 練習存在 — 阿笨的鏡中問題](2026-05-01/README.md)
