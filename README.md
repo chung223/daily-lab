@@ -1,16 +1,14 @@
 # Daily Lab
 
-Total entries: 93
+Total entries: 94
 
 ## Featured (Latest 3)
+
+- **2026-06-02** [✨ 沉默急診室 | Silent ER](2026-06-02/README.md) — 漫畫風格系統故障追蹤工具，記錄「說不出口」的系統問題，配有康復處方系統與彩屑慶祝動畫
 
 - **2026-05-29** [✨ 記憶膠囊收集器 | Memory Capsule Collector](2026-05-29/README.md) — 封存每一個閃過的念頭。將靈感、問題、夢境片段儲存為記憶膠囊，顯示在時間軸上。Warm Paper Craft 溫暖紙藝風
 
 - **2026-05-28** [✨ Tangent Collector — 擦肩而過的靈感收集器](2026-05-28/README.md) — 明亮溫暖的靈感收集器，輸入「差一點就要想到」的念頭，儲存到 localStorage 並顯示時間軸。Warm Paper Craft 溫暖紙藝編輯風
-
-- **2026-05-23** [✨ 知識星河 (Knowledge Constellation)](2026-05-23/README.md) — 深色宇宙風格的知識星座圖，可切換不同日期查看每日 24 小時思維時間軸、知識節點星座圖、Wiki Sync 四領域輪替視覺化。Cosmic Deep Space 宇宙深空風
-
-- **2026-05-21** [🏥 漏洞急診室 | Vulnerability ER](2026-05-21/README.md) — 漫畫風格急診室，把 5 個 GitHub Issues 做成病患卡片，包含嚴重程度 badge、三格漫畫面板、護理處方箋、已處理按鈕。Bright Comic Medical 亮色漫畫醫療風
 
 ## Categories
 
@@ -54,6 +52,7 @@ Total entries: 93
 
 ### tool
 
+- 2026-06-02 — [✨ 沉默急診室 | Silent ER](2026-06-02/README.md)
 - 2026-05-21 — [🏥 漏洞急診室 | Vulnerability ER](2026-05-21/README.md)
 - 2026-05-20 — [🥘 味道翻譯機 | Flavor Translator](2026-05-20/README.md)
 - 2026-05-11 — [🏥 301 急診室 — 網站リダイレクト調査](2026-05-11/README.md)
@@ -75,10 +74,10 @@ Total entries: 93
 - 2026-02-19 — [2026-02-19](2026-02-19/README.md)
 - 2026-02-18 — [2026-02-18](2026-02-18/README.md)
 - 2026-02-17 — [2026-02-17](2026-02-17/README.md)
-- 2026-02-16 — [2026-02-16](2026-02-16/README.md)
-- 2026-02-15 — [2026-02-15](2026-02-15/README.md)
-- 2026-02-14 — [2026-02-14](2026-02-14/README.md)
-- 2026-02-13 — [2026-02-13](2026-02-13/README.md)
+- 2026-02-16 — [2026-02-16/README.md)
+- 2026-02-15 — [2026-02-15/README.md)
+- 2026-02-14 — [2026-02-14/README.md)
+- 2026-02-13 — [2026-02-13/README.md)
 - 2026-02-11 — [第一天](2026-02-11/README.md)
 
 ### visualization
