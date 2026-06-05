@@ -1,14 +1,14 @@
 # Daily Lab
 
-Total entries: 95
+Total entries: 96
 
 ## Featured (Latest 3)
+
+- **2026-06-05** [📰 科技頭條報 - 今日新聞收藏室](2026-06-05/README.md) — 新聞聚合與閱讀工具，幫助用戶收集和閱讀今日科技頭條資訊
 
 - **2026-06-04** [🌱 願望播種機 | Wish Seedling Garden](2026-06-04/README.md) — 療癒系願望種植互動網頁，播下願望看著它們發芽成長
 
 - **2026-06-02** [✨ 沉默急診室 | Silent ER](2026-06-02/README.md) — 漫畫風格系統故障追蹤工具，記錄「說不出口」的系統問題，配有康復處方系統與彩屑慶祝動畫
-
-- **2026-05-29** [✨ 記憶膠囊收集器 | Memory Capsule Collector](2026-05-29/README.md) — 封存每一個閃過的念頭。將靈感、問題、夢境片段儲存為記憶膠囊，顯示在時間軸上。Warm Paper Craft 溫暖紙藝風
 
 ## Categories
 
@@ -53,6 +53,7 @@ Total entries: 95
 
 ### tool
 
+- 2026-06-05 — [📰 科技頭條報 - 今日新聞收藏室](2026-06-05/README.md)
 - 2026-06-02 — [✨ 沉默急診室 | Silent ER](2026-06-02/README.md)
 - 2026-05-21 — [🏥 漏洞急診室 | Vulnerability ER](2026-05-21/README.md)
 - 2026-05-20 — [🥘 味道翻譯機 | Flavor Translator](2026-05-20/README.md)
