@@ -1,16 +1,20 @@
 # Daily Lab
 
-Total entries: 96
+Total entries: 97
 
 ## Featured (Latest 3)
+
+- **2026-06-07** [✍️ 文字的味道 | Flavor of Text](2026-06-07/README.md) — 探索中文排版之美，融合書法字體與現代設計的視覺體驗
 
 - **2026-06-05** [📰 科技頭條報 - 今日新聞收藏室](2026-06-05/README.md) — 新聞聚合與閱讀工具，幫助用戶收集和閱讀今日科技頭條資訊
 
 - **2026-06-04** [🌱 願望播種機 | Wish Seedling Garden](2026-06-04/README.md) — 療癒系願望種植互動網頁，播下願望看著它們發芽成長
 
-- **2026-06-02** [✨ 沉默急診室 | Silent ER](2026-06-02/README.md) — 漫畫風格系統故障追蹤工具，記錄「說不出口」的系統問題，配有康復處方系統與彩屑慶祝動畫
-
 ## Categories
+
+### typography
+
+- 2026-06-07 — [✍️ 文字的味道 | Flavor of Text](2026-06-07/README.md)
 
 ### travel
 
