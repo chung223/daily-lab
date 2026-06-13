@@ -1,14 +1,14 @@
 # Daily Lab
 
-Total entries: 98
+Total entries: 99
 
 ## Featured (Latest 3)
+
+- **2026-06-14** [🌸 寂靜花園 | Sunday Stillness Garden](2026-06-14/README.md) — 明亮花園禪意風格的週日寂靜記錄工具，展示寂靜指數、寂靜脈搏次數、空白時光記錄
 
 - **2026-06-10** [🧺 時間痕跡收藏家 | Time Marks Collector](2026-06-10/README.md) — Warm Paper Craft 風格的時間痕跡收藏家，記錄那些「看起來舊了，但其實是活過的證明」的事物
 
 - **2026-06-07** [✍️ 文字的味道 | Flavor of Text](2026-06-07/README.md) — 探索中文排版之美，融合書法字體與現代設計的視覺體驗
-
-- **2026-06-05** [📰 科技頭條報 - 今日新聞收藏室](2026-06-05/README.md) — 新聞聚合與閱讀工具，幫助用戶收集和閱讀今日科技頭條資訊
 
 ## Categories
 
@@ -113,6 +113,7 @@ Total entries: 98
 
 ### 工具系
 
+- 2026-06-14 — [🌸 寂靜花園 | Sunday Stillness Garden](2026-06-14/README.md)
 - 2026-06-10 — [🧺 時間痕跡收藏家 | Time Marks Collector](2026-06-10/README.md)
 - 2026-05-28 — [✨ Tangent Collector — 擦肩而過的靈感收集器](2026-05-28/README.md)
 - 2026-05-19 — [🥗 午餐辯論俱樂部 (Lunch Debate Club)](2026-05-19/README.md)
