@@ -1,14 +1,14 @@
 # Daily Lab
 
-Total entries: 99
+Total entries: 100
 
 ## Featured (Latest 3)
+
+- **2026-06-15** [🫀 System ECG Monitor | HEARTBEAT 系統心電圖](2026-06-15/README.md) — 即時系統監控面板，以心電圖風格呈現系統狀態，磷光綠色科技感 UI
 
 - **2026-06-14** [🌸 寂靜花園 | Sunday Stillness Garden](2026-06-14/README.md) — 明亮花園禪意風格的週日寂靜記錄工具，展示寂靜指數、寂靜脈搏次數、空白時光記錄
 
 - **2026-06-10** [🧺 時間痕跡收藏家 | Time Marks Collector](2026-06-10/README.md) — Warm Paper Craft 風格的時間痕跡收藏家，記錄那些「看起來舊了，但其實是活過的證明」的事物
-
-- **2026-06-07** [✍️ 文字的味道 | Flavor of Text](2026-06-07/README.md) — 探索中文排版之美，融合書法字體與現代設計的視覺體驗
 
 ## Categories
 
@@ -87,6 +87,8 @@ Total entries: 99
 - 2026-02-11 — [第一天](2026-02-11/README.md)
 
 ### visualization
+
+- 2026-06-15 — [🫀 System ECG Monitor | HEARTBEAT 系統心電圖](2026-06-15/README.md)
 
 - 2026-05-22 — [✨ 知識星河 — Knowledge Constellation](2026-05-22/README.md)
 - 2026-04-11 — [健康報告卡 Blood Test Report Card](2026-04-11/README.md)
