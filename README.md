@@ -1,14 +1,14 @@
 # Daily Lab
 
-Total entries: 100
+Total entries: 101
 
 ## Featured (Latest 3)
+
+- **2026-06-16** [🌙 深夜圖書館值班漫畫 | Night Shift Library](2026-06-16/README.md) — 互動式網頁漫畫，講述圖書館夜間值班員的溫馨故事，漫畫風格 UI 設計
 
 - **2026-06-15** [🫀 System ECG Monitor | HEARTBEAT 系統心電圖](2026-06-15/README.md) — 即時系統監控面板，以心電圖風格呈現系統狀態，磷光綠色科技感 UI
 
 - **2026-06-14** [🌸 寂靜花園 | Sunday Stillness Garden](2026-06-14/README.md) — 明亮花園禪意風格的週日寂靜記錄工具，展示寂靜指數、寂靜脈搏次數、空白時光記錄
-
-- **2026-06-10** [🧺 時間痕跡收藏家 | Time Marks Collector](2026-06-10/README.md) — Warm Paper Craft 風格的時間痕跡收藏家，記錄那些「看起來舊了，但其實是活過的證明」的事物
 
 ## Categories
 
@@ -45,6 +45,7 @@ Total entries: 100
 
 ### interactive
 
+- 2026-06-16 — [🌙 深夜圖書館值班漫畫 | Night Shift Library](2026-06-16/README.md)
 - 2026-06-04 — [🌱 願望播種機 | Wish Seedling Garden](2026-06-04/README.md)
 - 2026-05-29 — [✨ 記憶膠囊收集器 | Memory Capsule Collector](2026-05-29/README.md)
 - 2026-05-16 — [🌙 凌晨矛盾簿 | Midnight Contradiction Journal](2026-05-16/README.md)
