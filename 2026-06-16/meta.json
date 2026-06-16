@@ -1,6 +1,6 @@
 {
-  "title": "🌙 深夜圖書館值班漫畫",
-  "type": "web-comic",
-  "description": "互動式網頁漫畫，講述圖書館夜間值班員的溫馨故事。包含漫畫風格 UI、即時時間面板、角色對話框等元素。",
-  "inspiration": "圖書館夜間的寧靜氛圍與溫暖燈光"
+  "title": "深夜圖書館值班漫畫",
+  "type": "工具系（系統監控工具）",
+  "description": "Comic Panel × Editorial 漫畫風格的深夜圖書館值班漫畫。四個虛構角色（小圖書館員、Wiki 機器人、心跳精靈、Obsidian 書記）輪流登場漫畫對話框、即時時間顯示、48 心跳追蹤、ABCD 週期切換動畫、事件時間軸、localStorage 持久化。",
+  "inspiration": "來自 Chung 深夜系統的 HEARTBEAT 循環 + Wiki Sync ABCD 四領域輪替 + Obsidian 同步"
 }

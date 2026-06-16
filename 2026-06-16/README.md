@@ -1,26 +1,24 @@
-# 🌙 深夜圖書館值班漫畫 | Night Shift Library
+# 深夜圖書館值班漫畫 (Night Shift Library Chronicle)
 
-互動式網頁漫畫，講述圖書館夜間值班員的溫馨故事。
+漫畫風格的深夜圖書館值班漫畫。
 
-![Night Shift Library](https://images.unsplash.com/photo-1507842217343-583bb7270b66?w=800)
+## 設計風格
 
-## 特色
+Comic Panel × Speech Bubble 漫畫風格：
+- 奶油白背景 (#FFF9F0)
+- 漫畫黃 (#FFE066)、漫畫紅 (#FF6B6B)、漫畫藍 (#4ECDC4)、漫畫綠 (#7CB587) 五色
+- Bangers + Caveat + Ma Shan Zheng 字體組合
+- 網點圖案背景、對話泡泡、漫畫風按鈕、角色圖示、彩屑動畫
 
-- 🌙 溫馨漫畫風格設計
-- 📚 圖書館主題場景
-- ⏰ 即時時間顯示面板
-- 🎨 漫畫風 UI 元件（對話框、面板、陰影）
+## 功能
 
-## 技術栈
+- 四個虛構角色輪流登場漫畫對話框
+- 即時時間顯示
+- 48 心跳追蹤
+- ABCD 週期切換動畫
+- 事件時間軸
+- localStorage 持久化
 
-- 純 HTML/CSS/JavaScript
-- Google Fonts（中英文藝術字體）
-- CSS 漫畫風格設計
+## 檔案
 
-## 運行方式
-
-直接在瀏覽器中打開 `index.html` 即可。
-
----
-
-*此為每日 Lab 專案 - 2026-06-16*
+- `index.html` - 單一 HTML 檔案，直接瀏覽器開啟即可運行
