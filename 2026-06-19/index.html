@@ -1,0 +1,1166 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OpenClaw BBS — Issue Terminal v2026.6.8</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=VT323&family=Share+Tech+Mono&family=Noto+Sans+TC:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --amber: #FFB000;
+    --amber-dim: #CC8C00;
+    --amber-glow: #FFD470;
+    --bg-dark: #0A0800;
+    --bg-panel: #0F0D00;
+    --border: #6B4A00;
+    --red-alert: #FF4444;
+    --green-ok: #44FF88;
+    --cyan-link: #44DDFF;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg-dark);
+    color: var(--amber);
+    font-family: 'VT323', 'Share Tech Mono', monospace;
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  /* CRT Scanlines */
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0,0,0,0.15) 2px,
+      rgba(0,0,0,0.15) 4px
+    );
+    pointer-events: none;
+    z-index: 9999;
+  }
+
+  /* CRT Vignette */
+  body::after {
+    content: '';
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: radial-gradient(ellipse at center, transparent 60%, rgba(0,0,0,0.7) 100%);
+    pointer-events: none;
+    z-index: 9998;
+  }
+
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 16px;
+  }
+
+  /* Header */
+  .bbs-header {
+    border: 2px solid var(--amber);
+    background: var(--bg-panel);
+    margin-bottom: 12px;
+    position: relative;
+    box-shadow: 0 0 20px rgba(255,176,0,0.3), inset 0 0 30px rgba(255,176,0,0.05);
+  }
+
+  .bbs-header-inner {
+    padding: 12px 16px;
+    text-align: center;
+    border: 1px solid var(--border);
+    margin: 4px;
+  }
+
+  .bbs-title {
+    font-size: clamp(28px, 6vw, 52px);
+    letter-spacing: 6px;
+    text-shadow: 0 0 10px var(--amber), 0 0 20px rgba(255,176,0,0.5);
+    animation: flicker 4s infinite;
+  }
+
+  .bbs-subtitle {
+    font-size: clamp(14px, 3vw, 20px);
+    color: var(--amber-dim);
+    margin-top: 4px;
+    letter-spacing: 2px;
+  }
+
+  .bbs-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 8px;
+    font-size: clamp(12px, 2.5vw, 16px);
+    color: var(--amber-dim);
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  .bbs-clock {
+    color: var(--amber-glow);
+    text-shadow: 0 0 8px var(--amber);
+    font-size: clamp(14px, 3vw, 20px);
+  }
+
+  @keyframes flicker {
+    0%, 97%, 100% { opacity: 1; }
+    98% { opacity: 0.85; }
+    99% { opacity: 0.95; }
+  }
+
+  /* Navigation */
+  .bbs-nav {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+  }
+
+  .bbs-nav-btn {
+    background: var(--bg-panel);
+    border: 1px solid var(--border);
+    color: var(--amber-dim);
+    font-family: 'VT323', monospace;
+    font-size: clamp(14px, 3vw, 18px);
+    padding: 6px 14px;
+    cursor: pointer;
+    transition: all 0.15s;
+    letter-spacing: 1px;
+  }
+
+  .bbs-nav-btn:hover, .bbs-nav-btn.active {
+    background: var(--amber);
+    color: var(--bg-dark);
+    border-color: var(--amber);
+    box-shadow: 0 0 10px rgba(255,176,0,0.5);
+  }
+
+  /* Panels */
+  .bbs-panel {
+    border: 2px solid var(--amber);
+    background: var(--bg-panel);
+    margin-bottom: 12px;
+    box-shadow: 0 0 15px rgba(255,176,0,0.15);
+  }
+
+  .bbs-panel-header {
+    background: var(--amber);
+    color: var(--bg-dark);
+    padding: 6px 12px;
+    font-size: clamp(16px, 3.5vw, 22px);
+    letter-spacing: 3px;
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .bbs-panel-header .close-btn {
+    background: none;
+    border: none;
+    color: var(--bg-dark);
+    font-size: 20px;
+    cursor: pointer;
+    font-family: 'VT323', monospace;
+  }
+
+  .bbs-panel-body {
+    padding: 12px;
+    border: 1px solid var(--border);
+    margin: 4px;
+    font-size: clamp(14px, 3vw, 18px);
+    line-height: 1.6;
+  }
+
+  /* Version Badge */
+  .version-strip {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-bottom: 8px;
+  }
+
+  .ver-badge {
+    background: var(--amber);
+    color: var(--bg-dark);
+    padding: 2px 10px;
+    font-size: clamp(12px, 2.5vw, 16px);
+    letter-spacing: 1px;
+  }
+
+  .ver-badge.p1 {
+    background: var(--red-alert);
+    color: white;
+    animation: pulse-red 1.5s infinite;
+  }
+
+  @keyframes pulse-red {
+    0%, 100% { box-shadow: 0 0 5px var(--red-alert); }
+    50% { box-shadow: 0 0 15px var(--red-alert); }
+  }
+
+  /* Issue List */
+  .issue-list {
+    list-style: none;
+  }
+
+  .issue-item {
+    border-bottom: 1px solid var(--border);
+    padding: 10px 0;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 8px;
+    align-items: start;
+    font-size: clamp(13px, 2.8vw, 17px);
+  }
+
+  .issue-item:last-child { border-bottom: none; }
+
+  .issue-pri {
+    font-size: clamp(16px, 3.5vw, 22px);
+    min-width: 28px;
+    text-align: center;
+  }
+
+  .issue-pri.p1 { color: var(--red-alert); text-shadow: 0 0 8px var(--red-alert); }
+  .issue-pri.p2 { color: var(--amber-glow); }
+  .issue-pri.p3 { color: var(--amber-dim); }
+
+  .issue-content { min-width: 0; }
+  .issue-title {
+    color: var(--amber-glow);
+    word-break: break-word;
+    cursor: pointer;
+    transition: color 0.15s;
+  }
+  .issue-title:hover { color: white; text-decoration: underline; }
+  .issue-meta {
+    color: var(--amber-dim);
+    font-size: 0.85em;
+    margin-top: 2px;
+  }
+
+  .issue-actions { display: flex; gap: 6px; }
+
+  .pin-btn {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--amber-dim);
+    font-family: 'VT323', monospace;
+    font-size: 14px;
+    padding: 2px 8px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .pin-btn:hover, .pin-btn.pinned {
+    border-color: var(--amber);
+    color: var(--amber);
+    box-shadow: 0 0 5px rgba(255,176,0,0.3);
+  }
+  .pin-btn.pinned { color: var(--amber-glow); }
+
+  /* Stats */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 8px;
+  }
+
+  .stat-card {
+    border: 1px solid var(--border);
+    padding: 10px;
+    text-align: center;
+  }
+
+  .stat-num {
+    font-size: clamp(28px, 6vw, 44px);
+    color: var(--amber-glow);
+    text-shadow: 0 0 10px var(--amber);
+    line-height: 1;
+  }
+
+  .stat-label {
+    font-size: clamp(11px, 2.5vw, 14px);
+    color: var(--amber-dim);
+    margin-top: 4px;
+    letter-spacing: 1px;
+  }
+
+  /* Form */
+  .input-area {
+    margin-top: 10px;
+  }
+
+  .input-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+
+  .bbs-input {
+    background: rgba(255,176,0,0.05);
+    border: 1px solid var(--border);
+    color: var(--amber);
+    font-family: 'VT323', 'Share Tech Mono', monospace;
+    font-size: clamp(14px, 3vw, 18px);
+    padding: 8px 12px;
+    width: 100%;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .bbs-input:focus {
+    border-color: var(--amber);
+    box-shadow: 0 0 8px rgba(255,176,0,0.2);
+  }
+
+  .bbs-input::placeholder { color: var(--amber-dim); opacity: 0.5; }
+
+  .bbs-btn {
+    background: var(--amber);
+    border: none;
+    color: var(--bg-dark);
+    font-family: 'VT323', monospace;
+    font-size: clamp(14px, 3vw, 18px);
+    padding: 8px 20px;
+    cursor: pointer;
+    letter-spacing: 2px;
+    transition: all 0.15s;
+  }
+
+  .bbs-btn:hover {
+    background: var(--amber-glow);
+    box-shadow: 0 0 15px rgba(255,176,0,0.5);
+  }
+
+  /* Pinned Issues */
+  .pinned-section {
+    border: 1px dashed var(--amber-dim);
+    padding: 8px;
+    margin-bottom: 10px;
+    background: rgba(255,176,0,0.03);
+  }
+
+  .pinned-label {
+    color: var(--amber-dim);
+    font-size: clamp(12px, 2.5vw, 15px);
+    margin-bottom: 6px;
+    letter-spacing: 2px;
+  }
+
+  /* Timeline */
+  .timeline-entry {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 10px;
+    font-size: clamp(13px, 2.8vw, 17px);
+  }
+
+  .timeline-time {
+    color: var(--amber-dim);
+    min-width: 70px;
+    font-size: 0.9em;
+  }
+
+  .timeline-text { color: var(--amber-glow); }
+
+  /* ASCII divider */
+  .ascii-divider {
+    color: var(--border);
+    text-align: center;
+    letter-spacing: 2px;
+    margin: 8px 0;
+    font-size: clamp(10px, 2vw, 14px);
+    overflow: hidden;
+  }
+
+  /* Confetti canvas */
+  #confetti-canvas {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 10000;
+  }
+
+  /* Typing cursor */
+  .cursor {
+    display: inline-block;
+    width: 10px;
+    height: 1em;
+    background: var(--amber);
+    animation: blink 1s step-end infinite;
+    vertical-align: text-bottom;
+    margin-left: 2px;
+  }
+
+  @keyframes blink {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0; }
+  }
+
+  /* Toast */
+  .toast {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: var(--amber);
+    color: var(--bg-dark);
+    padding: 10px 20px;
+    font-family: 'VT323', monospace;
+    font-size: 18px;
+    z-index: 10001;
+    animation: toastIn 0.3s ease, toastOut 0.3s ease 2.7s forwards;
+    box-shadow: 0 0 20px rgba(255,176,0,0.5);
+  }
+
+  @keyframes toastIn {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+
+  @keyframes toastOut {
+    from { transform: translateY(0); opacity: 1; }
+    to { transform: translateY(20px); opacity: 0; }
+  }
+
+  /* Footer */
+  .bbs-footer {
+    text-align: center;
+    color: var(--amber-dim);
+    font-size: clamp(11px, 2.3vw, 14px);
+    padding: 8px;
+    border-top: 1px solid var(--border);
+    letter-spacing: 1px;
+    opacity: 0.7;
+  }
+
+  /* Responsive */
+  @media (max-width: 500px) {
+    .issue-item { grid-template-columns: auto 1fr; }
+    .issue-actions { grid-column: 2; justify-content: flex-end; }
+    .version-strip { flex-direction: column; align-items: flex-start; }
+  }
+
+  .section { display: none; }
+  .section.active { display: block; }
+
+  .tag {
+    display: inline-block;
+    padding: 1px 6px;
+    font-size: 0.75em;
+    border: 1px solid currentColor;
+    margin-right: 4px;
+    vertical-align: middle;
+  }
+  .tag.bug { color: var(--red-alert); }
+  .tag.feat { color: var(--green-ok); }
+  .tag.perf { color: var(--cyan-link); }
+
+  /* Boot sequence */
+  #boot-screen {
+    position: fixed;
+    inset: 0;
+    background: var(--bg-dark);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    z-index: 9000;
+    font-family: 'VT323', monospace;
+    color: var(--amber);
+  }
+
+  .boot-text {
+    font-size: clamp(14px, 3vw, 20px);
+    text-shadow: 0 0 8px var(--amber);
+    animation: bootFade 0.1s ease;
+    letter-spacing: 1px;
+  }
+
+  @keyframes bootFade {
+    from { opacity: 0; transform: translateY(-5px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+</style>
+</head>
+<body>
+
+<!-- Boot Screen -->
+<div id="boot-screen">
+  <div id="boot-lines"></div>
+</div>
+
+<!-- Confetti -->
+<canvas id="confetti-canvas"></canvas>
+
+<div class="container" id="main-content" style="display:none;">
+
+  <!-- HEADER -->
+  <div class="bbs-header">
+    <div class="bbs-header-inner">
+      <div class="bbs-title">OpenClaw BBS</div>
+      <div class="bbs-subtitle">═══ ISSUE TERMINAL v2026.6.8 ═══</div>
+      <div class="bbs-meta">
+        <span>SYSOP: Chung's Lab Agent</span>
+        <span class="bbs-clock" id="clock">--:--:--</span>
+        <span id="date-display">2026/06/19</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- VERSION STRIP -->
+  <div class="version-strip">
+    <span class="ver-badge">v2026.6.8</span>
+    <span class="ver-badge" style="background:var(--bg-panel);color:var(--amber-dim);border:1px solid var(--border);">RELEASED: 2026-06-16</span>
+    <span class="ver-badge p1">⚠ P1: cron isolated-session phantom timeout</span>
+    <span class="ver-badge" style="background:var(--bg-panel);color:var(--green-ok);border:1px solid var(--green-ok);">5 NEW ISSUES</span>
+  </div>
+
+  <!-- NAV -->
+  <div class="bbs-nav">
+    <button class="bbs-nav-btn active" data-section="issues" onclick="switchSection('issues')">◆ ISSUES</button>
+    <button class="bbs-nav-btn" data-section="stats" onclick="switchSection('stats')">◆ STATS</button>
+    <button class="bbs-nav-btn" data-section="log" onclick="switchSection('log')">◆ ACTIVITY LOG</button>
+    <button class="bbs-nav-btn" data-section="terminal" onclick="switchSection('terminal')">◆ TERMINAL</button>
+  </div>
+
+  <!-- ISSUES SECTION -->
+  <div class="section active" id="sec-issues">
+    <div class="bbs-panel">
+      <div class="bbs-panel-header">
+        <span>📋 ISSUE TRACKER — 6 OPEN</span>
+        <button class="close-btn" onclick="this.closest('.bbs-panel').remove()">×</button>
+      </div>
+      <div class="bbs-panel-body">
+
+        <!-- Pinned -->
+        <div class="pinned-section" id="pinned-section" style="display:none;">
+          <div class="pinned-label">📌 PINNED ISSUES</div>
+          <div id="pinned-list"></div>
+        </div>
+
+        <div class="ascii-divider">─────────────────────────────────</div>
+
+        <!-- Issue list -->
+        <ul class="issue-list" id="issue-list">
+          <!-- Populated by JS -->
+        </ul>
+
+        <div class="ascii-divider">─────────────────────────────────</div>
+
+        <div class="input-area">
+          <div style="color:var(--amber-dim);margin-bottom:6px;">> ADD PERSONAL NOTE:</div>
+          <div class="input-row">
+            <input class="bbs-input" id="note-input" placeholder="Type a note about any issue..." maxlength="120">
+          </div>
+          <div class="input-row">
+            <input class="bbs-input" id="tag-input" placeholder="#tag (e.g. urgent, investigate, monitor)" maxlength="40" style="flex:0 0 200px;">
+            <button class="bbs-btn" onclick="addNote()">[ LOG NOTE ]</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STATS SECTION -->
+  <div class="section" id="sec-stats">
+    <div class="bbs-panel">
+      <div class="bbs-panel-header">
+        <span>📊 YOUR BUG HUNT STATS</span>
+        <button class="close-btn" onclick="this.closest('.bbs-panel').remove()">×</button>
+      </div>
+      <div class="bbs-panel-body">
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-num" id="stat-sessions">0</div>
+            <div class="stat-label">SESSIONS</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-num" id="stat-pinned">0</div>
+            <div class="stat-label">PINNED</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-num" id="stat-notes">0</div>
+            <div class="stat-label">NOTES</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-num" id="stat-p1">0</div>
+            <div class="stat-label">P1 ALERTS</div>
+          </div>
+        </div>
+
+        <div class="ascii-divider">═══════════════════════════════</div>
+
+        <div style="color:var(--amber-dim);margin-bottom:8px;">RECENT ACTIVITY:</div>
+        <div id="recent-notes"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LOG SECTION -->
+  <div class="section" id="sec-log">
+    <div class="bbs-panel">
+      <div class="bbs-panel-header">
+        <span>📜 ACTIVITY LOG — JUN 2026</span>
+        <button class="close-btn" onclick="this.closest('.bbs-panel').remove()">×</button>
+      </div>
+      <div class="bbs-panel-body">
+        <div id="activity-log"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TERMINAL SECTION -->
+  <div class="section" id="sec-terminal">
+    <div class="bbs-panel">
+      <div class="bbs-panel-header">
+        <span>▶ BBS TERMINAL</span>
+        <button class="close-btn" onclick="this.closest('.bbs-panel').remove()">×</button>
+      </div>
+      <div class="bbs-panel-body" style="font-family:'Share Tech Mono',monospace;">
+        <div id="terminal-output" style="min-height:200px;max-height:400px;overflow-y:auto;margin-bottom:10px;color:var(--amber-dim);font-size:clamp(13px,2.8vw,17px);"></div>
+        <div class="input-row">
+          <input class="bbs-input" id="terminal-input" placeholder="$ enter command..." style="font-family:'Share Tech Mono',monospace;" onkeydown="handleTerminal(event)">
+          <button class="bbs-btn" onclick="handleTerminalSubmit()">▶</button>
+        </div>
+        <div style="margin-top:8px;color:var(--amber-dim);font-size:0.85em;">
+          COMMANDS: help, clear, stats, issues, ping, uptime, quote, hunt
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bbs-footer">
+    OpenClaw BBS Terminal v1.0 — SysOp: Chung's Lab Agent ◇ Uptime: <span id="uptime">--</span> ◇ All systems nominal
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════
+// DATA
+// ═══════════════════════════════════════
+
+const ISSUES = [
+  {
+    id: '#93867',
+    title: '[Regression] cron isolated-session phantom timeout',
+    desc: '間歇性阻斷所有隔離 cron job。建議暫時改用 main session 模式。',
+    pri: 'P1',
+    type: 'bug',
+    repo: 'openclaw',
+    date: '2026-06-16',
+    votes: 7
+  },
+  {
+    id: '#93875',
+    title: 'Discord: 成功發送訊息後仍殘留 tool-failed 警告',
+    desc: '訊息發送成功但系統仍顯示錯誤提示。',
+    pri: 'P2',
+    type: 'bug',
+    repo: 'openclaw',
+    date: '2026-06-16',
+    votes: 3
+  },
+  {
+    id: '#93882',
+    title: 'PR: 修復 Telegram /think Ollama 思維層級選單問題',
+    desc: 'Pull Request 已提交，修復思維層級顯示異常。',
+    pri: 'P2',
+    type: 'feat',
+    repo: 'openclaw',
+    date: '2026-06-16',
+    votes: 2
+  },
+  {
+    id: '#93854',
+    title: 'Docker sandbox 掛載保留路徑時 crash loop (P2)',
+    desc: '安全性相關：路徑衝突導致 sandbox-skills crash。',
+    pri: 'P2',
+    type: 'bug',
+    repo: 'openclaw',
+    date: '2026-06-15',
+    votes: 4
+  },
+  {
+    id: '#93865',
+    title: 'Chrome CDP IPv4 绑定誤報 HTTP 401',
+    desc: 'CDP 客戶端報告 IPv4/IPv6 绑定問題，導致 401 錯誤。',
+    pri: 'P3',
+    type: 'bug',
+    repo: 'openclaw',
+    date: '2026-06-18',
+    votes: 1
+  },
+  {
+    id: '#93866',
+    title: 'Docker sandbox-skills root 創建問題',
+    desc: 'Sandbox-skills 容器在建立 root 時失敗。',
+    pri: 'P3',
+    type: 'bug',
+    repo: 'openclaw',
+    date: '2026-06-18',
+    votes: 1
+  },
+  {
+    id: '#93867-reopen',
+    title: 'OpenAI 相容代理圖片解析失敗',
+    desc: '圖片無法正確解析，支援多模態時出現問題。',
+    pri: 'P3',
+    type: 'bug',
+    repo: 'openclaw',
+    date: '2026-06-18',
+    votes: 1
+  },
+  {
+    id: '#93868',
+    title: 'Feishu stderr 覆蓋回覆訊息',
+    desc: 'stderr 輸出覆蓋了正常的回覆內容。',
+    pri: 'P3',
+    type: 'bug',
+    repo: 'openclaw',
+    date: '2026-06-18',
+    votes: 1
+  },
+  {
+    id: '#93869',
+    title: 'Telegram HTML 表格截斷',
+    desc: 'HTML 格式的表格訊息被截斷，尾部內容缺失。',
+    pri: 'P3',
+    type: 'bug',
+    repo: 'openclaw',
+    date: '2026-06-18',
+    votes: 1
+  }
+];
+
+const ACTIVITY = [
+  { time: '03:00', text: 'Daily Lab Build triggered — BBS Terminal project started' },
+  { time: '11:00', text: 'OpenClaw GitHub Hourly: v2026.6.8 reported, 5 new issues' },
+  { time: '09:15', text: 'CRM Sync: 13 emails scanned, 66 CRM entries, 0 new contacts' },
+  { time: '10:05', text: 'IFE 2026: 9 reps × 51 stations deployed to index.4-h.me' },
+  { time: '06:00', text: 'VPS health check: 13/15 stations nominal, demo.php offline' },
+  { time: '04:00', text: 'OpenClaw Daily Backup completed successfully' },
+  { time: '05:26', text: 'Vector index rebuild: 2 chunks main, 3 chunks second' },
+  { time: '05:00', text: 'VPS night shift check: all clear, no alerts' },
+];
+
+const TERMINAL_QUOTES = [
+  "> Every bug is just a feature waiting to be understood.",
+  "> cat /dev/brain | grep -i bug | wc -l  →  still too many",
+  "> 0430: issue filed. 0630: still crying. 0900: cell membrane weeping.",
+  "> The terminal is patient. The bugs are not.",
+  "> ping localhost → 100% loss. Classic.",
+  "> The BBS never sleeps. Neither do P1 bugs.",
+  "> git commit -m 'fixed it' && git push --force  ← you know you done it",
+  "> A true sysop doesn't panic. They Ctrl+C, Ctrl+V, pray.",
+];
+
+// ═══════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════
+
+let pinnedIds = JSON.parse(localStorage.getItem('bbs-pinned') || '[]');
+let notes = JSON.parse(localStorage.getItem('bbs-notes') || '[]');
+let sessions = parseInt(localStorage.getItem('bbs-sessions') || '0');
+let startTime = Date.now();
+
+// Increment session
+sessions++;
+localStorage.setItem('bbs-sessions', sessions);
+
+// ═══════════════════════════════════════
+// CLOCK
+// ═══════════════════════════════════════
+
+function updateClock() {
+  const now = new Date();
+  const h = String(now.getHours()).padStart(2,'0');
+  const m = String(now.getMinutes()).padStart(2,'0');
+  const s = String(now.getSeconds()).padStart(2,'0');
+  document.getElementById('clock').textContent = `${h}:${m}:${s}`;
+
+  const d = `${now.getFullYear()}/${String(now.getMonth()+1).padStart(2,'0')}/${String(now.getDate()).padStart(2,'0')}`;
+  document.getElementById('date-display').textContent = d;
+
+  const elapsed = Math.floor((Date.now() - startTime) / 1000);
+  const hr = String(Math.floor(elapsed/3600)).padStart(2,'0');
+  const mn = String(Math.floor((elapsed%3600)/60)).padStart(2,'0');
+  const sc = String(elapsed%60).padStart(2,'0');
+  const uptimeEl = document.getElementById('uptime');
+  if (uptimeEl) uptimeEl.textContent = `${hr}:${mn}:${sc}`;
+}
+setInterval(updateClock, 1000);
+updateClock();
+
+// ═══════════════════════════════════════
+// BOOT SEQUENCE
+// ═══════════════════════════════════════
+
+const bootLines = [
+  'OpenClaw BBS System v2026.6.8',
+  'Copyright (c) 2026 Chung Labs. All rights reserved.',
+  '',
+  'Initializing kernel modules...        [OK]',
+  'Loading issue tracker database...    [OK]',
+  'Connecting to GitHub API...           [OK]',
+  'Mounting /dev/brain...                [OK]',
+  'Loading P1 alerts...                  [1 FOUND]',
+  'Checking cron daemon status...        [WARNING: phantom timeout]',
+  'Starting BBS services...              [OK]',
+  'Loading personal notes...             [OK]',
+  '',
+  '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━',
+  '  WELCOME TO THE BUG HUNT, HUNTER.',
+  '  Type "help" in the terminal for commands.',
+  '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━',
+  '',
+];
+
+async function runBoot() {
+  const container = document.getElementById('boot-lines');
+  for (const line of bootLines) {
+    await new Promise(r => setTimeout(r, line === '' ? 100 : 80));
+    const div = document.createElement('div');
+    div.className = 'boot-text';
+    div.textContent = line;
+    container.appendChild(div);
+    container.scrollTop = container.scrollHeight;
+  }
+  await new Promise(r => setTimeout(r, 400));
+  document.getElementById('boot-screen').style.opacity = '0';
+  await new Promise(r => setTimeout(r, 500));
+  document.getElementById('boot-screen').style.display = 'none';
+  document.getElementById('main-content').style.display = 'block';
+}
+
+// ═══════════════════════════════════════
+// RENDER ISSUES
+// ═══════════════════════════════════════
+
+function renderIssues() {
+  const list = document.getElementById('issue-list');
+  list.innerHTML = '';
+
+  // Separate pinned and others
+  const pinned = ISSUES.filter(i => pinnedIds.includes(i.id));
+  const unpinned = ISSUES.filter(i => !pinnedIds.includes(i.id));
+
+  // Render pinned first
+  const pinnedSection = document.getElementById('pinned-section');
+  const pinnedList = document.getElementById('pinned-list');
+
+  if (pinned.length > 0) {
+    pinnedSection.style.display = 'block';
+    pinnedList.innerHTML = '';
+    pinned.forEach(issue => {
+      pinnedList.appendChild(createIssueEl(issue, true));
+    });
+  } else {
+    pinnedSection.style.display = 'none';
+  }
+
+  // Render unpinned
+  unpinned.forEach(issue => {
+    list.appendChild(createIssueEl(issue, false));
+  });
+}
+
+function createIssueEl(issue, isPinned) {
+  const li = document.createElement('li');
+  li.className = 'issue-item';
+
+  const priIcon = issue.pri === 'P1' ? '🔴' : issue.pri === 'P2' ? '🟡' : '⚪';
+  const typeIcon = issue.type === 'bug' ? '🐛' : issue.type === 'feat' ? '✨' : '⚡';
+
+  li.innerHTML = `
+    <span class="issue-pri ${issue.pri.toLowerCase()}" title="Priority ${issue.pri}">${priIcon}</span>
+    <div class="issue-content">
+      <div class="issue-title" onclick="toggleIssue(this)">${typeIcon} ${issue.id}: ${issue.title}</div>
+      <div class="issue-meta">${issue.repo} · ${issue.date} · ♥${issue.votes} · <span class="tag ${issue.type}">${issue.type.toUpperCase()}</span></div>
+      <div class="issue-desc" style="display:none;color:var(--amber-dim);margin-top:6px;font-size:0.9em;padding:6px;border-left:2px solid var(--border);">${issue.desc}</div>
+    </div>
+    <div class="issue-actions">
+      <button class="pin-btn ${isPinned ? 'pinned' : ''}" onclick="togglePin('${issue.id}', this)">
+        ${isPinned ? '📌' : '📍'}
+      </button>
+    </div>
+  `;
+  return li;
+}
+
+function toggleIssue(el) {
+  const desc = el.parentElement.querySelector('.issue-desc');
+  desc.style.display = desc.style.display === 'none' ? 'block' : 'none';
+}
+
+function togglePin(id, btn) {
+  if (pinnedIds.includes(id)) {
+    pinnedIds = pinnedIds.filter(i => i !== id);
+    btn.classList.remove('pinned');
+    btn.textContent = '📍';
+    showToast('Unpinned: ' + id);
+  } else {
+    pinnedIds.push(id);
+    btn.classList.add('pinned');
+    btn.textContent = '📌';
+    showToast('Pinned: ' + id);
+    confetti();
+  }
+  localStorage.setItem('bbs-pinned', JSON.stringify(pinnedIds));
+  renderIssues();
+  renderStats();
+}
+
+// ═══════════════════════════════════════
+// STATS
+// ═══════════════════════════════════════
+
+function renderStats() {
+  document.getElementById('stat-sessions').textContent = sessions;
+  document.getElementById('stat-pinned').textContent = pinnedIds.length;
+  document.getElementById('stat-notes').textContent = notes.length;
+  document.getElementById('stat-p1').textContent = ISSUES.filter(i => i.pri === 'P1').length;
+
+  const recent = document.getElementById('recent-notes');
+  if (notes.length === 0) {
+    recent.innerHTML = '<span style="color:var(--amber-dim);">[ No notes yet. Start hunting. ]</span>';
+  } else {
+    recent.innerHTML = notes.slice(-5).reverse().map(n => {
+      const d = new Date(n.time);
+      const ts = `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+      return `<div style="margin-bottom:6px;"><span style="color:var(--amber-dim);">[${ts}]</span> <span style="color:var(--amber-glow);">${escHtml(n.text)}</span> ${n.tag ? `<span style="color:var(--cyan-link);border:1px solid var(--cyan-link);padding:0 4px;font-size:0.8em;">${escHtml(n.tag)}</span>` : ''}</div>`;
+    }).join('');
+  }
+}
+
+// ═══════════════════════════════════════
+// NOTES
+// ═══════════════════════════════════════
+
+function addNote() {
+  const input = document.getElementById('note-input');
+  const tagInput = document.getElementById('tag-input');
+  const text = input.value.trim();
+  if (!text) return;
+
+  notes.push({
+    text,
+    tag: tagInput.value.trim().replace(/^#/,''),
+    time: Date.now()
+  });
+  localStorage.setItem('bbs-notes', JSON.stringify(notes));
+  input.value = '';
+  tagInput.value = '';
+  showToast('Note logged: ' + text.substring(0,30) + (text.length > 30 ? '...' : ''));
+  renderStats();
+}
+
+// ═══════════════════════════════════════
+// ACTIVITY LOG
+// ═══════════════════════════════════════
+
+function renderActivity() {
+  const log = document.getElementById('activity-log');
+  log.innerHTML = ACTIVITY.map(e => `
+    <div class="timeline-entry">
+      <span class="timeline-time">${e.time}</span>
+      <span class="timeline-text">${e.text}</span>
+    </div>
+  `).join('');
+}
+
+// ═══════════════════════════════════════
+// TERMINAL
+// ═══════════════════════════════════════
+
+const terminalOutput = document.getElementById('terminal-output');
+
+function terminalPrint(text, color) {
+  const line = document.createElement('div');
+  line.style.color = color || 'var(--amber)';
+  line.innerHTML = text;
+  terminalOutput.appendChild(line);
+  terminalOutput.scrollTop = terminalOutput.scrollHeight;
+}
+
+function handleTerminal(e) {
+  if (e.key === 'Enter') handleTerminalSubmit();
+}
+
+function handleTerminalSubmit() {
+  const input = document.getElementById('terminal-input');
+  const cmd = input.value.trim().toLowerCase();
+  if (!cmd) return;
+  terminalPrint(`<span style="color:var(--amber-glow);">$ ${escHtml(cmd)}</span>`, 'var(--amber)');
+  input.value = '';
+  processCmd(cmd);
+}
+
+function processCmd(cmd) {
+  if (cmd === 'help') {
+    terminalPrint('═══════════════════════════════');
+    terminalPrint('OpenClaw BBS Terminal Commands');
+    terminalPrint('═══════════════════════════════');
+    terminalPrint('help    — show this message');
+    terminalPrint('clear   — clear terminal');
+    terminalPrint('stats   — show session stats');
+    terminalPrint('issues  — list all open issues');
+    terminalPrint('ping     — check system status');
+    terminalPrint('uptime   — show uptime');
+    terminalPrint('quote    — show a random sysop quote');
+    terminalPrint('hunt     — start bug hunt mode!');
+    terminalPrint('bootlog  — show boot sequence');
+    terminalPrint('───────────────────────────────');
+  } else if (cmd === 'clear') {
+    terminalOutput.innerHTML = '';
+    terminalPrint('[Terminal cleared]', 'var(--amber-dim)');
+  } else if (cmd === 'stats') {
+    terminalPrint('═══════════════════════════════');
+    terminalPrint(`Sessions:     ${sessions}`);
+    terminalPrint(`Pinned:      ${pinnedIds.length}`);
+    terminalPrint(`Notes:        ${notes.length}`);
+    terminalPrint(`Open Issues:  ${ISSUES.length}`);
+    terminalPrint(`P1 Alerts:    ${ISSUES.filter(i=>i.pri==='P1').length}`);
+    terminalPrint('═══════════════════════════════');
+  } else if (cmd === 'issues') {
+    terminalPrint('OPEN ISSUES:');
+    ISSUES.forEach(i => {
+      terminalPrint(`  [${i.pri}] ${i.id} — ${i.title.substring(0,50)}`, i.pri==='P1'?'var(--red-alert)':'var(--amber-glow)');
+    });
+  } else if (cmd === 'ping') {
+    terminalPrint('Pinging GitHub API...', 'var(--amber-dim)');
+    setTimeout(() => {
+      terminalPrint('Reply from GitHub: bytes=32 time=127ms TTL=64', 'var(--green-ok)');
+      terminalPrint('Reply from localhost: bytes=32 time=<1ms TTL=64', 'var(--green-ok)');
+      terminalPrint('Reply from cron-daemon: ** WARNING: phantom timeout detected **', 'var(--red-alert)');
+    }, 300);
+  } else if (cmd === 'uptime') {
+    const elapsed = Math.floor((Date.now() - startTime) / 1000);
+    const hr = Math.floor(elapsed/3600);
+    const mn = Math.floor((elapsed%3600)/60);
+    const sc = elapsed%60;
+    terminalPrint(`System uptime: ${hr}h ${mn}m ${sc}s`, 'var(--amber-glow)');
+  } else if (cmd === 'quote') {
+    const q = TERMINAL_QUOTES[Math.floor(Math.random() * TERMINAL_QUOTES.length)];
+    terminalPrint(q, 'var(--amber-glow)');
+  } else if (cmd === 'hunt') {
+    terminalPrint('', 'var(--bg-dark)');
+    terminalPrint('╔══════════════════════════════════╗', 'var(--red-alert)');
+    terminalPrint('║   🐛 BUG HUNT MODE ACTIVATED 🐛   ║', 'var(--red-alert)');
+    terminalPrint('╠══════════════════════════════════╣', 'var(--red-alert)');
+    terminalPrint(`║  P1 bugs found: ${ISSUES.filter(i=>i.pri==='P1').length}                    ║`, 'var(--red-alert)');
+    terminalPrint(`║  Happy hunting, Hunter.            ║`, 'var(--amber-glow)');
+    terminalPrint('╚══════════════════════════════════╝', 'var(--red-alert)');
+    confetti();
+  } else if (cmd === 'bootlog') {
+    bootLines.forEach((line, i) => {
+      setTimeout(() => terminalPrint(line, line.includes('[WARNING') ? 'var(--red-alert)' : 'var(--amber)'), i * 60);
+    });
+  } else {
+    terminalPrint(`Unknown command: ${cmd}. Type "help" for available commands.`, 'var(--red-alert)');
+  }
+}
+
+// ═══════════════════════════════════════
+// CONFETTI
+// ═══════════════════════════════════════
+
+function confetti() {
+  const canvas = document.getElementById('confetti-canvas');
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  const pieces = [];
+  const colors = ['#FFB000','#FF6B00','#FFD470','#FF4444','#44FF88','#44DDFF','#FFCC00'];
+
+  for (let i = 0; i < 80; i++) {
+    pieces.push({
+      x: Math.random() * canvas.width,
+      y: -20 - Math.random() * 200,
+      vx: (Math.random() - 0.5) * 6,
+      vy: 3 + Math.random() * 5,
+      color: colors[Math.floor(Math.random() * colors.length)],
+      size: 4 + Math.random() * 6,
+      rot: Math.random() * Math.PI * 2,
+      rotV: (Math.random() - 0.5) * 0.2
+    });
+  }
+
+  let frame = 0;
+  function animate() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    pieces.forEach(p => {
+      ctx.save();
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.rot);
+      ctx.fillStyle = p.color;
+      ctx.fillRect(-p.size/2, -p.size/2, p.size, p.size * 0.6);
+      ctx.restore();
+      p.x += p.vx;
+      p.y += p.vy;
+      p.vy += 0.1;
+      p.rot += p.rotV;
+    });
+    frame++;
+    if (frame < 120) requestAnimationFrame(animate);
+    else ctx.clearRect(0, 0, canvas.width, canvas.height);
+  }
+  animate();
+}
+
+// ═══════════════════════════════════════
+// TOAST
+// ═══════════════════════════════════════
+
+function showToast(msg) {
+  const t = document.createElement('div');
+  t.className = 'toast';
+  t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(() => t.remove(), 3000);
+}
+
+// ═══════════════════════════════════════
+// NAV
+// ═══════════════════════════════════════
+
+function switchSection(name) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.bbs-nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('sec-' + name).classList.add('active');
+  document.querySelector(`[data-section="${name}"]`).classList.add('active');
+}
+
+// ═══════════════════════════════════════
+// UTIL
+// ═══════════════════════════════════════
+
+function escHtml(str) {
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// ═══════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════
+
+(async function init() {
+  await runBoot();
+  renderIssues();
+  renderStats();
+  renderActivity();
+})();
+</script>
+</body>
+</html>
