@@ -1,0 +1,1381 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IFYE 2026 — Station Commander</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@400;600&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #F4F1EB;
+  --bg-card: #FAFAF7;
+  --bg-dark: #1C1C1C;
+  --navy: #1B2B4B;
+  --red: #D63B2F;
+  --yellow: #F5C518;
+  --green: #2E7D4F;
+  --gray: #8A8A8A;
+  --border: #D4CFC4;
+  --shadow: rgba(27,43,75,0.08);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  font-family: 'Noto Sans TC', sans-serif;
+  color: var(--navy);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ─── HEADER ─── */
+.header {
+  background: var(--navy);
+  color: #fff;
+  padding: 32px 40px 28px;
+  position: relative;
+  overflow: hidden;
+}
+
+.header::before {
+  content: '';
+  position: absolute;
+  top: 0; right: 0;
+  width: 40%;
+  height: 100%;
+  background: var(--red);
+  clip-path: polygon(12% 0, 100% 0, 100% 100%, 0 100%);
+}
+
+.header-inner { position: relative; z-index: 1; }
+
+.header-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.header-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(42px, 6vw, 72px);
+  letter-spacing: 0.04em;
+  line-height: 0.95;
+  color: #fff;
+}
+
+.header-sub {
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.6);
+  margin-top: 6px;
+}
+
+.header-right {
+  text-align: right;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  color: rgba(255,255,255,0.55);
+  line-height: 1.7;
+  flex-shrink: 0;
+}
+
+.header-right strong {
+  display: block;
+  font-size: 28px;
+  font-family: 'Bebas Neue', sans-serif;
+  letter-spacing: 0.05em;
+  color: var(--yellow);
+}
+
+.header-stats {
+  display: flex;
+  gap: 0;
+  margin-top: 20px;
+  border-top: 1px solid rgba(255,255,255,0.15);
+  padding-top: 16px;
+}
+
+.stat-block {
+  flex: 1;
+  padding: 0 16px;
+  border-right: 1px solid rgba(255,255,255,0.15);
+}
+.stat-block:first-child { padding-left: 0; }
+.stat-block:last-child { border-right: none; }
+
+.stat-label {
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.45);
+  margin-bottom: 2px;
+}
+
+.stat-value {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 30px;
+  letter-spacing: 0.04em;
+  color: #fff;
+}
+
+.stat-value.ok { color: #6FCF97; }
+.stat-value.warn { color: var(--yellow); }
+.stat-value.bad { color: var(--red); }
+
+/* ─── TOOLBAR ─── */
+.toolbar {
+  background: #fff;
+  border-bottom: 3px solid var(--navy);
+  padding: 12px 40px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.search-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--bg);
+  border: 2px solid var(--border);
+  padding: 7px 14px;
+  flex: 1;
+  min-width: 200px;
+  transition: border-color 0.15s;
+}
+
+.search-box:focus-within {
+  border-color: var(--navy);
+  background: #fff;
+}
+
+.search-box svg { flex-shrink: 0; color: var(--gray); }
+
+.search-box input {
+  border: none;
+  background: transparent;
+  outline: none;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 13px;
+  color: var(--navy);
+  width: 100%;
+}
+
+.search-box input::placeholder { color: var(--gray); }
+
+.filter-btn {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 7px 14px;
+  border: 2px solid var(--border);
+  background: #fff;
+  cursor: pointer;
+  transition: all 0.15s;
+  color: var(--navy);
+}
+
+.filter-btn:hover, .filter-btn.active {
+  background: var(--navy);
+  color: #fff;
+  border-color: var(--navy);
+}
+
+.filter-btn.ok.active { background: var(--green); border-color: var(--green); }
+.filter-btn.warn.active { background: var(--yellow); border-color: var(--yellow); color: var(--navy); }
+.filter-btn.bad.active { background: var(--red); border-color: var(--red); }
+
+.mode-toggle {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 7px 14px;
+  border: 2px solid var(--border);
+  background: #fff;
+  cursor: pointer;
+  margin-left: auto;
+  transition: all 0.15s;
+  color: var(--navy);
+}
+.mode-toggle:hover { background: var(--navy); color: #fff; border-color: var(--navy); }
+
+/* ─── MAIN GRID ─── */
+.main {
+  padding: 24px 40px 60px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.delegate-section {
+  margin-bottom: 6px;
+  border: 2px solid var(--border);
+  background: var(--bg-card);
+  transition: box-shadow 0.2s;
+}
+
+.delegate-section:hover {
+  box-shadow: 0 4px 20px var(--shadow);
+}
+
+.delegate-header {
+  display: grid;
+  grid-template-columns: 44px 1fr auto;
+  align-items: center;
+  gap: 0;
+  cursor: pointer;
+  padding: 0;
+  user-select: none;
+}
+
+.delegate-number {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 32px;
+  color: #fff;
+  background: var(--navy);
+  width: 44px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  align-self: stretch;
+}
+
+.delegate-info {
+  padding: 12px 16px;
+}
+
+.delegate-name {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 22px;
+  letter-spacing: 0.06em;
+  line-height: 1;
+  color: var(--navy);
+}
+
+.delegate-country {
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--gray);
+  margin-top: 2px;
+}
+
+.delegate-meta {
+  padding: 12px 16px;
+  text-align: right;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  color: var(--gray);
+  white-space: nowrap;
+}
+
+.delegate-stations-count {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 28px;
+  color: var(--navy);
+  display: block;
+  line-height: 1;
+}
+
+.delegate-arrow {
+  font-size: 18px;
+  color: var(--gray);
+  padding-right: 12px;
+  transition: transform 0.25s ease;
+  display: flex;
+  align-items: center;
+}
+
+.delegate-section.open .delegate-arrow { transform: rotate(180deg); }
+
+.delegate-section.ok .delegate-number { background: var(--green); }
+.delegate-section.warn .delegate-number { background: var(--yellow); color: var(--navy); }
+.delegate-section.bad .delegate-number { background: var(--red); }
+
+/* ─── STATIONS ─── */
+.stations {
+  display: none;
+  border-top: 2px solid var(--border);
+  background: #fff;
+}
+
+.delegate-section.open .stations { display: block; }
+
+.stations-header {
+  display: grid;
+  grid-template-columns: 44px 50px 1fr 100px 100px;
+  gap: 0;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gray);
+  font-family: 'IBM Plex Mono', monospace;
+}
+
+.stations-header > span {
+  padding: 6px 12px;
+  border-right: 1px solid var(--border);
+}
+.stations-header > span:last-child { border-right: none; }
+
+.station-row {
+  display: grid;
+  grid-template-columns: 44px 50px 1fr 100px 100px;
+  gap: 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 13px;
+  transition: background 0.1s;
+  align-items: center;
+}
+
+.station-row:last-child { border-bottom: none; }
+.station-row:hover { background: var(--bg); }
+
+.station-row > span {
+  padding: 9px 12px;
+  border-right: 1px solid var(--border);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.station-row > span:last-child { border-right: none; }
+
+.station-num {
+  font-family: 'Bebas Neue', sans-serif !important;
+  font-size: 16px !important;
+  color: var(--gray);
+  text-align: center;
+}
+
+.station-status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.status-dot.ok { background: var(--green); }
+.status-dot.warn { background: var(--yellow); }
+.status-dot.bad { background: var(--red); }
+.status-dot.unknown { background: var(--gray); }
+
+.status-label { font-size: 11px !important; letter-spacing: 0.05em; }
+.status-label.ok { color: var(--green); }
+.status-label.warn { color: #9A7B00; }
+.status-label.bad { color: var(--red); }
+.status-label.unknown { color: var(--gray); }
+
+.station-name {
+  font-family: 'Noto Sans TC', sans-serif !important;
+  font-size: 12px !important;
+  color: var(--navy);
+}
+
+.station-actions {
+  display: flex;
+  gap: 6px;
+  padding: 6px 12px !important;
+}
+
+.note-btn, .ping-btn {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 3px 7px;
+  border: 1px solid var(--border);
+  background: transparent;
+  cursor: pointer;
+  color: var(--gray);
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+
+.note-btn:hover, .ping-btn:hover {
+  background: var(--navy);
+  color: #fff;
+  border-color: var(--navy);
+}
+
+.note-btn.active {
+  background: var(--navy);
+  color: #fff;
+  border-color: var(--navy);
+}
+
+/* ─── NOTE MODAL ─── */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(27,43,75,0.5);
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  backdrop-filter: blur(2px);
+}
+
+.modal-overlay.show { display: flex; }
+
+.modal {
+  background: #fff;
+  border: 3px solid var(--navy);
+  width: 100%;
+  max-width: 500px;
+  padding: 28px;
+  position: relative;
+}
+
+.modal-close {
+  position: absolute;
+  top: 12px;
+  right: 14px;
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: var(--gray);
+  line-height: 1;
+}
+
+.modal-close:hover { color: var(--navy); }
+
+.modal-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 24px;
+  letter-spacing: 0.05em;
+  color: var(--navy);
+  margin-bottom: 16px;
+}
+
+.modal-station {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  color: var(--gray);
+  margin-bottom: 12px;
+}
+
+.modal textarea {
+  width: 100%;
+  height: 120px;
+  border: 2px solid var(--border);
+  padding: 10px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 13px;
+  resize: vertical;
+  outline: none;
+  background: var(--bg);
+  color: var(--navy);
+}
+
+.modal textarea:focus { border-color: var(--navy); background: #fff; }
+
+.modal-btns {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.modal-btns button {
+  flex: 1;
+  padding: 9px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  border: 2px solid var(--navy);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.btn-save {
+  background: var(--navy);
+  color: #fff;
+}
+.btn-save:hover { background: #0d1a2e; }
+
+.btn-cancel {
+  background: #fff;
+  color: var(--navy);
+}
+.btn-cancel:hover { background: var(--bg); }
+
+.note-list {
+  margin-top: 12px;
+  border: 1px solid var(--border);
+  max-height: 120px;
+  overflow-y: auto;
+}
+
+.note-entry {
+  padding: 6px 10px;
+  border-bottom: 1px solid var(--border);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  color: var(--navy);
+}
+
+.note-entry:last-child { border-bottom: none; }
+
+.note-date { color: var(--gray); margin-right: 8px; }
+
+/* ─── TIMELINE VIEW ─── */
+.timeline-view {
+  display: none;
+}
+
+.timeline-view.show { display: block; }
+
+.timeline-empty {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--gray);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 13px;
+}
+
+.timeline-item {
+  display: grid;
+  grid-template-columns: 140px 80px 1fr;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+  align-items: start;
+  animation: fadeSlide 0.3s ease;
+}
+
+@keyframes fadeSlide {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.tl-date {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  color: var(--gray);
+  padding-top: 2px;
+}
+
+.tl-badge {
+  display: inline-block;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 3px 7px;
+  background: var(--navy);
+  color: #fff;
+}
+
+.tl-badge.note { background: var(--green); }
+.tl-badge.ping { background: var(--yellow); color: var(--navy); }
+.tl-badge.status { background: var(--red); }
+
+.tl-content {
+  font-family: 'Noto Sans TC', sans-serif;
+  font-size: 13px;
+  color: var(--navy);
+  line-height: 1.5;
+}
+
+.tl-station {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  color: var(--gray);
+  margin-top: 2px;
+}
+
+/* ─── GRID VIEW ─── */
+.grid-view { display: none; }
+.grid-view.show { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; }
+
+.grid-card {
+  border: 2px solid var(--border);
+  background: var(--bg-card);
+  padding: 16px;
+  transition: box-shadow 0.2s;
+  cursor: pointer;
+}
+
+.grid-card:hover { box-shadow: 0 4px 16px var(--shadow); border-color: var(--navy); }
+
+.grid-card-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.grid-card-num {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 28px;
+  color: #fff;
+  background: var(--navy);
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.grid-card.ok .grid-card-num { background: var(--green); }
+.grid-card.warn .grid-card-num { background: var(--yellow); color: var(--navy); }
+.grid-card.bad .grid-card-num { background: var(--red); }
+
+.grid-card-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 18px;
+  letter-spacing: 0.04em;
+  color: var(--navy);
+  line-height: 1.1;
+}
+
+.grid-card-country {
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--gray);
+  margin-top: 1px;
+}
+
+.grid-card-stats {
+  display: flex;
+  gap: 12px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  color: var(--gray);
+}
+
+.grid-card-stat strong {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 18px;
+  color: var(--navy);
+  display: block;
+}
+
+/* ─── CONFETTI ─── */
+.confetti-piece {
+  position: fixed;
+  width: 8px;
+  height: 8px;
+  top: -10px;
+  pointer-events: none;
+  z-index: 9999;
+  animation: confettiFall linear forwards;
+}
+
+@keyframes confettiFall {
+  to { top: 110vh; transform: rotate(720deg); }
+}
+
+/* ─── FOOTER ─── */
+.footer {
+  background: var(--navy);
+  color: rgba(255,255,255,0.4);
+  padding: 20px 40px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.footer a { color: rgba(255,255,255,0.5); text-decoration: none; }
+.footer a:hover { color: #fff; }
+
+/* ─── RESPONSIVE ─── */
+@media (max-width: 700px) {
+  .header { padding: 20px 20px 18px; }
+  .header-stats { flex-wrap: wrap; }
+  .stat-block { min-width: 40%; margin-bottom: 8px; }
+  .header::before { display: none; }
+  .toolbar { padding: 10px 20px; }
+  .main { padding: 16px 20px 40px; }
+  .stations-header, .station-row {
+    grid-template-columns: 36px 40px 1fr 80px;
+  }
+  .stations-header > span:nth-child(4),
+  .station-row > span:nth-child(4) { display: none; }
+  .footer { padding: 16px 20px; }
+  .grid-view { grid-template-columns: 1fr; }
+  .timeline-item { grid-template-columns: 100px 70px 1fr; }
+}
+
+/* ─── PING ANIMATION ─── */
+@keyframes ping {
+  0% { box-shadow: 0 0 0 0 rgba(46,125,79,0.5); }
+  70% { box-shadow: 0 0 0 8px rgba(46,125,79,0); }
+  100% { box-shadow: 0 0 0 0 rgba(46,125,79,0); }
+}
+
+.pinging .status-dot.ok {
+  animation: ping 1s ease infinite;
+}
+
+/* ─── COUNTER BADGE ─── */
+.counter-badge {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 12px;
+  background: var(--red);
+  color: #fff;
+  padding: 1px 6px;
+  margin-left: 4px;
+  vertical-align: middle;
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header">
+  <div class="header-inner">
+    <div class="header-top">
+      <div>
+        <div class="header-title">IFYE 2026<br>STATION COMMANDER</div>
+        <div class="header-sub">International Four-H Youth Exchange · Global VPS Operations</div>
+      </div>
+      <div class="header-right">
+        <div>Operations Status</div>
+        <strong id="header-status">MONITORING</strong>
+        <div id="header-time">—</div>
+      </div>
+    </div>
+    <div class="header-stats">
+      <div class="stat-block">
+        <div class="stat-label">Delegates</div>
+        <div class="stat-value" id="total-delegates">9</div>
+      </div>
+      <div class="stat-block">
+        <div class="stat-label">Stations</div>
+        <div class="stat-value" id="total-stations">51</div>
+      </div>
+      <div class="stat-block">
+        <div class="stat-label">Countries</div>
+        <div class="stat-value">6</div>
+      </div>
+      <div class="stat-block">
+        <div class="stat-label">Notes Logged</div>
+        <div class="stat-value ok" id="total-notes">0</div>
+      </div>
+      <div class="stat-block">
+        <div class="stat-label">Last Update</div>
+        <div class="stat-value" id="last-update" style="font-size:14px;font-family:'IBM Plex Mono',monospace;letter-spacing:0.05em;">—</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- TOOLBAR -->
+<div class="toolbar">
+  <div class="search-box">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    <input type="text" id="search-input" placeholder="Search delegate or station…">
+  </div>
+  <button class="filter-btn active" data-filter="all">All</button>
+  <button class="filter-btn ok" data-filter="ok">Online</button>
+  <button class="filter-btn warn" data-filter="warn">Warning</button>
+  <button class="filter-btn bad" data-filter="bad">Offline</button>
+  <button class="mode-toggle" id="view-toggle">□ Grid</button>
+</div>
+
+<!-- MAIN: LIST VIEW -->
+<div class="main" id="list-view">
+  <!-- populated by JS -->
+</div>
+
+<!-- GRID VIEW -->
+<div class="main grid-view" id="grid-view">
+  <!-- populated by JS -->
+</div>
+
+<!-- TIMELINE VIEW -->
+<div class="main timeline-view" id="timeline-view">
+  <div id="timeline-content"></div>
+</div>
+
+<!-- NOTE MODAL -->
+<div class="modal-overlay" id="note-modal">
+  <div class="modal">
+    <button class="modal-close" id="modal-close">×</button>
+    <div class="modal-title">Station Log</div>
+    <div class="modal-station" id="modal-station"></div>
+    <textarea id="note-input" placeholder="Enter your note… (Shift+Enter for new line)"></textarea>
+    <div class="modal-btns">
+      <button class="btn-save" id="note-save">Save Note</button>
+      <button class="btn-cancel" id="note-cancel">Cancel</button>
+    </div>
+    <div class="note-list" id="note-list"></div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <span>IFYE 2026 STATION COMMANDER · OpenClaw Daily Lab</span>
+  <span><a href="https://index.4-h.me/ifye/2026/" target="_blank">Live Index ↗</a></span>
+</footer>
+
+<script>
+// ─── DATA ───
+const DELEGATES = [
+  {
+    id: 1,
+    name: 'Ibrahim B. Sansalona',
+    country: 'Philippines',
+    countryCode: 'PH',
+    color: '#2563EB',
+    stations: [
+      { id: 'ph1', name: 'TPE-MNL-01', url: 'https://ph1.4-h.me', status: 'ok' },
+      { id: 'ph2', name: 'TPE-MNL-02', url: 'https://ph2.4-h.me', status: 'ok' }
+    ]
+  },
+  {
+    id: 2,
+    name: 'Gary A. Ayuste',
+    country: 'Philippines',
+    countryCode: 'PH',
+    color: '#2563EB',
+    stations: [
+      { id: 'ph3', name: 'CEB-01', url: 'https://ph3.4-h.me', status: 'ok' },
+      { id: 'ph4', name: 'CEB-02', url: 'https://ph4.4-h.me', status: 'ok' },
+      { id: 'ph5', name: 'DAV-01', url: 'https://ph5.4-h.me', status: 'ok' },
+      { id: 'ph6', name: 'DAV-02', url: 'https://ph6.4-h.me', status: 'ok' },
+      { id: 'ph7', name: 'ILO-01', url: 'https://ph7.4-h.me', status: 'warn' },
+      { id: 'ph8', name: 'ILO-02', url: 'https://ph8.4-h.me', status: 'ok' }
+    ]
+  },
+  {
+    id: 3,
+    name: 'Jihyun Jung',
+    country: 'South Korea',
+    countryCode: 'KR',
+    color: '#1D4ED8',
+    stations: [
+      { id: 'kr1', name: 'ICN-SEOUL-01', url: 'https://kr1.4-h.me', status: 'ok' },
+      { id: 'kr2', name: 'ICN-SEOUL-02', url: 'https://kr2.4-h.me', status: 'ok' },
+      { id: 'kr3', name: 'ICN-SEOUL-03', url: 'https://kr3.4-h.me', status: 'ok' },
+      { id: 'kr4', name: 'PUSAN-01', url: 'https://kr4.4-h.me', status: 'ok' },
+      { id: 'kr5', name: 'DAEGU-01', url: 'https://kr5.4-h.me', status: 'ok' },
+      { id: 'kr6', name: 'GWANGJU-01', url: 'https://kr6.4-h.me', status: 'warn' }
+    ]
+  },
+  {
+    id: 4,
+    name: 'Yerim An',
+    country: 'South Korea',
+    countryCode: 'KR',
+    color: '#1D4ED8',
+    stations: [
+      { id: 'kr7', name: 'DAEJEON-01', url: 'https://kr7.4-h.me', status: 'ok' },
+      { id: 'kr8', name: 'ULSAN-01', url: 'https://kr8.4-h.me', status: 'ok' },
+      { id: 'kr9', name: 'INCHEON-01', url: 'https://kr9.4-h.me', status: 'ok' },
+      { id: 'kr10', name: 'INCHEON-02', url: 'https://kr10.4-h.me', status: 'ok' }
+    ]
+  },
+  {
+    id: 5,
+    name: 'Phoobet Sudsawat',
+    country: 'Thailand',
+    countryCode: 'TH',
+    color: '#B91C1C',
+    stations: [
+      { id: 'th1', name: 'BKK-CENTRAL-01', url: 'https://th1.4-h.me', status: 'ok' },
+      { id: 'th2', name: 'BKK-CENTRAL-02', url: 'https://th2.4-h.me', status: 'ok' },
+      { id: 'th3', name: 'BKK-EAST-01', url: 'https://th3.4-h.me', status: 'ok' },
+      { id: 'th4', name: 'CNX-CHIANG-01', url: 'https://th4.4-h.me', status: 'ok' },
+      { id: 'th5', name: 'HDY-HATYAI-01', url: 'https://th5.4-h.me', status: 'warn' },
+      { id: 'th6', name: 'Puket-01', url: 'https://th6.4-h.me', status: 'ok' }
+    ]
+  },
+  {
+    id: 6,
+    name: 'Dararat Surinpornwattana',
+    country: 'Thailand',
+    countryCode: 'TH',
+    color: '#B91C1C',
+    stations: [
+      { id: 'th7', name: 'korat-01', url: 'https://th7.4-h.me', status: 'ok' },
+      { id: 'th8', name: 'CHONBURI-01', url: 'https://th8.4-h.me', status: 'ok' },
+      { id: 'th9', name: 'RAYONG-01', url: 'https://th9.4-h.me', status: 'ok' },
+      { id: 'th10', name: 'PHITSANULOK-01', url: 'https://th10.4-h.me', status: 'ok' },
+      { id: 'th11', name: 'PHUKET-02', url: 'https://th11.4-h.me', status: 'ok' },
+      { id: 'th12', name: 'SUKHOTHAI-01', url: 'https://th12.4-h.me', status: 'ok' },
+      { id: 'th13', name: 'UTTARADIT-01', url: 'https://th13.4-h.me', status: 'ok' },
+      { id: 'th14', name: 'LOPBURI-01', url: 'https://th14.4-h.me', status: 'warn' }
+    ]
+  },
+  {
+    id: 7,
+    name: 'Anna Ruttimann',
+    country: 'Switzerland',
+    countryCode: 'CH',
+    color: '#1E3A5F',
+    stations: [
+      { id: 'ch1', name: 'ZRH-ZURICH-01', url: 'https://ch1.4-h.me', status: 'ok' },
+      { id: 'ch2', name: 'GVA-GENEVA-01', url: 'https://ch2.4-h.me', status: 'ok' },
+      { id: 'ch3', name: 'BSL-BASEL-01', url: 'https://ch3.4-h.me', status: 'ok' },
+      { id: 'ch4', name: 'LUGANO-01', url: 'https://ch4.4-h.me', status: 'ok' },
+      { id: 'ch5', name: 'BERN-01', url: 'https://ch5.4-h.me', status: 'ok' },
+      { id: 'ch6', name: 'LAusanne-01', url: 'https://ch6.4-h.me', status: 'ok' },
+      { id: 'ch7', name: 'Lucerne-01', url: 'https://ch7.4-h.me', status: 'ok' }
+    ]
+  },
+  {
+    id: 8,
+    name: 'Sven',
+    country: 'Switzerland',
+    countryCode: 'CH',
+    color: '#1E3A5F',
+    stations: [
+      { id: 'ch8', name: 'ZURICH-02', url: 'https://ch8.4-h.me', status: 'ok' },
+      { id: 'ch9', name: 'GENEVA-02', url: 'https://ch9.4-h.me', status: 'ok' },
+      { id: 'ch10', name: 'Ticino-01', url: 'https://ch10.4-h.me', status: 'ok' }
+    ]
+  },
+  {
+    id: 9,
+    name: 'Justice Kwasi Etsey',
+    country: 'Ghana',
+    countryCode: 'GH',
+    color: '#166534',
+    stations: [
+      { id: 'gh1', name: 'ACC-KUMASI-01', url: 'https://gh1.4-h.me', status: 'ok' },
+      { id: 'gh2', name: 'ACC-KUMASI-02', url: 'https://gh2.4-h.me', status: 'ok' },
+      { id: 'gh3', name: 'TAMALE-01', url: 'https://gh3.4-h.me', status: 'ok' },
+      { id: 'gh4', name: 'CAPE-COAST-01', url: 'https://gh4.4-h.me', status: 'warn' },
+      { id: 'gh5', name: 'TEMA-01', url: 'https://gh5.4-h.me', status: 'ok' }
+    ]
+  }
+];
+
+// ─── STATE ───
+let state = {
+  notes: {},       // { stationId: [{ date, text }] }
+  timeline: [],    // [{ date, type, station, text }]
+  expanded: {},    // { delegateId: bool }
+  filter: 'all',
+  search: '',
+  view: 'list'     // 'list' | 'grid' | 'timeline'
+};
+
+function loadState() {
+  try {
+    const s = localStorage.getItem('ifye-commander-v1');
+    if (s) {
+      const parsed = JSON.parse(s);
+      state.notes = parsed.notes || {};
+      state.timeline = parsed.timeline || [];
+      state.expanded = parsed.expanded || {};
+    }
+  } catch(e) {}
+}
+
+function saveState() {
+  try {
+    localStorage.setItem('ifye-commander-v1', JSON.stringify({
+      notes: state.notes,
+      timeline: state.timeline,
+      expanded: state.expanded
+    }));
+  } catch(e) {}
+}
+
+// ─── HELPERS ───
+function getDelegateStatus(d) {
+  const statuses = d.stations.map(s => s.status);
+  if (statuses.includes('bad')) return 'bad';
+  if (statuses.includes('warn')) return 'warn';
+  return 'ok';
+}
+
+function getTotalNotes() {
+  return Object.values(state.notes).reduce((sum, arr) => sum + arr.length, 0);
+}
+
+function getTotalStations() {
+  return DELEGATES.reduce((sum, d) => sum + d.stations.length, 0);
+}
+
+function formatDate(iso) {
+  const d = new Date(iso);
+  return d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: '2-digit' }).toUpperCase();
+}
+
+function formatTime(iso) {
+  const d = new Date(iso);
+  return d.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+}
+
+function matchesSearch(text) {
+  if (!state.search) return true;
+  return text.toLowerCase().includes(state.search.toLowerCase());
+}
+
+// ─── RENDER ───
+function render() {
+  renderHeader();
+  if (state.view === 'list') {
+    renderList();
+  } else if (state.view === 'grid') {
+    renderGrid();
+  } else {
+    renderTimeline();
+  }
+}
+
+function renderHeader() {
+  document.getElementById('total-delegates').textContent = DELEGATES.length;
+  document.getElementById('total-stations').textContent = getTotalStations();
+  document.getElementById('total-notes').textContent = getTotalNotes();
+  const lastNote = state.timeline[0];
+  if (lastNote) {
+    document.getElementById('last-update').textContent = formatDate(lastNote.date) + ' ' + formatTime(lastNote.date);
+  }
+
+  // Header status
+  let warnCount = 0, badCount = 0;
+  DELEGATES.forEach(d => {
+    d.stations.forEach(s => {
+      if (s.status === 'warn') warnCount++;
+      if (s.status === 'bad') badCount++;
+    });
+  });
+  const statusEl = document.getElementById('header-status');
+  if (badCount > 0) {
+    statusEl.textContent = 'ALERT';
+    statusEl.style.color = '#F87171';
+  } else if (warnCount > 0) {
+    statusEl.textContent = 'WARNING';
+    statusEl.style.color = 'var(--yellow)';
+  } else {
+    statusEl.textContent = 'NOMINAL';
+    statusEl.style.color = '#6FCF97';
+  }
+
+  // Clock
+  const now = new Date();
+  document.getElementById('header-time').textContent = now.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) + ' UTC+' + ( - new Date().getTimezoneOffset() / 60);
+}
+
+function renderList() {
+  const container = document.getElementById('list-view');
+  container.innerHTML = '';
+  container.classList.add('main');
+  container.classList.remove('grid-view', 'timeline-view');
+
+  DELEGATES.forEach(d => {
+    const delegateStatus = getDelegateStatus(d);
+    const isOpen = state.expanded[d.id] || false;
+    const matchesSearch_d = matchesSearch(d.name) || d.stations.some(s => matchesSearch(s.name));
+
+    const section = document.createElement('div');
+    section.className = `delegate-section ${delegateStatus} ${isOpen ? 'open' : ''} ${!matchesSearch_d ? 'hidden' : ''}`;
+    section.dataset.id = d.id;
+
+    let stationRows = '';
+    d.stations.forEach((s, i) => {
+      const noteCount = (state.notes[s.id] || []).length;
+      const hasNote = noteCount > 0;
+      stationRows += `
+        <div class="station-row" data-station="${s.id}">
+          <span class="station-num">${String(i+1).padStart(2,'0')}</span>
+          <span>
+            <div class="station-status">
+              <div class="status-dot ${s.status}"></div>
+              <span class="status-label ${s.status}">${s.status.toUpperCase()}</span>
+            </div>
+          </span>
+          <span class="station-name">${s.name}</span>
+          <span><a href="${s.url}" target="_blank" style="color:var(--navy);text-decoration:none;font-size:11px;">→ Visit</a></span>
+          <span class="station-actions">
+            <button class="note-btn ${hasNote ? 'active' : ''}" onclick="openNote('${d.id}','${s.id}','${s.name}')" title="Add note">
+              NOTE${hasNote ? ` (${noteCount})` : ''}
+            </button>
+          </span>
+        </div>
+      `;
+    });
+
+    section.innerHTML = `
+      <div class="delegate-header" onclick="toggleDelegate(${d.id})">
+        <div class="delegate-number">${String(d.id).padStart(2,'0')}</div>
+        <div class="delegate-info">
+          <div class="delegate-name">${d.name}</div>
+          <div class="delegate-country">${d.country}</div>
+        </div>
+        <div class="delegate-meta">
+          <span class="delegate-stations-count">${d.stations.length}</span>
+          STATIONS
+        </div>
+        <div class="delegate-arrow">▼</div>
+      </div>
+      <div class="stations">
+        <div class="stations-header">
+          <span>#</span>
+          <span>STATUS</span>
+          <span>STATION NAME</span>
+          <span>LINK</span>
+          <span>ACTIONS</span>
+        </div>
+        ${stationRows}
+      </div>
+    `;
+
+    container.appendChild(section);
+  });
+}
+
+function renderGrid() {
+  const container = document.getElementById('grid-view');
+  container.innerHTML = '';
+  container.classList.add('grid-view', 'show');
+  document.getElementById('list-view').classList.remove('main');
+  document.getElementById('list-view').style.display = 'none';
+  document.getElementById('timeline-view').classList.remove('show');
+  document.getElementById('timeline-view').style.display = 'none';
+
+  DELEGATES.forEach(d => {
+    const delegateStatus = getDelegateStatus(d);
+    const okCount = d.stations.filter(s => s.status === 'ok').length;
+    const warnCount = d.stations.filter(s => s.status === 'warn').length;
+    const badCount = d.stations.filter(s => s.status === 'bad').length;
+    const noteCount = d.stations.reduce((sum, s) => sum + (state.notes[s.id] || []).length, 0);
+
+    const card = document.createElement('div');
+    card.className = `grid-card ${delegateStatus}`;
+    card.onclick = () => { toggleDelegate(d.id); setView('list'); };
+
+    card.innerHTML = `
+      <div class="grid-card-header">
+        <div class="grid-card-num">${String(d.id).padStart(2,'0')}</div>
+        <div>
+          <div class="grid-card-title">${d.name.split(' ').slice(-1)[0]}</div>
+          <div class="grid-card-country">${d.country} · ${d.stations.length} stations</div>
+        </div>
+      </div>
+      <div class="grid-card-stats">
+        <div class="grid-card-stat"><strong style="color:var(--green)">${okCount}</strong>Online</div>
+        <div class="grid-card-stat"><strong style="color:#9A7B00">${warnCount}</strong>Warn</div>
+        <div class="grid-card-stat"><strong style="color:var(--red)">${badCount}</strong>Down</div>
+        <div class="grid-card-stat"><strong>${noteCount}</strong>Notes</div>
+      </div>
+    `;
+    container.appendChild(card);
+  });
+}
+
+function renderTimeline() {
+  const container = document.getElementById('timeline-view');
+  container.classList.add('show');
+  document.getElementById('list-view').classList.remove('main');
+  document.getElementById('list-view').style.display = 'none';
+  document.getElementById('grid-view').classList.remove('show');
+  document.getElementById('grid-view').style.display = 'none';
+
+  const content = document.getElementById('timeline-content');
+  if (state.timeline.length === 0) {
+    content.innerHTML = '<div class="timeline-empty">No activity logged yet.<br>Add notes to stations to see the timeline.</div>';
+    return;
+  }
+
+  let html = '';
+  state.timeline.forEach(item => {
+    html += `
+      <div class="timeline-item">
+        <div class="tl-date">${formatDate(item.date)}<br>${formatTime(item.date)}</div>
+        <div><span class="tl-badge ${item.type}">${item.type.toUpperCase()}</span></div>
+        <div>
+          <div class="tl-content">${escapeHtml(item.text)}</div>
+          <div class="tl-station">${escapeHtml(item.station)}</div>
+        </div>
+      </div>
+    `;
+  });
+  content.innerHTML = html;
+}
+
+function escapeHtml(text) {
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
+}
+
+// ─── ACTIONS ───
+function toggleDelegate(id) {
+  state.expanded[id] = !state.expanded[id];
+  saveState();
+  render();
+}
+
+function setView(view) {
+  state.view = view;
+  const btn = document.getElementById('view-toggle');
+  if (view === 'list') {
+    btn.textContent = '□ Grid';
+    document.getElementById('list-view').style.display = '';
+    document.getElementById('list-view').classList.add('main');
+    document.getElementById('grid-view').classList.remove('show');
+    document.getElementById('grid-view').style.display = 'none';
+    document.getElementById('timeline-view').classList.remove('show');
+    document.getElementById('timeline-view').style.display = 'none';
+  } else if (view === 'grid') {
+    btn.textContent = '☰ List';
+    renderGrid();
+  } else {
+    btn.textContent = '◷ Timeline';
+    renderTimeline();
+  }
+}
+
+// ─── NOTE MODAL ───
+let currentNoteStation = null;
+let currentNoteDelegate = null;
+
+function openNote(delegateId, stationId, stationName) {
+  event.stopPropagation();
+  currentNoteStation = stationId;
+  currentNoteDelegate = delegateId;
+  document.getElementById('modal-station').textContent = stationName;
+  document.getElementById('note-input').value = '';
+  const notes = state.notes[stationId] || [];
+  const noteList = document.getElementById('note-list');
+  if (notes.length === 0) {
+    noteList.innerHTML = '<div class="note-entry" style="color:var(--gray);font-style:italic;">No notes yet.</div>';
+  } else {
+    noteList.innerHTML = notes.map(n =>
+      `<div class="note-entry"><span class="note-date">${formatDate(n.date)}</span>${escapeHtml(n.text)}</div>`
+    ).join('');
+  }
+  document.getElementById('note-modal').classList.add('show');
+  document.getElementById('note-input').focus();
+}
+
+function closeNote() {
+  document.getElementById('note-modal').classList.remove('show');
+  currentNoteStation = null;
+  currentNoteDelegate = null;
+}
+
+document.getElementById('note-save').onclick = () => {
+  const text = document.getElementById('note-input').value.trim();
+  if (!text || !currentNoteStation) return;
+
+  if (!state.notes[currentNoteStation]) state.notes[currentNoteStation] = [];
+  state.notes[currentNoteStation].push({ date: new Date().toISOString(), text });
+
+  // Find station name
+  let stationName = currentNoteStation;
+  DELEGATES.forEach(d => {
+    d.stations.forEach(s => {
+      if (s.id === currentNoteStation) stationName = s.name;
+    });
+  });
+
+  state.timeline.unshift({
+    date: new Date().toISOString(),
+    type: 'note',
+    station: stationName,
+    text: text
+  });
+
+  saveState();
+  render();
+  closeNote();
+  launchConfetti();
+};
+
+document.getElementById('note-cancel').onclick = closeNote;
+document.getElementById('modal-close').onclick = closeNote;
+document.getElementById('note-modal').onclick = (e) => {
+  if (e.target === document.getElementById('note-modal')) closeNote();
+};
+
+// ─── SEARCH & FILTER ───
+document.getElementById('search-input').oninput = (e) => {
+  state.search = e.target.value;
+  render();
+};
+
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.onclick = () => {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    state.filter = btn.dataset.filter;
+    applyFilter();
+  };
+});
+
+function applyFilter() {
+  document.querySelectorAll('.delegate-section').forEach(section => {
+    const id = parseInt(section.dataset.id);
+    const d = DELEGATES.find(d => d.id === id);
+    const delegateStatus = getDelegateStatus(d);
+    const matchesFilter = state.filter === 'all' || delegateStatus === state.filter;
+    const matchesSearch_d = !state.search || matchesSearch(d.name) || d.stations.some(s => matchesSearch(s.name));
+    section.style.display = (matchesFilter && matchesSearch_d) ? '' : 'none';
+  });
+}
+
+document.getElementById('view-toggle').onclick = () => {
+  if (state.view === 'list') setView('grid');
+  else if (state.view === 'grid') setView('timeline');
+  else setView('list');
+};
+
+// ─── CONFETTI ───
+function launchConfetti() {
+  const colors = ['#D63B2F', '#1B2B4B', '#F5C518', '#2E7D4F', '#2563EB', '#B91C1C'];
+  for (let i = 0; i < 30; i++) {
+    setTimeout(() => {
+      const piece = document.createElement('div');
+      piece.className = 'confetti-piece';
+      piece.style.left = Math.random() * 100 + 'vw';
+      piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+      piece.style.width = (4 + Math.random() * 6) + 'px';
+      piece.style.height = (4 + Math.random() * 6) + 'px';
+      piece.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+      piece.style.animationDuration = (1.5 + Math.random() * 2) + 's';
+      piece.style.animationDelay = (Math.random() * 0.5) + 's';
+      document.body.appendChild(piece);
+      setTimeout(() => piece.remove(), 4000);
+    }, i * 30);
+  }
+}
+
+// ─── CLOCK ───
+setInterval(() => {
+  const now = new Date();
+  document.getElementById('header-time').textContent =
+    now.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) +
+    ' UTC+' + ( - new Date().getTimezoneOffset() / 60);
+}, 1000);
+
+// ─── INIT ───
+loadState();
+render();
+</script>
+</body>
+</html>

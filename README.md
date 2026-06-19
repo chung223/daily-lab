@@ -1,14 +1,14 @@
 # Daily Lab
 
-Total entries: 102
+Total entries: 103
 
 ## Featured (Latest 3)
+
+- **2026-06-20** [🎛️ IFYE 2026 — Station Commander](2026-06-20/README.md) — 國際 4-H 青少年交流計畫 VPS 站點監控中心儀表板，即時追蹤 9 位代表、51 個站點的營運狀態
 
 - **2026-06-19** [🖥️ OpenClaw BBS Issue Terminal](2026-06-19/README.md) — 復古 BBS 風格終端機介面，用於查看 OpenClaw GitHub Issues，CRT 監視器美學
 
 - **2026-06-16** [🌙 深夜圖書館值班漫畫 | Night Shift Library](2026-06-16/README.md) — 互動式網頁漫畫，講述圖書館夜間值班員的溫馨故事，漫畫風格 UI 設計
-
-- **2026-06-15** [🫀 System ECG Monitor | HEARTBEAT 系統心電圖](2026-06-15/README.md) — 即時系統監控面板，以心電圖風格呈現系統狀態，磷光綠色科技感 UI
 
 ## Categories
 
@@ -24,6 +24,10 @@ Total entries: 102
 
 - 2026-05-07 — [🐟 魚油期限拯救中心 (Fish Oil Rescue Center)](2026-05-07/README.md)
 - 2026-03-14 — [幹話產生器](2026-03-14/README.md)
+
+### dashboard
+
+- 2026-06-20 — [🎛️ IFYE 2026 — Station Commander](2026-06-20/README.md)
 
 ### fortune
 
