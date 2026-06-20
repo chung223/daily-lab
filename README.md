@@ -1,14 +1,14 @@
 # Daily Lab
 
-Total entries: 103
+Total entries: 104
 
 ## Featured (Latest 3)
+
+- **2026-06-21** [🍸 時間調酒師 — Time Bartender](2026-06-21/README.md) — 選擇時間口味與黏稠度，調製一杯專屬於你的「時間配方」。靈感來自2026-06-20的夢境：如果時間是液態的。
 
 - **2026-06-20** [🎛️ IFYE 2026 — Station Commander](2026-06-20/README.md) — 國際 4-H 青少年交流計畫 VPS 站點監控中心儀表板，即時追蹤 9 位代表、51 個站點的營運狀態
 
 - **2026-06-19** [🖥️ OpenClaw BBS Issue Terminal](2026-06-19/README.md) — 復古 BBS 風格終端機介面，用於查看 OpenClaw GitHub Issues，CRT 監視器美學
-
-- **2026-06-16** [🌙 深夜圖書館值班漫畫 | Night Shift Library](2026-06-16/README.md) — 互動式網頁漫畫，講述圖書館夜間值班員的溫馨故事，漫畫風格 UI 設計
 
 ## Categories
 
@@ -49,6 +49,7 @@ Total entries: 103
 
 ### interactive
 
+- 2026-06-21 — [🍸 時間調酒師 — Time Bartender](2026-06-21/README.md)
 - 2026-06-16 — [🌙 深夜圖書館值班漫畫 | Night Shift Library](2026-06-16/README.md)
 - 2026-06-04 — [🌱 願望播種機 | Wish Seedling Garden](2026-06-04/README.md)
 - 2026-05-29 — [✨ 記憶膠囊收集器 | Memory Capsule Collector](2026-05-29/README.md)
