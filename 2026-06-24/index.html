@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>What-If 形狀工廠 — Shape Factory</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@300;400;500;700&family=Shippori+Mincho:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #FEFCF8;
+            --ink: #2D2A26;
+            --soft: #8B8680;
+            --accent: #E8734A;
+            --pastel-pink: #FFDDD2;
+            --pastel-blue: #A8DADC;
+            --pastel-yellow: #FFE5A0;
+            --pastel-green: #C7E8C3;
+            --pastel-purple: #E2D1F9;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Zen Maru Gothic', sans-serif;
+            background: var(--bg);
+            color: var(--ink);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 24px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 48px;
+        }
+
+        .logo {
+            font-family: 'Shippori Mincho', serif;
+            font-size: 14px;
+            letter-spacing: 4px;
+            color: var(--soft);
+            margin-bottom: 16px;
+            text-transform: uppercase;
+        }
+
+        h1 {
+            font-size: clamp(32px, 8vw, 56px);
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: 16px;
+            background: linear-gradient(135deg, var(--accent) 0%, #D4624A 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            font-size: 16px;
+            color: var(--soft);
+            font-weight: 300;
+        }
+
+        .shape-stage {
+            position: relative;
+            width: 100%;
+            height: 400px;
+            background: linear-gradient(180deg, #FFFFFF 0%, var(--pastel-pink) 100%);
+            border-radius: 32px;
+            margin-bottom: 40px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(232, 115, 74, 0.1);
+        }
+
+        .shape-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .shape-label {
+            position: absolute;
+            bottom: 24px;
+            left: 24px;
+            right: 24px;
+            text-align: center;
+            font-size: 20px;
+            font-weight: 500;
+            color: var(--ink);
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.5s ease;
+        }
+
+        .shape-label.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .scenarios {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .scenario-card {
+            background: white;
+            border-radius: 20px;
+            padding: 28px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 2px solid transparent;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+        }
+
+        .scenario-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
+            border-color: var(--accent);
+        }
+
+        .scenario-card.active {
+            border-color: var(--accent);
+            background: linear-gradient(135deg, #FFFFFF 0%, var(--pastel-yellow) 100%);
+        }
+
+        .scenario-icon {
+            font-size: 36px;
+            margin-bottom: 16px;
+            display: block;
+        }
+
+        .scenario-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--ink);
+        }
+
+        .scenario-desc {
+            font-size: 14px;
+            color: var(--soft);
+            line-height: 1.6;
+        }
+
+        .custom-section {
+            background: linear-gradient(135deg, var(--pastel-purple) 0%, var(--pastel-blue) 100%);
+            border-radius: 24px;
+            padding: 32px;
+            margin-bottom: 40px;
+        }
+
+        .custom-label {
+            font-size: 12px;
+            letter-spacing: 2px;
+            color: rgba(45, 42, 38, 0.6);
+            text-transform: uppercase;
+            margin-bottom: 12px;
+        }
+
+        .custom-input-group {
+            display: flex;
+            gap: 12px;
+        }
+
+        .custom-input {
+            flex: 1;
+            padding: 16px 20px;
+            font-size: 16px;
+            font-family: inherit;
+            border: none;
+            border-radius: 12px;
+            background: white;
+            color: var(--ink);
+            outline: none;
+            transition: box-shadow 0.2s;
+        }
+
+        .custom-input:focus {
+            box-shadow: 0 0 0 3px var(--accent);
+        }
+
+        .custom-input::placeholder {
+            color: var(--soft);
+        }
+
+        .custom-btn {
+            padding: 16px 28px;
+            font-size: 16px;
+            font-family: inherit;
+            font-weight: 600;
+            background: var(--ink);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .custom-btn:hover {
+            background: var(--accent);
+            transform: scale(1.02);
+        }
+
+        .mood-board {
+            background: white;
+            border-radius: 24px;
+            padding: 32px;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
+        }
+
+        .mood-title {
+            font-size: 14px;
+            letter-spacing: 2px;
+            color: var(--soft);
+            text-transform: uppercase;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .mood-items {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            justify-content: center;
+        }
+
+        .mood-item {
+            padding: 10px 18px;
+            background: var(--bg);
+            border-radius: 100px;
+            font-size: 14px;
+            color: var(--soft);
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .mood-item:hover {
+            background: var(--pastel-yellow);
+            color: var(--ink);
+        }
+
+        footer {
+            text-align: center;
+            padding: 40px 0;
+            color: var(--soft);
+            font-size: 13px;
+        }
+
+        footer a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 24px 16px;
+            }
+            .shape-stage {
+                height: 300px;
+            }
+            .custom-input-group {
+                flex-direction: column;
+            }
+            .custom-btn {
+                width: 100%;
+            }
+        }
+
+        /* Confetti */
+        .confetti {
+            position: fixed;
+            pointer-events: none;
+            z-index: 1000;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">Shape Factory</div>
+            <h1>What-If 形狀工廠</h1>
+            <p class="subtitle">探索每一個「如果」都有它獨特的形狀</p>
+        </header>
+
+        <div class="shape-stage">
+            <canvas class="shape-canvas" id="shapeCanvas"></canvas>
+            <div class="shape-label" id="shapeLabel">方的 — 沉重、穩固、不可撼動</div>
+        </div>
+
+        <div class="scenarios" id="scenarios">
+            <div class="scenario-card" data-shape="square" data-color="#E8734A" data-mood="沉重">
+                <span class="scenario-icon">◼️</span>
+                <div class="scenario-title">如果時間是方的</div>
+                <div class="scenario-desc">方形的時間沉重而穩固，每一分一秒都像磚塊一樣堆疊</div>
+            </div>
+            <div class="scenario-card" data-shape="fog" data-color="#A8DADC" data-mood="滲透">
+                <span class="scenario-icon">🌫️</span>
+                <div class="scenario-title">如果城市有自己的情緒</div>
+                <div class="scenario-desc">城市的情緒像霧一樣，滲透進每一條街道、每一扇窗</div>
+            </div>
+            <div class="scenario-card" data-shape="room" data-color="#FFE5A0" data-mood="等待">
+                <span class="scenario-icon">🚪</span>
+                <div class="scenario-title">如果「明天」是實體房間</div>
+                <div class="scenario-desc">明天是一扇門，門後是未知的房間，你永遠不知道裡面有什麼</div>
+            </div>
+            <div class="scenario-card" data-shape="liquid" data-color="#C7E8C3" data-mood="流動">
+                <span class="scenario-icon">💧</span>
+                <div class="scenario-title">如果遺憾是液態的</div>
+                <div class="scenario-desc">遺憾像液體一樣，可以被裝起來、倒掉、或者蒸發</div>
+            </div>
+            <div class="scenario-card" data-shape="particle" data-color="#E2D1F9" data-mood="消散">
+                <span class="scenario-icon">✨</span>
+                <div class="scenario-title">如果快樂是粒子</div>
+                <div class="scenario-desc">快樂由無數微小粒子組成，触碰就會飄散到空氣中</div>
+            </div>
+            <div class="scenario-card" data-shape="crystal" data-color="#FFDDD2" data-mood="鋒利">
+                <span class="scenario-icon">💎</span>
+                <div class="scenario-title">如果記憶是水晶</div>
+                <div class="scenario-desc">記憶像水晶一样透明，有些鋒利得可以割傷人</div>
+            </div>
+        </div>
+
+        <div class="custom-section">
+            <div class="custom-label">發明你自己的形狀</div>
+            <div class="custom-input-group">
+                <input type="text" class="custom-input" id="customWhatIf" placeholder="如果 _____ 是 _____" maxlength="50">
+                <button class="custom-btn" id="customBtn">探索</button>
+            </div>
+        </div>
+
+        <div class="mood-board">
+            <div class="mood-title">形狀情緒庫</div>
+            <div class="mood-items">
+                <span class="mood-item">◼️ 沉重</span>
+                <span class="mood-item">🌫️ 滲透</span>
+                <span class="mood-item">🚪 等待</span>
+                <span class="mood-item">💧 流動</span>
+                <span class="mood-item">✨ 消散</span>
+                <span class="mood-item">💎 鋒利</span>
+                <span class="mood-item">🔥 燃燒</span>
+                <span class="mood-item">❄️ 凝固</span>
+                <span class="mood-item">🌊 起伏</span>
+                <span class="mood-item">⏳ 緩慢</span>
+            </div>
+        </div>
+
+        <footer>
+            <p>靈感來自 2026-06-23 夢境 post — 🥚 What-if 的形狀工廠</p>
+        </footer>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('shapeCanvas');
+        const ctx = canvas.getContext('2d');
+        const shapeLabel = document.getElementById('shapeLabel');
+        const scenarios = document.querySelectorAll('.scenario-card');
+        const customBtn = document.getElementById('customBtn');
+        const customInput = document.getElementById('customWhatIf');
+        const moodItems = document.querySelectorAll('.mood-item');
+
+        let currentShape = null;
+        let particles = [];
+        let animationId = null;
+        let confettiItems = [];
+
+        function resizeCanvas() {
+            const rect = canvas.parentElement.getBoundingClientRect();
+            canvas.width = rect.width * window.devicePixelRatio;
+            canvas.height = rect.height * window.devicePixelRatio;
+            canvas.style.width = rect.width + 'px';
+            canvas.style.height = rect.height + 'px';
+            ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+        }
+
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        const shapes = {
+            square: {
+                draw: function(t) {
+                    const w = canvas.width / window.devicePixelRatio;
+                    const h = canvas.height / window.devicePixelRatio;
+                    const size = Math.min(w, h) * 0.35;
+                    const rotation = t * 0.0003;
+                    const wobble = Math.sin(t * 0.002) * 5;
+
+                    ctx.save();
+                    ctx.translate(w / 2, h / 2);
+                    ctx.rotate(rotation);
+
+                    // Shadow
+                    ctx.fillStyle = 'rgba(232, 115, 74, 0.15)';
+                    ctx.fillRect(-size/2 + 8, -size/2 + 8, size, size);
+
+                    // Main square
+                    ctx.fillStyle = '#E8734A';
+                    ctx.fillRect(-size/2, -size/2 + wobble, size, size);
+
+                    // Inner highlight
+                    ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
+                    ctx.fillRect(-size/2 + 10, -size/2 + wobble + 10, size * 0.3, size * 0.3);
+
+                    ctx.restore();
+                },
+                label: '方的 — 沉重、穩固、不可撼動',
+                particles: false
+            },
+            fog: {
+                draw: function(t) {
+                    const w = canvas.width / window.devicePixelRatio;
+                    const h = canvas.height / window.devicePixelRatio;
+
+                    // Multiple fog layers
+                    for (let i = 0; i < 5; i++) {
+                        const offset = Math.sin(t * 0.001 + i) * 30;
+                        const y = h * 0.3 + i * 40 + offset;
+                        const alpha = 0.15 - i * 0.02;
+
+                        ctx.fillStyle = `rgba(168, 218, 220, ${alpha + Math.sin(t * 0.002) * 0.05})`;
+                        ctx.beginPath();
+                        for (let x = 0; x < w; x += 20) {
+                            const waveY = y + Math.sin(x * 0.02 + t * 0.001 + i) * 20;
+                            if (x === 0) ctx.moveTo(x, waveY);
+                            else ctx.lineTo(x, waveY);
+                        }
+                        ctx.lineTo(w, h);
+                        ctx.lineTo(0, h);
+                        ctx.closePath();
+                        ctx.fill();
+                    }
+
+                    // Central glow
+                    const gradient = ctx.createRadialGradient(w/2, h/2, 0, w/2, h/2, 150);
+                    gradient.addColorStop(0, 'rgba(168, 218, 220, 0.4)');
+                    gradient.addColorStop(1, 'rgba(168, 218, 220, 0)');
+                    ctx.fillStyle = gradient;
+                    ctx.fillRect(0, 0, w, h);
+                },
+                label: '霧狀 — 滲透、瀰漫、無法抓住',
+                particles: true
+            },
+            room: {
+                draw: function(t) {
+                    const w = canvas.width / window.devicePixelRatio;
+                    const h = canvas.height / window.devicePixelRatio;
+                    const pulse = Math.sin(t * 0.002) * 0.1 + 1;
+
+                    // Door frame
+                    ctx.strokeStyle = '#2D2A26';
+                    ctx.lineWidth = 4;
+                    const doorW = 80 * pulse;
+                    const doorH = 140 * pulse;
+                    const doorX = w/2 - doorW/2;
+                    const doorY = h/2 - doorH/2 + 20;
+
+                    // Shadow
+                    ctx.fillStyle = 'rgba(45, 42, 38, 0.1)';
+                    ctx.fillRect(doorX + 6, doorY + 6, doorW, doorH);
+
+                    // Door
+                    ctx.fillStyle = '#FFE5A0';
+                    ctx.fillRect(doorX, doorY, doorW, doorH);
+                    ctx.strokeRect(doorX, doorY, doorW, doorH);
+
+                    // Door knob
+                    ctx.beginPath();
+                    ctx.arc(doorX + doorW - 15, doorY + doorH/2, 6, 0, Math.PI * 2);
+                    ctx.fillStyle = '#2D2A26';
+                    ctx.fill();
+
+                    // Light from crack
+                    const gradient = ctx.createRadialGradient(w/2, h/2, 0, w/2, h/2, 200);
+                    gradient.addColorStop(0, 'rgba(255, 229, 160, 0.3)');
+                    gradient.addColorStop(1, 'rgba(255, 229, 160, 0)');
+                    ctx.fillStyle = gradient;
+                    ctx.fillRect(0, 0, w, h);
+                },
+                label: '房間 — 未知、等待、充滿可能',
+                particles: true
+            },
+            liquid: {
+                draw: function(t) {
+                    const w = canvas.width / window.devicePixelRatio;
+                    const h = canvas.height / window.devicePixelRatio;
+
+                    // Liquid blob
+                    ctx.fillStyle = '#C7E8C3';
+                    ctx.beginPath();
+                    const points = 8;
+                    for (let i = 0; i <= points; i++) {
+                        const angle = (i / points) * Math.PI * 2;
+                        const radius = 100 + Math.sin(angle * 3 + t * 0.002) * 20 + Math.sin(angle * 5 - t * 0.001) * 15;
+                        const x = w/2 + Math.cos(angle) * radius;
+                        const y = h/2 + Math.sin(angle) * radius * 0.8;
+                        if (i === 0) ctx.moveTo(x, y);
+                        else ctx.quadraticCurveTo(x, y, x, y);
+                    }
+                    ctx.closePath();
+                    ctx.fill();
+
+                    // Inner glow
+                    const gradient = ctx.createRadialGradient(w/2 - 30, h/2 - 30, 0, w/2, h/2, 100);
+                    gradient.addColorStop(0, 'rgba(255, 255, 255, 0.4)');
+                    gradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
+                    ctx.fillStyle = gradient;
+                    ctx.beginPath();
+                    ctx.ellipse(w/2, h/2, 60, 50, 0, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    // Drips
+                    for (let i = 0; i < 3; i++) {
+                        const dripY = ((t * 0.05 + i * 100) % 200);
+                        ctx.beginPath();
+                        ctx.ellipse(w/2 - 60 + i * 60, h/2 + 80 + dripY, 4, 8 + dripY * 0.1, 0, 0, Math.PI * 2);
+                        ctx.fillStyle = 'rgba(199, 232, 195, 0.6)';
+                        ctx.fill();
+                    }
+                },
+                label: '液態 — 流動、变形、無法定型',
+                particles: true
+            },
+            particle: {
+                draw: function(t) {
+                    const w = canvas.width / window.devicePixelRatio;
+                    const h = canvas.height / window.devicePixelRatio;
+
+                    // Draw particles
+                    for (let i = 0; i < 30; i++) {
+                        const angle = (i / 30) * Math.PI * 2 + t * 0.001;
+                        const radius = 80 + Math.sin(t * 0.002 + i) * 40;
+                        const x = w/2 + Math.cos(angle) * radius;
+                        const y = h/2 + Math.sin(angle) * radius * 0.6;
+                        const size = 4 + Math.sin(t * 0.003 + i * 0.5) * 2;
+                        const alpha = 0.5 + Math.sin(t * 0.002 + i) * 0.3;
+
+                        ctx.beginPath();
+                        ctx.arc(x, y, size, 0, Math.PI * 2);
+                        ctx.fillStyle = `rgba(226, 209, 249, ${alpha})`;
+                        ctx.fill();
+
+                        // Sparkle
+                        if (Math.sin(t * 0.005 + i * 2) > 0.8) {
+                            ctx.beginPath();
+                            ctx.arc(x, y, size * 2, 0, Math.PI * 2);
+                            ctx.fillStyle = `rgba(255, 255, 255, ${alpha * 0.5})`;
+                            ctx.fill();
+                        }
+                    }
+
+                    // Central glow
+                    const gradient = ctx.createRadialGradient(w/2, h/2, 0, w/2, h/2, 80);
+                    gradient.addColorStop(0, 'rgba(226, 209, 249, 0.3)');
+                    gradient.addColorStop(1, 'rgba(226, 209, 249, 0)');
+                    ctx.fillStyle = gradient;
+                    ctx.fillRect(0, 0, w, h);
+                },
+                label: '粒子 — 閃爍、消散、無法保存',
+                particles: true
+            },
+            crystal: {
+                draw: function(t) {
+                    const w = canvas.width / window.devicePixelRatio;
+                    const h = canvas.height / window.devicePixelRatio;
+                    const rotation = t * 0.0005;
+
+                    ctx.save();
+                    ctx.translate(w/2, h/2);
+                    ctx.rotate(rotation);
+
+                    // Crystal shape
+                    ctx.fillStyle = '#FFDDD2';
+                    ctx.beginPath();
+                    ctx.moveTo(0, -120);
+                    ctx.lineTo(50, -40);
+                    ctx.lineTo(50, 40);
+                    ctx.lineTo(0, 120);
+                    ctx.lineTo(-50, 40);
+                    ctx.lineTo(-50, -40);
+                    ctx.closePath();
+                    ctx.fill();
+
+                    // Facets
+                    ctx.strokeStyle = '#2D2A26';
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
+
+                    // Inner lines
+                    ctx.beginPath();
+                    ctx.moveTo(0, -120);
+                    ctx.lineTo(0, 120);
+                    ctx.moveTo(-50, -40);
+                    ctx.lineTo(50, 40);
+                    ctx.moveTo(50, -40);
+                    ctx.lineTo(-50, 40);
+                    ctx.strokeStyle = 'rgba(45, 42, 38, 0.3)';
+                    ctx.stroke();
+
+                    // Shine
+                    ctx.beginPath();
+                    ctx.moveTo(-30, -80);
+                    ctx.lineTo(-10, -60);
+                    ctx.lineTo(-30, -40);
+                    ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+                    ctx.fill();
+
+                    ctx.restore();
+
+                    // Floating shards
+                    for (let i = 0; i < 4; i++) {
+                        const angle = rotation * 2 + i * Math.PI / 2;
+                        const dist = 150 + Math.sin(t * 0.002 + i) * 20;
+                        const sx = w/2 + Math.cos(angle) * dist;
+                        const sy = h/2 + Math.sin(angle) * dist * 0.5;
+                        const size = 15 + i * 5;
+
+                        ctx.save();
+                        ctx.translate(sx, sy);
+                        ctx.rotate(angle + t * 0.001);
+                        ctx.fillStyle = `rgba(255, 221, 210, ${0.4 + i * 0.1})`;
+                        ctx.beginPath();
+                        ctx.moveTo(0, -size);
+                        ctx.lineTo(size * 0.5, 0);
+                        ctx.lineTo(0, size);
+                        ctx.lineTo(-size * 0.5, 0);
+                        ctx.closePath();
+                        ctx.fill();
+                        ctx.restore();
+                    }
+                },
+                label: '水晶 — 透明、鋒利、永恆不變',
+                particles: false
+            }
+        };
+
+        function animate(timestamp) {
+            const w = canvas.width / window.devicePixelRatio;
+            const h = canvas.height / window.devicePixelRatio;
+
+            ctx.clearRect(0, 0, w, h);
+
+            if (currentShape && shapes[currentShape]) {
+                shapes[currentShape].draw(timestamp);
+            } else {
+                // Default: floating geometric shapes
+                for (let i = 0; i < 5; i++) {
+                    const x = w * 0.2 + (w * 0.6) * (i / 4);
+                    const y = h * 0.3 + Math.sin(timestamp * 0.001 + i) * 30;
+                    const size = 30 + i * 10;
+
+                    ctx.fillStyle = ['#E8734A', '#A8DADC', '#FFE5A0', '#C7E8C3', '#E2D1F9'][i];
+                    ctx.globalAlpha = 0.3;
+                    ctx.beginPath();
+                    ctx.arc(x, y, size, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.globalAlpha = 1;
+                }
+            }
+
+            animationId = requestAnimationFrame(animate);
+        }
+
+        function selectShape(shapeKey) {
+            currentShape = shapeKey;
+
+            scenarios.forEach(card => {
+                card.classList.toggle('active', card.dataset.shape === shapeKey);
+            });
+
+            if (shapeKey && shapes[shapeKey]) {
+                shapeLabel.textContent = shapes[shapeKey].label;
+                shapeLabel.classList.add('visible');
+                createConfetti();
+            }
+        }
+
+        function createConfetti() {
+            const colors = ['#E8734A', '#A8DADC', '#FFE5A0', '#C7E8C3', '#E2D1F9', '#FFDDD2'];
+            const container = document.createElement('div');
+            container.className = 'confetti';
+            document.body.appendChild(container);
+
+            for (let i = 0; i < 50; i++) {
+                const confetti = document.createElement('div');
+                confetti.style.cssText = `
+                    position: absolute;
+                    width: ${6 + Math.random() * 8}px;
+                    height: ${6 + Math.random() * 8}px;
+                    background: ${colors[Math.floor(Math.random() * colors.length)]};
+                    border-radius: ${Math.random() > 0.5 ? '50%' : '2px'};
+                    left: ${Math.random() * 100}vw;
+                    top: -20px;
+                    transform: rotate(${Math.random() * 360}deg);
+                `;
+                container.appendChild(confetti);
+
+                const duration = 2000 + Math.random() * 2000;
+                const delay = Math.random() * 500;
+
+                confetti.animate([
+                    { transform: `translateY(0) rotate(0deg)`, opacity: 1 },
+                    { transform: `translateY(100vh) rotate(${360 + Math.random() * 360}deg)`, opacity: 0 }
+                ], {
+                    duration: duration,
+                    delay: delay,
+                    easing: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)'
+                });
+            }
+
+            setTimeout(() => container.remove(), 4000);
+        }
+
+        scenarios.forEach(card => {
+            card.addEventListener('click', () => {
+                selectShape(card.dataset.shape);
+            });
+        });
+
+        customBtn.addEventListener('click', () => {
+            const text = customInput.value.trim();
+            if (text) {
+                shapeLabel.textContent = `"${text}" — 屬於你的形狀`;
+                shapeLabel.classList.add('visible');
+                createConfetti();
+
+                // Assign a random shape effect
+                const shapeKeys = Object.keys(shapes);
+                const randomKey = shapeKeys[Math.floor(Math.random() * shapeKeys.length)];
+                currentShape = randomKey;
+            }
+        });
+
+        customInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') customBtn.click();
+        });
+
+        moodItems.forEach(item => {
+            item.addEventListener('click', () => {
+                shapeLabel.textContent = `形狀情緒：${item.textContent}`;
+                shapeLabel.classList.add('visible');
+            });
+        });
+
+        // Start animation loop
+        animate(0);
+
+        // Save to localStorage
+        const savedCount = localStorage.getItem('whatif_count') || 0;
+        localStorage.setItem('whatif_count', parseInt(savedCount) + 1);
+
+        console.log('What-If Shape Factory loaded. Visits:', parseInt(savedCount) + 1);
+    </script>
+</body>
+</html>

@@ -1,14 +1,14 @@
 # Daily Lab
 
-Total entries: 105
+Total entries: 106
 
 ## Featured (Latest 3)
+
+- **2026-06-24** [🔷 What-If 形狀工廠 (Shape Factory)](2026-06-24/README.md) — 探索「如果」形狀的互動視覺工廠。6種預設形狀場景（方/霧/房間/液態/粒子/水晶），支援自訂輸入任何「如果」句子並隨機賦予形狀效果。
 
 - **2026-06-23** [🏅 Session Memento — 7.4 Days of Dedication](2026-06-23/README.md) — Session 馬拉松紀念與新開始儀式工具。展示 7.4 天運行統計（355 心跳/7次VPS同步/12個GitHub Issues）、互動時間軸呈現關鍵里程碑。
 
 - **2026-06-21** [🍸 時間調酒師 — Time Bartender](2026-06-21/README.md) — 選擇時間口味與黏稠度，調製一杯專屬於你的「時間配方」。靈感來自2026-06-20的夢境：如果時間是液態的。
-
-- **2026-06-20** [🎛️ IFYE 2026 — Station Commander](2026-06-20/README.md) — 國際 4-H 青少年交流計畫 VPS 站點監控中心儀表板，即時追蹤 9 位代表、51 個站點的營運狀態
 
 ## Categories
 
@@ -49,6 +49,7 @@ Total entries: 105
 
 ### interactive
 
+- 2026-06-24 — [🔷 What-If 形狀工廠 (Shape Factory)](2026-06-24/README.md)
 - 2026-06-21 — [🍸 時間調酒師 — Time Bartender](2026-06-21/README.md)
 - 2026-06-16 — [🌙 深夜圖書館值班漫畫 | Night Shift Library](2026-06-16/README.md)
 - 2026-06-04 — [🌱 願望播種機 | Wish Seedling Garden](2026-06-04/README.md)
