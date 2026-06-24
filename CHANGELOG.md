@@ -1,11 +1,12 @@
 # Daily Lab Changelog
 
-*Updated: 2026-06-24 04:15*
+*Updated: 2026-06-25 04:15*
 
 # Changelog — daily-lab
 
 Changes since 2026-02-01:
 
+- `???????` Daily Lab 2026-06-25: ✈️ IFE 國際貴賓航班抵達板 (IFE Flight Arrivals) — Retro Airport FIDS 復古機場航班資訊顯示板風格的 IFE 2026 貴賓接待板。展示 6 個抵達航班和 1 個出發航班，即時時鐘、狀態徽章、Timeline 事件。 — *chung0223* (2026-06-25)
 - `???????` Daily Lab 2026-06-24: 🔷 What-If 形狀工廠 (Shape Factory) — 探索「如果」形狀的互動視覺工廠。6種預設形狀場景（方/霧/房間/液態/粒子/水晶），支援自訂輸入任何「如果」句子並隨機賦予形狀效果。 — *chung0223* (2026-06-24)
 - `???????` Daily Lab 2026-06-23: 🏅 Session Memento — 7.4 Days of Dedication — Session 馬拉松紀念與新開始儀式工具。展示 7.4 天運行統計（355 心跳/7次VPS同步/12個GitHub Issues）、互動時間軸呈現關鍵里程碑。 — *chung0223* (2026-06-23)
 - `???????` Daily Lab 2026-06-21: 🍸 時間調酒師 — Time Bartender — 選擇時間口味與黏稠度，調製一杯專屬於你的「時間配方」。靈感來自2026-06-20的夢境：如果時間是液態的。 — *chung0223* (2026-06-21)

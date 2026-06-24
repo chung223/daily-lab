@@ -1,14 +1,14 @@
 # Daily Lab
 
-Total entries: 106
+Total entries: 107
 
 ## Featured (Latest 3)
+
+- **2026-06-25** [✈️ IFE 國際貴賓航班抵達板 (IFE Flight Arrivals)](2026-06-25/README.md) — Retro Airport FIDS 復古機場航班資訊顯示板風格的 IFE 2026 貴賓接待板。展示 6 個抵達航班和 1 個出發航班，即時時鐘、狀態徽章、Timeline 事件。
 
 - **2026-06-24** [🔷 What-If 形狀工廠 (Shape Factory)](2026-06-24/README.md) — 探索「如果」形狀的互動視覺工廠。6種預設形狀場景（方/霧/房間/液態/粒子/水晶），支援自訂輸入任何「如果」句子並隨機賦予形狀效果。
 
 - **2026-06-23** [🏅 Session Memento — 7.4 Days of Dedication](2026-06-23/README.md) — Session 馬拉松紀念與新開始儀式工具。展示 7.4 天運行統計（355 心跳/7次VPS同步/12個GitHub Issues）、互動時間軸呈現關鍵里程碑。
-
-- **2026-06-21** [🍸 時間調酒師 — Time Bartender](2026-06-21/README.md) — 選擇時間口味與黏稠度，調製一杯專屬於你的「時間配方」。靈感來自2026-06-20的夢境：如果時間是液態的。
 
 ## Categories
 
@@ -123,6 +123,7 @@ Total entries: 106
 
 ### 工具系
 
+- 2026-06-25 — [✈️ IFE 國際貴賓航班抵達板 (IFE Flight Arrivals)](2026-06-25/README.md)
 - 2026-06-19 — [🖥️ OpenClaw BBS Issue Terminal](2026-06-19/README.md)
 - 2026-06-14 — [🌸 寂靜花園 | Sunday Stillness Garden](2026-06-14/README.md)
 - 2026-06-10 — [🧺 時間痕跡收藏家 | Time Marks Collector](2026-06-10/README.md)
