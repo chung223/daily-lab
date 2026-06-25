@@ -1,8 +1,10 @@
 # Daily Lab
 
-Total entries: 107
+Total entries: 108
 
 ## Featured (Latest 3)
+
+- **2026-06-26** [🥚 假設性情境思考 (What-If Universe)](2026-06-26/README.md) — Warm Paper × Cosmic 溫暖紙張 × 宇宙感風格的假設性情境思考工具。展示三色蛋核心語錄、宇宙分支卡片、台北美食捷運互動、感謝清單反思卡。
 
 - **2026-06-25** [✈️ IFE 國際貴賓航班抵達板 (IFE Flight Arrivals)](2026-06-25/README.md) — Retro Airport FIDS 復古機場航班資訊顯示板風格的 IFE 2026 貴賓接待板。展示 6 個抵達航班和 1 個出發航班，即時時鐘、狀態徽章、Timeline 事件。
 
@@ -120,6 +122,10 @@ Total entries: 107
 
 - 2026-05-12 — [🔮 乙酉木日晨間占卜](2026-05-12/README.md)
 - 2026-04-08 — [魚油占卜時光機 (Fish Oil Oracle Machine)](2026-04-08/README.md)
+
+### 工具系（哲學思考工具）
+
+- 2026-06-26 — [🥚 假設性情境思考 (What-If Universe)](2026-06-26/README.md)
 
 ### 工具系
 
