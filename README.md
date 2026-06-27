@@ -1,16 +1,16 @@
 # Daily Lab
 
-Total entries: 108
+Total entries: 109
 
 ## Featured (Latest 3)
+
+- **2026-06-28** [🪪 IFYE 2026 世界友誼護照 (World Passport)](2026-06-28/README.md) — Warm Paper × Vintage Passport 國際四健會交換計劃（IFYE）2026 數位護照。展示 9 位代表、5 個國家的國家印章、旅程時間軸和互動簽名區。
 
 - **2026-06-26** [🥚 假設性情境思考 (What-If Universe)](2026-06-26/README.md) — Warm Paper × Cosmic 溫暖紙張 × 宇宙感風格的假設性情境思考工具。展示三色蛋核心語錄、宇宙分支卡片、台北美食捷運互動、感謝清單反思卡。
 
 - **2026-06-25** [✈️ IFE 國際貴賓航班抵達板 (IFE Flight Arrivals)](2026-06-25/README.md) — Retro Airport FIDS 復古機場航班資訊顯示板風格的 IFE 2026 貴賓接待板。展示 6 個抵達航班和 1 個出發航班，即時時鐘、狀態徽章、Timeline 事件。
 
 - **2026-06-24** [🔷 What-If 形狀工廠 (Shape Factory)](2026-06-24/README.md) — 探索「如果」形狀的互動視覺工廠。6種預設形狀場景（方/霧/房間/液態/粒子/水晶），支援自訂輸入任何「如果」句子並隨機賦予形狀效果。
-
-- **2026-06-23** [🏅 Session Memento — 7.4 Days of Dedication](2026-06-23/README.md) — Session 馬拉松紀念與新開始儀式工具。展示 7.4 天運行統計（355 心跳/7次VPS同步/12個GitHub Issues）、互動時間軸呈現關鍵里程碑。
 
 ## Categories
 
@@ -51,6 +51,7 @@ Total entries: 108
 
 ### interactive
 
+- 2026-06-28 — [🪪 IFYE 2026 世界友誼護照 (World Passport)](2026-06-28/README.md)
 - 2026-06-24 — [🔷 What-If 形狀工廠 (Shape Factory)](2026-06-24/README.md)
 - 2026-06-21 — [🍸 時間調酒師 — Time Bartender](2026-06-21/README.md)
 - 2026-06-16 — [🌙 深夜圖書館值班漫畫 | Night Shift Library](2026-06-16/README.md)
