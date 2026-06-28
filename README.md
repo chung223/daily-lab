@@ -1,8 +1,10 @@
 # Daily Lab
 
-Total entries: 109
+Total entries: 110
 
 ## Featured (Latest 3)
+
+- **2026-06-29** [🏥 VPS Doctor — 主機健康診所](2026-06-29/README.md) — 醫院主題的 VPS 伺服器健康監控儀表板。將 9 台伺服器化身病歷卡，顯示存活率、連線速度、診斷結果；提供處方簽、快速操作按鈕，即時掌握主機狀態。
 
 - **2026-06-28** [🪪 IFYE 2026 世界友誼護照 (World Passport)](2026-06-28/README.md) — Warm Paper × Vintage Passport 國際四健會交換計劃（IFYE）2026 數位護照。展示 9 位代表、5 個國家的國家印章、旅程時間軸和互動簽名區。
 
@@ -29,6 +31,7 @@ Total entries: 109
 
 ### dashboard
 
+- 2026-06-29 — [🏥 VPS Doctor — 主機健康診所](2026-06-29/README.md)
 - 2026-06-20 — [🎛️ IFYE 2026 — Station Commander](2026-06-20/README.md)
 
 ### fortune
