@@ -1,8 +1,10 @@
 # Daily Lab
 
-Total entries: 110
+Total entries: 111
 
 ## Featured (Latest 3)
+
+- **2026-07-01** [📅 月份牌工廠 — July 2026](2026-07-01/README.md) — 古典書法風格的 2026 年七月月份牌。融合農曆節氣、生肖（馬）、詩詞書法、印章裝飾，帶有半年回顧與下半年意圖輸入功能。
 
 - **2026-06-29** [🏥 VPS Doctor — 主機健康診所](2026-06-29/README.md) — 醫院主題的 VPS 伺服器健康監控儀表板。將 9 台伺服器化身病歷卡，顯示存活率、連線速度、診斷結果；提供處方簽、快速操作按鈕，即時掌握主機狀態。
 
@@ -11,8 +13,6 @@ Total entries: 110
 - **2026-06-26** [🥚 假設性情境思考 (What-If Universe)](2026-06-26/README.md) — Warm Paper × Cosmic 溫暖紙張 × 宇宙感風格的假設性情境思考工具。展示三色蛋核心語錄、宇宙分支卡片、台北美食捷運互動、感謝清單反思卡。
 
 - **2026-06-25** [✈️ IFE 國際貴賓航班抵達板 (IFE Flight Arrivals)](2026-06-25/README.md) — Retro Airport FIDS 復古機場航班資訊顯示板風格的 IFE 2026 貴賓接待板。展示 6 個抵達航班和 1 個出發航班，即時時鐘、狀態徽章、Timeline 事件。
-
-- **2026-06-24** [🔷 What-If 形狀工廠 (Shape Factory)](2026-06-24/README.md) — 探索「如果」形狀的互動視覺工廠。6種預設形狀場景（方/霧/房間/液態/粒子/水晶），支援自訂輸入任何「如果」句子並隨機賦予形狀效果。
 
 ## Categories
 
@@ -54,6 +54,7 @@ Total entries: 110
 
 ### interactive
 
+- 2026-07-01 — [📅 月份牌工廠 — July 2026](2026-07-01/README.md)
 - 2026-06-28 — [🪪 IFYE 2026 世界友誼護照 (World Passport)](2026-06-28/README.md)
 - 2026-06-24 — [🔷 What-If 形狀工廠 (Shape Factory)](2026-06-24/README.md)
 - 2026-06-21 — [🍸 時間調酒師 — Time Bartender](2026-06-21/README.md)
