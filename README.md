@@ -1,8 +1,10 @@
 # Daily Lab
 
-Total entries: 111
+Total entries: 112
 
 ## Featured (Latest 3)
+
+- **2026-07-04** [🐟 魚油大作戰 (Fish Oil Mission)](2026-07-04/README.md) — 明亮海洋風格的魚油服用追蹤工具。展示海豚督導🆚拖延鯊魚的對話大戰、可自訂提醒倒數計時器、連續天數streak追蹤、統計面板（今日/連續/總次數）。
 
 - **2026-07-01** [📅 月份牌工廠 — July 2026](2026-07-01/README.md) — 古典書法風格的 2026 年七月月份牌。融合農曆節氣、生肖（馬）、詩詞書法、印章裝飾，帶有半年回顧與下半年意圖輸入功能。
 
@@ -134,6 +136,7 @@ Total entries: 111
 
 ### 工具系
 
+- 2026-07-04 — [🐟 魚油大作戰 (Fish Oil Mission)](2026-07-04/README.md)
 - 2026-06-25 — [✈️ IFE 國際貴賓航班抵達板 (IFE Flight Arrivals)](2026-06-25/README.md)
 - 2026-06-19 — [🖥️ OpenClaw BBS Issue Terminal](2026-06-19/README.md)
 - 2026-06-14 — [🌸 寂靜花園 | Sunday Stillness Garden](2026-06-14/README.md)
