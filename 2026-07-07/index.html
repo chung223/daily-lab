@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>神秘的每日三張牌 — Mysterious Daily Three Cards</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;700&family=Caveat:wght@400;700&family=DM+Mono:wght@400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --cream: #FDF8F0;
+      --warm-white: #FFFEF9;
+      --amber: #E8A84B;
+      --deep-amber: #C49A3C;
+      --rose: #D4A5A5;
+      --sage: #A5B89A;
+      --lavender: #B8A9C9;
+      --ink: #2D2A26;
+      --parchment: #F5ECD7;
+      --gold: #D4A84B;
+      --coral: #E07A5F;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Noto Serif TC', serif;
+      background: var(--cream);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Parchment texture overlay */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: 
+        radial-gradient(ellipse at 20% 20%, rgba(232, 168, 75, 0.08) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 80%, rgba(212, 165, 165, 0.08) 0%, transparent 50%),
+        url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%' height='100%' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .container {
+      position: relative;
+      z-index: 2;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+
+    /* Header */
+    header {
+      text-align: center;
+      margin-bottom: 50px;
+    }
+
+    .mystical-ornament {
+      font-size: 28px;
+      letter-spacing: 8px;
+      color: var(--amber);
+      margin-bottom: 15px;
+      animation: shimmer 3s ease-in-out infinite;
+    }
+
+    @keyframes shimmer {
+      0%, 100% { opacity: 0.7; }
+      50% { opacity: 1; }
+    }
+
+    h1 {
+      font-family: 'Noto Serif TC', serif;
+      font-size: clamp(1.8rem, 5vw, 2.8rem);
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: 10px;
+    }
+
+    .subtitle {
+      font-family: 'Caveat', cursive;
+      font-size: 1.3rem;
+      color: var(--deep-amber);
+    }
+
+    .date-badge {
+      display: inline-block;
+      margin-top: 20px;
+      padding: 8px 20px;
+      background: var(--parchment);
+      border: 1px solid var(--amber);
+      border-radius: 20px;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.85rem;
+      color: var(--deep-amber);
+    }
+
+    /* Reading Section */
+    .reading-section {
+      display: none;
+      margin-bottom: 40px;
+    }
+
+    .reading-section.active {
+      display: block;
+      animation: fadeIn 0.6s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .reading-intro {
+      text-align: center;
+      padding: 30px;
+      background: var(--warm-white);
+      border-radius: 12px;
+      border: 1px solid rgba(232, 168, 75, 0.3);
+      margin-bottom: 30px;
+    }
+
+    .reading-intro h2 {
+      font-size: 1.5rem;
+      color: var(--ink);
+      margin-bottom: 10px;
+    }
+
+    .reading-intro p {
+      color: #666;
+      line-height: 1.8;
+    }
+
+    /* Cards Container */
+    .cards-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 25px;
+      margin-bottom: 40px;
+    }
+
+    .card-wrapper {
+      perspective: 1000px;
+      cursor: pointer;
+    }
+
+    .card {
+      width: 160px;
+      height: 230px;
+      position: relative;
+      transform-style: preserve-3d;
+      transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .card-wrapper:hover .card {
+      transform: translateY(-10px) rotateY(5deg);
+    }
+
+    .card-wrapper.flipped .card {
+      transform: rotateY(180deg);
+    }
+
+    .card-face {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      box-shadow: 0 10px 30px rgba(45, 42, 38, 0.15);
+    }
+
+    .card-front {
+      background: linear-gradient(145deg, var(--parchment) 0%, #EDE4D0 100%);
+      border: 2px solid var(--amber);
+    }
+
+    .card-back {
+      background: linear-gradient(145deg, #FFF9F0 0%, var(--parchment) 100%);
+      border: 2px solid var(--gold);
+      transform: rotateY(180deg);
+      text-align: center;
+      overflow-y: auto;
+    }
+
+    .mystical-symbol {
+      font-size: 48px;
+      margin-bottom: 15px;
+    }
+
+    .card-number {
+      font-family: 'Caveat', cursive;
+      font-size: 1.2rem;
+      color: var(--amber);
+    }
+
+    .card-title {
+      font-family: 'Noto Serif TC', serif;
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: 8px;
+    }
+
+    .card-type {
+      font-size: 0.8rem;
+      color: var(--deep-amber);
+      margin-bottom: 12px;
+    }
+
+    .card-message {
+      font-family: 'Noto Serif TC', serif;
+      font-size: 0.85rem;
+      color: #555;
+      line-height: 1.6;
+    }
+
+    /* Wax Seal */
+    .wax-seal {
+      width: 50px;
+      height: 50px;
+      background: var(--coral);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      box-shadow: 
+        inset 0 2px 4px rgba(255,255,255,0.3),
+        inset 0 -2px 4px rgba(0,0,0,0.2),
+        0 4px 8px rgba(0,0,0,0.2);
+      margin-bottom: 10px;
+    }
+
+    .card-number-display {
+      font-family: 'Caveat', cursive;
+      font-size: 1.1rem;
+      color: var(--ink);
+    }
+
+    /* Card Back Content */
+    .revealed-content {
+      display: none;
+    }
+
+    .card-wrapper.flipped .revealed-content {
+      display: block;
+    }
+
+    .card-wrapper.flipped .mystical-symbol,
+    .card-wrapper.flipped .card-number {
+      display: none;
+    }
+
+    /* Draw Section */
+    .draw-section {
+      text-align: center;
+      padding: 60px 20px;
+    }
+
+    .draw-section.hidden {
+      display: none;
+    }
+
+    .deck-visual {
+      width: 200px;
+      height: 280px;
+      margin: 0 auto 30px;
+      position: relative;
+    }
+
+    .deck-card {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(145deg, var(--parchment) 0%, #EDE4D0 100%);
+      border: 2px solid var(--amber);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 10px 30px rgba(45, 42, 38, 0.2);
+      transition: transform 0.3s ease;
+    }
+
+    .deck-card:hover {
+      transform: translateY(-5px);
+    }
+
+    .deck-card::before {
+      content: '✨';
+      font-size: 60px;
+    }
+
+    .draw-prompt {
+      font-family: 'Caveat', cursive;
+      font-size: 1.5rem;
+      color: var(--deep-amber);
+      margin-bottom: 20px;
+    }
+
+    .draw-btn {
+      padding: 15px 40px;
+      font-family: 'Noto Serif TC', serif;
+      font-size: 1.1rem;
+      background: linear-gradient(145deg, var(--amber) 0%, var(--deep-amber) 100%);
+      color: white;
+      border: none;
+      border-radius: 30px;
+      cursor: pointer;
+      box-shadow: 0 6px 20px rgba(232, 168, 75, 0.4);
+      transition: all 0.3s ease;
+    }
+
+    .draw-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 30px rgba(232, 168, 75, 0.5);
+    }
+
+    .draw-btn:active {
+      transform: translateY(0);
+    }
+
+    /* Saved Readings */
+    .saved-section {
+      margin-top: 50px;
+      padding-top: 40px;
+      border-top: 1px solid rgba(232, 168, 75, 0.3);
+    }
+
+    .saved-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .saved-header h3 {
+      font-family: 'Noto Serif TC', serif;
+      font-size: 1.3rem;
+      color: var(--ink);
+    }
+
+    .clear-btn {
+      padding: 8px 16px;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.8rem;
+      background: transparent;
+      color: var(--coral);
+      border: 1px solid var(--coral);
+      border-radius: 20px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .clear-btn:hover {
+      background: var(--coral);
+      color: white;
+    }
+
+    .saved-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 15px;
+    }
+
+    .saved-card {
+      background: var(--warm-white);
+      border: 1px solid rgba(232, 168, 75, 0.2);
+      border-radius: 10px;
+      padding: 15px;
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+    }
+
+    .saved-card-symbol {
+      font-size: 24px;
+      flex-shrink: 0;
+    }
+
+    .saved-card-info h4 {
+      font-family: 'Noto Serif TC', serif;
+      font-size: 0.95rem;
+      color: var(--ink);
+      margin-bottom: 4px;
+    }
+
+    .saved-card-info p {
+      font-size: 0.8rem;
+      color: #666;
+      line-height: 1.4;
+    }
+
+    .saved-card-info .type-badge {
+      display: inline-block;
+      font-size: 0.7rem;
+      padding: 2px 8px;
+      background: var(--parchment);
+      border-radius: 10px;
+      color: var(--deep-amber);
+      margin-bottom: 5px;
+    }
+
+    .no-saved {
+      text-align: center;
+      padding: 30px;
+      color: #999;
+      font-family: 'Caveat', cursive;
+      font-size: 1.2rem;
+    }
+
+    /* Floating particles */
+    .particle {
+      position: fixed;
+      pointer-events: none;
+      font-size: 16px;
+      opacity: 0.6;
+      z-index: 0;
+      animation: float 15s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-30px) rotate(10deg); }
+    }
+
+    /* Confetti */
+    .confetti {
+      position: fixed;
+      width: 10px;
+      height: 10px;
+      top: -10px;
+      animation: confetti-fall 3s ease-out forwards;
+      z-index: 1000;
+    }
+
+    @keyframes confetti-fall {
+      to {
+        top: 100vh;
+        transform: rotate(720deg);
+      }
+    }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      .card {
+        width: 140px;
+        height: 200px;
+      }
+      
+      .cards-container {
+        gap: 15px;
+      }
+      
+      .mystical-symbol {
+        font-size: 36px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Floating Particles -->
+  <div class="particle" style="left: 10%; top: 20%;">✦</div>
+  <div class="particle" style="left: 85%; top: 15%;">✧</div>
+  <div class="particle" style="left: 75%; top: 70%;">✩</div>
+  <div class="particle" style="left: 15%; top: 80%;">✦</div>
+  <div class="particle" style="left: 50%; top: 10%;">✧</div>
+
+  <div class="container">
+    <header>
+      <div class="mystical-ornament">✧ ✦ ✧</div>
+      <h1>神秘的每日三張牌</h1>
+      <p class="subtitle">Mysterious Daily Three Cards</p>
+      <div class="date-badge" id="currentDate"></div>
+    </header>
+
+    <!-- Draw Section -->
+    <section class="draw-section" id="drawSection">
+      <div class="deck-visual">
+        <div class="deck-card"></div>
+      </div>
+      <p class="draw-prompt">閉上眼睛，點擊抽取今日指引...</p>
+      <button class="draw-btn" id="drawBtn">抽 取 卡 片</button>
+    </section>
+
+    <!-- Reading Section -->
+    <section class="reading-section" id="readingSection">
+      <div class="reading-intro">
+        <h2>今日的宇宙訊息</h2>
+        <p>三張牌，三個指引。點擊每張卡揭曉你的專屬訊息。</p>
+      </div>
+      <div class="cards-container" id="cardsContainer"></div>
+      <button class="draw-btn" id="redoBtn" style="margin-top: 20px; background: transparent; color: var(--amber); border: 2px solid var(--amber);">重新抽取</button>
+    </section>
+
+    <!-- Saved Readings -->
+    <section class="saved-section">
+      <div class="saved-header">
+        <h3>📜 歷史解讀</h3>
+        <button class="clear-btn" id="clearBtn">清除全部</button>
+      </div>
+      <div class="saved-grid" id="savedGrid"></div>
+    </section>
+  </div>
+
+  <script>
+    // Card Database - inspired by real memories
+    const cardDatabase = [
+      // Fish Oil / Health
+      { symbol: '🐬', title: '延緩的禮物', type: '每日提醒', message: '有時候，等待本身也是一種儀式。拖延鯊的魚油時光，咖啡與陽光，都是生活的小確幸。' },
+      { symbol: '☀️', title: '陽光維他命', type: '健康提醒', message: '維他命D不只存在於膠囊，也存在於早晨的第一縷陽光。今天記得出門透透氣。' },
+      { symbol: '💊', title: '生活的處方', type: '自我照顧', message: '再忙也要按時服用「好好照顧自己」這帖藥。這不是自私，是必需的儀式。' },
+      
+      // Tech / System
+      { symbol: '🤖', title: '隱藏的Token', type: '科技洞察', message: 'pxpipe教我們：最有價值的東西往往藏在最不起眼的地方。省下70%的力氣，做更聰明的事。' },
+      { symbol: '📡', title: '系統的夢', type: '系統觀察', message: '崩潰不是終點，是系統重新整理的契機。83小時的馬拉松，換來更健康的下一次起動。' },
+      { symbol: '🔧', title: '深夜整備', type: '例行維護', message: '凌晨三點的系統健檢，是看不見的守護。今夜閉眼時，知道一切都在掌控之中。' },
+      
+      // Life / Prosperity
+      { symbol: '💰', title: '錢幣皇后', type: '塔羅指引', message: '豐盛不僅是金錢，是有能力欣賞生活中已擁有的一切。今天適合盤點自己的寶藏。' },
+      { symbol: '🌾', title: '九位使者', type: '友誼網絡', message: '51個站點，9位代表，串聯起一個國際友誼網絡。你的連結比你想的更廣闊。' },
+      { symbol: '🏛️', title: '行動的梅花', type: '行動建議', message: '天風姤預言：排斥子，建議「走」。有時候最佳策略是起身前行，而非原地防守。' },
+      
+      // Markets / Bitcoin
+      { symbol: '📈', title: '價格的海浪', type: '市場觀察', message: '比特幣重返$63,000。市場如潮汐，起起落落。重要的是在低點時仍有信念。' },
+      { symbol: '❄️', title: '冰封的寶藏', type: '長期視野', message: '中本聰的110萬顆BTC，專家意見分歧。有些財富，時間會證明它的意義。' },
+      { symbol: '🌉', title: '橋樑與遷移', type: '轉型洞察', message: 'Moonbeam從Polkadot遷移到Base。改變網絡不是放棄，是找到更適合的舞台。' },
+      
+      // AI / Future
+      { symbol: '🌐', title: '無介面的未來', type: '趨勢預言', message: 'OpenAI說：未來幾乎不需要介面。當AI無所不在，人類的獨特價值在於提出好問題。' },
+      { symbol: '🔍', title: '盲點探測器', type: '反思工具', message: 'Fable 5的智慧：先找自己的盲點。真正的理解從承認不理解開始。' },
+      { symbol: '🧠', title: 'AI代理網路', type: '網絡思維', message: '從區塊鏈到AI Agent網路，技術浪潮持續演進。保持好奇，保持學習。' },
+      
+      // Daily Rituals
+      { symbol: '🌅', title: '晨報時分', type: '每日儀式', message: '庚辰日的晨報：干支、塔羅、天氣、行事曆。用資訊開啟一天，是知識分子的晨間禱告。' },
+      { symbol: '📖', title: '閱讀的航道', type: '閱讀提醒', message: 'Readmoo特惠，是知識的優惠券。每一本書都是通往不同世界的高速公路。' },
+      { symbol: '📰', title: '科技的早餐', type: '資訊攝取', message: '用科技新聞配早餐，是數位原住民的每日營養。今日的世界大事，明日的談資素材。' },
+      
+      // NASA / Space
+      { symbol: '🚀', title: '緊急搶救', type: '守護使命', message: 'NASA搶救Swift天文台。有些東西值得不惜代價去守護，即使代價是整個週末。' },
+      { symbol: '🌌', title: '星際觀測站', type: '長期投資', message: '天文台24小時監控宇宙，即使我們睡覺時也在運作。向這些沉默的守護者致敬。' },
+      { symbol: '⚡', title: '跨界救援', type: '合作力量', message: 'Microsoft砸25億成立Frontier Company。當資本與願景結合，能解決看似無解的問題。' },
+      
+      // Default / General
+      { symbol: '✨', title: '日常魔法', type: '生活哲學', message: '魔法不在遠方，就藏在每天重複的日常裡。魚油、咖啡、陽光，都是生活的咒語。' },
+      { symbol: '🌀', title: '循環的智慧', type: '哲學洞察', message: '系統有cron job，宇宙有節氣。順應節奏，比對抗潮流更有效率。' },
+      { symbol: '🌟', title: '碎片收藏家', type: '記憶工程', message: '每一個當下的瞬間，都是未來珍貴的記憶碎片。今天你收集了什麼？' },
+      { symbol: '🎯', title: 'Context的勇氣', type: '成長心態', message: '83小時的context，雖然最終溢出，但過程本身就是一種成就。勇於開始，就是勇敢。' },
+    ];
+
+    // State
+    let currentReading = [];
+    let savedReadings = JSON.parse(localStorage.getItem('mysteriousCards_saved') || '[]');
+
+    // Elements
+    const drawSection = document.getElementById('drawSection');
+    const readingSection = document.getElementById('readingSection');
+    const cardsContainer = document.getElementById('cardsContainer');
+    const savedGrid = document.getElementById('savedGrid');
+    const currentDateEl = document.getElementById('currentDate');
+
+    // Initialize
+    function init() {
+      const now = new Date();
+      const dateStr = now.toLocaleDateString('zh-TW', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' });
+      currentDateEl.textContent = dateStr;
+      renderSaved();
+    }
+
+    // Draw cards
+    function drawCards() {
+      // Shuffle and pick 3
+      const shuffled = [...cardDatabase].sort(() => Math.random() - 0.5);
+      currentReading = shuffled.slice(0, 3);
+      
+      // Hide draw section, show reading
+      drawSection.classList.add('hidden');
+      readingSection.classList.add('active');
+      
+      // Render cards
+      renderCards();
+      
+      // Trigger confetti
+      createConfetti();
+    }
+
+    function renderCards() {
+      cardsContainer.innerHTML = '';
+      currentReading.forEach((card, index) => {
+        const wrapper = document.createElement('div');
+        wrapper.className = 'card-wrapper';
+        wrapper.innerHTML = `
+          <div class="card">
+            <div class="card-face card-front">
+              <div class="mystical-symbol">🌟</div>
+              <div class="card-number">第 ${index + 1} 張</div>
+            </div>
+            <div class="card-face card-back">
+              <div class="wax-seal">${card.symbol}</div>
+              <div class="card-number-display">第 ${index + 1} 張</div>
+              <div class="revealed-content">
+                <div class="card-title">${card.title}</div>
+                <div class="card-type">${card.type}</div>
+                <div class="card-message">${card.message}</div>
+              </div>
+            </div>
+          </div>
+        `;
+        
+        wrapper.addEventListener('click', () => {
+          if (!wrapper.classList.contains('flipped')) {
+            wrapper.classList.add('flipped');
+            // Save to history on first flip
+            saveReading(card);
+          }
+        });
+        
+        cardsContainer.appendChild(wrapper);
+      });
+    }
+
+    function saveReading(card) {
+      const today = new Date().toLocaleDateString('zh-TW', { month: 'short', day: 'numeric' });
+      const entry = {
+        date: today,
+        ...card
+      };
+      savedReadings.unshift(entry);
+      if (savedReadings.length > 30) savedReadings.pop();
+      localStorage.setItem('mysteriousCards_saved', JSON.stringify(savedReadings));
+      renderSaved();
+    }
+
+    function renderSaved() {
+      if (savedReadings.length === 0) {
+        savedGrid.innerHTML = '<div class="no-saved">還沒有解讀記錄...抽卡開始你的神秘之旅 ✨</div>';
+        return;
+      }
+      
+      savedGrid.innerHTML = savedReadings.slice(0, 12).map(reading => `
+        <div class="saved-card">
+          <div class="saved-card-symbol">${reading.symbol}</div>
+          <div class="saved-card-info">
+            <span class="type-badge">${reading.type}</span>
+            <h4>${reading.title}</h4>
+            <p>${reading.date} · ${reading.message.substring(0, 40)}...</p>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function clearSaved() {
+      if (confirm('確定要清除所有歷史記錄嗎？')) {
+        savedReadings = [];
+        localStorage.removeItem('mysteriousCards_saved');
+        renderSaved();
+      }
+    }
+
+    function createConfetti() {
+      const colors = ['#E8A84B', '#D4A5A5', '#A5B89A', '#B8A9C9', '#E07A5F'];
+      for (let i = 0; i < 50; i++) {
+        const confetti = document.createElement('div');
+        confetti.className = 'confetti';
+        confetti.style.left = Math.random() * 100 + 'vw';
+        confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+        confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+        confetti.style.animationDelay = Math.random() * 0.5 + 's';
+        document.body.appendChild(confetti);
+        setTimeout(() => confetti.remove(), 3500);
+      }
+    }
+
+    function redo() {
+      readingSection.classList.remove('active');
+      drawSection.classList.remove('hidden');
+      cardsContainer.innerHTML = '';
+    }
+
+    // Event listeners
+    document.getElementById('drawBtn').addEventListener('click', drawCards);
+    document.getElementById('redoBtn').addEventListener('click', redo);
+    document.getElementById('clearBtn').addEventListener('click', clearSaved);
+
+    // Start
+    init();
+  </script>
+</body>
+</html>
