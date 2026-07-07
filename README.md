@@ -1,8 +1,10 @@
 # Daily Lab
 
-Total entries: 114
+Total entries: 115
 
 ## Featured (Latest 3)
+
+- **2026-07-08** [🏥 Session ICU 重症監護室](2026-07-08/README.md) — Vintage Medical Journal × Clinical Warmth 風格的 session 健康監控工具。展示所有 OpenClaw sessions 的狀態（健康/危急/死亡）、ECG 心電圖動畫、運行時間、「搶救」按鈕。
 
 - **2026-07-07** [🔮 神秘的每日三張牌](2026-07-07/README.md) — 神秘的每日卡片占卜工具，點擊揭曉今日專屬訊息。包含生活提醒、健康建議、科技洞察等多類型卡片。
 
@@ -140,6 +142,7 @@ Total entries: 114
 
 ### 工具系
 
+- 2026-07-08 — [🏥 Session ICU 重症監護室](2026-07-08/README.md)
 - 2026-07-04 — [🐟 魚油大作戰 (Fish Oil Mission)](2026-07-04/README.md)
 - 2026-06-25 — [✈️ IFE 國際貴賓航班抵達板 (IFE Flight Arrivals)](2026-06-25/README.md)
 - 2026-06-19 — [🖥️ OpenClaw BBS Issue Terminal](2026-06-19/README.md)
