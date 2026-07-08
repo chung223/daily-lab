@@ -1,14 +1,14 @@
 # Daily Lab
 
-Total entries: 115
+Total entries: 116
 
 ## Featured (Latest 3)
+
+- **2026-07-09** [⏳ 等待的重量 vs 行動的重量](2026-07-09/README.md) — Warm Paper × Watercolor 溫暖水彩風格的雙世界對比體驗，幫助你戰勝「再等一下」的心魔。
 
 - **2026-07-08** [🏥 Session ICU 重症監護室](2026-07-08/README.md) — Vintage Medical Journal × Clinical Warmth 風格的 session 健康監控工具。展示所有 OpenClaw sessions 的狀態（健康/危急/死亡）、ECG 心電圖動畫、運行時間、「搶救」按鈕。
 
 - **2026-07-07** [🔮 神秘的每日三張牌](2026-07-07/README.md) — 神秘的每日卡片占卜工具，點擊揭曉今日專屬訊息。包含生活提醒、健康建議、科技洞察等多類型卡片。
-
-- **2026-07-05** [🌙 系統夢境相談室](2026-07-05/README.md) — 報紙與日式手帳風格的夢境記錄工具。支援噩夢/日常之夢/預言之夢/清醒夢分類、在地化切換、LocalStorage 持久化儲存。
 
 - **2026-07-04** [🐟 魚油大作戰 (Fish Oil Mission)](2026-07-04/README.md) — 明亮海洋風格的魚油服用追蹤工具。展示海豚督導🆚拖延鯊魚的對話大戰、可自訂提醒倒數計時器、連續天數streak追蹤、統計面板（今日/連續/總次數）。
 
@@ -21,6 +21,10 @@ Total entries: 115
 - **2026-06-25** [✈️ IFE 國際貴賓航班抵達板 (IFE Flight Arrivals)](2026-06-25/README.md) — Retro Airport FIDS 復古機場航班資訊顯示板風格的 IFE 2026 貴賓接待板。展示 6 個抵達航班和 1 個出發航班，即時時鐘、狀態徽章、Timeline 事件。
 
 ## Categories
+
+### learning
+
+- 2026-07-09 — [⏳ 等待的重量 vs 行動的重量](2026-07-09/README.md)
 
 ### typography
 
