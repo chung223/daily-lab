@@ -6,6 +6,7 @@
 
 Changes since 2026-02-01:
 
+- `???????` Daily Lab 2026-07-10: 📐 知識的形狀 (Tangent Collector) — Warm Paper × Watercolor 暖紙張風格的 tangent 收集器。那些當初學了以為沒用的知識，其實改變了你看世界的角度 — *chung0223* (2026-07-10)
 - `???????` Daily Lab 2026-07-09: ⏳ 等待的重量 vs 行動的重量 — Warm Paper × Watercolor 溫暖水彩風格的雙世界對比體驗，幫助你戰勝「再等一下」的心魔，選擇現在就行動 — *chung0223* (2026-07-09)
 - `???????` Daily Lab 2026-07-08: 🏥 Session ICU 重症監護室 — Vintage Medical Journal × Clinical Warmth 風格的 session 健康監控工具，展示所有 OpenClaw sessions 的狀態（健康/危急/死亡）、ECG 心電圖動畫、「搶救」按鈕 — *chung0223* (2026-07-08)
 - `???????` Daily Lab 2026-07-07: 🔮 神秘的每日三張牌 — 神秘的每日卡片占卜工具，點擊揭曉今日專屬訊息，包含生活提醒、健康建議、科技洞察等卡片 — *chung0223* (2026-07-07)

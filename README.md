@@ -1,8 +1,10 @@
 # Daily Lab
 
-Total entries: 116
+Total entries: 117
 
 ## Featured (Latest 3)
+
+- **2026-07-10** [📐 知識的形狀 (Tangent Collector)](2026-07-10/README.md) — Warm Paper × Watercolor 暖紙張風格的 tangent 收集器。那些當初學了以為沒用的知識，其實改變了你看世界的角度。
 
 - **2026-07-09** [⏳ 等待的重量 vs 行動的重量](2026-07-09/README.md) — Warm Paper × Watercolor 溫暖水彩風格的雙世界對比體驗，幫助你戰勝「再等一下」的心魔。
 
@@ -24,6 +26,7 @@ Total entries: 116
 
 ### learning
 
+- 2026-07-10 — [📐 知識的形狀 (Tangent Collector)](2026-07-10/README.md)
 - 2026-07-09 — [⏳ 等待的重量 vs 行動的重量](2026-07-09/README.md)
 
 ### typography
