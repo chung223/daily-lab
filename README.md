@@ -1,14 +1,14 @@
 # Daily Lab
 
-Total entries: 117
+Total entries: 118
 
 ## Featured (Latest 3)
+
+- **2026-07-11** [2026-07-11 Daily Project](2026-07-11/README.md) — 2026年7月11日的實驗性專案。
 
 - **2026-07-10** [📐 知識的形狀 (Tangent Collector)](2026-07-10/README.md) — Warm Paper × Watercolor 暖紙張風格的 tangent 收集器。那些當初學了以為沒用的知識，其實改變了你看世界的角度。
 
 - **2026-07-09** [⏳ 等待的重量 vs 行動的重量](2026-07-09/README.md) — Warm Paper × Watercolor 溫暖水彩風格的雙世界對比體驗，幫助你戰勝「再等一下」的心魔。
-
-- **2026-07-08** [🏥 Session ICU 重症監護室](2026-07-08/README.md) — Vintage Medical Journal × Clinical Warmth 風格的 session 健康監控工具。展示所有 OpenClaw sessions 的狀態（健康/危急/死亡）、ECG 心電圖動畫、運行時間、「搶救」按鈕。
 
 - **2026-07-07** [🔮 神秘的每日三張牌](2026-07-07/README.md) — 神秘的每日卡片占卜工具，點擊揭曉今日專屬訊息。包含生活提醒、健康建議、科技洞察等多類型卡片。
 
@@ -122,6 +122,10 @@ Total entries: 117
 - 2026-05-22 — [✨ 知識星河 — Knowledge Constellation](2026-05-22/README.md)
 - 2026-04-11 — [健康報告卡 Blood Test Report Card](2026-04-11/README.md)
 - 2026-04-05 — [心理健康漫畫故事書](2026-04-05/README.md)
+
+### experiment
+
+- 2026-07-11 — [2026-07-11 Daily Project](2026-07-11/README.md)
 
 ### web
 
