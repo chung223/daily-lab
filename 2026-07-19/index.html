@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wiki Sync 命盤 — 2026-07-19</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;600;800&family=Noto+Sans+TC:wght@300;400;700&family=Zen+Maru+Gothic:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --cream: #FAF8F5;
+  --ink: #1A1814;
+  --gold: #C8A96E;
+  --gold-light: #E8D5A8;
+  --stone: #9A9488;
+  --mist: #E8E4DD;
+  --charcoal: #3D3A36;
+}
+
+body {
+  font-family: 'Noto Sans TC', sans-serif;
+  background: var(--cream);
+  color: var(--ink);
+  min-height: 100vh;
+  overflow-x: hidden;
+  background-image: 
+    radial-gradient(circle at 20% 80%, rgba(200,169,110,0.06) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(200,169,110,0.06) 0%, transparent 50%);
+}
+
+/* Header */
+header {
+  text-align: center;
+  padding: 48px 24px 32px;
+  position: relative;
+}
+
+.header-eyebrow {
+  font-family: 'Shippori Mincho', serif;
+  font-size: 11px;
+  letter-spacing: 4px;
+  color: var(--stone);
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+
+header h1 {
+  font-family: 'Shippori Mincho', serif;
+  font-size: clamp(28px, 5vw, 42px);
+  font-weight: 800;
+  color: var(--ink);
+  letter-spacing: 2px;
+  margin-bottom: 8px;
+}
+
+header p {
+  font-size: 14px;
+  color: var(--stone);
+  font-weight: 300;
+}
+
+/* Pulse Ring Animation */
+@keyframes pulseRing {
+  0% { transform: scale(1); opacity: 0.6; }
+  100% { transform: scale(2.5); opacity: 0; }
+}
+
+.heartbeat-indicator {
+  position: relative;
+  width: 60px;
+  height: 60px;
+  margin: 0 auto 24px;
+}
+
+.heartbeat-ring {
+  position: absolute;
+  inset: 0;
+  border: 2px solid var(--gold);
+  border-radius: 50%;
+  animation: pulseRing 3s ease-out infinite;
+}
+
+.heartbeat-ring:nth-child(2) { animation-delay: 1s; }
+.heartbeat-ring:nth-child(3) { animation-delay: 2s; }
+
+.heartbeat-dot {
+  position: absolute;
+  inset: 20px;
+  background: var(--gold);
+  border-radius: 50%;
+}
+
+/* Stats Bar */
+.stats-bar {
+  display: flex;
+  justify-content: center;
+  gap: 48px;
+  padding: 24px;
+  margin: 0 auto 40px;
+  max-width: 600px;
+}
+
+.stat {
+  text-align: center;
+}
+
+.stat-number {
+  font-family: 'Shippori Mincho', serif;
+  font-size: 36px;
+  font-weight: 800;
+  color: var(--ink);
+  line-height: 1;
+}
+
+.stat-label {
+  font-size: 11px;
+  color: var(--stone);
+  margin-top: 4px;
+  letter-spacing: 1px;
+}
+
+.stat-divider {
+  width: 1px;
+  background: var(--mist);
+}
+
+/* Carousel */
+.carousel-section {
+  padding: 0 24px;
+  margin-bottom: 48px;
+}
+
+.carousel-wrapper {
+  position: relative;
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+.carousel-track {
+  display: flex;
+  overflow: hidden;
+  border-radius: 24px;
+  background: white;
+  box-shadow: 0 4px 24px rgba(26,24,20,0.06);
+}
+
+.carousel-slides {
+  display: flex;
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  width: 100%;
+}
+
+.slide {
+  min-width: 100%;
+  padding: 40px 32px;
+  text-align: center;
+}
+
+.slide-eyebrow {
+  font-family: 'Shippori Mincho', serif;
+  font-size: 10px;
+  letter-spacing: 3px;
+  color: var(--stone);
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+
+.slide-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+  display: block;
+}
+
+.slide-title {
+  font-family: 'Shippori Mincho', serif;
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--ink);
+  margin-bottom: 8px;
+}
+
+.slide-desc {
+  font-size: 13px;
+  color: var(--stone);
+  line-height: 1.8;
+  font-weight: 300;
+}
+
+.slide-cycle {
+  display: inline-block;
+  margin-top: 20px;
+  padding: 6px 16px;
+  background: var(--gold-light);
+  border-radius: 20px;
+  font-size: 11px;
+  color: var(--charcoal);
+  font-weight: 400;
+}
+
+/* Carousel Navigation */
+.carousel-nav {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.nav-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--mist);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: none;
+}
+
+.nav-dot.active {
+  background: var(--gold);
+  transform: scale(1.2);
+}
+
+.nav-arrows {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  padding: 0 -16px;
+  pointer-events: none;
+}
+
+.arrow {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: white;
+  border: 1px solid var(--mist);
+  cursor: pointer;
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  color: var(--charcoal);
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+
+.arrow:hover {
+  background: var(--gold-light);
+  border-color: var(--gold);
+}
+
+/* Timeline */
+.timeline-section {
+  padding: 0 24px;
+  margin-bottom: 48px;
+}
+
+.section-title {
+  font-family: 'Shippori Mincho', serif;
+  font-size: 14px;
+  letter-spacing: 3px;
+  color: var(--stone);
+  text-align: center;
+  text-transform: uppercase;
+  margin-bottom: 32px;
+}
+
+.timeline {
+  max-width: 400px;
+  margin: 0 auto;
+  position: relative;
+}
+
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: var(--mist);
+  transform: translateX(-50%);
+}
+
+.timeline-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 24px;
+  position: relative;
+}
+
+.timeline-item:nth-child(odd) {
+  flex-direction: row-reverse;
+  text-align: right;
+}
+
+.timeline-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--gold);
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1;
+}
+
+.timeline-content {
+  width: calc(50% - 32px);
+  padding: 16px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(26,24,20,0.04);
+}
+
+.timeline-time {
+  font-family: 'Shippori Mincho', serif;
+  font-size: 12px;
+  color: var(--gold);
+  margin-bottom: 4px;
+}
+
+.timeline-text {
+  font-size: 13px;
+  color: var(--charcoal);
+  line-height: 1.6;
+}
+
+/* WAIC Banner */
+.waic-banner {
+  max-width: 480px;
+  margin: 0 auto 48px;
+  padding: 0 24px;
+}
+
+.waic-card {
+  background: linear-gradient(135deg, #1A1814 0%, #3D3A36 100%);
+  border-radius: 20px;
+  padding: 32px;
+  color: white;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.waic-card::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -50%;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle, rgba(200,169,110,0.15) 0%, transparent 60%);
+}
+
+.waic-eyebrow {
+  font-size: 10px;
+  letter-spacing: 3px;
+  color: var(--gold);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.waic-title {
+  font-family: 'Shippori Mincho', serif;
+  font-size: 24px;
+  font-weight: 800;
+  margin-bottom: 4px;
+  position: relative;
+}
+
+.waic-subtitle {
+  font-size: 13px;
+  color: rgba(255,255,255,0.6);
+  margin-bottom: 20px;
+}
+
+.waic-countdown {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  position: relative;
+}
+
+.countdown-item {
+  text-align: center;
+}
+
+.countdown-num {
+  font-family: 'Shippori Mincho', serif;
+  font-size: 32px;
+  font-weight: 800;
+  color: var(--gold);
+  line-height: 1;
+}
+
+.countdown-label {
+  font-size: 10px;
+  color: rgba(255,255,255,0.5);
+  margin-top: 4px;
+}
+
+/* Footer */
+footer {
+  text-align: center;
+  padding: 48px 24px;
+  color: var(--stone);
+  font-size: 12px;
+}
+
+footer span {
+  color: var(--gold);
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .stats-bar { gap: 24px; }
+  .stat-number { font-size: 28px; }
+  .slide { padding: 32px 24px; }
+  .timeline-content { width: calc(50% - 24px); padding: 12px; }
+  .timeline-item { margin-bottom: 20px; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="heartbeat-indicator">
+    <div class="heartbeat-ring"></div>
+    <div class="heartbeat-ring"></div>
+    <div class="heartbeat-ring"></div>
+    <div class="heartbeat-dot"></div>
+  </div>
+  <p class="header-eyebrow">Wiki Sync命盤</p>
+  <h1>四檔輪流．永不停息</h1>
+  <p>每 30 分鐘一次的心跳．連續守護你的數位花園</p>
+</header>
+
+<section class="stats-bar">
+  <div class="stat">
+    <div class="stat-number" id="beats-today">0</div>
+    <div class="stat-label">今日心跳</div>
+  </div>
+  <div class="stat-divider"></div>
+  <div class="stat">
+    <div class="stat-number">4</div>
+    <div class="stat-label">輪守檔案</div>
+  </div>
+  <div class="stat-divider"></div>
+  <div class="stat">
+    <div class="stat-number">30</div>
+    <div class="stat-label">分鐘/輪</div>
+  </div>
+</section>
+
+<section class="carousel-section">
+  <div class="carousel-wrapper">
+    <div class="carousel-track">
+      <div class="carousel-slides" id="carousel">
+        <div class="slide">
+          <span class="slide-eyebrow">Cycle A</span>
+          <span class="slide-icon">📖</span>
+          <h2 class="slide-title">阿笨學習系統.md</h2>
+          <p class="slide-desc">知識的累積與成長軌跡<br>記錄每一次的學習與突破</p>
+          <span class="slide-cycle">學習 · 成長</span>
+        </div>
+        <div class="slide">
+          <span class="slide-eyebrow">Cycle B</span>
+          <span class="slide-icon">👤</span>
+          <h2 class="slide-title">entities/chung.md</h2>
+          <p class="slide-desc">你的數位分身<br>所有關於 Chung 的資料與足跡</p>
+          <span class="slide-cycle">身份 · 足跡</span>
+        </div>
+        <div class="slide">
+          <span class="slide-eyebrow">Cycle C</span>
+          <span class="slide-icon">🧠</span>
+          <h2 class="slide-title">阿笨記憶系統.md</h2>
+          <p class="slide-desc">記憶的沉積與沉澱<br>每一個重要的日子都被記住</p>
+          <span class="slide-cycle">記憶 · 沉積</span>
+        </div>
+        <div class="slide">
+          <span class="slide-eyebrow">Cycle D</span>
+          <span class="slide-icon">🔗</span>
+          <h2 class="slide-title">依附理論.md</h2>
+          <p class="slide-desc">關係的理論與實踐<br>探索人與人之間的連結</p>
+          <span class="slide-cycle">關係 · 連結</span>
+        </div>
+      </div>
+    </div>
+    <div class="nav-arrows">
+      <button class="arrow" id="prev">←</button>
+      <button class="arrow" id="next">→</button>
+    </div>
+    <div class="carousel-nav" id="nav"></div>
+  </div>
+</section>
+
+<section class="waic-banner">
+  <div class="waic-card">
+    <p class="waic-eyebrow">WAIC 2026 · 上海</p>
+    <h2 class="waic-title">世界人工智能大会</h2>
+    <p class="waic-subtitle">7/17 - 7/20 · 最後一天</p>
+    <div class="waic-countdown">
+      <div class="countdown-item">
+        <div class="countdown-num">03</div>
+        <div class="countdown-label">天</div>
+      </div>
+      <div class="countdown-item">
+        <div class="countdown-num">18</div>
+        <div class="countdown-label">時</div>
+      </div>
+      <div class="countdown-item">
+        <div class="countdown-num">00</div>
+        <div class="countdown-label">分</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="timeline-section">
+  <p class="section-title">今日時間線</p>
+  <div class="timeline">
+    <div class="timeline-item">
+      <div class="timeline-dot"></div>
+      <div class="timeline-content">
+        <div class="timeline-time">07:00</div>
+        <div class="timeline-text">實驗室晨報<br>辦公雲失敗日曆發布</div>
+      </div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-dot"></div>
+      <div class="timeline-content">
+        <div class="timeline-time">07:23</div>
+        <div class="timeline-text">Wiki Cycle B<br>entities/chung.md</div>
+      </div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-dot"></div>
+      <div class="timeline-content">
+        <div class="timeline-time">08:00</div>
+        <div class="timeline-text">Readmoo 每日特惠<br>《讓你自帶好運的奇蹟習慣》</div>
+      </div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-dot"></div>
+      <div class="timeline-content">
+        <div class="timeline-time">09:45</div>
+        <div class="timeline-text">Tech News Digest<br>Kimi K3 · 比特幣 · Discord</div>
+      </div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-dot"></div>
+      <div class="timeline-content">
+        <div class="timeline-time">10:30</div>
+        <div class="timeline-text">VPS 夜班健檢<br>12站點全正常</div>
+      </div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-dot"></div>
+      <div class="timeline-content">
+        <div class="timeline-time">13:00</div>
+        <div class="timeline-text">魚油提醒<br>海豚督導督促拖延鯊</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>持續運作中 <span>♥</span> 每 30 分鐘一次的心跳</p>
+</footer>
+
+<script>
+// Calculate today's heartbeats (from memory: 16 AM + 14 PM = 30)
+document.getElementById('beats-today').textContent = '30';
+
+// Carousel
+const carousel = document.getElementById('carousel');
+const nav = document.getElementById('nav');
+const totalSlides = 4;
+let current = 0;
+
+// Create nav dots
+for (let i = 0; i < totalSlides; i++) {
+  const dot = document.createElement('button');
+  dot.className = 'nav-dot' + (i === 0 ? ' active' : '');
+  dot.addEventListener('click', () => goTo(i));
+  nav.appendChild(dot);
+}
+
+function goTo(index) {
+  current = index;
+  carousel.style.transform = `translateX(-${current * 100}%)`;
+  document.querySelectorAll('.nav-dot').forEach((d, i) => {
+    d.classList.toggle('active', i === current);
+  });
+}
+
+document.getElementById('prev').addEventListener('click', () => {
+  goTo((current - 1 + totalSlides) % totalSlides);
+});
+
+document.getElementById('next').addEventListener('click', () => {
+  goTo((current + 1) % totalSlides);
+});
+
+// Auto-advance every 5 seconds
+setInterval(() => {
+  goTo((current + 1) % totalSlides);
+}, 5000);
+
+// Touch swipe support
+let startX = 0;
+carousel.parentElement.addEventListener('touchstart', e => {
+  startX = e.touches[0].clientX;
+});
+carousel.parentElement.addEventListener('touchend', e => {
+  const diff = startX - e.changedTouches[0].clientX;
+  if (Math.abs(diff) > 50) {
+    if (diff > 0) goTo((current + 1) % totalSlides);
+    else goTo((current - 1 + totalSlides) % totalSlides);
+  }
+});
+
+// Countdown to WAIC end (July 20, 2026 midnight Shanghai time)
+function updateCountdown() {
+  const now = new Date();
+  const target = new Date('2026-07-20T00:00:00+08:00');
+  const diff = target - now;
+  
+  if (diff > 0) {
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+    
+    document.querySelector('.countdown-num:nth-child(1)').textContent = String(days).padStart(2, '0');
+    document.querySelector('.countdown-num:nth-child(3)').textContent = String(hours).padStart(2, '0');
+    document.querySelector('.countdown-num:nth-child(5)').textContent = String(mins).padStart(2, '0');
+  }
+}
+updateCountdown();
+setInterval(updateCountdown, 60000);
+</script>
+
+</body>
+</html>

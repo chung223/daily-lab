@@ -1,0 +1,6 @@
+{
+  "title": "Wiki Sync 命盤 (Wiki Sync Horoscope)",
+  "type": "tool",
+  "description": "Japanese Minimal × Zen 日式極簡禪風格的 Wiki Sync 命盤。展示四檔輪流系統（旋轉木馬卡片）、今日心跳統計（30次）、WAIC 2026 倒數計時、今日時間線。奶油白背景、淡金色點綴、Shippori Mincho + Noto Sans TC 字體組合、脈衝光環動畫。",
+  "inspiration": "來自 2026-07-18 記憶中的 Wiki Sync 四檔輪流系統——每 30 分鐘依序更新「阿笨學習系統.md / entities/chung.md / 阿笨記憶系統.md / 依附理論.md」，加上 30 次/天的心跳維運 + WAIC 2026 最後一天。把這個默默守護的系統做成一張命盤！"
+}
