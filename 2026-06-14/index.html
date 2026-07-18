@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>寂靜花園 Sunday Stillness Garden</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=Noto+Serif+TC:wght@400;600&family=Quicksand:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --cream: #FDF9F3;
+      --sage: #7D9B76;
+      --sage-light: #A8C4A2;
+      --blush: #E8B4B8;
+      --gold: #D4A84B;
+      --text: #3D3D3D;
+      --text-light: #6B6B6B;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Quicksand', 'Noto Serif TC', sans-serif;
+      background: linear-gradient(180deg, #FDF9F3 0%, #F5EDE3 50%, #EED9C4 100%);
+      min-height: 100vh;
+      color: var(--text);
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* Floating petals */
+    .petal {
+      position: fixed;
+      width: 12px;
+      height: 12px;
+      background: var(--blush);
+      border-radius: 50% 0 50% 50%;
+      opacity: 0.6;
+      animation: float-up 15s infinite linear;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    @keyframes float-up {
+      0% {
+        transform: translateY(100vh) rotate(0deg);
+        opacity: 0;
+      }
+      10% {
+        opacity: 0.6;
+      }
+      90% {
+        opacity: 0.6;
+      }
+      100% {
+        transform: translateY(-100px) rotate(360deg);
+        opacity: 0;
+      }
+    }
+
+    /* Header */
+    header {
+      text-align: center;
+      padding: 40px 20px 20px;
+      position: relative;
+      z-index: 10;
+    }
+
+    .date-badge {
+      display: inline-block;
+      background: var(--sage);
+      color: white;
+      padding: 8px 20px;
+      border-radius: 20px;
+      font-size: 14px;
+      font-weight: 500;
+      letter-spacing: 1px;
+      margin-bottom: 20px;
+    }
+
+    h1 {
+      font-family: 'Ma Shan Zheng', cursive;
+      font-size: 48px;
+      color: var(--sage);
+      margin-bottom: 10px;
+      letter-spacing: 4px;
+    }
+
+    .subtitle {
+      font-size: 16px;
+      color: var(--text-light);
+      font-style: italic;
+    }
+
+    /* Main content */
+    main {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      position: relative;
+      z-index: 10;
+    }
+
+    /* Stillness score card */
+    .stillness-card {
+      background: white;
+      border-radius: 24px;
+      padding: 40px;
+      box-shadow: 0 8px 40px rgba(125, 155, 118, 0.15);
+      margin-bottom: 30px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .stillness-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--sage-light), var(--blush), var(--gold));
+    }
+
+    .score-label {
+      font-size: 14px;
+      color: var(--text-light);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-bottom: 10px;
+    }
+
+    .score-number {
+      font-family: 'Quicksand', sans-serif;
+      font-size: 120px;
+      font-weight: 600;
+      color: var(--sage);
+      line-height: 1;
+      animation: breathe 4s ease-in-out infinite;
+    }
+
+    @keyframes breathe {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.02); opacity: 0.9; }
+    }
+
+    .score-unit {
+      font-size: 24px;
+      color: var(--sage-light);
+      margin-left: 5px;
+    }
+
+    .score-message {
+      font-size: 20px;
+      color: var(--text);
+      margin-top: 15px;
+      font-family: 'Noto Serif TC', serif;
+    }
+
+    /* Peace pulse section */
+    .peace-pulses {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+
+    .pulse-card {
+      background: white;
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 4px 20px rgba(125, 155, 118, 0.1);
+      text-align: center;
+      transition: transform 0.3s ease;
+    }
+
+    .pulse-card:hover {
+      transform: translateY(-5px);
+    }
+
+    .pulse-icon {
+      font-size: 32px;
+      margin-bottom: 10px;
+    }
+
+    .pulse-value {
+      font-size: 36px;
+      font-weight: 600;
+      color: var(--sage);
+    }
+
+    .pulse-label {
+      font-size: 14px;
+      color: var(--text-light);
+      margin-top: 5px;
+    }
+
+    /* Message card */
+    .message-card {
+      background: linear-gradient(135deg, var(--sage) 0%, var(--sage-light) 100%);
+      border-radius: 20px;
+      padding: 30px;
+      color: white;
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .message-card .icon {
+      font-size: 48px;
+      margin-bottom: 15px;
+    }
+
+    .message-card h3 {
+      font-family: 'Ma Shan Zheng', cursive;
+      font-size: 32px;
+      margin-bottom: 10px;
+    }
+
+    .message-card p {
+      font-size: 16px;
+      opacity: 0.9;
+      line-height: 1.6;
+    }
+
+    /* Input section */
+    .input-section {
+      background: white;
+      border-radius: 20px;
+      padding: 30px;
+      box-shadow: 0 4px 20px rgba(125, 155, 118, 0.1);
+      margin-bottom: 30px;
+    }
+
+    .input-section h3 {
+      font-family: 'Ma Shan Zheng', cursive;
+      font-size: 24px;
+      color: var(--sage);
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .input-group {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+
+    .input-group input {
+      flex: 1;
+      padding: 15px 20px;
+      border: 2px solid #EED9C4;
+      border-radius: 12px;
+      font-size: 16px;
+      font-family: 'Noto Serif TC', serif;
+      transition: border-color 0.3s ease;
+    }
+
+    .input-group input:focus {
+      outline: none;
+      border-color: var(--sage);
+    }
+
+    .input-group button {
+      padding: 15px 25px;
+      background: var(--sage);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .input-group button:hover {
+      background: var(--sage-light);
+      transform: scale(1.05);
+    }
+
+    /* Entries list */
+    .entries-section {
+      margin-top: 20px;
+    }
+
+    .entries-section h4 {
+      font-size: 14px;
+      color: var(--text-light);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 15px;
+    }
+
+    .entry-item {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      padding: 15px;
+      background: #FDF9F3;
+      border-radius: 12px;
+      margin-bottom: 10px;
+      border-left: 4px solid var(--sage);
+    }
+
+    .entry-time {
+      font-size: 14px;
+      color: var(--text-light);
+      font-family: 'Quicksand', monospace;
+    }
+
+    .entry-text {
+      flex: 1;
+      font-size: 16px;
+      color: var(--text);
+    }
+
+    /* Footer quote */
+    .footer-quote {
+      text-align: center;
+      padding: 40px 20px;
+      font-family: 'Noto Serif TC', serif;
+      color: var(--text-light);
+      font-style: italic;
+      font-size: 18px;
+      position: relative;
+      z-index: 10;
+    }
+
+    .footer-quote::before {
+      content: '❀';
+      display: block;
+      font-size: 24px;
+      margin-bottom: 15px;
+      color: var(--blush);
+    }
+
+    /* Confetti */
+    .confetti {
+      position: fixed;
+      width: 10px;
+      height: 10px;
+      pointer-events: none;
+      z-index: 100;
+      animation: confetti-fall 3s forwards;
+    }
+
+    @keyframes confetti-fall {
+      0% {
+        transform: translateY(-100px) rotate(0deg);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(100vh) rotate(720deg);
+        opacity: 0;
+      }
+    }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      h1 {
+        font-size: 36px;
+      }
+      
+      .score-number {
+        font-size: 80px;
+      }
+      
+      .stillness-card {
+        padding: 30px 20px;
+      }
+      
+      .input-group {
+        flex-direction: column;
+      }
+      
+      .input-group button {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Floating petals container -->
+  <div id="petals-container"></div>
+
+  <header>
+    <div class="date-badge" id="today-date"></div>
+    <h1>寂靜花園</h1>
+    <p class="subtitle">Sunday Stillness Garden · 週日靜心美學</p>
+  </header>
+
+  <main>
+    <!-- Stillness score -->
+    <div class="stillness-card">
+      <div class="score-label">寂靜指數 Stillness Score</div>
+      <div>
+        <span class="score-number" id="stillness-score">100</span>
+        <span class="score-unit">/ 100</span>
+      </div>
+      <div class="score-message" id="score-message">今日平靜，萬物皆安 ✨</div>
+    </div>
+
+    <!-- Peace pulses -->
+    <div class="peace-pulses">
+      <div class="pulse-card">
+        <div class="pulse-icon">🌿</div>
+        <div class="pulse-value" id="heartbeat-count">0</div>
+        <div class="pulse-label">寂靜脈搏 Peace Pulses</div>
+      </div>
+      <div class="pulse-card">
+        <div class="pulse-icon">🌸</div>
+        <div class="pulse-value" id="empty-moments">0</div>
+        <div class="pulse-label">空白時光 Empty Moments</div>
+      </div>
+      <div class="pulse-card">
+        <div class="pulse-icon">☀️</div>
+        <div class="pulse-value" id="days-count">0</div>
+        <div class="pulse-label">寂靜天數 Still Days</div>
+      </div>
+    </div>
+
+    <!-- Celebration message -->
+    <div class="message-card" id="celebration-card">
+      <div class="icon">🌿</div>
+      <h3>難得的平靜</h3>
+      <p id="celebration-text">沒有消息就是最好的消息。今日的寂靜，是過去忙碌的禮物。</p>
+    </div>
+
+    <!-- Input section -->
+    <div class="input-section">
+      <h3>🌱 記錄這一刻平靜</h3>
+      <div class="input-group">
+        <input type="text" id="entry-input" placeholder="今天沒有發生什麼事..." maxlength="100">
+        <button onclick="addEntry()">記錄</button>
+      </div>
+      <div class="entries-section" id="entries-section" style="display: none;">
+        <h4>寂靜記錄</h4>
+        <div id="entries-list"></div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer-quote">
+    「無所事事，是靈魂最自由的時刻。」
+  </footer>
+
+  <script>
+    // Initialize data
+    const today = new Date();
+    const todayStr = today.toISOString().split('T')[0];
+    const storageKey = `stillness_${todayStr}`;
+    
+    let data = {
+      heartbeats: 0,
+      emptyMoments: 0,
+      entries: [],
+      lastCelebration: null
+    };
+
+    // Load from localStorage
+    function loadData() {
+      const saved = localStorage.getItem(storageKey);
+      if (saved) {
+        data = JSON.parse(saved);
+      }
+    }
+
+    // Save to localStorage
+    function saveData() {
+      localStorage.setItem(storageKey, JSON.stringify(data));
+    }
+
+    // Initialize
+    function init() {
+      loadData();
+      
+      // Set date
+      const options = { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' };
+      document.getElementById('today-date').textContent = today.toLocaleDateString('zh-TW', options);
+      
+      // Increment heartbeats (simulate HEARTBEAT)
+      data.heartbeats++;
+      saveData();
+      
+      // Update UI
+      updateUI();
+      
+      // Create floating petals
+      createPetals();
+      
+      // Render entries
+      renderEntries();
+      
+      // Show celebration if first visit today
+      if (data.heartbeats === 1) {
+        setTimeout(() => {
+          celebrate();
+        }, 500);
+      }
+    }
+
+    // Update UI
+    function updateUI() {
+      document.getElementById('heartbeat-count').textContent = data.heartbeats;
+      document.getElementById('empty-moments').textContent = data.emptyMoments;
+      
+      // Calculate still days (consecutive days with high stillness)
+      const stillDays = calculateStillDays();
+      document.getElementById('days-count').textContent = stillDays;
+      
+      // Update message based on score
+      const score = calculateStillnessScore();
+      document.getElementById('stillness-score').textContent = score;
+      
+      const messages = [
+        "今日平靜，萬物皆安 ✨",
+        "寂靜如花，緩緩綻放 🌸",
+        "無波無瀾，最美的一天 🌿",
+        "空白也是一種豐盛 ☁️",
+        "平靜是最大的奢侈 💫"
+      ];
+      document.getElementById('score-message').textContent = messages[data.heartbeats % messages.length];
+    }
+
+    // Calculate stillness score
+    function calculateStillnessScore() {
+      // Base score is high when nothing happens
+      let score = 100;
+      // Reduce slightly with each heartbeat
+      score = Math.max(85, 100 - (data.heartbeats * 2));
+      // Reduce for each logged moment
+      score = Math.max(70, score - (data.emptyMoments * 5));
+      return Math.round(score);
+    }
+
+    // Calculate consecutive still days
+    function calculateStillDays() {
+      let days = 1;
+      const today = new Date();
+      
+      for (let i = 1; i <= 30; i++) {
+        const checkDate = new Date(today);
+        checkDate.setDate(checkDate.getDate() - i);
+        const dateStr = checkDate.toISOString().split('T')[0];
+        const key = `stillness_${dateStr}`;
+        const saved = localStorage.getItem(key);
+        
+        if (saved) {
+          const dayData = JSON.parse(saved);
+          if (dayData.heartbeats > 0 && dayData.emptyMoments >= 0) {
+            days++;
+          } else {
+            break;
+          }
+        } else {
+          break;
+        }
+      }
+      
+      return days;
+    }
+
+    // Create floating petals
+    function createPetals() {
+      const container = document.getElementById('petals-container');
+      const petalCount = 8;
+      
+      for (let i = 0; i < petalCount; i++) {
+        const petal = document.createElement('div');
+        petal.className = 'petal';
+        petal.style.left = Math.random() * 100 + 'vw';
+        petal.style.animationDelay = Math.random() * 15 + 's';
+        petal.style.animationDuration = (12 + Math.random() * 8) + 's';
+        petal.style.background = ['#E8B4B8', '#D4A84B', '#A8C4A2'][Math.floor(Math.random() * 3)];
+        petal.style.width = (8 + Math.random() * 8) + 'px';
+        petal.style.height = petal.style.width;
+        container.appendChild(petal);
+      }
+    }
+
+    // Add entry
+    function addEntry() {
+      const input = document.getElementById('entry-input');
+      const text = input.value.trim();
+      
+      if (text) {
+        const entry = {
+          time: new Date().toLocaleTimeString('zh-TW', { hour: '2-digit', minute: '2-digit' }),
+          text: text
+        };
+        
+        data.entries.push(entry);
+        data.emptyMoments++;
+        saveData();
+        
+        input.value = '';
+        updateUI();
+        renderEntries();
+        celebrate();
+      }
+    }
+
+    // Render entries
+    function renderEntries() {
+      const section = document.getElementById('entries-section');
+      const list = document.getElementById('entries-list');
+      
+      if (data.entries.length > 0) {
+        section.style.display = 'block';
+        list.innerHTML = data.entries.map(entry => `
+          <div class="entry-item">
+            <span class="entry-time">${entry.time}</span>
+            <span class="entry-text">${entry.text}</span>
+          </div>
+        `).reverse().join('');
+      }
+    }
+
+    // Celebration confetti
+    function celebrate() {
+      const colors = ['#7D9B76', '#E8B4B8', '#D4A84B', '#A8C4A2', '#FDF9F3'];
+      const confettiCount = 30;
+      
+      for (let i = 0; i < confettiCount; i++) {
+        setTimeout(() => {
+          const confetti = document.createElement('div');
+          confetti.className = 'confetti';
+          confetti.style.left = Math.random() * 100 + 'vw';
+          confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+          confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+          confetti.style.width = (6 + Math.random() * 8) + 'px';
+          confetti.style.height = confetti.style.width;
+          document.body.appendChild(confetti);
+          
+          setTimeout(() => confetti.remove(), 3000);
+        }, i * 50);
+      }
+    }
+
+    // Enter key for input
+    document.getElementById('entry-input').addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        addEntry();
+      }
+    });
+
+    // Start
+    init();
+  </script>
+</body>
+</html>

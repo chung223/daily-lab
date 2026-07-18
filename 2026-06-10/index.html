@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>時間痕跡收藏家 — Time Marks Collector</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700&family=Caveat:wght@400;600&family=Quicksand:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Quicksand', 'Noto Sans TC', sans-serif;
+      background: linear-gradient(180deg, #FDF9F3 0%, #F5EDE3 50%, #EDE4D4 100%);
+      min-height: 100vh;
+      padding: 20px;
+      position: relative;
+      overflow-x: hidden;
+    }
+    
+    /* Floating background elements */
+    .bg-decoration {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+    
+    .floating-towel {
+      position: absolute;
+      opacity: 0.08;
+      animation: floatTowel 20s ease-in-out infinite;
+    }
+    
+    .floating-towel:nth-child(1) { top: 10%; left: 5%; animation-delay: 0s; }
+    .floating-towel:nth-child(2) { top: 30%; right: 10%; animation-delay: -5s; }
+    .floating-towel:nth-child(3) { top: 60%; left: 15%; animation-delay: -10s; }
+    .floating-towel:nth-child(4) { top: 80%; right: 20%; animation-delay: -15s; }
+    
+    @keyframes floatTowel {
+      0%, 100% { transform: translateY(0) rotate(-5deg); }
+      50% { transform: translateY(-30px) rotate(5deg); }
+    }
+    
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    }
+    
+    /* Header */
+    .header {
+      text-align: center;
+      padding: 40px 20px;
+      animation: fadeInDown 0.8s ease-out;
+    }
+    
+    @keyframes fadeInDown {
+      from { opacity: 0; transform: translateY(-30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .title {
+      font-family: 'Noto Serif TC', serif;
+      font-size: 2.5rem;
+      color: #5D4037;
+      margin-bottom: 10px;
+      letter-spacing: 4px;
+    }
+    
+    .subtitle {
+      font-family: 'Caveat', cursive;
+      font-size: 1.4rem;
+      color: #8B7355;
+      margin-bottom: 20px;
+    }
+    
+    .quote-box {
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      padding: 20px 30px;
+      margin: 20px auto;
+      max-width: 600px;
+      border: 2px dashed #D4A574;
+      animation: gentlePulse 3s ease-in-out infinite;
+    }
+    
+    @keyframes gentlePulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(212, 165, 116, 0.2); }
+      50% { box-shadow: 0 0 20px 5px rgba(212, 165, 116, 0.15); }
+    }
+    
+    .quote-text {
+      font-family: 'Noto Serif TC', serif;
+      font-size: 1.1rem;
+      color: #6D5D4E;
+      line-height: 1.8;
+    }
+    
+    /* Input Section */
+    .input-section {
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(15px);
+      border-radius: 24px;
+      padding: 30px;
+      margin: 30px 0;
+      box-shadow: 0 10px 40px rgba(139, 115, 85, 0.1);
+      animation: fadeInUp 0.8s ease-out 0.2s both;
+    }
+    
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .input-group {
+      display: flex;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+    
+    .input-wrapper {
+      flex: 1;
+      min-width: 250px;
+    }
+    
+    .input-label {
+      display: block;
+      font-size: 0.85rem;
+      color: #8B7355;
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+    
+    .text-input {
+      width: 100%;
+      padding: 15px 20px;
+      border: 2px solid #E8DED4;
+      border-radius: 16px;
+      font-size: 1rem;
+      font-family: 'Quicksand', sans-serif;
+      background: #FDF9F3;
+      color: #5D4037;
+      transition: all 0.3s ease;
+    }
+    
+    .text-input:focus {
+      outline: none;
+      border-color: #D4A574;
+      box-shadow: 0 0 0 4px rgba(212, 165, 116, 0.2);
+    }
+    
+    .text-input::placeholder {
+      color: #C4B5A5;
+    }
+    
+    .category-select {
+      width: 100%;
+      padding: 15px 20px;
+      border: 2px solid #E8DED4;
+      border-radius: 16px;
+      font-size: 1rem;
+      font-family: 'Quicksand', sans-serif;
+      background: #FDF9F3;
+      color: #5D4037;
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%238B7355' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 15px center;
+      transition: all 0.3s ease;
+    }
+    
+    .category-select:focus {
+      outline: none;
+      border-color: #D4A574;
+      box-shadow: 0 0 0 4px rgba(212, 165, 116, 0.2);
+    }
+    
+    .submit-btn {
+      background: linear-gradient(135deg, #D4A574 0%, #C4956A 100%);
+      color: white;
+      border: none;
+      padding: 16px 32px;
+      border-radius: 16px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-family: 'Quicksand', sans-serif;
+      align-self: flex-end;
+      box-shadow: 0 4px 15px rgba(212, 165, 116, 0.3);
+    }
+    
+    .submit-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(212, 165, 116, 0.4);
+    }
+    
+    .submit-btn:active {
+      transform: translateY(0);
+    }
+    
+    /* Stats Section */
+    .stats-section {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 15px;
+      margin: 30px 0;
+      animation: fadeInUp 0.8s ease-out 0.4s both;
+    }
+    
+    .stat-card {
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(15px);
+      border-radius: 20px;
+      padding: 20px;
+      text-align: center;
+      box-shadow: 0 5px 20px rgba(139, 115, 85, 0.08);
+      transition: all 0.3s ease;
+    }
+    
+    .stat-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(139, 115, 85, 0.12);
+    }
+    
+    .stat-number {
+      font-family: 'Noto Serif TC', serif;
+      font-size: 2rem;
+      font-weight: 700;
+      color: #D4A574;
+    }
+    
+    .stat-label {
+      font-size: 0.85rem;
+      color: #8B7355;
+      margin-top: 5px;
+    }
+    
+    /* Collection Section */
+    .collection-section {
+      margin: 30px 0;
+    }
+    
+    .section-title {
+      font-family: 'Noto Serif TC', serif;
+      font-size: 1.5rem;
+      color: #5D4037;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .filter-tabs {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+      animation: fadeInUp 0.8s ease-out 0.5s both;
+    }
+    
+    .filter-tab {
+      padding: 10px 20px;
+      border: 2px solid #E8DED4;
+      border-radius: 25px;
+      background: white;
+      color: #8B7355;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-family: 'Quicksand', sans-serif;
+    }
+    
+    .filter-tab:hover {
+      border-color: #D4A574;
+      color: #D4A574;
+    }
+    
+    .filter-tab.active {
+      background: linear-gradient(135deg, #D4A574 0%, #C4956A 100%);
+      color: white;
+      border-color: transparent;
+    }
+    
+    .items-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+    }
+    
+    .item-card {
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 20px;
+      padding: 25px;
+      box-shadow: 0 5px 20px rgba(139, 115, 85, 0.08);
+      transition: all 0.4s ease;
+      animation: cardEnter 0.5s ease-out both;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    @keyframes cardEnter {
+      from { opacity: 0; transform: scale(0.9) translateY(20px); }
+      to { opacity: 1; transform: scale(1) translateY(0); }
+    }
+    
+    .item-card:hover {
+      transform: translateY(-5px) rotate(1deg);
+      box-shadow: 0 15px 40px rgba(139, 115, 85, 0.15);
+    }
+    
+    .item-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 5px;
+      height: 100%;
+      background: linear-gradient(180deg, #D4A574, #E8C9A8);
+    }
+    
+    .item-category {
+      display: inline-block;
+      padding: 5px 12px;
+      border-radius: 15px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+    
+    .cat-time { background: #FFF3E0; color: #E65100; }
+    .cat-wear { background: #E3F2FD; color: #1565C0; }
+    .cat-memory { background: #F3E5F5; color: #7B1FA2; }
+    .cat-mark { background: #E8F5E9; color: #2E7D32; }
+    .cat-fade { background: #FBE9E7; color: #BF360C; }
+    
+    .item-title {
+      font-family: 'Noto Serif TC', serif;
+      font-size: 1.2rem;
+      color: #5D4037;
+      margin-bottom: 10px;
+      line-height: 1.5;
+    }
+    
+    .item-description {
+      font-size: 0.9rem;
+      color: #8B7355;
+      line-height: 1.6;
+      margin-bottom: 15px;
+    }
+    
+    .item-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 15px;
+      border-top: 1px dashed #E8DED4;
+    }
+    
+    .item-date {
+      font-family: 'Caveat', cursive;
+      font-size: 0.9rem;
+      color: #A89585;
+    }
+    
+    .delete-btn {
+      background: none;
+      border: none;
+      color: #C4B5A5;
+      cursor: pointer;
+      padding: 5px;
+      transition: all 0.3s ease;
+      font-size: 1.2rem;
+    }
+    
+    .delete-btn:hover {
+      color: #E57373;
+      transform: scale(1.2);
+    }
+    
+    /* Empty State */
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      animation: fadeIn 0.5s ease-out;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    
+    .empty-icon {
+      font-size: 4rem;
+      margin-bottom: 20px;
+    }
+    
+    .empty-text {
+      font-family: 'Caveat', cursive;
+      font-size: 1.5rem;
+      color: #A89585;
+    }
+    
+    /* Confetti */
+    .confetti-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1000;
+    }
+    
+    /* Footer */
+    .footer {
+      text-align: center;
+      padding: 40px 20px;
+      margin-top: 40px;
+    }
+    
+    .footer-text {
+      font-family: 'Caveat', cursive;
+      font-size: 1.1rem;
+      color: #A89585;
+    }
+    
+    /* Responsive */
+    @media (max-width: 600px) {
+      .title {
+        font-size: 1.8rem;
+      }
+      
+      .subtitle {
+        font-size: 1.1rem;
+      }
+      
+      .input-group {
+        flex-direction: column;
+      }
+      
+      .submit-btn {
+        width: 100%;
+      }
+      
+      .stats-section {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      
+      .items-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Background Decorations -->
+  <div class="bg-decoration">
+    <svg class="floating-towel" width="80" height="60" viewBox="0 0 80 60">
+      <rect x="5" y="10" width="70" height="40" rx="8" fill="#D4A574" opacity="0.5"/>
+      <line x1="15" y1="20" x2="65" y2="20" stroke="#FFF" stroke-width="2" opacity="0.3"/>
+      <line x1="15" y1="30" x2="65" y2="30" stroke="#FFF" stroke-width="2" opacity="0.3"/>
+      <line x1="15" y1="40" x2="65" y2="40" stroke="#FFF" stroke-width="2" opacity="0.3"/>
+    </svg>
+    <svg class="floating-towel" width="100" height="70" viewBox="0 0 100 70">
+      <rect x="5" y="10" width="90" height="50" rx="10" fill="#C4956A" opacity="0.4"/>
+      <line x1="20" y1="25" x2="80" y2="25" stroke="#FFF" stroke-width="2" opacity="0.3"/>
+      <line x1="20" y1="40" x2="80" y2="40" stroke="#FFF" stroke-width="2" opacity="0.3"/>
+    </svg>
+    <svg class="floating-towel" width="70" height="50" viewBox="0 0 70 50">
+      <rect x="5" y="8" width="60" height="35" rx="6" fill="#E8C9A8" opacity="0.5"/>
+      <line x1="12" y1="18" x2="58" y2="18" stroke="#FFF" stroke-width="2" opacity="0.3"/>
+      <line x1="12" y1="28" x2="58" y2="28" stroke="#FFF" stroke-width="2" opacity="0.3"/>
+    </svg>
+    <svg class="floating-towel" width="90" height="65" viewBox="0 0 90 65">
+      <rect x="5" y="10" width="80" height="45" rx="8" fill="#D4A574" opacity="0.3"/>
+      <line x1="18" y1="22" x2="72" y2="22" stroke="#FFF" stroke-width="2" opacity="0.3"/>
+      <line x1="18" y1="35" x2="72" y2="35" stroke="#FFF" stroke-width="2" opacity="0.3"/>
+      <line x1="18" y1="48" x2="72" y2="48" stroke="#FFF" stroke-width="2" opacity="0.3"/>
+    </svg>
+  </div>
+  
+  <div class="container">
+    <!-- Header -->
+    <header class="header">
+      <h1 class="title">時間痕跡收藏家</h1>
+      <p class="subtitle">Time Marks Collector</p>
+      
+      <div class="quote-box">
+        <p class="quote-text">
+          「髒不是髒，是時間。」<br>
+          — 毛巾們在夢境裡的對話 🏐
+        </p>
+      </div>
+    </header>
+    
+    <!-- Input Section -->
+    <section class="input-section">
+      <div class="input-group">
+        <div class="input-wrapper">
+          <label class="input-label">什麼東西看起來舊了，但其實是「活過」的痕跡？</label>
+          <input type="text" class="text-input" id="titleInput" placeholder="例如：膝蓋上的疤、書頁的摺痕、鍵盤的光滑字母..." maxlength="100">
+        </div>
+        <div class="input-wrapper">
+          <label class="input-label">分類</label>
+          <select class="category-select" id="categorySelect">
+            <option value="time">⏰ 時間痕跡 — 歲月的刻畫</option>
+            <option value="wear">🩹 磨損印記 — 用過的證明</option>
+            <option value="memory">💭 記憶標記 — 故事的凝結</option>
+            <option value="mark">✨ 獨特印記 — 唯一的記號</option>
+            <option value="fade">🌅 褪色美好 — 流逝的美</option>
+          </select>
+        </div>
+        <button class="submit-btn" onclick="addItem()">
+          🌿 收藏這個痕跡
+        </button>
+      </div>
+    </section>
+    
+    <!-- Stats Section -->
+    <section class="stats-section">
+      <div class="stat-card">
+        <div class="stat-number" id="totalCount">0</div>
+        <div class="stat-label">已收藏</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" id="todayCount">0</div>
+        <div class="stat-label">今日新增</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" id="streakDays">0</div>
+        <div class="stat-label">連續收藏天數</div>
+      </div>
+    </section>
+    
+    <!-- Collection Section -->
+    <section class="collection-section">
+      <h2 class="section-title">🏐 我的收藏</h2>
+      
+      <div class="filter-tabs">
+        <button class="filter-tab active" data-filter="all" onclick="filterItems('all')">全部</button>
+        <button class="filter-tab" data-filter="time" onclick="filterItems('time')">⏰ 時間</button>
+        <button class="filter-tab" data-filter="wear" onclick="filterItems('wear')">🩹 磨損</button>
+        <button class="filter-tab" data-filter="memory" onclick="filterItems('memory')">💭 記憶</button>
+        <button class="filter-tab" data-filter="mark" onclick="filterItems('mark')">✨ 印記</button>
+        <button class="filter-tab" data-filter="fade" onclick="filterItems('fade')">🌅 褪色</button>
+      </div>
+      
+      <div class="items-grid" id="itemsGrid">
+        <!-- Items will be rendered here -->
+      </div>
+      
+      <div class="empty-state" id="emptyState">
+        <div class="empty-icon">🏐</div>
+        <p class="empty-text">還沒有收藏任何痕跡...</p>
+        <p class="empty-text">開始收集那些「看起來舊了，但其實是活過」的事物吧！</p>
+      </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer class="footer">
+      <p class="footer-text">每一道痕跡，都是活過的證明 🌿</p>
+    </footer>
+  </div>
+  
+  <div class="confetti-container" id="confettiContainer"></div>
+  
+  <script>
+    // Data management
+    const STORAGE_KEY = 'timeMarksCollector';
+    
+    function loadData() {
+      const data = localStorage.getItem(STORAGE_KEY);
+      return data ? JSON.parse(data) : { items: [], lastDate: null };
+    }
+    
+    function saveData(data) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    }
+    
+    function addItem() {
+      const titleInput = document.getElementById('titleInput');
+      const categorySelect = document.getElementById('categorySelect');
+      
+      const title = titleInput.value.trim();
+      if (!title) {
+        titleInput.focus();
+        return;
+      }
+      
+      const data = loadData();
+      const newItem = {
+        id: Date.now(),
+        title: title,
+        category: categorySelect.value,
+        date: new Date().toISOString()
+      };
+      
+      data.items.unshift(newItem);
+      data.lastDate = new Date().toISOString().split('T')[0];
+      saveData(data);
+      
+      titleInput.value = '';
+      renderItems();
+      updateStats();
+      
+      // Confetti celebration
+      createConfetti();
+    }
+    
+    function deleteItem(id) {
+      const data = loadData();
+      data.items = data.items.filter(item => item.id !== id);
+      saveData(data);
+      renderItems();
+      updateStats();
+    }
+    
+    function filterItems(filter) {
+      document.querySelectorAll('.filter-tab').forEach(tab => {
+        tab.classList.toggle('active', tab.dataset.filter === filter);
+      });
+      renderItems(filter);
+    }
+    
+    function renderItems(filter = 'all') {
+      const data = loadData();
+      const grid = document.getElementById('itemsGrid');
+      const emptyState = document.getElementById('emptyState');
+      
+      const filteredItems = filter === 'all' 
+        ? data.items 
+        : data.items.filter(item => item.category === filter);
+      
+      if (filteredItems.length === 0) {
+        grid.innerHTML = '';
+        emptyState.style.display = 'block';
+        return;
+      }
+      
+      emptyState.style.display = 'none';
+      
+      const categoryLabels = {
+        time: { text: '⏰ 時間痕跡', class: 'cat-time' },
+        wear: { text: '🩹 磨損印記', class: 'cat-wear' },
+        memory: { text: '💭 記憶標記', class: 'cat-memory' },
+        mark: { text: '✨ 獨特印記', class: 'cat-mark' },
+        fade: { text: '🌅 褪色美好', class: 'cat-fade' }
+      };
+      
+      grid.innerHTML = filteredItems.map((item, index) => {
+        const cat = categoryLabels[item.category];
+        const date = new Date(item.date);
+        const dateStr = `${date.getMonth() + 1}/${date.getDate()} ${date.getHours()}:${String(date.getMinutes()).padStart(2, '0')}`;
+        
+        return `
+          <div class="item-card" style="animation-delay: ${index * 0.1}s">
+            <span class="item-category ${cat.class}">${cat.text}</span>
+            <h3 class="item-title">${escapeHtml(item.title)}</h3>
+            <div class="item-meta">
+              <span class="item-date">${dateStr}</span>
+              <button class="delete-btn" onclick="deleteItem(${item.id})" title="刪除">✕</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+    
+    function updateStats() {
+      const data = loadData();
+      const today = new Date().toISOString().split('T')[0];
+      
+      // Total count
+      document.getElementById('totalCount').textContent = data.items.length;
+      
+      // Today count
+      const todayItems = data.items.filter(item => item.date.startsWith(today));
+      document.getElementById('todayCount').textContent = todayItems.length;
+      
+      // Streak days
+      let streak = 0;
+      let checkDate = new Date();
+      while (true) {
+        const dateStr = checkDate.toISOString().split('T')[0];
+        const hasItems = data.items.some(item => item.date.startsWith(dateStr));
+        if (hasItems) {
+          streak++;
+          checkDate.setDate(checkDate.getDate() - 1);
+        } else {
+          break;
+        }
+      }
+      document.getElementById('streakDays').textContent = streak;
+    }
+    
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+    
+    function createConfetti() {
+      const container = document.getElementById('confettiContainer');
+      const colors = ['#D4A574', '#E8C9A8', '#C4956A', '#8B7355', '#FFF3E0'];
+      
+      for (let i = 0; i < 50; i++) {
+        const confetti = document.createElement('div');
+        confetti.style.cssText = `
+          position: absolute;
+          width: ${Math.random() * 10 + 5}px;
+          height: ${Math.random() * 10 + 5}px;
+          background: ${colors[Math.floor(Math.random() * colors.length)]};
+          left: ${Math.random() * 100}%;
+          top: -20px;
+          border-radius: ${Math.random() > 0.5 ? '50%' : '2px'};
+          animation: confettiFall ${Math.random() * 2 + 2}s ease-out forwards;
+          animation-delay: ${Math.random() * 0.5}s;
+        `;
+        container.appendChild(confetti);
+        
+        setTimeout(() => confetti.remove(), 4000);
+      }
+    }
+    
+    // Add confetti animation
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes confettiFall {
+        0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+        100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+      }
+    `;
+    document.head.appendChild(style);
+    
+    // Initialize
+    renderItems();
+    updateStats();
+    
+    // Enter key to submit
+    document.getElementById('titleInput').addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') addItem();
+    });
+  </script>
+</body>
+</html>

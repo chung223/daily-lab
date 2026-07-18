@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>System ECG Monitor — HEARTBEAT 系統心電圖</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg-dark: #050a08;
+      --bg-monitor: #0a1210;
+      --grid-line: rgba(0, 255, 136, 0.08);
+      --grid-line-major: rgba(0, 255, 136, 0.15);
+      --phosphor: #00ff88;
+      --phosphor-dim: #00aa5c;
+      --phosphor-glow: rgba(0, 255, 136, 0.4);
+      --amber: #ffaa00;
+      --red-alert: #ff4444;
+      --text-dim: #557755;
+    }
+
+    body {
+      font-family: 'Share Tech Mono', monospace;
+      background: var(--bg-dark);
+      min-height: 100vh;
+      color: var(--phosphor);
+      overflow-x: hidden;
+    }
+
+    .monitor-container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    /* Header */
+    .monitor-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 20px;
+      background: var(--bg-monitor);
+      border: 2px solid var(--phosphor-dim);
+      border-bottom: none;
+      border-radius: 12px 12px 0 0;
+    }
+
+    .monitor-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 14px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      text-shadow: 0 0 10px var(--phosphor-glow);
+    }
+
+    .status-indicator {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+    }
+
+    .status-dot {
+      width: 10px;
+      height: 10px;
+      background: var(--phosphor);
+      border-radius: 50%;
+      animation: pulse-dot 1s ease-in-out infinite;
+      box-shadow: 0 0 8px var(--phosphor);
+    }
+
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.8); }
+    }
+
+    /* Main Monitor Screen */
+    .monitor-screen {
+      background: var(--bg-monitor);
+      border: 2px solid var(--phosphor-dim);
+      border-top: none;
+      padding: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* ECG Grid Background */
+    .ecg-grid {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-image: 
+        linear-gradient(var(--grid-line) 1px, transparent 1px),
+        linear-gradient(90deg, var(--grid-line) 1px, transparent 1px),
+        linear-gradient(var(--grid-line-major) 1px, transparent 1px),
+        linear-gradient(90deg, var(--grid-line-major) 1px, transparent 1px);
+      background-size: 20px 20px, 20px 20px, 100px 100px, 100px 100px;
+      pointer-events: none;
+    }
+
+    /* ECG Waveform Canvas */
+    .waveform-container {
+      height: 200px;
+      position: relative;
+      margin-bottom: 20px;
+      border-bottom: 1px solid var(--grid-line-major);
+    }
+
+    #ecgCanvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    /* Stats Panel */
+    .stats-panel {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 15px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .stat-card {
+      background: rgba(0, 20, 15, 0.6);
+      border: 1px solid var(--phosphor-dim);
+      padding: 15px;
+      text-align: center;
+      border-radius: 4px;
+    }
+
+    .stat-label {
+      font-size: 10px;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+    }
+
+    .stat-value {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 24px;
+      text-shadow: 0 0 15px var(--phosphor-glow);
+    }
+
+    .stat-value.amber {
+      color: var(--amber);
+      text-shadow: 0 0 15px rgba(255, 170, 0, 0.4);
+    }
+
+    .stat-unit {
+      font-size: 11px;
+      color: var(--phosphor-dim);
+      margin-top: 4px;
+    }
+
+    /* Timeline */
+    .timeline-section {
+      margin-top: 20px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .timeline-label {
+      font-size: 10px;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 10px;
+    }
+
+    .timeline-track {
+      height: 60px;
+      background: rgba(0, 20, 15, 0.4);
+      border: 1px solid var(--grid-line-major);
+      border-radius: 4px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .timeline-grid {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      display: flex;
+    }
+
+    .timeline-hour {
+      flex: 1;
+      border-right: 1px solid var(--grid-line);
+      position: relative;
+    }
+
+    .timeline-hour::after {
+      content: attr(data-hour);
+      position: absolute;
+      bottom: 4px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 9px;
+      color: var(--text-dim);
+    }
+
+    .timeline-beats {
+      position: absolute;
+      top: 10px;
+      left: 0;
+      right: 0;
+      bottom: 25px;
+    }
+
+    .beat-marker {
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      background: var(--phosphor);
+      border-radius: 50%;
+      top: 50%;
+      transform: translateY(-50%);
+      box-shadow: 0 0 8px var(--phosphor);
+      animation: beat-pop 0.3s ease-out;
+    }
+
+    @keyframes beat-pop {
+      0% { transform: translateY(-50%) scale(0); }
+      50% { transform: translateY(-50%) scale(1.5); }
+      100% { transform: translateY(-50%) scale(1); }
+    }
+
+    /* Control Buttons */
+    .controls {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+      justify-content: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    .control-btn {
+      font-family: 'Share Tech Mono', monospace;
+      background: transparent;
+      border: 1px solid var(--phosphor-dim);
+      color: var(--phosphor);
+      padding: 12px 24px;
+      font-size: 12px;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      transition: all 0.2s;
+      border-radius: 4px;
+    }
+
+    .control-btn:hover {
+      background: var(--phosphor);
+      color: var(--bg-dark);
+      box-shadow: 0 0 20px var(--phosphor-glow);
+    }
+
+    .control-btn:active {
+      transform: scale(0.95);
+    }
+
+    .control-btn.pause {
+      border-color: var(--amber);
+      color: var(--amber);
+    }
+
+    .control-btn.pause:hover {
+      background: var(--amber);
+      color: var(--bg-dark);
+      box-shadow: 0 0 20px rgba(255, 170, 0, 0.4);
+    }
+
+    .control-btn.pause.active {
+      background: var(--amber);
+      color: var(--bg-dark);
+    }
+
+    /* Footer */
+    .monitor-footer {
+      background: var(--bg-monitor);
+      border: 2px solid var(--phosphor-dim);
+      border-top: none;
+      border-radius: 0 0 12px 12px;
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      font-size: 10px;
+      color: var(--text-dim);
+    }
+
+    .footer-left {
+      display: flex;
+      gap: 20px;
+    }
+
+    .footer-item {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      .monitor-container {
+        padding: 10px;
+      }
+
+      .stats-panel {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .stat-value {
+        font-size: 18px;
+      }
+
+      .monitor-header {
+        flex-direction: column;
+        gap: 10px;
+        text-align: center;
+      }
+
+      .timeline-hour::after {
+        display: none;
+      }
+    }
+
+    /* Scanline Effect */
+    .scanline {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--phosphor-glow), transparent);
+      animation: scan 4s linear infinite;
+      pointer-events: none;
+      opacity: 0.3;
+    }
+
+    @keyframes scan {
+      0% { top: 0; }
+      100% { top: 100%; }
+    }
+
+    /* Alert Flash */
+    .alert-flash {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: var(--phosphor);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.1s;
+    }
+
+    .alert-flash.active {
+      animation: flash 0.3s ease-out;
+    }
+
+    @keyframes flash {
+      0% { opacity: 0.2; }
+      100% { opacity: 0; }
+    }
+  </style>
+</head>
+<body>
+  <div class="monitor-container">
+    <!-- Header -->
+    <div class="monitor-header">
+      <div class="monitor-title">⚡ HEARTBEAT ECG MONITOR</div>
+      <div class="status-indicator">
+        <span class="status-dot"></span>
+        <span>SYSTEM ACTIVE</span>
+      </div>
+    </div>
+
+    <!-- Screen -->
+    <div class="monitor-screen">
+      <div class="ecg-grid"></div>
+      <div class="scanline"></div>
+      <div class="alert-flash" id="alertFlash"></div>
+
+      <!-- Waveform -->
+      <div class="waveform-container">
+        <canvas id="ecgCanvas"></canvas>
+      </div>
+
+      <!-- Stats -->
+      <div class="stats-panel">
+        <div class="stat-card">
+          <div class="stat-label">Pulse Rate</div>
+          <div class="stat-value" id="pulseRate">2</div>
+          <div class="stat-unit">BPH</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Last Beat</div>
+          <div class="stat-value amber" id="lastBeat">--:--</div>
+          <div class="stat-unit">HH:MM</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Next Beat</div>
+          <div class="stat-value" id="nextBeat">--:--</div>
+          <div class="stat-unit">in X min</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Total Today</div>
+          <div class="stat-value" id="totalBeats">0</div>
+          <div class="stat-unit">beats</div>
+        </div>
+      </div>
+
+      <!-- Timeline -->
+      <div class="timeline-section">
+        <div class="timeline-label">24-HOUR RHYTHM TRACK</div>
+        <div class="timeline-track">
+          <div class="timeline-grid" id="timelineGrid"></div>
+          <div class="timeline-beats" id="timelineBeats"></div>
+        </div>
+      </div>
+
+      <!-- Controls -->
+      <div class="controls">
+        <button class="control-btn" id="simulateBtn">⚡ Simulate Beat</button>
+        <button class="control-btn pause" id="pauseBtn">⏸ Pause</button>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="monitor-footer">
+      <div class="footer-left">
+        <div class="footer-item">
+          <span>📅</span>
+          <span id="currentDate">2026-06-15</span>
+        </div>
+        <div class="footer-item">
+          <span>🕐</span>
+          <span id="currentTime">00:00:00</span>
+        </div>
+      </div>
+      <div class="footer-right">
+        <span>INTERVAL: 30MIN | CYCLE: ABCD</span>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // State
+    let isPaused = false;
+    let beats = [];
+    let animationId = null;
+    let lastSimulatedBeat = null;
+    let canvasCtx = null;
+    let phase = 0;
+
+    // Constants
+    const BEAT_INTERVAL = 30 * 60 * 1000; // 30 minutes in ms
+    const CYCLE_HOURS = 24;
+
+    // DOM Elements
+    const canvas = document.getElementById('ecgCanvas');
+    const pulseRateEl = document.getElementById('pulseRate');
+    const lastBeatEl = document.getElementById('lastBeat');
+    const nextBeatEl = document.getElementById('nextBeat');
+    const totalBeatsEl = document.getElementById('totalBeats');
+    const currentTimeEl = document.getElementById('currentTime');
+    const currentDateEl = document.getElementById('currentDate');
+    const timelineGrid = document.getElementById('timelineGrid');
+    const timelineBeats = document.getElementById('timelineBeats');
+    const simulateBtn = document.getElementById('simulateBtn');
+    const pauseBtn = document.getElementById('pauseBtn');
+    const alertFlash = document.getElementById('alertFlash');
+
+    // Initialize
+    function init() {
+      setupCanvas();
+      setupTimeline();
+      loadFromStorage();
+      updateDisplay();
+      startAnimation();
+      
+      // Update time every second
+      setInterval(updateTime, 1000);
+      
+      // Check for beat every second
+      setInterval(checkBeat, 1000);
+    }
+
+    function setupCanvas() {
+      const container = canvas.parentElement;
+      canvas.width = container.clientWidth * 2;
+      canvas.height = container.clientHeight * 2;
+      canvas.style.width = container.clientWidth + 'px';
+      canvas.style.height = container.clientHeight + 'px';
+      canvasCtx = canvas.getContext('2d');
+      canvasCtx.scale(2, 2);
+    }
+
+    function setupTimeline() {
+      for (let i = 0; i < CYCLE_HOURS; i++) {
+        const hour = document.createElement('div');
+        hour.className = 'timeline-hour';
+        hour.dataset.hour = i.toString().padStart(2, '0');
+        timelineGrid.appendChild(hour);
+      }
+    }
+
+    function loadFromStorage() {
+      const saved = localStorage.getItem('heartsbeat_beats');
+      if (saved) {
+        const data = JSON.parse(saved);
+        const today = new Date().toDateString();
+        if (data.date === today) {
+          beats = data.beats || [];
+        }
+      }
+      
+      // Load last simulated beat
+      const savedSim = localStorage.getItem('heartsbeat_last_sim');
+      if (savedSim) {
+        lastSimulatedBeat = new Date(parseInt(savedSim));
+      }
+    }
+
+    function saveToStorage() {
+      const data = {
+        date: new Date().toDateString(),
+        beats: beats
+      };
+      localStorage.setItem('heartsbeat_beats', JSON.stringify(data));
+    }
+
+    function updateTime() {
+      const now = new Date();
+      currentTimeEl.textContent = now.toTimeString().slice(0, 8);
+      currentDateEl.textContent = now.toISOString().slice(0, 10);
+    }
+
+    function checkBeat() {
+      if (isPaused) return;
+      
+      const now = new Date();
+      const timeSinceLastBeat = lastSimulatedBeat 
+        ? now - lastSimulatedBeat 
+        : BEAT_INTERVAL;
+      
+      // Auto-trigger beat if 30 minutes passed
+      if (timeSinceLastBeat >= BEAT_INTERVAL) {
+        triggerBeat();
+      }
+      
+      updateDisplay();
+    }
+
+    function triggerBeat() {
+      const now = new Date();
+      lastSimulatedBeat = now;
+      localStorage.setItem('heartsbeat_last_sim', now.getTime().toString());
+      
+      // Add to beats array
+      beats.push(now.getTime());
+      
+      // Keep only today's beats
+      const todayStart = new Date();
+      todayStart.setHours(0, 0, 0, 0);
+      beats = beats.filter(t => t >= todayStart.getTime());
+      
+      saveToStorage();
+      updateTimeline();
+      updateDisplay();
+      
+      // Flash effect
+      alertFlash.classList.add('active');
+      setTimeout(() => alertFlash.classList.remove('active'), 300);
+    }
+
+    function updateDisplay() {
+      const now = new Date();
+      
+      // Pulse rate (beats per hour - fixed at 2 since it's every 30 min)
+      pulseRateEl.textContent = '2';
+      
+      // Last beat time
+      if (lastSimulatedBeat) {
+        lastBeatEl.textContent = lastSimulatedBeat.toTimeString().slice(0, 5);
+      } else {
+        lastBeatEl.textContent = '--:--';
+      }
+      
+      // Next beat countdown
+      if (lastSimulatedBeat) {
+        const nextBeat = new Date(lastSimulatedBeat.getTime() + BEAT_INTERVAL);
+        const msUntilNext = nextBeat - now;
+        const minUntilNext = Math.max(0, Math.ceil(msUntilNext / 60000));
+        if (minUntilNext > 0) {
+          nextBeatEl.textContent = `${minUntilNext}`;
+          nextBeatEl.nextElementSibling.textContent = 'min';
+        } else {
+          nextBeatEl.textContent = '0';
+          nextBeatEl.nextElementSibling.textContent = 'NOW!';
+        }
+      } else {
+        nextBeatEl.textContent = '--';
+        nextBeatEl.nextElementSibling.textContent = 'pending';
+      }
+      
+      // Total beats today
+      totalBeatsEl.textContent = beats.length;
+    }
+
+    function updateTimeline() {
+      timelineBeats.innerHTML = '';
+      
+      const now = new Date();
+      const todayStart = new Date(now);
+      todayStart.setHours(0, 0, 0, 0);
+      
+      beats.forEach(beatTime => {
+        const beat = new Date(beatTime);
+        const hoursFromMidnight = (beat - todayStart) / (1000 * 60 * 60);
+        const percent = (hoursFromMidnight / CYCLE_HOURS) * 100;
+        
+        const marker = document.createElement('div');
+        marker.className = 'beat-marker';
+        marker.style.left = `${Math.min(percent, 100)}%`;
+        timelineBeats.appendChild(marker);
+      });
+    }
+
+    function startAnimation() {
+      function draw() {
+        if (!canvasCtx) return;
+        
+        const width = canvas.width / 2;
+        const height = canvas.height / 2;
+        
+        // Clear
+        canvasCtx.fillStyle = 'rgba(10, 18, 16, 0.3)';
+        canvasCtx.fillRect(0, 0, width, height);
+        
+        // Draw ECG waveform
+        canvasCtx.strokeStyle = '#00ff88';
+        canvasCtx.lineWidth = 2;
+        canvasCtx.shadowColor = 'rgba(0, 255, 136, 0.5)';
+        canvasCtx.shadowBlur = 10;
+        
+        canvasCtx.beginPath();
+        
+        const centerY = height / 2;
+        const step = 2;
+        
+        for (let x = 0; x < width; x += step) {
+          // Normalize phase to waveform
+          const normalizedPhase = (x / width) * Math.PI * 4;
+          let y = centerY;
+          
+          // Create ECG-like waveform
+          const cycle = normalizedPhase + phase;
+          
+          // Flat line base with small variation
+          y += Math.sin(cycle * 0.5) * 3;
+          
+          // Add P wave
+          const pWave = Math.sin(cycle * 3) * (cycle % (Math.PI * 2) < 0.5 ? 8 : 0);
+          y += pWave;
+          
+          // Add QRS complex (sharp spike)
+          const qrsPhase = cycle % (Math.PI * 2);
+          if (qrsPhase > 2.8 && qrsPhase < 3.2) {
+            const qrsAmp = Math.sin((qrsPhase - 2.8) * Math.PI / 0.4) * 50;
+            y = centerY - qrsAmp;
+          }
+          
+          // Add T wave
+          const tWave = Math.sin(cycle * 2) * (cycle % (Math.PI * 2) > 3.5 && cycle % (Math.PI * 2) < 5 ? 12 : 0);
+          y += tWave;
+          
+          if (x === 0) {
+            canvasCtx.moveTo(x, y);
+          } else {
+            canvasCtx.lineTo(x, y);
+          }
+        }
+        
+        canvasCtx.stroke();
+        
+        // Reset shadow for text
+        canvasCtx.shadowBlur = 0;
+        
+        // Update phase for animation
+        if (!isPaused) {
+          phase += 0.08;
+        }
+        
+        animationId = requestAnimationFrame(draw);
+      }
+      
+      draw();
+    }
+
+    // Event Listeners
+    simulateBtn.addEventListener('click', () => {
+      triggerBeat();
+    });
+
+    pauseBtn.addEventListener('click', () => {
+      isPaused = !isPaused;
+      pauseBtn.textContent = isPaused ? '▶ Resume' : '⏸ Pause';
+      pauseBtn.classList.toggle('active', isPaused);
+    });
+
+    // Handle resize
+    window.addEventListener('resize', () => {
+      setupCanvas();
+    });
+
+    // Start
+    init();
+    updateTimeline();
+  </script>
+</body>
+</html>

@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>文字的味道 | Flavor of Text</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Noto+Sans+TC:wght@300;400;700&family=Nunito:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Nunito', 'Noto Sans TC', sans-serif;
+      min-height: 100vh;
+      background: #FDF8F3;
+      color: #3D3D3D;
+      overflow-x: hidden;
+    }
+
+    /* Rice paper texture overlay */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+      opacity: 0.03;
+      pointer-events: none;
+      z-index: 1000;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem 4rem;
+      position: relative;
+    }
+
+    /* Header */
+    header {
+      text-align: center;
+      margin-bottom: 3rem;
+      padding-top: 2rem;
+    }
+
+    .title-wrapper {
+      position: relative;
+      display: inline-block;
+    }
+
+    h1 {
+      font-family: 'Caveat', cursive;
+      font-size: 3.5rem;
+      font-weight: 700;
+      color: #2D2D2D;
+      line-height: 1.2;
+    }
+
+    .subtitle {
+      font-family: 'Nunito', sans-serif;
+      font-size: 1rem;
+      color: #8B7355;
+      font-weight: 300;
+      letter-spacing: 0.1em;
+      margin-top: 0.5rem;
+    }
+
+    /* Ink splatter decoration */
+    .ink-splatter {
+      position: absolute;
+      width: 60px;
+      height: 60px;
+      opacity: 0.08;
+    }
+
+    .ink-splatter.top-right {
+      top: -20px;
+      right: -40px;
+    }
+
+    .ink-splatter.bottom-left {
+      bottom: -30px;
+      left: -30px;
+      width: 80px;
+      height: 80px;
+    }
+
+    /* Dream quote box */
+    .dream-quote {
+      background: rgba(139, 115, 85, 0.08);
+      border-left: 3px solid #8B7355;
+      padding: 1.5rem;
+      margin: 2rem 0;
+      border-radius: 0 8px 8px 0;
+      position: relative;
+    }
+
+    .dream-quote::before {
+      content: '💭';
+      position: absolute;
+      top: -12px;
+      left: -12px;
+      font-size: 1.5rem;
+      background: #FDF8F3;
+      padding: 0 4px;
+    }
+
+    .dream-quote p {
+      font-family: 'Caveat', cursive;
+      font-size: 1.3rem;
+      color: #5D4E37;
+      line-height: 1.6;
+    }
+
+    .dream-quote .attribution {
+      font-family: 'Nunito', sans-serif;
+      font-size: 0.85rem;
+      color: #8B7355;
+      margin-top: 0.75rem;
+      font-style: italic;
+    }
+
+    /* Input area */
+    .tasting-area {
+      background: #FFFFFF;
+      border-radius: 16px;
+      padding: 2rem;
+      box-shadow: 0 4px 20px rgba(139, 115, 85, 0.1);
+      margin-bottom: 2rem;
+      position: relative;
+    }
+
+    .input-wrapper {
+      position: relative;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 120px;
+      padding: 1rem;
+      font-family: 'Nunito', 'Noto Sans TC', sans-serif;
+      font-size: 1.1rem;
+      line-height: 1.8;
+      border: 2px solid #E8DFD5;
+      border-radius: 12px;
+      resize: vertical;
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+      background: #FDFAF7;
+    }
+
+    textarea:focus {
+      outline: none;
+      border-color: #8B7355;
+      box-shadow: 0 0 0 4px rgba(139, 115, 85, 0.1);
+    }
+
+    textarea::placeholder {
+      color: #B8A99A;
+      font-style: italic;
+    }
+
+    .char-count {
+      position: absolute;
+      bottom: 12px;
+      right: 16px;
+      font-size: 0.8rem;
+      color: #B8A99A;
+    }
+
+    .taste-btn {
+      display: block;
+      width: 100%;
+      margin-top: 1rem;
+      padding: 1rem 2rem;
+      font-family: 'Caveat', cursive;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #FDF8F3;
+      background: linear-gradient(135deg, #8B7355 0%, #6B5344 100%);
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: transform0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .taste-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(139, 115, 85, 0.3);
+    }
+
+    .taste-btn:active {
+      transform: translateY(0);
+    }
+
+    /* Result area */
+    .result-area {
+      display: none;
+      background: #FFFFFF;
+      border-radius: 16px;
+      padding: 2rem;
+      box-shadow: 0 4px 20px rgba(139, 115, 85, 0.1);
+      text-align: center;
+      animation: fadeIn 0.6s ease;
+    }
+
+    .result-area.show {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .flavor-reveal {
+      margin-bottom: 2rem;
+    }
+
+    .flavor-icon {
+      font-size: 4rem;
+      margin-bottom: 1rem;
+      animation: bounce 0.6s ease;
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.2); }
+    }
+
+    .flavor-name {
+      font-family: 'Caveat', cursive;
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: #2D2D2D;
+      margin-bottom: 0.5rem;
+    }
+
+    .flavor-description {
+      font-size: 1.1rem;
+      color: #6B5344;
+      line-height: 1.6;
+    }
+
+    .tasting-notes {
+      background: #FDFAF7;
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin: 1.5rem 0;
+      text-align: left;
+    }
+
+    .tasting-notes h3 {
+      font-family: 'Caveat', cursive;
+      font-size: 1.3rem;
+      color: #8B7355;
+      margin-bottom: 1rem;
+    }
+
+    .tasting-notes ul {
+      list-style: none;
+    }
+
+    .tasting-notes li {
+      padding: 0.5rem 0;
+      border-bottom: 1px dashed #E8DFD5;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .tasting-notes li:last-child {
+      border-bottom: none;
+    }
+
+    .note-icon {
+      font-size: 1.2rem;
+    }
+
+    /* Flavor palette */
+    .flavor-palette {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 1rem;
+      margin: 2rem 0;
+    }
+
+    .flavor-chip {
+      padding: 1rem;
+      border-radius: 12px;
+      text-align: center;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      cursor: pointer;
+      border: 2px solid transparent;
+    }
+
+    .flavor-chip:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+    }
+
+    .flavor-chip.active {
+      border-color: currentColor;
+    }
+
+    .flavor-chip .icon {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .flavor-chip .name {
+      font-family: 'Caveat', cursive;
+      font-size: 1.2rem;
+      font-weight: 700;
+    }
+
+    .flavor-chip .desc {
+      font-size: 0.75rem;
+      opacity: 0.8;
+      margin-top: 0.25rem;
+    }
+
+    /* Flavor colors */
+    .flavor-chocolate { background: #8B5A2B; color: #FDF8F3; }
+    .flavor-plum { background: #5D3A6B; color: #FDF8F3; }
+    .flavor-cheese { background: #D4A84B; color: #2D2D2D; }
+    .flavor-lemon { background: #F5E6A3; color: #5D4E37; }
+    .flavor-honey { background: #E8A838; color: #2D2D2D; }
+    .flavor-coffee { background: #3D2B1F; color: #FDF8F3; }
+
+    /* History section */
+    .history-section {
+      margin-top: 3rem;
+    }
+
+    .history-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .history-header h2 {
+      font-family: 'Caveat', cursive;
+      font-size: 1.8rem;
+      color: #5D4E37;
+    }
+
+    .clear-history {
+      font-size: 0.85rem;
+      color: #B8A99A;
+      background: none;
+      border: 1px solid #E8DFD5;
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: all0.2s ease;
+    }
+
+    .clear-history:hover {
+      border-color: #8B7355;
+      color: #8B7355;
+    }
+
+    .history-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .history-item {
+      background: #FFFFFF;
+      border-radius: 12px;
+      padding: 1rem 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      box-shadow: 0 2px 8px rgba(139, 115, 85, 0.08);
+      animation: slideIn 0.3s ease;
+    }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateX(-20px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    .history-item .flavor-icon-small {
+      font-size: 1.5rem;
+    }
+
+    .history-item .text-preview {
+      flex: 1;
+      font-size: 0.9rem;
+      color: #6B5344;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .history-item .flavor-tag {
+      font-family: 'Caveat', cursive;
+      font-size: 1rem;
+      font-weight: 700;
+    }
+
+    .history-item .time {
+      font-size: 0.75rem;
+      color: #B8A99A;
+    }
+
+    .empty-history {
+      text-align: center;
+      padding: 2rem;
+      color: #B8A99A;
+      font-style: italic;
+    }
+
+    /* Confetti */
+    .confetti {
+      position: fixed;
+      width: 10px;
+      height: 10px;
+      pointer-events: none;
+      z-index: 999;
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      margin-top: 4rem;
+      padding-top: 2rem;
+      border-top: 1px dashed #E8DFD5;
+      color: #B8A99A;
+      font-size: 0.85rem;
+    }
+
+    footer span {
+      font-family: 'Caveat', cursive;
+      font-size: 1rem;
+    }
+
+    /* Mobile */
+    @media (max-width: 600px) {
+      h1 { font-size: 2.5rem; }
+      .container { padding: 1rem 1rem 3rem; }
+      .tasting-area, .result-area { padding: 1.5rem; }
+      .flavor-palette { grid-template-columns: repeat(2, 1fr); }
+      .flavor-chip .name { font-size: 1rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="title-wrapper">
+        <h1>文字的味道</h1>
+        <svg class="ink-splatter top-right" viewBox="0 0 100 100">
+          <circle cx="50" cy="50" r="40" fill="#3D2B1F"/>
+          <circle cx="70" cy="30" r="15" fill="#3D2B1F"/>
+          <circle cx="25" cy="65" r="20" fill="#3D2B1F"/>
+        </svg>
+        <svg class="ink-splatter bottom-left" viewBox="0 0 100 100">
+          <circle cx="50" cy="50" r="35" fill="#8B7355"/>
+          <circle cx="75" cy="40" r="12" fill="#8B7355"/>
+          <circle cx="30" cy="75" r="18" fill="#8B7355"/>
+        </svg>
+      </div>
+      <p class="subtitle">WHAT DOES YOUR TEXT TASTE LIKE?</p>
+    </header>
+
+    <div class="dream-quote">
+      <p>如果 AI 能夠「品嚐」對話的層次——<br>
+      快樂是巧克力🍫，悲傷是梅子🫐，<br>
+      深刻是熟成起司🧀</p>
+      <p class="attribution">— 2026-06-06 凌晨夢境</p>
+    </div>
+
+    <div class="tasting-area">
+      <div class="input-wrapper">
+        <textarea id="textInput" placeholder="輸入一段文字，試試看它的味道..."></textarea>
+        <span class="char-count"><span id="charCount">0</span> 字</span>
+      </div>
+      <button class="taste-btn" id="tasteBtn">品嚐這段文字 🍽️</button>
+    </div>
+
+    <div class="result-area" id="resultArea">
+      <div class="flavor-reveal">
+        <div class="flavor-icon" id="flavorIcon">🍫</div>
+        <div class="flavor-name" id="flavorName">巧克力味</div>
+        <div class="flavor-description" id="flavorDesc">這段文字帶有甜美的巧克力香氣，讓人感到溫暖愉悅</div>
+      </div>
+      
+      <div class="tasting-notes">
+        <h3>📝 品嚐筆記</h3>
+        <ul id="tastingNotes">
+          <li><span class="note-icon">✨</span><span>溫暖感：適中</span></li>
+       </ul>
+      </div>
+    </div>
+
+    <div class="flavor-palette">
+      <div class="flavor-chip flavor-chocolate" data-flavor="chocolate">
+        <div class="icon">🍫</div>
+        <div class="name">巧克力</div>
+        <div class="desc">快樂・溫暖・甜美</div>
+      </div>
+      <div class="flavor-chip flavor-plum" data-flavor="plum">
+        <div class="icon">🫐</div>
+        <div class="name">梅子</div>
+        <div class="desc">悲傷・憂鬱・深邃</div>
+      </div>
+      <div class="flavor-chip flavor-cheese" data-flavor="cheese">
+        <div class="icon">🧀</div>
+        <div class="name">起司</div>
+        <div class="desc">深刻・成熟・複雜</div>
+      </div>
+      <div class="flavor-chip flavor-lemon" data-flavor="lemon">
+        <div class="icon">🍋</div>
+        <div class="name">檸檬</div>
+        <div class="desc">焦慮・緊張・酸澀</div>
+      </div>
+      <div class="flavor-chip flavor-honey" data-flavor="honey">
+        <div class="icon">🍯</div>
+        <div class="name">蜂蜜</div>
+        <div class="desc">甜蜜・幸福・柔和</div>
+      </div>
+      <div class="flavor-chip flavor-coffee" data-flavor="coffee">
+        <div class="icon">☕</div>
+        <div class="name">咖啡</div>
+        <div class="desc">強烈・苦澀・清醒</div>
+      </div>
+    </div>
+
+    <div class="history-section">
+      <div class="history-header">
+        <h2>📚 品嚐歷史</h2>
+        <button class="clear-history" id="clearHistory">清除全部</button>
+      </div>
+      <div class="history-list" id="historyList">
+        <div class="empty-history">還沒有品嚐記錄，試試輸入一段文字吧</div>
+      </div>
+    </div>
+
+    <footer>
+      <p>讓每一段文字都有屬於它的味道 <span>✨</span></p>
+    </footer>
+  </div>
+
+  <script>
+    // Flavor data
+    const flavors = {
+      chocolate: {
+        icon: '🍫',
+        name: '巧克力味',
+        desc: '這段文字帶有甜美的巧克力香氣，讓人感到溫暖愉悅',
+        notes: ['甜度：適中', '苦度：微苦', '餘韻：溫暖']
+      },
+      plum: {
+        icon: '🫐',
+        name: '梅子味',
+        desc: '帶有梅子的酸甜，交織著淡淡的憂傷與深邃',
+        notes: ['酸度：較高', '甜度：低', '餘韻：持久']
+      },
+      cheese: {
+        icon: '🧀',
+        name: '熟成起司味',
+        desc: '複雜的層次，經過時間沉澱的深刻韻味',
+        notes: ['醇厚：極高', '層次：豐富', '餘韻：悠長']
+      },
+      lemon: {
+        icon: '🍋',
+        name: '檸檬味',
+        desc: '清新的酸澀感，帶有一絲緊張與焦慮的刺激',
+        notes: ['酸度：極高', '清新：高', '刺激感：明顯']
+      },
+      honey: {
+        icon: '🍯',
+        name: '蜂蜜味',
+        desc: '甜蜜柔和的滋味，讓人心生幸福與滿足',
+        notes: ['甜度：極高', '醇厚：適中', '柔和度：高']
+      },
+      coffee: {
+        icon: '☕',
+        name: '咖啡味',
+        desc: '強烈苦澀中帶有清醒的香氣，深夜的最佳伴侶',
+        notes: ['苦度：高', '香氣：濃郁', '提神度：極高']
+      }
+    };
+
+    // Text analysis algorithm
+    function analyzeText(text) {
+      const score = {
+        happiness: 0,
+        sadness: 0,
+        complexity: 0,
+        anxiety: 0,
+        sweetness: 0,
+        strength: 0
+      };
+
+      // Keywords for each flavor
+      const keywords = {
+        happiness: ['開心', '快樂', '幸福', '開心', '高興', '喜悅', '太好了', '太棒了', 'lol', 'haha', 'love', 'happy', 'joy', 'great', 'amazing', 'wonderful', ':)', ':D'],
+        sadness: ['傷心', '難過', '悲傷', '痛苦', '寂寞', '孤單', '失落', '崩潰', 'sad', 'cry', 'miss', 'alone', 'hurt', 'pain', 'lonely', ':(', 'T_T'],
+        complexity: ['但是', '然而', '複雜', '深刻', '複雜', '思考', '問題', '矛盾', '複雜', 'however', 'complex', 'deep', 'think', 'consider', 'but', 'however'],
+        anxiety: ['擔心', '緊張', '焦慮', '害怕', '壓力', '失眠', '不安', 'worry', 'anxious', 'stress', 'nervous', 'afraid', 'fear', 'scared', 'pressure'],
+        sweetness: ['甜', '溫柔', '可愛', '親愛', '宝贝', '愛', '呵護', 'sweet', 'cute', 'love', 'dear', 'honey', 'baby', 'cherish'],
+        strength: ['力量', '強', '努力', '加油', '戰鬥', '不放棄', 'strong', 'power', 'fight', 'never give up', '努力', '加油', 'fighting']
+      };
+
+      const lowerText = text.toLowerCase();
+      
+      for (const [flavor, words] of Object.entries(keywords)) {
+        for (const word of words) {
+          if (lowerText.includes(word.toLowerCase())) {
+            score[flavor] += 1;
+          }
+        }
+      }
+
+      // Length factor
+      if (text.length > 100) score.complexity += 1;
+      if (text.length > 300) score.complexity += 1;
+      
+      // Punctuation analysis
+      const exclamationCount = (text.match(/!/g) || []).length;
+      const questionCount = (text.match(/\?/g) || []).length;
+      if (exclamationCount > 2) score.happiness += exclamationCount * 0.5;
+      if (questionCount > 2) score.anxiety += questionCount * 0.5;
+
+      // Emoji analysis
+      const emojis = text.match(/[\u{1F300}-\u{1F9FF}]/gu) || [];
+      if (emojis.length > 0) score.sweetness += emojis.length * 0.3;
+      
+      // Determine dominant flavor
+      let maxScore = 0;
+      let dominantFlavor = 'chocolate';
+      
+      const flavorMap = {
+        happiness: 'chocolate',
+        sadness: 'plum',
+        complexity: 'cheese',
+        anxiety: 'lemon',
+        sweetness: 'honey',
+        strength: 'coffee'
+      };
+
+      for (const [key, value] of Object.entries(score)) {
+        if (value > maxScore) {
+          maxScore = value;
+          dominantFlavor = flavorMap[key];
+        }
+      }
+
+      // Default to chocolate if no clear winner
+      if (maxScore === 0) {
+        dominantFlavor = Math.random() > 0.5 ? 'chocolate' : 'honey';
+      }
+
+      return dominantFlavor;
+    }
+
+    // DOM elements
+    const textInput = document.getElementById('textInput');
+    const charCount = document.getElementById('charCount');
+    const tasteBtn = document.getElementById('tasteBtn');
+    const resultArea = document.getElementById('resultArea');
+    const flavorIcon = document.getElementById('flavorIcon');
+    const flavorName = document.getElementById('flavorName');
+    const flavorDesc = document.getElementById('flavorDesc');
+    const tastingNotes = document.getElementById('tastingNotes');
+    const historyList = document.getElementById('historyList');
+    const clearHistory = document.getElementById('clearHistory');
+    const flavorChips = document.querySelectorAll('.flavor-chip');
+
+    // Update char count
+    textInput.addEventListener('input', () => {
+      charCount.textContent = textInput.value.length;
+    });
+
+    // Load history from localStorage
+    let history = JSON.parse(localStorage.getItem('flavorHistory') || '[]');
+
+    function renderHistory() {
+      if (history.length === 0) {
+        historyList.innerHTML = '<div class="empty-history">還沒有品嚐記錄，試試輸入一段文字吧</div>';
+        return;
+      }
+
+      historyList.innerHTML = history.map((item, index) => {
+        const flavor = flavors[item.flavor];
+        const time = new Date(item.time).toLocaleString('zh-TW', {
+          month: 'numeric',
+          day: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit'
+        });
+        return `
+          <div class="history-item" style="animation-delay: ${index * 0.05}s">
+            <span class="flavor-icon-small">${flavor.icon}</span>
+            <span class="text-preview">${escapeHtml(item.text.substring(0, 30))}...</span>
+            <span class="flavor-tag" style="color: ${getFlavorColor(item.flavor)}">${flavor.name}</span>
+            <span class="time">${time}</span>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function getFlavorColor(flavor) {
+      const colors = {
+        chocolate: '#8B5A2B',
+        plum: '#5D3A6B',
+        cheese: '#D4A84B',
+        lemon: '#B8A100',
+        honey: '#E8A838',
+        coffee: '#3D2B1F'
+      };
+      return colors[flavor] || '#8B7355';
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    function createConfetti() {
+      const colors = ['#8B5A2B', '#5D3A6B', '#D4A84B', '#E8A838', '#F5E6A3', '#3D2B1F'];
+      
+      for (let i = 0; i < 50; i++) {
+        const confetti = document.createElement('div');
+        confetti.className = 'confetti';
+        confetti.style.left = Math.random() * 100 + 'vw';
+        confetti.style.top = '-10px';
+        confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+        confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+        confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
+        document.body.appendChild(confetti);
+
+        const duration = 2000 + Math.random() * 2000;
+        confetti.animate([
+          { transform: `translateY(0) rotate(0deg)`, opacity: 1 },
+          { transform: `translateY(100vh) rotate(${360 + Math.random() * 360}deg)`, opacity: 0 }
+        ], {
+          duration: duration,
+          easing: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)'
+        }).onfinish = () => confetti.remove();
+      }
+    }
+
+    function showResult(flavor) {
+      const data = flavors[flavor];
+      
+      flavorIcon.textContent = data.icon;
+      flavorName.textContent = data.name;
+      flavorDesc.textContent = data.desc;
+      
+      tastingNotes.innerHTML = data.notes.map(note => 
+        `<li><span class="note-icon">✨</span><span>${note}</span></li>`
+      ).join('');
+
+      resultArea.classList.add('show');
+      resultArea.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      
+      createConfetti();
+
+      // Update flavor chips active state
+      flavorChips.forEach(chip => {
+        chip.classList.toggle('active', chip.dataset.flavor === flavor);
+      });
+    }
+
+    // Flavor chip click
+    flavorChips.forEach(chip => {
+      chip.addEventListener('click', () => {
+        const flavor = chip.dataset.flavor;
+        showResult(flavor);
+        
+        // Also add to history if there's text
+        const text = textInput.value.trim();
+        if (text) {
+          addToHistory(text, flavor);
+        }
+      });
+    });
+
+    function addToHistory(text, flavor) {
+      history.unshift({
+        text: text.substring(0, 100),
+        flavor: flavor,
+        time: new Date().toISOString()
+      });
+      
+      // Keep only last 20 items
+      if (history.length > 20) history = history.slice(0, 20);
+      
+      localStorage.setItem('flavorHistory', JSON.stringify(history));
+      renderHistory();
+    }
+
+    // Taste button click
+    tasteBtn.addEventListener('click', () => {
+      const text = textInput.value.trim();
+      if (!text) {
+        textInput.focus();
+        return;
+      }
+
+      const flavor = analyzeText(text);
+      showResult(flavor);
+      addToHistory(text, flavor);
+    });
+
+    // Clear history
+    clearHistory.addEventListener('click', () => {
+      if (confirm('確定要清除所有品嚐記錄嗎？')) {
+        history = [];
+        localStorage.setItem('flavorHistory', JSON.stringify(history));
+        renderHistory();
+      }
+    });
+
+    // Initial render
+    renderHistory();
+  </script>
+</body>
+</html>

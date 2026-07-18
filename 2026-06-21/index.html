@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>時間調酒師 — Time Bartender</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&family=Caveat:wght@400;600&family=Playfair+Display:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Noto Sans TC', sans-serif;
+      min-height: 100vh;
+      background: linear-gradient(180deg, #FDF8F5 0%, #F0E6E0 50%, #E8D8D0 100%);
+      overflow-x: hidden;
+      color: #3D3D3D;
+    }
+
+    /* Floating time particles */
+    .time-particle {
+      position: fixed;
+      width: 8px;
+      height: 8px;
+      background: radial-gradient(circle, rgba(180, 160, 200, 0.6) 0%, transparent 70%);
+      border-radius: 50%;
+      pointer-events: none;
+      animation: float-up 15s infinite ease-in-out;
+    }
+
+    @keyframes float-up {
+      0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+      10% { opacity: 0.8; }
+      90% { opacity: 0.8; }
+      100% { transform: translateY(-100px) rotate(360deg); opacity: 0; }
+    }
+
+    /* Header */
+    header {
+      text-align: center;
+      padding: 40px 20px 20px;
+      position: relative;
+    }
+
+    .header-badge {
+      display: inline-block;
+      background: linear-gradient(135deg, #B4A0C8 0%, #9B8BB4 100%);
+      color: white;
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-size: 12px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 15px;
+      box-shadow: 0 4px 15px rgba(155, 139, 180, 0.3);
+    }
+
+    h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(28px, 6vw, 48px);
+      font-weight: 600;
+      background: linear-gradient(135deg, #6B5B7B 0%, #9B8BB4 50%, #C9A86C 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 10px;
+    }
+
+    .subtitle {
+      font-family: 'Caveat', cursive;
+      font-size: 20px;
+      color: #8B7B9B;
+    }
+
+    /* Main container */
+    main {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    /* Intro card */
+    .intro-card {
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(10px);
+      border-radius: 24px;
+      padding: 30px;
+      margin-bottom: 30px;
+      box-shadow: 0 8px 32px rgba(155, 139, 180, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.5);
+    }
+
+    .intro-card p {
+      font-size: 16px;
+      line-height: 1.8;
+      color: #5D5D5D;
+      text-align: center;
+    }
+
+    .intro-card .highlight {
+      color: #9B8BB4;
+      font-weight: 500;
+    }
+
+    /* Bartender station */
+    .bartender-station {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 25px;
+      margin-bottom: 30px;
+    }
+
+    @media (max-width: 700px) {
+      .bartender-station {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Glass container */
+    .glass-section {
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 24px;
+      padding: 25px;
+      box-shadow: 0 8px 32px rgba(155, 139, 180, 0.15);
+    }
+
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 18px;
+      color: #6B5B7B;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .section-title::before {
+      content: '';
+      width: 8px;
+      height: 8px;
+      background: linear-gradient(135deg, #C9A86C 0%, #E8C896 100%);
+      border-radius: 50%;
+    }
+
+    /* Cocktail glass SVG */
+    .glass-container {
+      position: relative;
+      width: 100%;
+      height: 280px;
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+    }
+
+    .cocktail-glass {
+      width: 160px;
+      height: 220px;
+    }
+
+    .glass-body {
+      fill: none;
+      stroke: #9B8BB4;
+      stroke-width: 3;
+    }
+
+    .glass-highlight {
+      fill: none;
+      stroke: rgba(255, 255, 255, 0.6);
+      stroke-width: 2;
+    }
+
+    .liquid {
+      transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .liquid-1 { fill: #7EB8D8; }
+    .liquid-2 { fill: #C9A86C; }
+    .liquid-3 { fill: #9B8BB4; }
+    .liquid-4 { fill: #7CB587; }
+
+    /* Ingredients */
+    .ingredients-section {
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 24px;
+      padding: 25px;
+      box-shadow: 0 8px 32px rgba(155, 139, 180, 0.15);
+    }
+
+    .ingredients-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    .ingredient-btn {
+      background: linear-gradient(135deg, #F8F4F0 0%, #EDE6E0 100%);
+      border: 2px solid transparent;
+      border-radius: 16px;
+      padding: 15px 12px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .ingredient-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(155, 139, 180, 0.2);
+    }
+
+    .ingredient-btn.selected {
+      border-color: #C9A86C;
+      background: linear-gradient(135deg, #FFF9F0 0%, #F5EDE0 100%);
+    }
+
+    .ingredient-icon {
+      font-size: 28px;
+    }
+
+    .ingredient-name {
+      font-size: 13px;
+      color: #5D5D5D;
+      text-align: center;
+    }
+
+    .ingredient-name-en {
+      font-family: 'Caveat', cursive;
+      font-size: 11px;
+      color: #9B8BB4;
+    }
+
+    /* Slider */
+    .slider-section {
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 24px;
+      padding: 25px;
+      margin-bottom: 30px;
+      box-shadow: 0 8px 32px rgba(155, 139, 180, 0.15);
+    }
+
+    .slider-container {
+      margin-top: 15px;
+    }
+
+    .slider-label {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      font-size: 14px;
+      color: #7B7B7B;
+    }
+
+    .slider-track {
+      position: relative;
+      height: 12px;
+      background: linear-gradient(90deg, #7EB8D8 0%, #C9A86C 50%, #9B8BB4 100%);
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .slider-thumb {
+      position: absolute;
+      width: 28px;
+      height: 28px;
+      background: white;
+      border: 4px solid #C9A86C;
+      border-radius: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      cursor: grab;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      transition: transform 0.2s;
+    }
+
+    .slider-thumb:active {
+      cursor: grabbing;
+      transform: translate(-50%, -50%) scale(1.1);
+    }
+
+    .viscosity-labels {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 8px;
+      font-size: 12px;
+      color: #9B8BB4;
+      font-family: 'Caveat', cursive;
+    }
+
+    /* Mix button */
+    .mix-section {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .mix-btn {
+      background: linear-gradient(135deg, #9B8BB4 0%, #7B6B9B 100%);
+      color: white;
+      border: none;
+      padding: 18px 50px;
+      font-size: 18px;
+      font-family: 'Noto Sans TC', sans-serif;
+      font-weight: 500;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 8px 25px rgba(155, 139, 180, 0.4);
+    }
+
+    .mix-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 35px rgba(155, 139, 180, 0.5);
+    }
+
+    .mix-btn:active {
+      transform: translateY(0);
+    }
+
+    /* Result card */
+    .result-card {
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 24px;
+      padding: 35px;
+      margin-bottom: 30px;
+      box-shadow: 0 12px 40px rgba(155, 139, 180, 0.2);
+      display: none;
+      animation: slide-up 0.6s ease;
+    }
+
+    .result-card.visible {
+      display: block;
+    }
+
+    @keyframes slide-up {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .result-header {
+      text-align: center;
+      margin-bottom: 25px;
+    }
+
+    .result-cocktail-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 26px;
+      color: #6B5B7B;
+      margin-bottom: 8px;
+    }
+
+    .result-tagline {
+      font-family: 'Caveat', cursive;
+      font-size: 18px;
+      color: #9B8BB4;
+    }
+
+    .result-glass-display {
+      display: flex;
+      justify-content: center;
+      margin: 25px 0;
+    }
+
+    .result-glass-display svg {
+      width: 120px;
+      height: 160px;
+    }
+
+    .result-description {
+      background: linear-gradient(135deg, #F8F4F0 0%, #F0E8E0 100%);
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+
+    .result-description p {
+      font-size: 15px;
+      line-height: 1.8;
+      color: #5D5D5D;
+      text-align: center;
+    }
+
+    .result-stats {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      flex-wrap: wrap;
+    }
+
+    .stat-item {
+      text-align: center;
+    }
+
+    .stat-value {
+      font-family: 'Playfair Display', serif;
+      font-size: 28px;
+      color: #C9A86C;
+    }
+
+    .stat-label {
+      font-size: 12px;
+      color: #9B8BB4;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    /* Pour animation */
+    .pour-stream {
+      position: absolute;
+      width: 8px;
+      background: linear-gradient(180deg, rgba(126, 184, 216, 0.8) 0%, rgba(126, 184, 216, 0.4) 100%);
+      border-radius: 4px;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .pour-stream.active {
+      animation: pour 0.8s ease-out;
+      opacity: 1;
+    }
+
+    @keyframes pour {
+      0% { height: 0; opacity: 0; }
+      20% { opacity: 1; }
+      100% { height: 150px; opacity: 0; }
+    }
+
+    /* Ripple effect */
+    .ripple {
+      position: absolute;
+      border: 2px solid rgba(255, 255, 255, 0.6);
+      border-radius: 50%;
+      animation: ripple-expand 1s ease-out forwards;
+      pointer-events: none;
+    }
+
+    @keyframes ripple-expand {
+      0% { width: 10px; height: 10px; opacity: 1; }
+      100% { width: 100px; height: 100px; opacity: 0; }
+    }
+
+    /* Confetti */
+    .confetti {
+      position: fixed;
+      width: 10px;
+      height: 10px;
+      pointer-events: none;
+      z-index: 1000;
+    }
+
+    /* History */
+    .history-section {
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 24px;
+      padding: 25px;
+      margin-bottom: 30px;
+      box-shadow: 0 8px 32px rgba(155, 139, 180, 0.15);
+    }
+
+    .history-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+
+    .history-item {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      padding: 12px 15px;
+      background: linear-gradient(135deg, #F8F4F0 0%, #F5EDE5 100%);
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .history-item:hover {
+      transform: translateX(5px);
+      box-shadow: 0 4px 15px rgba(155, 139, 180, 0.15);
+    }
+
+    .history-glass-icon {
+      width: 40px;
+      height: 50px;
+      flex-shrink: 0;
+    }
+
+    .history-info {
+      flex: 1;
+    }
+
+    .history-name {
+      font-size: 14px;
+      font-weight: 500;
+      color: #6B5B7B;
+    }
+
+    .history-time {
+      font-size: 12px;
+      color: #9B8BB4;
+      font-family: 'Caveat', cursive;
+    }
+
+    .history-delete {
+      background: none;
+      border: none;
+      color: #C9A86C;
+      cursor: pointer;
+      font-size: 18px;
+      opacity: 0.6;
+      transition: opacity 0.3s;
+    }
+
+    .history-delete:hover {
+      opacity: 1;
+    }
+
+    .empty-history {
+      text-align: center;
+      padding: 40px;
+      color: #9B8BB4;
+      font-family: 'Caveat', cursive;
+      font-size: 18px;
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 30px 20px;
+      color: #9B8BB4;
+      font-size: 13px;
+    }
+
+    footer a {
+      color: #7B6B9B;
+      text-decoration: none;
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #F0E6E0;
+      border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #C9A86C;
+      border-radius: 4px;
+    }
+
+    /* Responsive */
+    @media (max-width: 500px) {
+      .ingredients-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+      
+      .result-stats {
+        gap: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Floating time particles -->
+  <div id="particles"></div>
+
+  <header>
+    <div class="header-badge">🌊 液態時間實驗室</div>
+    <h1>時間調酒師</h1>
+    <p class="subtitle">Time Bartender — 你是自己的時間調酒師</p>
+  </header>
+
+  <main>
+    <!-- Intro -->
+    <div class="intro-card">
+      <p>如果時間是黏稠的液體，我們每個人都是自己的<span class="highlight">時間調酒師</span>。<br>
+      選擇你今天的時間配方，讓這杯特調訴說你的故事。</p>
+    </div>
+
+    <!-- Bartender Station -->
+    <div class="bartender-station">
+      <!-- Glass -->
+      <div class="glass-section">
+        <h2 class="section-title">你的調酒杯</h2>
+        <div class="glass-container" id="glassContainer">
+          <svg class="cocktail-glass" viewBox="0 0 160 220">
+            <!-- Glass body -->
+            <path class="glass-body" d="M 30 30 L 20 180 Q 20 200 40 200 L 120 200 Q 140 200 140 180 L 130 30 Z"/>
+            <path class="glass-highlight" d="M 35 40 L 28 170 Q 28 185 45 185"/>
+            <!-- Liquid layers -->
+            <g id="liquidLayers">
+              <rect class="liquid liquid-4" id="layer4" x="22" y="200" width="116" height="0" rx="2"/>
+              <rect class="liquid liquid-3" id="layer3" x="22" y="200" width="116" height="0" rx="2"/>
+              <rect class="liquid liquid-2" id="layer2" x="22" y="200" width="116" height="0" rx="2"/>
+              <rect class="liquid liquid-1" id="layer1" x="22" y="200" width="116" height="0" rx="2"/>
+            </g>
+            <!-- Stem and base -->
+            <rect class="glass-body" x="70" y="200" width="20" height="15" rx="2"/>
+            <ellipse class="glass-body" cx="80" cy="218" rx="40" ry="8"/>
+          </svg>
+          <!-- Pour stream -->
+          <div class="pour-stream" id="pourStream" style="left: 80px; top: -50px;"></div>
+        </div>
+      </div>
+
+      <!-- Ingredients -->
+      <div class="ingredients-section">
+        <h2 class="section-title">選擇時間口味</h2>
+        <div class="ingredients-grid" id="ingredientsGrid">
+          <button class="ingredient-btn" data-ingredient="1" data-name="清晨薄霧" data-name-en="Morning Mist">
+            <span class="ingredient-icon">🌅</span>
+            <span class="ingredient-name">清晨薄霧</span>
+            <span class="ingredient-name-en">Morning Mist</span>
+          </button>
+          <button class="ingredient-btn" data-ingredient="2" data-name="午后陽光" data-name-en="Afternoon Glow">
+            <span class="ingredient-icon">☀️</span>
+            <span class="ingredient-name">午后陽光</span>
+            <span class="ingredient-name-en">Afternoon Glow</span>
+          </button>
+          <button class="ingredient-btn" data-ingredient="3" data-name="暮色紫羅蘭" data-name-en="Twilight Violet">
+            <span class="ingredient-icon">🌆</span>
+            <span class="ingredient-name">暮色紫羅蘭</span>
+            <span class="ingredient-name-en">Twilight Violet</span>
+          </button>
+          <button class="ingredient-btn" data-ingredient="4" data-name="深夜靜謐" data-name-en="Midnight Calm">
+            <span class="ingredient-icon">🌙</span>
+            <span class="ingredient-name">深夜靜謐</span>
+            <span class="ingredient-name-en">Midnight Calm</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Viscosity slider -->
+    <div class="slider-section">
+      <h2 class="section-title">調整時間黏稠度</h2>
+      <div class="slider-container">
+        <div class="slider-label">
+          <span>稀薄・快速流逝</span>
+          <span id="viscosityValue">50%</span>
+          <span>濃稠・緩慢凝滯</span>
+        </div>
+        <div class="slider-track" id="sliderTrack">
+          <div class="slider-thumb" id="sliderThumb" style="left: 50%;"></div>
+        </div>
+        <div class="viscosity-labels">
+          <span>如水</span>
+          <span>如蜜</span>
+          <span>如瀝青</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mix button -->
+    <div class="mix-section">
+      <button class="mix-btn" id="mixBtn">🍸 調製這杯時間</button>
+    </div>
+
+    <!-- Result -->
+    <div class="result-card" id="resultCard">
+      <div class="result-header">
+        <div class="result-cocktail-name" id="resultName">時光拿鐵</div>
+        <div class="result-tagline" id="resultTagline">"在清晨的薄霧中緩緩甦醒"</div>
+      </div>
+      <div class="result-glass-display" id="resultGlass"></div>
+      <div class="result-description">
+        <p id="resultDescription">這杯調酒反映了你的時間觀——輕盈而充滿希望，適合新的開始。</p>
+      </div>
+      <div class="result-stats">
+        <div class="stat-item">
+          <div class="stat-value" id="statLayers">4</div>
+          <div class="stat-label">層次</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value" id="statViscosity">50%</div>
+          <div class="stat-label">黏稠度</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value" id="statMood">清新</div>
+          <div class="stat-label">基調情緒</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- History -->
+    <div class="history-section">
+      <h2 class="section-title">調酒紀錄</h2>
+      <div class="history-list" id="historyList">
+        <div class="empty-history">還沒有調製記錄，來做第一杯吧！</div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <p>🌊 靈感來自 2026-06-20 夢境：「如果時間是液態的」</p>
+    <p style="margin-top: 5px; font-size: 11px;">液態時間河流・螞蟻搬家・湯屋風格的時鐘塔</p>
+  </footer>
+
+  <script>
+    // State
+    let selectedIngredients = [];
+    let viscosity = 50;
+    let history = JSON.parse(localStorage.getItem('timeBartenderHistory') || '[]');
+
+    // Elements
+    const ingredientsGrid = document.getElementById('ingredientsGrid');
+    const sliderTrack = document.getElementById('sliderTrack');
+    const sliderThumb = document.getElementById('sliderThumb');
+    const viscosityValue = document.getElementById('viscosityValue');
+    const mixBtn = document.getElementById('mixBtn');
+    const resultCard = document.getElementById('resultCard');
+    const historyList = document.getElementById('historyList');
+    const pourStream = document.getElementById('pourStream');
+
+    // Initialize particles
+    function createParticles() {
+      const container = document.getElementById('particles');
+      for (let i = 0; i < 15; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'time-particle';
+        particle.style.left = Math.random() * 100 + 'vw';
+        particle.style.animationDelay = Math.random() * 15 + 's';
+        particle.style.animationDuration = (12 + Math.random() * 8) + 's';
+        container.appendChild(particle);
+      }
+    }
+    createParticles();
+
+    // Ingredient selection
+    ingredientsGrid.addEventListener('click', (e) => {
+      const btn = e.target.closest('.ingredient-btn');
+      if (!btn) return;
+      
+      const ingredient = btn.dataset.ingredient;
+      const name = btn.dataset.name;
+      
+      if (btn.classList.contains('selected')) {
+        btn.classList.remove('selected');
+        selectedIngredients = selectedIngredients.filter(i => i.id !== ingredient);
+      } else {
+        if (selectedIngredients.length < 4) {
+          btn.classList.add('selected');
+          selectedIngredients.push({ id: ingredient, name: name });
+        }
+      }
+      
+      updateGlassPreview();
+    });
+
+    // Viscosity slider
+    let isDragging = false;
+
+    function updateSlider(e) {
+      const rect = sliderTrack.getBoundingClientRect();
+      let x = e.clientX - rect.left;
+      x = Math.max(0, Math.min(x, rect.width));
+      const percent = Math.round((x / rect.width) * 100);
+      viscosity = percent;
+      sliderThumb.style.left = percent + '%';
+      viscosityValue.textContent = percent + '%';
+    }
+
+    sliderTrack.addEventListener('mousedown', (e) => {
+      isDragging = true;
+      updateSlider(e);
+    });
+
+    document.addEventListener('mousemove', (e) => {
+      if (isDragging) updateSlider(e);
+    });
+
+    document.addEventListener('mouseup', () => {
+      isDragging = false;
+    });
+
+    // Touch support
+    sliderTrack.addEventListener('touchstart', (e) => {
+      isDragging = true;
+      updateSlider(e.touches[0]);
+    });
+
+    document.addEventListener('touchmove', (e) => {
+      if (isDragging) updateSlider(e.touches[0]);
+    });
+
+    document.addEventListener('touchend', () => {
+      isDragging = false;
+    });
+
+    // Update glass preview
+    function updateGlassPreview() {
+      const layers = ['layer1', 'layer2', 'layer3', 'layer4'];
+      const colors = ['#7EB8D8', '#C9A86C', '#9B8BB4', '#7CB587'];
+      
+      layers.forEach((id, index) => {
+        const layer = document.getElementById(id);
+        if (index < selectedIngredients.length) {
+          const targetHeight = 40 * (index + 1);
+          layer.setAttribute('y', 200 - targetHeight);
+          layer.setAttribute('height', targetHeight);
+        } else {
+          layer.setAttribute('height', 0);
+        }
+      });
+    }
+
+    // Cocktail recipes
+    const cocktails = {
+      '1': { name: '黎明微光', tagline: '"在第一縷陽光中開始新的一天"', desc: '這杯調酒如清晨的薄霧，輕盈而純淨。代表你對時間的态度——每一刻都值得被溫柔以待。', mood: '清新' },
+      '2': { name: '午后慢時光', tagline: '"陽光正好，時間值得浪費"', desc: '午后陽光的色澤，温润而舒緩。這杯調酒訴說著：有時候，最好的時間就是什麼都不做。', mood: '慵懶' },
+      '3': { name: '暮光之城', tagline: '"在日落時分遇見另一個自己"', desc: '紫羅蘭的色調帶著一絲神秘。這杯調酒屬於過渡時刻——告別與開始交織，遺憾與期待共存。', mood: '內省' },
+      '4': { name: '午夜沉思', tagline: '"在寂静中聽見時間的聲音"', desc: '深夜靜謐的色調，深邃而平和。這杯調酒屬於那些在深夜裡思考人生的人，孤獨但充實。', mood: '沉思' },
+      '1,2': { name: '晨曦拿鐵', tagline: '"從黎明到正午，溫暖一路相伴"', desc: '薄霧與陽光的相遇，層次分明而和谐。這是開始新一天的完美配方。', mood: '温暖' },
+      '1,3': { name: '紫晨之夢', tagline: '"黎明時分，夢境尚未散去"', desc: '清晨的霧氣染上了暮色的紫，現實與夢境在此交匯。這是属于創意者的時刻。', mood: '夢幻' },
+      '1,4': { name: '黎明前的深海', tagline: '"在最暗的時刻，仍有光在等待"', desc: '清晨的薄霧沉入深夜的靜謐，黑暗中有平靜。這杯調酒訴說著：黎明前最黑暗，但希望永在。', mood: '堅韌' },
+      '2,3': { name: '夕陽泳池', tagline: '"午後的陽光逐漸變成暮色"', desc: '温暖的陽光逐漸冷卻，過渡到神秘的紫羅蘭。這是属于過渡的時光，萬物皆在變化。', mood: '過渡' },
+      '2,4': { name: '加勒比夜晚', tagline: '"熱情的午後延續到熱情的深夜"', desc: '陽光的温度融入深夜的靜謐，既不冷漠也不過熱。這杯調酒屬於那些知道如何平衡的人。', mood: '平衡' },
+      '3,4': { name: '子夜薰衣草', tagline: '"在紫色的深夜裡找到平靜"', desc: '紫羅蘭與深夜的結合，神秘而安詳。這杯調酒屬於那些在夜晚找到靈感的人。', mood: '神秘' },
+      '1,2,3': { name: '完整的一天', tagline: '"從黎明到暮色，經歷完整"', desc: '薄霧、陽光、暮色——時間的三個面貌都匯聚在這一杯。這是對一天完整周期的禮贊。', mood: '完整' },
+      '2,3,4': { name: '夜的物語', tagline: '"太陽落山後，故事才開始"', desc: '從午後的熱情，經過暮色的過渡，抵達深夜的沉思。這是属于夜晚的故事。', mood: '叙事' },
+      '1,2,4': { name: '冰與火之歌', tagline: '"最暗的深夜迎來最亮的黎明"', desc: '黎明的清冷與深夜的深邃相遇，中間隔著溫暖的午後。這是極端的融合。', mood: '戲劇' },
+      '1,3,4': { name: '深淵傳說', tagline: '"在時間的深淵中游泳"', desc: '清晨、暮色、深夜——沒有正午的燥熱，只有深沉的思考。這是属于哲學家的配方。', mood: '哲學' },
+      '1,2,3,4': { name: '永恆配方', tagline: '"時間的全部可能，匯聚於一杯"', desc: '四種時間，四種情緒，全部融合在這一杯。這是時間調酒師的終極作品——完整、和諧、永恒。', mood: '永恆' }
+    };
+
+    // Mix cocktail
+    mixBtn.addEventListener('click', () => {
+      if (selectedIngredients.length === 0) {
+        alert('請選擇至少一種時間口味！');
+        return;
+      }
+
+      // Pour animation
+      pourStream.classList.add('active');
+      setTimeout(() => pourStream.classList.remove('active'), 800);
+
+      // Find recipe
+      const key = selectedIngredients.map(i => i.id).sort().join(',');
+      const recipe = cocktails[key] || { 
+        name: '時間特調', 
+        tagline: '"混合出屬於你的獨特風味"', 
+        desc: '這是一杯專屬於你的時間配方，融合了' + selectedIngredients.map(i => i.name).join('、') + '。',
+        mood: '獨特'
+      };
+
+      // Update result
+      setTimeout(() => {
+        document.getElementById('resultName').textContent = recipe.name;
+        document.getElementById('resultTagline').textContent = recipe.tagline;
+        document.getElementById('resultDescription').textContent = recipe.desc;
+        document.getElementById('statLayers').textContent = selectedIngredients.length;
+        document.getElementById('statViscosity').textContent = viscosity + '%';
+        document.getElementById('statMood').textContent = recipe.mood;
+
+        // Show result glass
+        const resultGlass = document.getElementById('resultGlass');
+        resultGlass.innerHTML = document.querySelector('.cocktail-glass').outerHTML;
+
+        resultCard.classList.add('visible');
+        
+        // Save to history
+        const entry = {
+          id: Date.now(),
+          name: recipe.name,
+          ingredients: selectedIngredients.map(i => i.name),
+          viscosity: viscosity,
+          mood: recipe.mood,
+          time: new Date().toLocaleString('zh-TW')
+        };
+        history.unshift(entry);
+        if (history.length > 10) history.pop();
+        localStorage.setItem('timeBartenderHistory', JSON.stringify(history));
+        renderHistory();
+
+        // Confetti!
+        createConfetti();
+      }, 400);
+    });
+
+    // Render history
+    function renderHistory() {
+      if (history.length === 0) {
+        historyList.innerHTML = '<div class="empty-history">還沒有調製記錄，來做第一杯吧！</div>';
+        return;
+      }
+
+      historyList.innerHTML = history.map((entry, index) => `
+        <div class="history-item" onclick="loadHistory(${index})">
+          <svg class="history-glass-icon" viewBox="0 0 40 50">
+            <path fill="none" stroke="#9B8BB4" stroke-width="2" d="M 8 5 L 5 42 Q 5 47 10 47 L 30 47 Q 35 47 35 42 L 32 5 Z"/>
+            <rect fill="#7EB8D8" x="6" y="${45 - entry.ingredients.length * 8}" width="28" height="${entry.ingredients.length * 8}" rx="2"/>
+          </svg>
+          <div class="history-info">
+            <div class="history-name">${entry.name}</div>
+            <div class="history-time">${entry.time}</div>
+          </div>
+          <button class="history-delete" onclick="event.stopPropagation(); deleteHistory(${index})">×</button>
+        </div>
+      `).join('');
+    }
+
+    function loadHistory(index) {
+      const entry = history[index];
+      // Could implement full restore, but for now just show alert
+      alert(`回顧：${entry.name}\n層次：${entry.ingredients.join(' + ')}\n黏稠度：${entry.viscosity}%\n情緒：${entry.mood}`);
+    }
+
+    function deleteHistory(index) {
+      history.splice(index, 1);
+      localStorage.setItem('timeBartenderHistory', JSON.stringify(history));
+      renderHistory();
+    }
+
+    // Confetti
+    function createConfetti() {
+      const colors = ['#7EB8D8', '#C9A86C', '#9B8BB4', '#7CB587', '#E8C896'];
+      for (let i = 0; i < 50; i++) {
+        const confetti = document.createElement('div');
+        confetti.className = 'confetti';
+        confetti.style.left = Math.random() * 100 + 'vw';
+        confetti.style.top = '-10px';
+        confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+        confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+        confetti.style.width = (5 + Math.random() * 10) + 'px';
+        confetti.style.height = (5 + Math.random() * 10) + 'px';
+        document.body.appendChild(confetti);
+
+        const duration = 2000 + Math.random() * 2000;
+        const xEnd = (Math.random() - 0.5) * 200;
+
+        confetti.animate([
+          { transform: 'translateY(0) translateX(0) rotate(0deg)', opacity: 1 },
+          { transform: `translateY(100vh) translateX(${xEnd}px) rotate(${Math.random() * 720}deg)`, opacity: 0 }
+        ], {
+          duration: duration,
+          easing: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)'
+        }).onfinish = () => confetti.remove();
+      }
+    }
+
+    // Initialize
+    renderHistory();
+  </script>
+</body>
+</html>

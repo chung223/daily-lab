@@ -1,0 +1,931 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VPS Doctor — 主機健康診所</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Noto+Sans+TC:wght@400;500;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --bg-primary: #FAFCFC;
+            --bg-card: #FFFFFF;
+            --bg-accent: #F0F7F7;
+            --hospital-blue: #0066AA;
+            --hospital-blue-light: #E8F4F8;
+            --clinical-red: #DC3545;
+            --clinical-green: #28A745;
+            --clinical-yellow: #FFC107;
+            --text-dark: #1A2A3A;
+            --text-muted: #5A6A7A;
+            --border-light: #E0E8EC;
+            --shadow-sm: 0 1px 3px rgba(0,50,80,0.08);
+            --shadow-md: 0 4px 12px rgba(0,50,80,0.1);
+            --shadow-lg: 0 8px 24px rgba(0,50,80,0.12);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-dark);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        /* Header */
+        .header {
+            background: var(--bg-card);
+            border-bottom: 3px solid var(--hospital-blue);
+            padding: 20px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .logo-icon {
+            width: 48px;
+            height: 48px;
+            background: var(--hospital-blue);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .header-title h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--hospital-blue);
+            letter-spacing: -0.5px;
+        }
+
+        .header-title p {
+            font-size: 13px;
+            color: var(--text-muted);
+            font-family: 'DM Mono', monospace;
+        }
+
+        .header-stats {
+            display: flex;
+            gap: 24px;
+            align-items: center;
+        }
+
+        .stat-badge {
+            text-align: center;
+            padding: 8px 16px;
+            background: var(--bg-accent);
+            border-radius: 8px;
+        }
+
+        .stat-badge .number {
+            font-family: 'DM Mono', monospace;
+            font-size: 24px;
+            font-weight: 500;
+            color: var(--hospital-blue);
+        }
+
+        .stat-badge .label {
+            font-size: 11px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .live-indicator {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: var(--clinical-green);
+            font-family: 'DM Mono', monospace;
+        }
+
+        .live-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--clinical-green);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.6; transform: scale(1.2); }
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+
+        /* Patient Cards Grid */
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 20px;
+            color: var(--text-dark);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border-light);
+        }
+
+        .patients-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 20px;
+            margin-bottom: 32px;
+        }
+
+        .patient-card {
+            background: var(--bg-card);
+            border-radius: 12px;
+            box-shadow: var(--shadow-sm);
+            overflow: hidden;
+            transition: all 0.3s ease;
+            border: 1px solid var(--border-light);
+        }
+
+        .patient-card:hover {
+            box-shadow: var(--shadow-md);
+            transform: translateY(-2px);
+        }
+
+        .patient-card.critical {
+            border-left: 4px solid var(--clinical-red);
+        }
+
+        .patient-card.warning {
+            border-left: 4px solid var(--clinical-yellow);
+        }
+
+        .patient-card.healthy {
+            border-left: 4px solid var(--clinical-green);
+        }
+
+        .card-header {
+            padding: 16px;
+            border-bottom: 1px solid var(--border-light);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .patient-info h3 {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+
+        .patient-info .domain {
+            font-family: 'DM Mono', monospace;
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-badge.critical {
+            background: #FDECEA;
+            color: var(--clinical-red);
+        }
+
+        .status-badge.warning {
+            background: #FFF8E6;
+            color: #B8860B;
+        }
+
+        .status-badge.healthy {
+            background: #E8F5E9;
+            color: var(--clinical-green);
+        }
+
+        .card-body {
+            padding: 16px;
+        }
+
+        .vital-signs {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .vital {
+            background: var(--bg-accent);
+            padding: 10px 12px;
+            border-radius: 8px;
+        }
+
+        .vital .label {
+            font-size: 10px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+
+        .vital .value {
+            font-family: 'DM Mono', monospace;
+            font-size: 14px;
+            color: var(--text-dark);
+        }
+
+        .diagnosis {
+            background: var(--bg-primary);
+            padding: 12px;
+            border-radius: 8px;
+            border-left: 3px solid var(--hospital-blue);
+        }
+
+        .diagnosis-label {
+            font-size: 10px;
+            color: var(--hospital-blue);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+            font-weight: 500;
+        }
+
+        .diagnosis-text {
+            font-size: 13px;
+            color: var(--text-dark);
+            line-height: 1.5;
+        }
+
+        .card-footer {
+            padding: 12px 16px;
+            background: var(--bg-accent);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .last-check {
+            font-family: 'DM Mono', monospace;
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        .view-details {
+            font-size: 12px;
+            color: var(--hospital-blue);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        /* Prescription Section */
+        .prescription-section {
+            background: var(--bg-card);
+            border-radius: 12px;
+            box-shadow: var(--shadow-sm);
+            padding: 24px;
+            margin-bottom: 32px;
+            border: 1px solid var(--border-light);
+        }
+
+        .rx-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 2px dashed var(--border-light);
+        }
+
+        .rx-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--hospital-blue);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .rx-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 20px;
+            color: var(--text-dark);
+        }
+
+        .rx-number {
+            margin-left: auto;
+            font-family: 'DM Mono', monospace;
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .rx-items {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .rx-item {
+            background: var(--bg-accent);
+            padding: 16px;
+            border-radius: 8px;
+            border-left: 3px solid var(--hospital-blue);
+        }
+
+        .rx-item.urgent {
+            border-left-color: var(--clinical-red);
+            background: #FEF8F8;
+        }
+
+        .rx-item h4 {
+            font-size: 14px;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .rx-item p {
+            font-size: 13px;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
+        .rx-item .command {
+            font-family: 'DM Mono', monospace;
+            font-size: 12px;
+            background: var(--text-dark);
+            color: #E8F4F8;
+            padding: 6px 10px;
+            border-radius: 4px;
+            margin-top: 10px;
+            display: inline-block;
+        }
+
+        /* Uptime Chart */
+        .chart-section {
+            background: var(--bg-card);
+            border-radius: 12px;
+            box-shadow: var(--shadow-sm);
+            padding: 24px;
+            margin-bottom: 32px;
+            border: 1px solid var(--border-light);
+        }
+
+        .chart-container {
+            position: relative;
+            height: 200px;
+        }
+
+        /* Quick Actions */
+        .actions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .action-btn {
+            background: var(--bg-card);
+            border: 1px solid var(--border-light);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .action-btn:hover {
+            background: var(--hospital-blue);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .action-btn:hover .action-icon {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .action-btn:hover .action-text {
+            color: white;
+        }
+
+        .action-icon {
+            width: 48px;
+            height: 48px;
+            background: var(--bg-accent);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin: 0 auto 12px;
+            transition: all 0.3s ease;
+        }
+
+        .action-text {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-dark);
+            transition: color 0.3s ease;
+        }
+
+        .action-sub {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 4px;
+            transition: color 0.3s ease;
+        }
+
+        .action-btn:hover .action-sub {
+            color: rgba(255,255,255,0.8);
+        }
+
+        /* History Log */
+        .history-section {
+            background: var(--bg-card);
+            border-radius: 12px;
+            box-shadow: var(--shadow-sm);
+            padding: 24px;
+            border: 1px solid var(--border-light);
+        }
+
+        .history-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .history-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .history-item:last-child {
+            border-bottom: none;
+        }
+
+        .history-time {
+            font-family: 'DM Mono', monospace;
+            font-size: 11px;
+            color: var(--text-muted);
+            min-width: 60px;
+        }
+
+        .history-status {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-top: 5px;
+            flex-shrink: 0;
+        }
+
+        .history-status.up { background: var(--clinical-green); }
+        .history-status.down { background: var(--clinical-red); }
+        .history-status.warning { background: var(--clinical-yellow); }
+
+        .history-text {
+            font-size: 13px;
+            color: var(--text-dark);
+            flex: 1;
+        }
+
+        /* Confetti */
+        .confetti {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1000;
+            overflow: hidden;
+        }
+
+        .confetti-piece {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            opacity: 0;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .header-left {
+                flex-direction: column;
+            }
+
+            .header-stats {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .patients-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .container {
+                padding: 16px;
+            }
+
+            .rx-items {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-accent);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border-light);
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--text-muted);
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-left">
+            <div class="logo-icon">🏥</div>
+            <div class="header-title">
+                <h1>VPS Doctor</h1>
+                <p>主機健康診所 — 主機病歷系統</p>
+            </div>
+        </div>
+        <div class="header-stats">
+            <div class="stat-badge">
+                <div class="number" id="totalServers">9</div>
+                <div class="label">Total Servers</div>
+            </div>
+            <div class="stat-badge">
+                <div class="number" id="healthyCount">7</div>
+                <div class="label">Healthy</div>
+            </div>
+            <div class="stat-badge">
+                <div class="number" id="criticalCount">1</div>
+                <div class="label">Critical</div>
+            </div>
+            <div class="live-indicator">
+                <div class="live-dot"></div>
+                <span>Last Scan: <span id="lastScan">--:--:--</span></span>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <!-- Patient Cards -->
+        <section>
+            <h2 class="section-title">📋 Patient Records 病歷卡</h2>
+            <div class="patients-grid" id="patientsGrid">
+                <!-- Cards will be generated by JS -->
+            </div>
+        </section>
+
+        <!-- Prescriptions -->
+        <section class="prescription-section">
+            <div class="rx-header">
+                <div class="rx-icon">💊</div>
+                <h2 class="rx-title">Prescriptions 處方簽</h2>
+                <span class="rx-number">RX-2026-0629</span>
+            </div>
+            <div class="rx-items">
+                <div class="rx-item urgent">
+                    <h4>🔴 gpt.chung.men — 502 Bad Gateway</h4>
+                    <p>後端服務持續中斷第 6 天，建議立即檢查容器狀態或重啟服務。</p>
+                    <span class="command">docker ps -a | grep gpt</span>
+                </div>
+                <div class="rx-item urgent">
+                    <h4>🟡 wallos (JP2) — DNS Unreachable</h4>
+                    <p>容器健康檢查失敗，外部 DNS 解析異常，需排查網路設定。</p>
+                    <span class="command">docker restart wallos && docker logs wallos</span>
+                </div>
+                <div class="rx-item">
+                    <h4>🔵 Routine Check — 13站健檢完成</h4>
+                    <p>其餘 7 台伺服器正常運作，建議持續監控每 6 小時一次。</p>
+                    <span class="command">./health-check.sh --schedule 6h</span>
+                </div>
+                <div class="rx-item">
+                    <h4>✅ YOURLS — v1.10.4已是最新</h4>
+                    <p>無需更新，建議下一個檢查週期：30 天後。</p>
+                    <span class="command">yoursof check-update --next 30d</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Uptime Chart -->
+        <section class="chart-section">
+            <h2 class="section-title">📊 Uptime History 健康趨勢 (7 days)</h2>
+            <div class="chart-container">
+                <canvas id="uptimeChart"></canvas>
+            </div>
+        </section>
+
+        <!-- Quick Actions -->
+        <section>
+            <h2 class="section-title">⚡ Quick Actions 快速行動</h2>
+            <div class="actions-grid">
+                <div class="action-btn" onclick="runHealthCheck()">
+                    <div class="action-icon">🔍</div>
+                    <div class="action-text">Run Health Check</div>
+                    <div class="action-sub">Scan all servers now</div>
+                </div>
+                <div class="action-btn" onclick="restartService('gpt')">
+                    <div class="action-icon">🔄</div>
+                    <div class="action-text">Restart GPT Service</div>
+                    <div class="action-sub">Fix 502 error</div>
+                </div>
+                <div class="action-btn" onclick="restartService('wallos')">
+                    <div class="action-icon">🌐</div>
+                    <div class="action-text">Restart Wallos</div>
+                    <div class="action-sub">Fix DNS issue</div>
+                </div>
+                <div class="action-btn" onclick="exportReport()">
+                    <div class="action-icon">📄</div>
+                    <div class="action-text">Export Report</div>
+                    <div class="action-sub">Generate PDF summary</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Activity Log -->
+        <section class="history-section">
+            <h2 class="section-title">📝 Activity Log 活動日誌</h2>
+            <div class="history-list" id="historyList">
+                <!-- History items will be generated by JS -->
+            </div>
+        </section>
+    </main>
+
+    <div class="confetti" id="confetti"></div>
+
+    <script>
+        // Server Data
+        const servers = [
+            { id: 'ifye-web', name: 'IFYE Web', domain: 'ifye.4-h.me', status: 'healthy', uptime: '99.9%', response: '45ms', lastCheck: '2 min ago', diagnosis: 'All systems operational. SSL certificate valid.' },
+            { id: 'index', name: 'Index Page', domain: 'index.4-h.me', status: 'healthy', uptime: '99.9%', response: '38ms', lastCheck: '2 min ago', diagnosis: 'Serving 51 stations correctly.' },
+            { id: 'gpt', name: 'GPT Service', domain: 'gpt.chung.men', status: 'critical', uptime: '0%', response: '502', lastCheck: '6 days ago', diagnosis: '502 Bad Gateway — Backend service disappeared. Docker container may have crashed.' },
+            { id: 'wallos-jp2', name: 'Wallos (JP2)', domain: 'wallos.chung.men', status: 'warning', uptime: '23%', response: 'Timeout', lastCheck: '12 hours ago', diagnosis: 'Container unhealthy. External DNS unreachable. Network configuration issue.' },
+            { id: 'yourls', name: 'YOURLS', domain: 'yee.chat', status: 'healthy', uptime: '99.9%', response: '52ms', lastCheck: '2 min ago', diagnosis: 'v1.10.4 — Latest version. All features working.' },
+            { id: 'lab', name: 'Daily Lab', domain: 'chung223.github.io', status: 'healthy', uptime: '99.9%', response: '41ms', lastCheck: '2 min ago', diagnosis: 'Daily Lab projects serving correctly.' },
+            { id: 'vps-1', name: 'VPS SG1', domain: 'sg1.chung.men', status: 'healthy', uptime: '99.8%', response: '89ms', lastCheck: '2 min ago', diagnosis: 'Singapore node stable.' },
+            { id: 'vps-2', name: 'VPS JP1', domain: 'jp1.chung.men', status: 'healthy', uptime: '99.7%', response: '102ms', lastCheck: '2 min ago', diagnosis: 'Japan node stable.' },
+            { id: 'vps-3', name: 'VPS US1', domain: 'us1.chung.men', status: 'healthy', uptime: '99.9%', response: '156ms', lastCheck: '2 min ago', diagnosis: 'US node stable.' },
+        ];
+
+        // Activity History
+        const history = [
+            { time: '03:00', status: 'down', text: 'gpt.chung.men — 502 Bad Gateway detected (Day 6)' },
+            { time: '03:00', status: 'warning', text: 'wallos (JP2) — Container unhealthy, DNS unreachable' },
+            { time: '03:00', status: 'up', text: '12/13 stations passed health check' },
+            { time: '02:00', status: 'up', text: 'Routine heartbeat — Memory flush completed' },
+            { time: '01:00', status: 'up', text: 'IFYE 2026 VPS Sync — 9 representatives, 51 stations synced' },
+            { time: '00:30', status: 'up', text: 'Heartbeat cycle — All systems nominal' },
+            { time: '00:00', status: 'up', text: 'Daily Lab cron triggered — Building project for 2026-06-29' },
+        ];
+
+        // Render Patient Cards
+        function renderPatients() {
+            const grid = document.getElementById('patientsGrid');
+            grid.innerHTML = servers.map(server => `
+                <div class="patient-card ${server.status}">
+                    <div class="card-header">
+                        <div class="patient-info">
+                            <h3>${server.name}</h3>
+                            <span class="domain">${server.domain}</span>
+                        </div>
+                        <span class="status-badge ${server.status}">
+                            ${server.status === 'healthy' ? '✓ Healthy' : server.status === 'warning' ? '⚠ Warning' : '✗ Critical'}
+                        </span>
+                    </div>
+                    <div class="card-body">
+                        <div class="vital-signs">
+                            <div class="vital">
+                                <div class="label">Uptime</div>
+                                <div class="value">${server.uptime}</div>
+                            </div>
+                            <div class="vital">
+                                <div class="label">Response</div>
+                                <div class="value">${server.response}</div>
+                            </div>
+                        </div>
+                        <div class="diagnosis">
+                            <div class="diagnosis-label">Diagnosis</div>
+                            <div class="diagnosis-text">${server.diagnosis}</div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <span class="last-check">Last check: ${server.lastCheck}</span>
+                        <a href="#" class="view-details">View History →</a>
+                    </div>
+                </div>
+            `).join('');
+
+            // Update header stats
+            const healthy = servers.filter(s => s.status === 'healthy').length;
+            const critical = servers.filter(s => s.status === 'critical').length;
+            document.getElementById('healthyCount').textContent = healthy;
+            document.getElementById('criticalCount').textContent = critical;
+        }
+
+        // Render Activity History
+        function renderHistory() {
+            const list = document.getElementById('historyList');
+            list.innerHTML = history.map(item => `
+                <div class="history-item">
+                    <span class="history-time">${item.time}</span>
+                    <span class="history-status ${item.status}"></span>
+                    <span class="history-text">${item.text}</span>
+                </div>
+            `).join('');
+        }
+
+        // Update Last Scan Time
+        function updateLastScan() {
+            const now = new Date();
+            const time = now.toLocaleTimeString('zh-TW', { hour12: false });
+            document.getElementById('lastScan').textContent = time;
+        }
+
+        // Uptime Chart
+        function renderChart() {
+            const ctx = document.getElementById('uptimeChart').getContext('2d');
+            const days = ['Jun 23', 'Jun 24', 'Jun 25', 'Jun 26', 'Jun 27', 'Jun 28', 'Jun 29'];
+            const uptimeData = [99.9, 99.8, 95.2, 99.9, 98.1, 92.3, 87.5];
+
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: days,
+                    datasets: [{
+                        label: 'System Uptime %',
+                        data: uptimeData,
+                        borderColor: '#0066AA',
+                        backgroundColor: 'rgba(0, 102, 170, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4,
+                        pointBackgroundColor: '#0066AA',
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 2,
+                        pointRadius: 5
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            min: 80,
+                            max: 100,
+                            grid: {
+                                color: '#E0E8EC'
+                            },
+                            ticks: {
+                                callback: value => value + '%'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Quick Actions
+        function runHealthCheck() {
+            const actions = document.querySelector('.actions-grid');
+            actions.style.opacity = '0.5';
+            
+            setTimeout(() => {
+                actions.style.opacity = '1';
+                updateLastScan();
+                showConfetti();
+                alert('✅ Health check completed! 12/13 servers healthy.');
+            }, 1500);
+        }
+
+        function restartService(service) {
+            const messages = {
+                gpt: '🔄 Restarting GPT service...\n\nNote: Backend service has been down for 6 days.\nCheck: docker ps -a | grep gpt',
+                wallos: '🔄 Restarting Wallos container...\n\nNote: DNS unreachable issue.\nCheck: docker logs wallos'
+            };
+            alert(messages[service] || 'Service restart initiated.');
+        }
+
+        function exportReport() {
+            showConfetti();
+            alert('📄 Report generated!\n\nVPS Doctor Report — 2026-06-29\n\nSummary:\n• Total Servers: 9\n• Healthy: 7\n• Critical: 1\n• Warning: 1\n\nTop Issues:\n• gpt.chung.men — 502 Bad Gateway (Day 6)\n• wallos (JP2) — DNS Unreachable');
+        }
+
+        // Confetti
+        function showConfetti() {
+            const container = document.getElementById('confetti');
+            const colors = ['#0066AA', '#28A745', '#FFC107', '#DC3545', '#E8F4F8'];
+            
+            for (let i = 0; i < 50; i++) {
+                const piece = document.createElement('div');
+                piece.className = 'confetti-piece';
+                piece.style.left = Math.random() * 100 + '%';
+                piece.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                piece.style.transform = `rotate(${Math.random() * 360}deg)`;
+                piece.style.animation = `confettiFall ${2 + Math.random() * 2}s ease-out forwards`;
+                piece.style.animationDelay = Math.random() * 0.5 + 's';
+                container.appendChild(piece);
+            }
+
+            setTimeout(() => {
+                container.innerHTML = '';
+            }, 4000);
+        }
+
+        // Add confetti animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes confettiFall {
+                0% {
+                    opacity: 1;
+                    top: -10px;
+                    transform: rotate(0deg) translateX(0);
+                }
+                100% {
+                    opacity: 0;
+                    top: 100vh;
+                    transform: rotate(720deg) translateX(${Math.random() > 0.5 ? '' : '-'}100px);
+                }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            renderPatients();
+            renderHistory();
+            renderChart();
+            updateLastScan();
+
+            // Update time every second
+            setInterval(updateLastScan, 1000);
+        });
+    </script>
+</body>
+</html>

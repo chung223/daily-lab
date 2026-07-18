@@ -1,18 +1,37 @@
 # Daily Lab
 
-Total entries: 94
+Total entries: 121
 
 ## Featured (Latest 3)
 
-- **2026-07-19** [✨ Wiki Sync 命盤 (Wiki Sync Horoscope)](2026-07-19/README.md) — Japanese Minimal × Zen 日式極簡禪風格的 Wiki Sync 命盤。展示四檔輪流系統（旋轉木馬卡片）、今日心跳統計（30次）、WAIC 2026 倒數計時。奶油白背景、淡金色點綴、脈衝光環動畫。
+- **2026-07-17** [⏳ 時光命理軸](2026-07-17/README.md) — 將命理流轉與工作足跡融合的每日時間軸，結合八字、塔羅、梅花易數與待辦追蹤、IFYE站點統計。
 
-- **2026-05-29** [✨ 記憶膠囊收集器 | Memory Capsule Collector](2026-05-29/README.md) — 封存每一個閃過的念頭。將靈感、問題、夢境片段儲存為記憶膠囊，顯示在時間軸上。Warm Paper Craft 溫暖紙藝風
+- **2026-07-16** [🐬 腸道冲浪 - Dolphin Surf](2026-07-16/README.md) — 一個可愛的海豚冲浪小遊戲，在腸道主題的虛擬海洋中冲浪避開障礙物。
 
-- **2026-05-28** [✨ Tangent Collector — 擦肩而過的靈感收集器](2026-05-28/README.md) — 明亮溫暖的靈感收集器，輸入「差一點就要想到」的念頭，儲存到 localStorage 並顯示時間軸。Warm Paper Craft 溫暖紙藝編輯風
+- **2026-07-14** [空白時光時間銀行 | Blank Time Bank](2026-07-14/README.md) — 一個將空白時間貨幣化的時間銀行系統，透過優雅的新聞報紙風格介面，讓使用者記錄、存款和提取「空白時光」。
 
-- **2026-05-21** [🏥 漏洞急診室 | Vulnerability ER](2026-05-21/README.md) — 漫畫風格急診室，把 5 個 GitHub Issues 做成病患卡片，包含嚴重程度 badge、三格漫畫面板、護理處方箋、已處理按鈕。Bright Comic Medical 亮色漫畫醫療風
+- **2026-07-07** [🔮 神秘的每日三張牌](2026-07-07/README.md) — 神秘的每日卡片占卜工具，點擊揭曉今日專屬訊息。包含生活提醒、健康建議、科技洞察等多類型卡片。
+
+- **2026-07-04** [🐟 魚油大作戰 (Fish Oil Mission)](2026-07-04/README.md) — 明亮海洋風格的魚油服用追蹤工具。展示海豚督導🆚拖延鯊魚的對話大戰、可自訂提醒倒數計時器、連續天數streak追蹤、統計面板（今日/連續/總次數）。
+
+- **2026-06-29** [🏥 VPS Doctor — 主機健康診所](2026-06-29/README.md) — 醫院主題的 VPS 伺服器健康監控儀表板。將 9 台伺服器化身病歷卡，顯示存活率、連線速度、診斷結果；提供處方簽、快速操作按鈕，即時掌握主機狀態。
+
+- **2026-06-28** [🪪 IFYE 2026 世界友誼護照 (World Passport)](2026-06-28/README.md) — Warm Paper × Vintage Passport 國際四健會交換計劃（IFYE）2026 數位護照。展示 9 位代表、5 個國家的國家印章、旅程時間軸和互動簽名區。
+
+- **2026-06-26** [🥚 假設性情境思考 (What-If Universe)](2026-06-26/README.md) — Warm Paper × Cosmic 溫暖紙張 × 宇宙感風格的假設性情境思考工具。展示三色蛋核心語錄、宇宙分支卡片、台北美食捷運互動、感謝清單反思卡。
+
+- **2026-06-25** [✈️ IFE 國際貴賓航班抵達板 (IFE Flight Arrivals)](2026-06-25/README.md) — Retro Airport FIDS 復古機場航班資訊顯示板風格的 IFE 2026 貴賓接待板。展示 6 個抵達航班和 1 個出發航班，即時時鐘、狀態徽章、Timeline 事件。
 
 ## Categories
+
+### learning
+
+- 2026-07-10 — [📐 知識的形狀 (Tangent Collector)](2026-07-10/README.md)
+- 2026-07-09 — [⏳ 等待的重量 vs 行動的重量](2026-07-09/README.md)
+
+### typography
+
+- 2026-06-07 — [✍️ 文字的味道 | Flavor of Text](2026-06-07/README.md)
 
 ### travel
 
@@ -23,12 +42,18 @@ Total entries: 94
 - 2026-05-07 — [🐟 魚油期限拯救中心 (Fish Oil Rescue Center)](2026-05-07/README.md)
 - 2026-03-14 — [幹話產生器](2026-03-14/README.md)
 
+### dashboard
+
+- 2026-06-29 — [🏥 VPS Doctor — 主機健康診所](2026-06-29/README.md)
+- 2026-06-20 — [🎛️ IFYE 2026 — Station Commander](2026-06-20/README.md)
+
 ### fortune
 
 - 2026-04-06 — [奇門遁甲愛情命盤](2026-04-06/README.md)
 
 ### game
 
+- 2026-07-16 — [🐬 腸道冲浪 - Dolphin Surf](2026-07-16/README.md)
 - 2026-04-23 — [OCR 勇者冒險 (mlx-ocr 戰鬥系統)](2026-04-23/README.md)
 - 2026-03-02 — [幸運拉霸](2026-03-02/README.md)
 
@@ -43,6 +68,14 @@ Total entries: 94
 
 ### interactive
 
+- 2026-07-17 — [⏳ 時光命理軸](2026-07-17/README.md)
+- 2026-07-07 — [🔮 神秘的每日三張牌](2026-07-07/README.md)
+- 2026-07-01 — [📅 月份牌工廠 — July 2026](2026-07-01/README.md)
+- 2026-06-28 — [🪪 IFYE 2026 世界友誼護照 (World Passport)](2026-06-28/README.md)
+- 2026-06-24 — [🔷 What-If 形狀工廠 (Shape Factory)](2026-06-24/README.md)
+- 2026-06-21 — [🍸 時間調酒師 — Time Bartender](2026-06-21/README.md)
+- 2026-06-16 — [🌙 深夜圖書館值班漫畫 | Night Shift Library](2026-06-16/README.md)
+- 2026-06-04 — [🌱 願望播種機 | Wish Seedling Garden](2026-06-04/README.md)
 - 2026-05-29 — [✨ 記憶膠囊收集器 | Memory Capsule Collector](2026-05-29/README.md)
 - 2026-05-16 — [🌙 凌晨矛盾簿 | Midnight Contradiction Journal](2026-05-16/README.md)
 - 2026-05-13 — [🛫 釜山倒數 — Busan Countdown](2026-05-13/README.md)
@@ -54,7 +87,9 @@ Total entries: 94
 
 ### tool
 
-- 2026-07-19 — [✨ Wiki Sync 命盤 (Wiki Sync Horoscope)](2026-07-19/README.md)
+- 2026-06-23 — [🏅 Session Memento — 7.4 Days of Dedication](2026-06-23/README.md)
+- 2026-06-05 — [📰 科技頭條報 - 今日新聞收藏室](2026-06-05/README.md)
+- 2026-06-02 — [✨ 沉默急診室 | Silent ER](2026-06-02/README.md)
 - 2026-05-21 — [🏥 漏洞急診室 | Vulnerability ER](2026-05-21/README.md)
 - 2026-05-20 — [🥘 味道翻譯機 | Flavor Translator](2026-05-20/README.md)
 - 2026-05-11 — [🏥 301 急診室 — 網站リダイレクト調査](2026-05-11/README.md)
@@ -76,20 +111,28 @@ Total entries: 94
 - 2026-02-19 — [2026-02-19](2026-02-19/README.md)
 - 2026-02-18 — [2026-02-18](2026-02-18/README.md)
 - 2026-02-17 — [2026-02-17](2026-02-17/README.md)
-- 2026-02-16 — [2026-02-16](2026-02-16/README.md)
-- 2026-02-15 — [2026-02-15](2026-02-15/README.md)
-- 2026-02-14 — [2026-02-14](2026-02-14/README.md)
-- 2026-02-13 — [2026-02-13](2026-02-13/README.md)
+- 2026-02-16 — [2026-02-16/README.md)
+- 2026-02-15 — [2026-02-15/README.md)
+- 2026-02-14 — [2026-02-14/README.md)
+- 2026-02-13 — [2026-02-13/README.md)
 - 2026-02-11 — [第一天](2026-02-11/README.md)
 
 ### visualization
+
+- 2026-06-15 — [🫀 System ECG Monitor | HEARTBEAT 系統心電圖](2026-06-15/README.md)
 
 - 2026-05-22 — [✨ 知識星河 — Knowledge Constellation](2026-05-22/README.md)
 - 2026-04-11 — [健康報告卡 Blood Test Report Card](2026-04-11/README.md)
 - 2026-04-05 — [心理健康漫畫故事書](2026-04-05/README.md)
 
+### experiment
+
+- 2026-07-11 — [2026-07-11 Daily Project](2026-07-11/README.md)
+
 ### web
 
+- 2026-07-14 — [空白時光時間銀行 | Blank Time Bank](2026-07-14/README.md)
+- 2026-07-05 — [🌙 系統夢境相談室](2026-07-05/README.md)
 - 2026-04-12 — [昭和咖啡屋](2026-04-12/README.md)
 
 ### 互動系
@@ -107,8 +150,18 @@ Total entries: 94
 - 2026-05-12 — [🔮 乙酉木日晨間占卜](2026-05-12/README.md)
 - 2026-04-08 — [魚油占卜時光機 (Fish Oil Oracle Machine)](2026-04-08/README.md)
 
+### 工具系（哲學思考工具）
+
+- 2026-06-26 — [🥚 假設性情境思考 (What-If Universe)](2026-06-26/README.md)
+
 ### 工具系
 
+- 2026-07-08 — [🏥 Session ICU 重症監護室](2026-07-08/README.md)
+- 2026-07-04 — [🐟 魚油大作戰 (Fish Oil Mission)](2026-07-04/README.md)
+- 2026-06-25 — [✈️ IFE 國際貴賓航班抵達板 (IFE Flight Arrivals)](2026-06-25/README.md)
+- 2026-06-19 — [🖥️ OpenClaw BBS Issue Terminal](2026-06-19/README.md)
+- 2026-06-14 — [🌸 寂靜花園 | Sunday Stillness Garden](2026-06-14/README.md)
+- 2026-06-10 — [🧺 時間痕跡收藏家 | Time Marks Collector](2026-06-10/README.md)
 - 2026-05-28 — [✨ Tangent Collector — 擦肩而過的靈感收集器](2026-05-28/README.md)
 - 2026-05-19 — [🥗 午餐辯論俱樂部 (Lunch Debate Club)](2026-05-19/README.md)
 - 2026-05-02 — [🖥️ VPS 解剖實驗室 (System Autopsy Lab)](2026-05-02/README.md)

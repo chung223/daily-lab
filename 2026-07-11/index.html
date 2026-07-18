@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OpenClaw Weekly Release — v2026.7.1-beta.2</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;700&family=JetBrains+Mono:wght@400;700&family=Noto+Sans+TC:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #F5F5F0;
+      --black: #0A0A0A;
+      --white: #FFFFFF;
+      --red: #E63946;
+      --blue: #1D3557;
+      --yellow: #FFD60A;
+      --green: #2D6A4F;
+      --border: 4px solid var(--black);
+      --shadow: 6px 6px 0 var(--black);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Noto Sans TC', sans-serif;
+      background: var(--bg);
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    /* Header */
+    .header {
+      background: var(--yellow);
+      border: var(--border);
+      padding: 24px;
+      margin-bottom: 32px;
+      position: relative;
+    }
+
+    .header::before {
+      content: '⬡ OPENCLAW WEEKLY';
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      color: var(--black);
+      opacity: 0.5;
+    }
+
+    .header h1 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(32px, 8vw, 72px);
+      font-weight: 700;
+      line-height: 1;
+      margin: 12px 0;
+      letter-spacing: -2px;
+    }
+
+    .header .version {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 24px;
+      font-weight: 700;
+      background: var(--black);
+      color: var(--yellow);
+      padding: 4px 12px;
+      display: inline-block;
+    }
+
+    .header .date {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 14px;
+      margin-top: 12px;
+      opacity: 0.7;
+    }
+
+    /* Stats Bar */
+    .stats-bar {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+
+    .stat-card {
+      background: var(--white);
+      border: var(--border);
+      padding: 20px;
+      box-shadow: var(--shadow);
+      text-align: center;
+    }
+
+    .stat-card .number {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 48px;
+      font-weight: 700;
+      line-height: 1;
+    }
+
+    .stat-card .label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-top: 8px;
+      opacity: 0.6;
+    }
+
+    .stat-card.highlight {
+      background: var(--black);
+      color: var(--white);
+    }
+
+    .stat-card.highlight .label {
+      color: var(--white);
+    }
+
+    /* Feature Cards */
+    .features-section {
+      margin-bottom: 32px;
+    }
+
+    .section-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+      padding-bottom: 8px;
+      border-bottom: var(--border);
+    }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 20px;
+    }
+
+    .feature-card {
+      background: var(--white);
+      border: var(--border);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      transition: transform 0.1s;
+    }
+
+    .feature-card:hover {
+      transform: translate(-2px, -2px);
+      box-shadow: 8px 8px 0 var(--black);
+    }
+
+    .feature-header {
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border-bottom: var(--border);
+    }
+
+    .feature-header.gpt {
+      background: var(--blue);
+      color: var(--white);
+    }
+
+    .feature-header.harness {
+      background: var(--green);
+      color: var(--white);
+    }
+
+    .feature-header.cron {
+      background: var(--red);
+      color: var(--white);
+    }
+
+    .feature-header.ios {
+      background: var(--black);
+      color: var(--white);
+    }
+
+    .feature-header.imessage {
+      background: #8B5CF6;
+      color: var(--white);
+    }
+
+    .feature-icon {
+      font-size: 32px;
+      line-height: 1;
+    }
+
+    .feature-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      padding: 4px 8px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 2px;
+    }
+
+    .feature-body {
+      padding: 20px;
+    }
+
+    .feature-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    .feature-desc {
+      font-size: 14px;
+      line-height: 1.6;
+      opacity: 0.8;
+      margin-bottom: 16px;
+    }
+
+    .feature-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      padding: 4px 10px;
+      background: var(--bg);
+      border: 2px solid var(--black);
+    }
+
+    /* GPT Triplets Section */
+    .gpt-triplets {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .triplet {
+      text-align: center;
+      padding: 12px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 4px;
+    }
+
+    .triplet-name {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .triplet-sub {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      opacity: 0.8;
+    }
+
+    /* Issues Section */
+    .issues-section {
+      margin-bottom: 32px;
+    }
+
+    .issue-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+    }
+
+    .issue-card {
+      background: var(--white);
+      border: var(--border);
+      padding: 16px;
+      box-shadow: var(--shadow);
+    }
+
+    .issue-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .issue-number {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .priority-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 4px 8px;
+      border-radius: 2px;
+    }
+
+    .priority-badge.p1 {
+      background: var(--red);
+      color: var(--white);
+    }
+
+    .priority-badge.p2 {
+      background: var(--yellow);
+      color: var(--black);
+    }
+
+    .priority-badge.p3 {
+      background: #E0E0E0;
+      color: var(--black);
+    }
+
+    .issue-title {
+      font-size: 14px;
+      line-height: 1.4;
+    }
+
+    /* Footer */
+    .footer {
+      border-top: var(--border);
+      padding-top: 24px;
+      margin-top: 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .footer-left {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      opacity: 0.6;
+    }
+
+    .footer-right {
+      text-align: right;
+    }
+
+    .footer-right .status {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      justify-content: flex-end;
+    }
+
+    .status-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--red);
+      animation: pulse 1.5s infinite;
+    }
+
+    .status-dot.warning {
+      background: var(--yellow);
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      body { padding: 12px; }
+      .gpt-triplets { grid-template-columns: 1fr; }
+      .header h1 { font-size: 36px; }
+      .stat-card .number { font-size: 36px; }
+    }
+
+    /* Confetti */
+    .confetti {
+      position: fixed;
+      pointer-events: none;
+      z-index: 1000;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <header class="header">
+      <div>OPENCLAW WEEKLY</div>
+      <h1>Release Notes</h1>
+      <span class="version">v2026.7.1-beta.2</span>
+      <div class="date">July 10, 2026 · 12:00 PM · GitHub Digest</div>
+    </header>
+
+    <!-- Stats -->
+    <div class="stats-bar">
+      <div class="stat-card">
+        <div class="number">5</div>
+        <div class="label">New Features</div>
+      </div>
+      <div class="stat-card">
+        <div class="number">3</div>
+        <div class="label">Hot Issues</div>
+      </div>
+      <div class="stat-card highlight">
+        <div class="number">GPT-5.6</div>
+        <div class="label">Model Support</div>
+      </div>
+      <div class="stat-card">
+        <div class="number">3</div>
+        <div class="label">System Updates</div>
+      </div>
+    </div>
+
+    <!-- Feature Cards -->
+    <section class="features-section">
+      <h2 class="section-title">⬡ Featured Updates</h2>
+      <div class="feature-grid">
+        
+        <!-- GPT-5.6 -->
+        <div class="feature-card">
+          <div class="feature-header gpt">
+            <span class="feature-icon">🤖</span>
+            <div>
+              <div class="feature-badge">NEW MODEL</div>
+              <div style="font-size: 8px; opacity: 0.7; margin-top: 2px;">GPT-5.6 Series</div>
+            </div>
+          </div>
+          <div class="feature-body">
+            <div class="feature-title">GPT-5.6 三兄弟</div>
+            <div class="feature-desc">
+              OpenClaw 現已支援 GPT-5.6 模型系列，包含 Sol、Terra、Luna 三個變體。Sol 在基準測試中超越 Claude Fable 5，展現卓越的推理能力。
+            </div>
+            <div class="gpt-triplets">
+              <div class="triplet">
+                <div class="triplet-name">☀️ Sol</div>
+                <div class="triplet-sub">旗艦推理</div>
+              </div>
+              <div class="triplet">
+                <div class="triplet-name">🌍 Terra</div>
+                <div class="triplet-sub">平衡高效</div>
+              </div>
+              <div class="triplet">
+                <div class="triplet-name">🌙 Luna</div>
+                <div class="triplet-sub">輕量快速</div>
+              </div>
+            </div>
+            <div class="feature-tags" style="margin-top: 16px;">
+              <span class="tag">gpt-5.6</span>
+              <span class="tag">sol/terra/luna</span>
+              <span class="tag">claude-fable-5</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- External Harness -->
+        <div class="feature-card">
+          <div class="feature-header harness">
+            <span class="feature-icon">🔗</span>
+            <div>
+              <div class="feature-badge">ENHANCED</div>
+              <div style="font-size: 8px; opacity: 0.7; margin-top: 2px;">External Harness</div>
+            </div>
+          </div>
+          <div class="feature-body">
+            <div class="feature-title">External Harness Attachment</div>
+            <div class="feature-desc">
+              <code style="background: var(--bg); padding: 2px 6px; font-family: 'JetBrains Mono', monospace;">openclaw attach</code> 現在可以對現有的 Gateway session 啟動外部 harness，方便即時監控和干預正在運行的對話。
+            </div>
+            <div class="feature-tags" style="margin-top: 16px;">
+              <span class="tag">openclaw attach</span>
+              <span class="tag">gateway</span>
+              <span class="tag">harness</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Event-driven Cron -->
+        <div class="feature-card">
+          <div class="feature-header cron">
+            <span class="feature-icon">⏰</span>
+            <div>
+              <div class="feature-badge">NEW FEATURE</div>
+              <div style="font-size: 8px; opacity: 0.7; margin-top: 2px;">Event-driven Scheduling</div>
+            </div>
+          </div>
+          <div class="feature-body">
+            <div class="feature-title">Event-driven Cron</div>
+            <div class="feature-desc">
+              新增 <code style="background: var(--bg); padding: 2px 6px; font-family: 'JetBrains Mono', monospace;">on-exit</code> schedule kind，可以監聽命令結束並自動喚醒 agent。這讓自動化工作流更加靈活！
+            </div>
+            <div class="feature-tags" style="margin-top: 16px;">
+              <span class="tag">on-exit</span>
+              <span class="tag">schedule</span>
+              <span class="tag">event-driven</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- iOS 26 -->
+        <div class="feature-card">
+          <div class="feature-header ios">
+            <span class="feature-icon">📱</span>
+            <div>
+              <div class="feature-badge">REDESIGN</div>
+              <div style="font-size: 8px; opacity: 0.7; margin-top: 2px;">iOS App</div>
+            </div>
+          </div>
+          <div class="feature-body">
+            <div class="feature-title">iOS 26 視覺系統</div>
+            <div class="feature-desc">
+              Aight iOS App 採用 iOS 26 全新視覺風格重新設計，包含更流暢的動畫、更現代的卡片系統，以及優化的深色模式。
+            </div>
+            <div class="feature-tags" style="margin-top: 16px;">
+              <span class="tag">ios-26</span>
+              <span class="tag">aight</span>
+              <span class="tag">redesign</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- iMessage Polls -->
+        <div class="feature-card">
+          <div class="feature-header imessage">
+            <span class="feature-icon">📊</span>
+            <div>
+              <div class="feature-badge">NEW</div>
+              <div style="font-size: 8px; opacity: 0.7; margin-top: 2px;">iMessage Integration</div>
+            </div>
+          </div>
+          <div class="feature-body">
+            <div class="feature-title">iMessage 投票功能</div>
+            <div class="feature-desc">
+              原生支援 poll 創建、讀取與投票功能。現在可以透過 iMessage 發起投票、收集回應，並自動匯總結果。
+            </div>
+            <div class="feature-tags" style="margin-top: 16px;">
+              <span class="tag">imessage</span>
+              <span class="tag">poll</span>
+              <span class="tag">voting</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Hot Issues -->
+    <section class="issues-section">
+      <h2 class="section-title">⬡ Hot Issues</h2>
+      <div class="issue-grid">
+        
+        <div class="issue-card">
+          <div class="issue-header">
+            <span class="issue-number">#103287</span>
+            <span class="priority-badge p1">P1</span>
+          </div>
+          <div class="issue-title">
+            Session state bug — 排隊訊息在 session failed 時未能正確清理，導致狀態不一致
+          </div>
+        </div>
+
+        <div class="issue-card">
+          <div class="issue-header">
+            <span class="issue-number">#103291</span>
+            <span class="priority-badge p2">P2</span>
+          </div>
+          <div class="issue-title">
+            Veo endpoint bug — 影片生成端點偶發性超時，已隔離至獨立的 retry logic
+          </div>
+        </div>
+
+        <div class="issue-card">
+          <div class="issue-header">
+            <span class="issue-number">#103250</span>
+            <span class="priority-badge p2">P2</span>
+          </div>
+          <div class="issue-title">
+            Codex macOS agent turns bug — macOS 上 Codex agent 的對話輪次計數異常
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="footer-left">
+        <div>openclaw / openclaw</div>
+        <div style="margin-top: 4px;">2026.7.1-beta.2 · MIT License</div>
+      </div>
+      <div class="footer-right">
+        <div class="status">
+          <span class="status-dot"></span>
+          <span>阿笨主對話 session failed（已十天）</span>
+        </div>
+        <div style="font-size: 11px; margin-top: 8px; opacity: 0.6;">Generated by Daily Lab · 2026-07-11</div>
+      </div>
+    </footer>
+
+  </div>
+
+  <script>
+    // Confetti burst on click
+    document.addEventListener('click', function(e) {
+      const colors = ['#E63946', '#FFD60A', '#1D3557', '#2D6A4F', '#8B5CF6'];
+      for (let i = 0; i < 8; i++) {
+        const confetti = document.createElement('div');
+        confetti.className = 'confetti';
+        confetti.style.cssText = `
+          left: ${e.clientX}px;
+          top: ${e.clientY}px;
+          width: 10px;
+          height: 10px;
+          background: ${colors[Math.floor(Math.random() * colors.length)]};
+          transform: rotate(${Math.random() * 360}deg);
+        `;
+        document.body.appendChild(confetti);
+        
+        const angle = (Math.random() * Math.PI * 2);
+        const velocity = 5 + Math.random() * 10;
+        const vx = Math.cos(angle) * velocity;
+        const vy = Math.sin(angle) * velocity;
+        let x = e.clientX, y = e.clientY, opacity = 1;
+        
+        function animate() {
+          x += vx;
+          y += vy + 2;
+          opacity -= 0.02;
+          confetti.style.transform = `translate(${x - e.clientX}px, ${y - e.clientY}px) rotate(${Math.random() * 360}deg)`;
+          confetti.style.opacity = opacity;
+          if (opacity > 0) requestAnimationFrame(animate);
+          else confetti.remove();
+        }
+        requestAnimationFrame(animate);
+      }
+    });
+  </script>
+</body>
+</html>
