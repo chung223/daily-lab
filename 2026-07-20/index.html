@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wiki Cycle 生命體徵監視器 — 2026-07-20</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Noto+Sans+TC:wght@400;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --cream: #FAF6ED;
+      --cream-dark: #F0E8D8;
+      --amber: #C4903D;
+      --amber-light: #E8B86D;
+      --amber-glow: rgba(196, 144, 61, 0.3);
+      --ink: #2C2416;
+      --red: #B85C5C;
+      --green: #4A7C5F;
+      --blue: #4A6B8A;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'IBM Plex Mono', monospace;
+      background: var(--cream);
+      color: var(--ink);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    
+    /* Paper texture overlay */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%' height='100%' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 1000;
+    }
+    
+    /* Header */
+    .header {
+      text-align: center;
+      padding: 2.5rem 1rem 1.5rem;
+      border-bottom: 3px solid var(--ink);
+      background: linear-gradient(180deg, var(--cream-dark) 0%, var(--cream) 100%);
+    }
+    
+    .header-label {
+      font-size: 0.7rem;
+      letter-spacing: 0.3em;
+      color: var(--amber);
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+    }
+    
+    .header h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.8rem, 5vw, 2.8rem);
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.3rem;
+    }
+    
+    .header-date {
+      font-size: 0.85rem;
+      color: var(--amber);
+    }
+    
+    /* WAIC Banner */
+    .waic-banner {
+      background: var(--ink);
+      color: var(--cream);
+      text-align: center;
+      padding: 0.6rem 1rem;
+      font-size: 0.75rem;
+      letter-spacing: 0.15em;
+    }
+    
+    .waic-banner span {
+      color: var(--amber-light);
+    }
+    
+    /* Main Grid */
+    .main-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+      padding: 1.5rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    @media (min-width: 900px) {
+      .main-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+    
+    /* Card */
+    .card {
+      background: var(--cream);
+      border: 2px solid var(--ink);
+      box-shadow: 4px 4px 0 var(--ink);
+      padding: 1.25rem;
+      position: relative;
+    }
+    
+    .card-title {
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--amber);
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--amber-glow);
+    }
+    
+    /* Oscilloscope Section */
+    .oscilloscope-card {
+      grid-column: 1 / -1;
+    }
+    
+    .scope-container {
+      background: #1A1814;
+      border-radius: 12px;
+      padding: 1rem;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .scope-screen {
+      background: linear-gradient(180deg, #0D0B08 0%, #1A1814 50%, #0D0B08 100%);
+      border-radius: 8px;
+      height: 200px;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    /* Grid lines */
+    .scope-screen::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: 
+        linear-gradient(rgba(196, 144, 61, 0.1) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(196, 144, 61, 0.1) 1px, transparent 1px);
+      background-size: 20px 20px;
+    }
+    
+    /* Center line */
+    .scope-screen::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 0;
+      width: 100%;
+      height: 1px;
+      background: rgba(196, 144, 61, 0.3);
+    }
+    
+    .scope-canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+    
+    .scope-label {
+      position: absolute;
+      bottom: 8px;
+      right: 12px;
+      font-size: 0.65rem;
+      color: var(--amber);
+      opacity: 0.7;
+    }
+    
+    /* Four-file carousel */
+    .carousel-container {
+      position: relative;
+      height: 140px;
+      overflow: hidden;
+    }
+    
+    .carousel-track {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      transition: transform 0.5s ease-in-out;
+    }
+    
+    .carousel-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.6rem 0.8rem;
+      background: var(--cream-dark);
+      border-radius: 6px;
+      border-left: 4px solid var(--ink);
+      opacity: 0.4;
+      transition: all 0.3s ease;
+    }
+    
+    .carousel-item.active {
+      opacity: 1;
+      border-left-color: var(--amber);
+      background: linear-gradient(90deg, var(--amber-glow) 0%, transparent 50%);
+      transform: scale(1.02);
+    }
+    
+    .carousel-item.completed {
+      opacity: 0.6;
+      border-left-color: var(--green);
+    }
+    
+    .carousel-icon {
+      font-size: 1.3rem;
+    }
+    
+    .carousel-name {
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+    
+    .carousel-status {
+      font-size: 0.65rem;
+      color: var(--amber);
+      margin-left: auto;
+    }
+    
+    .carousel-item.active .carousel-status {
+      animation: pulse 1s infinite;
+    }
+    
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+    
+    /* Progress bar */
+    .progress-container {
+      margin-top: 1rem;
+    }
+    
+    .progress-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.7rem;
+      margin-bottom: 0.4rem;
+      color: var(--amber);
+    }
+    
+    .progress-bar {
+      height: 8px;
+      background: var(--cream-dark);
+      border-radius: 4px;
+      overflow: hidden;
+      border: 1px solid var(--ink);
+    }
+    
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--amber) 0%, var(--amber-light) 100%);
+      border-radius: 4px;
+      transition: width 0.5s ease;
+    }
+    
+    /* Heartbeat Stats */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.75rem;
+    }
+    
+    .stat-box {
+      text-align: center;
+      padding: 1rem 0.5rem;
+      background: var(--cream-dark);
+      border-radius: 8px;
+      border: 1px solid var(--ink);
+    }
+    
+    .stat-number {
+      font-size: 1.8rem;
+      font-weight: 600;
+      color: var(--amber);
+      line-height: 1;
+    }
+    
+    .stat-label {
+      font-size: 0.65rem;
+      color: var(--ink);
+      opacity: 0.7;
+      margin-top: 0.3rem;
+    }
+    
+    .stat-sublabel {
+      font-size: 0.6rem;
+      color: var(--amber);
+      opacity: 0.8;
+    }
+    
+    /* Heartbeat Pulse Animation */
+    .pulse-ring {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 80px;
+      height: 80px;
+      margin: -40px 0 0 -40px;
+      border: 2px solid var(--amber);
+      border-radius: 50%;
+      opacity: 0;
+      animation: pulse-ring 2s infinite;
+    }
+    
+    @keyframes pulse-ring {
+      0% {
+        transform: scale(0.5);
+        opacity: 0.8;
+      }
+      100% {
+        transform: scale(1.5);
+        opacity: 0;
+      }
+    }
+    
+    /* Timeline */
+    .timeline {
+      position: relative;
+      padding-left: 1.5rem;
+    }
+    
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 6px;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: linear-gradient(180deg, var(--amber) 0%, var(--cream-dark) 100%);
+    }
+    
+    .timeline-item {
+      position: relative;
+      padding: 0.5rem 0;
+      font-size: 0.75rem;
+    }
+    
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: -1.3rem;
+      top: 0.8rem;
+      width: 10px;
+      height: 10px;
+      background: var(--amber);
+      border-radius: 50%;
+      border: 2px solid var(--cream);
+    }
+    
+    .timeline-time {
+      color: var(--amber);
+      font-weight: 600;
+      margin-right: 0.5rem;
+    }
+    
+    /* Wiki content preview */
+    .wiki-preview {
+      background: var(--cream-dark);
+      border-radius: 6px;
+      padding: 0.8rem;
+      font-size: 0.75rem;
+      line-height: 1.6;
+      max-height: 120px;
+      overflow: hidden;
+      position: relative;
+    }
+    
+    .wiki-preview::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 40px;
+      background: linear-gradient(transparent, var(--cream-dark));
+    }
+    
+    /* Status indicator */
+    .status-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.7rem;
+      padding: 0.3rem 0.6rem;
+      background: var(--ink);
+      color: var(--cream);
+      border-radius: 20px;
+    }
+    
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      background: var(--green);
+      border-radius: 50%;
+      animation: blink 1.5s infinite;
+    }
+    
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+    
+    /* Footer */
+    .footer {
+      text-align: center;
+      padding: 2rem 1rem;
+      font-size: 0.7rem;
+      color: var(--amber);
+      border-top: 1px solid var(--cream-dark);
+      margin-top: 1rem;
+    }
+    
+    /* Animations */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .card {
+      animation: fadeIn 0.6s ease forwards;
+    }
+    
+    .card:nth-child(1) { animation-delay: 0.1s; }
+    .card:nth-child(2) { animation-delay: 0.2s; }
+    .card:nth-child(3) { animation-delay: 0.3s; }
+    .card:nth-child(4) { animation-delay: 0.4s; }
+    .card:nth-child(5) { animation-delay: 0.5s; }
+  </style>
+</head>
+<body>
+  
+  <header class="header">
+    <div class="header-label">🌡️ 生命體徵監視器</div>
+    <h1>Wiki Cycle Monitor</h1>
+    <div class="header-date">2026-07-20 MON — WAIC 2026 閉幕日</div>
+  </header>
+  
+  <div class="waic-banner">
+    🌐 <span>WAIC 2026</span> — 世界人工智能大會 — 7/17-20 上海
+  </div>
+  
+  <main class="main-grid">
+    
+    <!-- Oscilloscope Vital Signs -->
+    <div class="card oscilloscope-card">
+      <div class="card-title">📊 即時生命體徵</div>
+      <div class="scope-container">
+        <div class="scope-screen">
+          <canvas id="scopeCanvas" class="scope-canvas"></canvas>
+          <div class="scope-label">CH1 • 50mV • 1s/DIV</div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Current File Status -->
+    <div class="card">
+      <div class="card-title">🔄 四檔輪流系統</div>
+      <div class="carousel-container">
+        <div class="carousel-track" id="carousel">
+          <div class="carousel-item" data-file="a">
+            <span class="carousel-icon">📚</span>
+            <span class="carousel-name">阿笨學習系統.md</span>
+            <span class="carousel-status"></span>
+          </div>
+          <div class="carousel-item" data-file="b">
+            <span class="carousel-icon">👤</span>
+            <span class="carousel-name">entities/chung.md</span>
+            <span class="carousel-status"></span>
+          </div>
+          <div class="carousel-item" data-file="c">
+            <span class="carousel-icon">🧠</span>
+            <span class="carousel-name">阿笨記憶系統.md</span>
+            <span class="carousel-status"></span>
+          </div>
+          <div class="carousel-item" data-file="d">
+            <span class="carousel-icon">🔗</span>
+            <span class="carousel-name">依附理論.md</span>
+            <span class="carousel-status"></span>
+          </div>
+        </div>
+      </div>
+      <div class="progress-container">
+        <div class="progress-label">
+          <span>循環進度</span>
+          <span id="cycleProgress">0%</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Heartbeat Stats -->
+    <div class="card">
+      <div class="card-title">💓 心跳統計</div>
+      <div class="stats-grid">
+        <div class="stat-box">
+          <div class="stat-number" id="todayHeartbeats">0</div>
+          <div class="stat-label">今日心跳</div>
+          <div class="stat-sublabel">/ 30 次</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-number" id="uptime">03:30</div>
+          <div class="stat-label">系統運行</div>
+          <div class="stat-sublabel">HH:MM</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-number" id="cycleCount">0</div>
+          <div class="stat-label">完整循環</div>
+          <div class="stat-sublabel">/ 7.5 次</div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Today's Activity Timeline -->
+    <div class="card">
+      <div class="card-title">📅 今日時間線</div>
+      <div class="timeline">
+        <div class="timeline-item">
+          <span class="timeline-time">00:00</span>
+          <span>辦公雲提前執行</span>
+        </div>
+        <div class="timeline-item">
+          <span class="timeline-time">00:23</span>
+          <span>Wiki Cycle A 啟動 — 阿笨學習系統</span>
+        </div>
+        <div class="timeline-item">
+          <span class="timeline-time">00:53</span>
+          <span>Wiki Cycle B — entities/chung</span>
+        </div>
+        <div class="timeline-item">
+          <span class="timeline-time">01:23</span>
+          <span>Wiki Cycle C — 阿笨記憶系統</span>
+        </div>
+        <div class="timeline-item">
+          <span class="timeline-time">01:53</span>
+          <span>Wiki Cycle D — 依附理論</span>
+        </div>
+        <div class="timeline-item">
+          <span class="timeline-time">02:23</span>
+          <span>Wiki Cycle A 循環回來</span>
+        </div>
+      </div>
+      <div style="margin-top: 1rem; text-align: center;">
+        <span class="status-indicator">
+          <span class="status-dot"></span>
+          系統健康運行中
+        </span>
+      </div>
+    </div>
+    
+    <!-- Current File Content Preview -->
+    <div class="card">
+      <div class="card-title">📄 目前處理中</div>
+      <div class="wiki-preview" id="wikiPreview">
+        等待下一個 Wiki Cycle 更新...
+      </div>
+    </div>
+    
+  </main>
+  
+  <footer class="footer">
+    <p>Wiki Sync 命盤 — 守護你的數位記憶</p>
+    <p style="margin-top: 0.3rem; opacity: 0.6;">每 30 分鐘一次 · 每天 48 次心跳 · 四檔輪流系統</p>
+  </footer>
+
+  <script>
+    // ============ Oscilloscope Animation ============
+    const canvas = document.getElementById('scopeCanvas');
+    const ctx = canvas.getContext('2d');
+    
+    function resizeCanvas() {
+      const rect = canvas.parentElement.getBoundingClientRect();
+      canvas.width = rect.width - 20;
+      canvas.height = 200;
+    }
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+    
+    let phase = 0;
+    let noise = 0;
+    
+    function drawScope() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      // Draw waveform
+      ctx.beginPath();
+      ctx.strokeStyle = '#C4903D';
+      ctx.lineWidth = 2;
+      ctx.shadowBlur = 8;
+      ctx.shadowColor = 'rgba(196, 144, 61, 0.6)';
+      
+      const centerY = canvas.height / 2;
+      const amplitude = 50 + Math.sin(phase * 0.5) * 10;
+      
+      for (let x = 0; x < canvas.width; x++) {
+        const y = centerY + 
+          Math.sin((x * 0.02) + phase) * amplitude * 0.6 +
+          Math.sin((x * 0.05) + phase * 1.5) * amplitude * 0.3 +
+          Math.sin((x * 0.1) + phase * 0.7) * amplitude * 0.1 +
+          (Math.random() - 0.5) * noise * 5;
+        
+        if (x === 0) {
+          ctx.moveTo(x, y);
+        } else {
+          ctx.lineTo(x, y);
+        }
+      }
+      ctx.stroke();
+      
+      // Add glow effect points
+      ctx.fillStyle = '#E8B86D';
+      for (let i = 0; i < 3; i++) {
+        const x = (canvas.width * (i + 1)) / 4;
+        const y = centerY + 
+          Math.sin((x * 0.02) + phase) * amplitude * 0.6 +
+          Math.sin((x * 0.05) + phase * 1.5) * amplitude * 0.3;
+        ctx.beginPath();
+        ctx.arc(x, y, 3, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      
+      phase += 0.08;
+      noise = Math.max(0, noise * 0.95 - 0.02);
+      
+      requestAnimationFrame(drawScope);
+    }
+    drawScope();
+    
+    // Random glitch effect
+    setInterval(() => {
+      if (Math.random() > 0.92) {
+        noise = 1;
+      }
+    }, 500);
+    
+    // ============ Carousel Logic ============
+    const carousel = document.getElementById('carousel');
+    const items = carousel.querySelectorAll('.carousel-item');
+    
+    const fileNames = [
+      '阿笨學習系統.md',
+      'entities/chung.md', 
+      '阿笨記憶系統.md',
+      '依附理論.md'
+    ];
+    
+    const filePreviews = [
+      '📚 阿笨學習系統 — 收錄 AI 學習與成長的軌跡，包含新概念、思考模式與知識框架的演化記錄...',
+      '👤 entities/chung — Chung 的數位身份檔案，包含偏好、習慣、記憶與持續變化的自我描述...',
+      '🧠 阿笨記憶系統 — 將對話與事件轉化為長期記憶的系統，支援檢索與脈絡重建...',
+      '🔗 依附理論 — 探索人與 AI 建立情感連結的理論框架，關於信任、安全感與陪伴的本質...'
+    ];
+    
+    let currentIndex = 0;
+    const totalCyclesPerDay = 7.5;
+    
+    function updateCarousel() {
+      items.forEach((item, i) => {
+        item.classList.remove('active', 'completed');
+        if (i < currentIndex) {
+          item.classList.add('completed');
+          item.querySelector('.carousel-status').textContent = '✓ 完成';
+        } else if (i === currentIndex) {
+          item.classList.add('active');
+          item.querySelector('.carousel-status').textContent = '◉ 進行中';
+        } else {
+          item.querySelector('.carousel-status').textContent = '○ 等待';
+        }
+      });
+      
+      // Update wiki preview
+      document.getElementById('wikiPreview').textContent = filePreviews[currentIndex];
+      
+      // Update progress
+      const cycleProgress = ((currentIndex / 4) * 100).toFixed(0);
+      document.getElementById('cycleProgress').textContent = cycleProgress + '%';
+      document.getElementById('progressFill').style.width = cycleProgress + '%';
+    }
+    
+    // Simulate cycle every 30 seconds for demo (in real system, this is 30 minutes)
+    function simulateCycle() {
+      currentIndex = (currentIndex + 1) % 4;
+      updateCarousel();
+      
+      // Update heartbeat count
+      const count = parseInt(document.getElementById('todayHeartbeats').textContent);
+      if (count < 30) {
+        document.getElementById('todayHeartbeats').textContent = count + 1;
+      }
+      
+      // Update cycle count (every 4 heartbeats = 1 complete cycle)
+      const cycleCount = Math.floor(count / 4);
+      document.getElementById('cycleCount').textContent = Math.min(cycleCount, 7.5);
+    }
+    
+    updateCarousel();
+    
+    // Demo: cycle every 30 seconds (real is 30 minutes)
+    setInterval(simulateCycle, 30000);
+    
+    // Update uptime clock
+    function updateUptime() {
+      const now = new Date();
+      const hours = String(now.getHours()).padStart(2, '0');
+      const mins = String(now.getMinutes()).padStart(2, '0');
+      document.getElementById('uptime').textContent = `${hours}:${mins}`;
+    }
+    updateUptime();
+    setInterval(updateUptime, 60000);
+    
+    // Initial heartbeat count based on current time (3:30 AM = 7 cycles complete)
+    const initialHeartbeats = 7;
+    document.getElementById('todayHeartbeats').textContent = initialHeartbeats;
+    document.getElementById('cycleCount').textContent = Math.floor(initialHeartbeats / 4);
+    
+    // Simulate some heartbeats happened
+    currentIndex = initialHeartbeats % 4;
+    updateCarousel();
+  </script>
+</body>
+</html>
