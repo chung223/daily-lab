@@ -1,14 +1,14 @@
 # Daily Lab
 
-Total entries: 123
+Total entries: 124
 
 ## Featured (Latest 3)
+
+- **2026-07-21** [🎵 維基樂團 · Wiki Orchestra](2026-07-21/README.md) — Japanese Minimal × Zen 日式極簡禪風格的維基樂團視覺化。展示四檔輪流系統（旋轉木馬卡片）、今日心跳統計、WAIC 2026 倒數計時。奶油白背景、淡金色點綴、脈衝光環動畫。
 
 - **2026-07-20** [💓 Wiki Cycle 生命體徵監視器](2026-07-20/README.md) — Japanese Minimal × Zen 日式極簡禪風格的 Wiki Cycle 生命體徵監視器。展示四檔輪流系統（旋轉木馬卡片）、今日心跳統計（30次）、WAIC 2026 倒數計時。奶油白背景、淡金色點綴、脈衝光環動畫。
 
 - **2026-07-19** [✨ Wiki Sync 命盤 (Wiki Sync Horoscope)](2026-07-19/README.md) — Japanese Minimal × Zen 日式極簡禪風格的 Wiki Sync 命盤。展示四檔輪流系統（旋轉木馬卡片）、今日心跳統計（30次）、WAIC 2026 倒數計時。奶油白背景、淡金色點綴、脈衝光環動畫。
-
-- **2026-07-17** [⏳ 時光命理軸](2026-07-17/README.md) — 將命理流轉與工作足跡融合的每日時間軸，結合八字、塔羅、梅花易數與待辦追蹤、IFYE站點統計。
 
 - **2026-07-16** [🐬 腸道冲浪 - Dolphin Surf](2026-07-16/README.md) — 一個可愛的海豚冲浪小遊戲，在腸道主題的虛擬海洋中冲浪避開障礙物。
 
@@ -123,6 +123,7 @@ Total entries: 123
 
 ### visualization
 
+- 2026-07-21 — [🎵 維基樂團 · Wiki Orchestra](2026-07-21/README.md)
 - 2026-06-15 — [🫀 System ECG Monitor | HEARTBEAT 系統心電圖](2026-06-15/README.md)
 
 - 2026-05-22 — [✨ 知識星河 — Knowledge Constellation](2026-05-22/README.md)
