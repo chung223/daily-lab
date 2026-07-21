@@ -1,14 +1,14 @@
 # Daily Lab
 
-Total entries: 124
+Total entries: 125
 
 ## Featured (Latest 3)
+
+- **2026-07-22** [🚂 週間時刻表 | Weekly Departure Board](2026-07-22/README.md) — Dark Terminal × LCD Train Board 暗色終端 × LCD 火車出發牌風格的週間追蹤器。展示週一至週五的列車出發狀態（已出發/當前/預定）、WAIC 2026 活動時間線回顧、當前時間即時更新。深黑背景襯托 LCD 綠光字、狀態指示燈脈衝動畫。
 
 - **2026-07-21** [🎵 維基樂團 · Wiki Orchestra](2026-07-21/README.md) — Japanese Minimal × Zen 日式極簡禪風格的維基樂團視覺化。展示四檔輪流系統（旋轉木馬卡片）、今日心跳統計、WAIC 2026 倒數計時。奶油白背景、淡金色點綴、脈衝光環動畫。
 
 - **2026-07-20** [💓 Wiki Cycle 生命體徵監視器](2026-07-20/README.md) — Japanese Minimal × Zen 日式極簡禪風格的 Wiki Cycle 生命體徵監視器。展示四檔輪流系統（旋轉木馬卡片）、今日心跳統計（30次）、WAIC 2026 倒數計時。奶油白背景、淡金色點綴、脈衝光環動畫。
-
-- **2026-07-19** [✨ Wiki Sync 命盤 (Wiki Sync Horoscope)](2026-07-19/README.md) — Japanese Minimal × Zen 日式極簡禪風格的 Wiki Sync 命盤。展示四檔輪流系統（旋轉木馬卡片）、今日心跳統計（30次）、WAIC 2026 倒數計時。奶油白背景、淡金色點綴、脈衝光環動畫。
 
 - **2026-07-16** [🐬 腸道冲浪 - Dolphin Surf](2026-07-16/README.md) — 一個可愛的海豚冲浪小遊戲，在腸道主題的虛擬海洋中冲浪避開障礙物。
 
@@ -89,6 +89,7 @@ Total entries: 124
 
 ### tool
 
+- 2026-07-22 — [🚂 週間時刻表 | Weekly Departure Board](2026-07-22/README.md)
 - 2026-07-20 — [💓 Wiki Cycle 生命體徵監視器](2026-07-20/README.md)
 - 2026-07-19 — [✨ Wiki Sync 命盤 (Wiki Sync Horoscope)](2026-07-19/README.md)
 - 2026-06-23 — [🏅 Session Memento — 7.4 Days of Dedication](2026-06-23/README.md)
