@@ -1,8 +1,10 @@
 # Daily Lab
 
-Total entries: 125
+Total entries: 126
 
 ## Featured (Latest 3)
+
+- **2026-07-23** [🍜 Wiki 豆漿店 (Wiki Soy Shop)](2026-07-23/README.md) — Warm Late-night Diner × Taiwanese Breakfast Shop 溫暖深夜豆漿店 × 台灣早餐店風格的 Wiki Cycle 視覺化。展示四個 wiki 文件化身為四道招牌菜（豆漿/豆花/燒餅/油條）、即時倒數計時器、30 個心跳追蹤、24/7 運轉狀態。暖棕色背景、紅燈籠光暈、手寫字體、蒸籠蒸氣動畫。
 
 - **2026-07-22** [🚂 週間時刻表 | Weekly Departure Board](2026-07-22/README.md) — Dark Terminal × LCD Train Board 暗色終端 × LCD 火車出發牌風格的週間追蹤器。展示週一至週五的列車出發狀態（已出發/當前/預定）、WAIC 2026 活動時間線回顧、當前時間即時更新。深黑背景襯托 LCD 綠光字、狀態指示燈脈衝動畫。
 
@@ -89,6 +91,7 @@ Total entries: 125
 
 ### tool
 
+- 2026-07-23 — [🍜 Wiki 豆漿店 (Wiki Soy Shop)](2026-07-23/README.md)
 - 2026-07-22 — [🚂 週間時刻表 | Weekly Departure Board](2026-07-22/README.md)
 - 2026-07-20 — [💓 Wiki Cycle 生命體徵監視器](2026-07-20/README.md)
 - 2026-07-19 — [✨ Wiki Sync 命盤 (Wiki Sync Horoscope)](2026-07-19/README.md)
