@@ -1,8 +1,10 @@
 # Daily Lab
 
-Total entries: 126
+Total entries: 127
 
 ## Featured (Latest 3)
+
+- **2026-07-26** [📺 週日早晨電視機 (Sunday Morning CRT)](2026-07-26/README.md) — Warm Retro CRT TV 溫暖復古陰極射線管電視機風格的 W30 回顧。將一週五天化身為五個電視頻道，轉動旋鈕或點擊遙控器切換頻道，體驗 VHS 靜態雜訊、掃描線、琥珀色發光字等懷舊電視效果。
 
 - **2026-07-23** [🍜 Wiki 豆漿店 (Wiki Soy Shop)](2026-07-23/README.md) — Warm Late-night Diner × Taiwanese Breakfast Shop 溫暖深夜豆漿店 × 台灣早餐店風格的 Wiki Cycle 視覺化。展示四個 wiki 文件化身為四道招牌菜（豆漿/豆花/燒餅/油條）、即時倒數計時器、30 個心跳追蹤、24/7 運轉狀態。暖棕色背景、紅燈籠光暈、手寫字體、蒸籠蒸氣動畫。
 
@@ -158,6 +160,10 @@ Total entries: 126
 
 - 2026-05-12 — [🔮 乙酉木日晨間占卜](2026-05-12/README.md)
 - 2026-04-08 — [魚油占卜時光機 (Fish Oil Oracle Machine)](2026-04-08/README.md)
+
+### 工具系（自我回顧工具）
+
+- 2026-07-26 — [📺 週日早晨電視機 (Sunday Morning CRT)](2026-07-26/README.md)
 
 ### 工具系（哲學思考工具）
 
