@@ -1,14 +1,14 @@
 # Daily Lab
 
-Total entries: 127
+Total entries: 128
 
 ## Featured (Latest 3)
+
+- **2026-07-27** [📋 週一手工紙張週計畫表 (Monday Kraft Paper Weekly Planner)](2026-07-27/README.md) — Warm Kraft Paper × Hand-drawn 日式手工紙張 × 手繪插圖風格的週一早晨意圖設定工具。Washi Tape 膠帶裝飾、便條紙卡片、週目標勾選、本週進度條、成就貼紙收集、隨機激勵語錄。
 
 - **2026-07-26** [📺 週日早晨電視機 (Sunday Morning CRT)](2026-07-26/README.md) — Warm Retro CRT TV 溫暖復古陰極射線管電視機風格的 W30 回顧。將一週五天化身為五個電視頻道，轉動旋鈕或點擊遙控器切換頻道，體驗 VHS 靜態雜訊、掃描線、琥珀色發光字等懷舊電視效果。
 
 - **2026-07-23** [🍜 Wiki 豆漿店 (Wiki Soy Shop)](2026-07-23/README.md) — Warm Late-night Diner × Taiwanese Breakfast Shop 溫暖深夜豆漿店 × 台灣早餐店風格的 Wiki Cycle 視覺化。展示四個 wiki 文件化身為四道招牌菜（豆漿/豆花/燒餅/油條）、即時倒數計時器、30 個心跳追蹤、24/7 運轉狀態。暖棕色背景、紅燈籠光暈、手寫字體、蒸籠蒸氣動畫。
-
-- **2026-07-22** [🚂 週間時刻表 | Weekly Departure Board](2026-07-22/README.md) — Dark Terminal × LCD Train Board 暗色終端 × LCD 火車出發牌風格的週間追蹤器。展示週一至週五的列車出發狀態（已出發/當前/預定）、WAIC 2026 活動時間線回顧、當前時間即時更新。深黑背景襯托 LCD 綠光字、狀態指示燈脈衝動畫。
 
 - **2026-07-21** [🎵 維基樂團 · Wiki Orchestra](2026-07-21/README.md) — Japanese Minimal × Zen 日式極簡禪風格的維基樂團視覺化。展示四檔輪流系統（旋轉木馬卡片）、今日心跳統計、WAIC 2026 倒數計時。奶油白背景、淡金色點綴、脈衝光環動畫。
 
@@ -164,6 +164,10 @@ Total entries: 127
 ### 工具系（自我回顧工具）
 
 - 2026-07-26 — [📺 週日早晨電視機 (Sunday Morning CRT)](2026-07-26/README.md)
+
+### 工具系（週間規劃工具）
+
+- 2026-07-27 — [📋 週一手工紙張週計畫表 (Monday Kraft Paper Weekly Planner)](2026-07-27/README.md)
 
 ### 工具系（哲學思考工具）
 
