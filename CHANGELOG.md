@@ -1,12 +1,13 @@
 # Daily Lab Changelog
 
-*Updated: 2026-07-26 04:15*
+*Updated: 2026-07-27 03:40*
 
 # Changelog — daily-lab
 
 Changes since 2026-02-01:
 
-- `TBD` Daily Lab 2026-07-26: 📺 週日早晨電視機 (Sunday Morning CRT) — Warm Retro CRT TV 風格 W30 回顧 — *chung0223* (2026-07-26)
+- `67a7682` Daily Lab 2026-07-26: 📺 週日早晨電視機 (Sunday Morning CRT) — *chung0223* (2026-07-26)
+- `d6ff6a5` docs: update changelog 2026-07-26 — *chung0223* (2026-07-26)
 - `52144f8` docs: update changelog 2026-07-25 — *chung0223* (2026-07-25)
 - `449de72` docs: update changelog 2026-07-24 — *chung0223* (2026-07-24)
 - `dc735fb` Daily Lab 2026-07-23: 🍜 Wiki 豆漿店 (Wiki Soy Shop) — *chung0223* (2026-07-23)
