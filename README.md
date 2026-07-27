@@ -1,8 +1,10 @@
 # Daily Lab
 
-Total entries: 128
+Total entries: 129
 
 ## Featured (Latest 3)
+
+- **2026-07-28** [🪪 IFE 2026 世界護照 (IFE 2026 World Passport)](2026-07-28/README.md) — Warm Paper × Vintage Passport 風格的 IFE 2026 數位護照。護照封面以金色徽章和金色浮雕字呈現，內頁展示代表名單、印章收集牆與時間軸。
 
 - **2026-07-27** [📋 週一手工紙張週計畫表 (Monday Kraft Paper Weekly Planner)](2026-07-27/README.md) — Warm Kraft Paper × Hand-drawn 日式手工紙張 × 手繪插圖風格的週一早晨意圖設定工具。Washi Tape 膠帶裝飾、便條紙卡片、週目標勾選、本週進度條、成就貼紙收集、隨機激勵語錄。
 
@@ -175,6 +177,7 @@ Total entries: 128
 
 ### 工具系
 
+- 2026-07-28 — [🪪 IFE 2026 世界護照 (IFE 2026 World Passport)](2026-07-28/README.md)
 - 2026-07-08 — [🏥 Session ICU 重症監護室](2026-07-08/README.md)
 - 2026-07-04 — [🐟 魚油大作戰 (Fish Oil Mission)](2026-07-04/README.md)
 - 2026-06-25 — [✈️ IFE 國際貴賓航班抵達板 (IFE Flight Arrivals)](2026-06-25/README.md)
