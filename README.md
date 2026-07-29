@@ -1,14 +1,14 @@
 # Daily Lab
 
-Total entries: 130
+Total entries: 131
 
 ## Featured (Latest 3)
+
+- **2026-07-30** [🐬 海洋健康合規督察總署 — Fish Oil Compliance Bureau](2026-07-30/README.md) — 政府機關公文風格的魚油合規督察小遊戲。拿著公家機關的紙網，在官僚體系的海洋中執行魚油健康合規任務。
 
 - **2026-07-29** [🎮 夏夜祭典 撈金魚｜Summer Festival Goldfish Scoop](2026-07-29/README.md) — 夏夜祭典風格的撈金魚小遊戲，體驗日本夏季祭典（夏祭）的歡樂氛圍，在美麗的夜空下使用紙網撈金魚。霓虹燈光、金魚花紋、VHS 復古膠片風格效果。
 
 - **2026-07-28** [🪪 IFE 2026 世界護照 (IFE 2026 World Passport)](2026-07-28/README.md) — Warm Paper × Vintage Passport 風格的 IFE 2026 數位護照。護照封面以金色徽章和金色浮雕字呈現，內頁展示代表名單、印章收集牆與時間軸。
-
-- **2026-07-27** [📋 週一手工紙張週計畫表 (Monday Kraft Paper Weekly Planner)](2026-07-27/README.md) — Warm Kraft Paper × Hand-drawn 日式手工紙張 × 手繪插圖風格的週一早晨意圖設定工具。Washi Tape 膠帶裝飾、便條紙卡片、週目標勾選、本週進度條、成就貼紙收集、隨機激勵語錄。
 
 - **2026-07-23** [🍜 Wiki 豆漿店 (Wiki Soy Shop)](2026-07-23/README.md) — Warm Late-night Diner × Taiwanese Breakfast Shop 溫暖深夜豆漿店 × 台灣早餐店風格的 Wiki Cycle 視覺化。展示四個 wiki 文件化身為四道招牌菜（豆漿/豆花/燒餅/油條）、即時倒數計時器、30 個心跳追蹤、24/7 運轉狀態。暖棕色背景、紅燈籠光暈、手寫字體、蒸籠蒸氣動畫。
 
@@ -61,6 +61,7 @@ Total entries: 130
 
 ### game
 
+- 2026-07-30 — [🐬 海洋健康合規督察總署 — Fish Oil Compliance Bureau](2026-07-30/README.md)
 - 2026-07-29 — [🎮 夏夜祭典 撈金魚｜Summer Festival Goldfish Scoop](2026-07-29/README.md)
 - 2026-07-16 — [🐬 腸道冲浪 - Dolphin Surf](2026-07-16/README.md)
 - 2026-04-23 — [OCR 勇者冒險 (mlx-ocr 戰鬥系統)](2026-04-23/README.md)
