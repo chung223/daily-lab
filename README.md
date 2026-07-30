@@ -1,14 +1,14 @@
 # Daily Lab
 
-Total entries: 131
+Total entries: 132
 
 ## Featured (Latest 3)
+
+- **2026-07-31** [📰 晨報 · 2026-07-31](2026-07-31/README.md) — 晨報風格的每日科技精華資訊牆。Vintage Newspaper × Newsprint Typography 風格，展示頭條新聞、AI/區塊鏈/Web 等分類資訊。
 
 - **2026-07-30** [🐬 海洋健康合規督察總署 — Fish Oil Compliance Bureau](2026-07-30/README.md) — 政府機關公文風格的魚油合規督察小遊戲。拿著公家機關的紙網，在官僚體系的海洋中執行魚油健康合規任務。
 
 - **2026-07-29** [🎮 夏夜祭典 撈金魚｜Summer Festival Goldfish Scoop](2026-07-29/README.md) — 夏夜祭典風格的撈金魚小遊戲，體驗日本夏季祭典（夏祭）的歡樂氛圍，在美麗的夜空下使用紙網撈金魚。霓虹燈光、金魚花紋、VHS 復古膠片風格效果。
-
-- **2026-07-28** [🪪 IFE 2026 世界護照 (IFE 2026 World Passport)](2026-07-28/README.md) — Warm Paper × Vintage Passport 風格的 IFE 2026 數位護照。護照封面以金色徽章和金色浮雕字呈現，內頁展示代表名單、印章收集牆與時間軸。
 
 - **2026-07-23** [🍜 Wiki 豆漿店 (Wiki Soy Shop)](2026-07-23/README.md) — Warm Late-night Diner × Taiwanese Breakfast Shop 溫暖深夜豆漿店 × 台灣早餐店風格的 Wiki Cycle 視覺化。展示四個 wiki 文件化身為四道招牌菜（豆漿/豆花/燒餅/油條）、即時倒數計時器、30 個心跳追蹤、24/7 運轉狀態。暖棕色背景、紅燈籠光暈、手寫字體、蒸籠蒸氣動畫。
 
@@ -52,6 +52,7 @@ Total entries: 131
 
 ### dashboard
 
+- 2026-07-31 — [📰 晨報 · 2026-07-31](2026-07-31/README.md)
 - 2026-06-29 — [🏥 VPS Doctor — 主機健康診所](2026-06-29/README.md)
 - 2026-06-20 — [🎛️ IFYE 2026 — Station Commander](2026-06-20/README.md)
 
