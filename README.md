@@ -1,14 +1,14 @@
 # Daily Lab
 
-Total entries: 133
+Total entries: 134
 
 ## Featured (Latest 3)
+
+- **2026-08-02** [🌊 身體時鐘深海觀測所 (Deep Body Clock Observatory)](2026-08-02/README.md) — Deep Bioluminescent Ocean × Serene Observatory 深海發光生物 × 靜謐觀測所風格的身體時鐘互動體驗。24小時洋流時間線、12種身體狀態對應的深海生物卡片、此刻身體狀態指示器、呼吸練習功能。
 
 - **2026-08-01** [🐟 魚油巡迴法庭 Fish Oil Tribunal](2026-08-01/README.md) — 一個趣味十足的互動式法律模擬頁面，透過笑料十足的審判劇情學習判斷保健品宣稱的可信度。
 
 - **2026-07-31** [📰 晨報 · 2026-07-31](2026-07-31/README.md) — 晨報風格的每日科技精華資訊牆。Vintage Newspaper × Newsprint Typography 風格，展示頭條新聞、AI/區塊鏈/Web 等分類資訊。
-
-- **2026-07-30** [🐬 海洋健康合規督察總署 — Fish Oil Compliance Bureau](2026-07-30/README.md) — 政府機關公文風格的魚油合規督察小遊戲。拿著公家機關的紙網，在官僚體系的海洋中執行魚油健康合規任務。
 
 - **2026-07-23** [🍜 Wiki 豆漿店 (Wiki Soy Shop)](2026-07-23/README.md) — Warm Late-night Diner × Taiwanese Breakfast Shop 溫暖深夜豆漿店 × 台灣早餐店風格的 Wiki Cycle 視覺化。展示四個 wiki 文件化身為四道招牌菜（豆漿/豆花/燒餅/油條）、即時倒數計時器、30 個心跳追蹤、24/7 運轉狀態。暖棕色背景、紅燈籠光暈、手寫字體、蒸籠蒸氣動畫。
 
@@ -34,6 +34,7 @@ Total entries: 133
 
 ### learning
 
+- 2026-08-02 — [🌊 身體時鐘深海觀測所 (Deep Body Clock Observatory)](2026-08-02/README.md)
 - 2026-07-10 — [📐 知識的形狀 (Tangent Collector)](2026-07-10/README.md)
 - 2026-07-09 — [⏳ 等待的重量 vs 行動的重量](2026-07-09/README.md)
 
