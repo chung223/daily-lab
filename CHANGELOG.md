@@ -1,11 +1,13 @@
 # Daily Lab Changelog
 
-*Updated: 2026-08-01 03:40*
+*Updated: 2026-08-02 03:40*
 
 # Changelog — daily-lab
 
 Changes since 2026-02-01:
 
+- `e8fc9e4` Daily Lab 2026-08-01: 魚油巡迴法庭 Fish Oil Tribunal — *chung0223* (2026-08-01)
+- `256b620` docs: update changelog 2026-08-01 — *chung0223* (2026-08-01)
 - `a8600fa` docs: update changelog 2026-07-31 — *chung0223* (2026-07-31)
 - `37c3ae2` Daily Lab 2026-07-31: 📰 晨報 · 2026-07-31 — *chung0223* (2026-07-31)
 - `9c55d84` docs: update changelog 2026-07-31 — *chung0223* (2026-07-31)
