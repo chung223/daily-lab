@@ -6,7 +6,7 @@
 
 Changes since 2026-02-01:
 
-- `TBD` Daily Lab 2026-08-03: 🌍 IFYE 2026 大使畫廊 (Ambassador Gallery) — *chung0223* (2026-08-03)
+- `c366ec5` Daily Lab 2026-08-03: 🌍 IFYE 2026 大使畫廊 (Ambassador Gallery) — *chung0223* (2026-08-03)
 - `f3296fd` Daily Lab 2026-08-02: 🌊 身體時鐘深海觀測所 (Deep Body Clock Observatory) — *chung0223* (2026-08-02)
 - `970074f` docs: update changelog 2026-08-02 — *chung0223* (2026-08-02)
 - `e8fc9e4` Daily Lab 2026-08-01: 魚油巡迴法庭 Fish Oil Tribunal — *chung0223* (2026-08-01)
