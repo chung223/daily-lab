@@ -1,8 +1,10 @@
 # Daily Lab
 
-Total entries: 134
+Total entries: 135
 
 ## Featured (Latest 3)
+
+- **2026-08-03** [🌍 IFYE 2026 大使畫廊 (Ambassador Gallery)](2026-08-03/README.md) — Warm Editorial × Gallery Card 亮色編輯卡片風格的大使畫廊與站點收藏系統。九位代表卡片展示國籍與站點數量、五十一站按類別分類、點擊站點觸發彩屑慶祝動畫、localStorage 持久化收集進度。
 
 - **2026-08-02** [🌊 身體時鐘深海觀測所 (Deep Body Clock Observatory)](2026-08-02/README.md) — Deep Bioluminescent Ocean × Serene Observatory 深海發光生物 × 靜謐觀測所風格的身體時鐘互動體驗。24小時洋流時間線、12種身體狀態對應的深海生物卡片、此刻身體狀態指示器、呼吸練習功能。
 
@@ -134,6 +136,11 @@ Total entries: 134
 - 2026-02-14 — [2026-02-14/README.md)
 - 2026-02-13 — [2026-02-13/README.md)
 - 2026-02-11 — [第一天](2026-02-11/README.md)
+
+### 資料視覺化
+
+- 2026-08-03 — [🌍 IFYE 2026 大使畫廊 (Ambassador Gallery)](2026-08-03/README.md)
+- 2026-04-21 — [— 值班巡航圖 (Heartbeat Duty Atlas)](2026-04-21/README.md)
 
 ### visualization
 
