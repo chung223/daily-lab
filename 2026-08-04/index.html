@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>晨報 · 命理資訊站 — 2026-08-04</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@600;700&family=Caveat:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #FFF9F5;
+            --text: #2D2A26;
+            --text-light: #6B6560;
+            --coral: #FF6B6B;
+            --mint: #4ECDC4;
+            --lavender: #9B8FD9;
+            --gold: #FFD93D;
+            --peach: #FFAB91;
+            --sage: #95D5B2;
+            --shadow: rgba(45, 42, 38, 0.08);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            padding: 24px 16px 48px;
+            background-image: 
+                radial-gradient(circle at 20% 10%, rgba(255, 107, 107, 0.08) 0%, transparent 40%),
+                radial-gradient(circle at 80% 90%, rgba(155, 143, 217, 0.08) 0%, transparent 40%),
+                radial-gradient(circle at 50% 50%, rgba(78, 205, 196, 0.05) 0%, transparent 60%);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .date-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--text);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 24px;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 16px;
+        }
+
+        .date-badge::before {
+            content: '📅';
+        }
+
+        h1 {
+            font-family: 'Noto Serif TC', serif;
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, var(--coral), var(--lavender));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            font-family: 'Caveat', cursive;
+            font-size: 20px;
+            color: var(--text-light);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 24px;
+            box-shadow: 0 4px 24px var(--shadow);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 32px var(--shadow);
+        }
+
+        .card.coral::before { background: var(--coral); }
+        .card.mint::before { background: var(--mint); }
+        .card.lavender::before { background: var(--lavender); }
+        .card.gold::before { background: var(--gold); }
+        .card.peach::before { background: var(--peach); }
+        .card.sage::before { background: var(--sage); }
+
+        .card-icon {
+            font-size: 40px;
+            margin-bottom: 12px;
+        }
+
+        .card-title {
+            font-family: 'Noto Serif TC', serif;
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .card-content {
+            font-size: 15px;
+            line-height: 1.7;
+            color: var(--text-light);
+        }
+
+        .card-content strong {
+            color: var(--text);
+        }
+
+        .card-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 12px;
+        }
+
+        .tag {
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .tag.coral { background: rgba(255, 107, 107, 0.15); color: var(--coral); }
+        .tag.mint { background: rgba(78, 205, 196, 0.15); color: #2A9D8F; }
+        .tag.lavender { background: rgba(155, 143, 217, 0.15); color: var(--lavender); }
+        .tag.gold { background: rgba(255, 217, 61, 0.2); color: #B8860B; }
+        .tag.peach { background: rgba(255, 171, 145, 0.2); color: #D84315; }
+        .tag.sage { background: rgba(149, 213, 178, 0.2); color: #2E7D32; }
+
+        .schedule-card {
+            grid-column: 1 / -1;
+        }
+
+        .schedule-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px dashed rgba(0,0,0,0.08);
+        }
+
+        .schedule-item:last-child {
+            border-bottom: none;
+        }
+
+        .schedule-time {
+            font-family: 'Caveat', cursive;
+            font-size: 18px;
+            color: var(--text-light);
+            min-width: 80px;
+        }
+
+        .schedule-text {
+            font-size: 15px;
+        }
+
+        .fortune-wheel {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 16px;
+        }
+
+        .fortune-wheel::before {
+            content: '🔮';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 48px;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+            50% { transform: translate(-50%, -50%) scale(1.1); opacity: 0.8; }
+        }
+
+        .tarot-card {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: white;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tarot-card::after {
+            content: '✨';
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            font-size: 20px;
+            animation: sparkle 1.5s ease-in-out infinite;
+        }
+
+        @keyframes sparkle {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(0.8); }
+        }
+
+        .tarot-card .card-title,
+        .tarot-card .card-content {
+            color: white;
+        }
+
+        .tarot-card .card-content {
+            color: rgba(255,255,255,0.8);
+        }
+
+        .weather-icon {
+            font-size: 64px;
+            margin-bottom: 8px;
+        }
+
+        .temp {
+            font-family: 'Caveat', cursive;
+            font-size: 36px;
+            color: var(--coral);
+            margin-bottom: 8px;
+        }
+
+        .motivation-card {
+            background: linear-gradient(135deg, var(--gold) 0%, var(--peach) 100%);
+            color: var(--text);
+        }
+
+        .motivation-card .card-title,
+        .motivation-card .card-content {
+            color: var(--text);
+        }
+
+        .motivation-text {
+            font-family: 'Caveat', cursive;
+            font-size: 22px;
+            line-height: 1.5;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            color: var(--text-light);
+            font-size: 13px;
+        }
+
+        .footer span {
+            opacity: 0.6;
+        }
+
+        @media (max-width: 600px) {
+            h1 { font-size: 24px; }
+            .grid { grid-template-columns: 1fr; }
+            .card { padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="date-badge">2026年 8月 4日 · 星期二</div>
+        <h1>晨報 · 命理資訊站</h1>
+        <p class="subtitle">每日早晨的神秘力量指引 ✨</p>
+    </header>
+
+    <main class="grid">
+        <!-- 干支命理 -->
+        <div class="card coral">
+            <div class="card-icon">🧘</div>
+            <div class="card-title">干支 · 命理分析</div>
+            <div class="card-content">
+                <strong>己日</strong> · 用神 <strong>金、土</strong><br>
+                宜：學習靜坐、冥想沉澱<br>
+                忌：過度焦慮、急於求成<br>
+                <div class="card-tags">
+                    <span class="tag coral">學習</span>
+                    <span class="tag gold">靜心</span>
+                    <span class="tag sage">金</span>
+                    <span class="tag lavender">土</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 塔羅 -->
+        <div class="card tarot-card">
+            <div class="fortune-wheel"></div>
+            <div class="card-title">塔羅 · 今日指引</div>
+            <div class="card-content">
+                <strong style="color: var(--gold); font-size: 18px;">The Hermit 隱士</strong><br>
+                放慢腳步，傾聽內心的聲音。<br>
+                適合獨處思考的一天。<br>
+                <div class="card-tags" style="justify-content: center;">
+                    <span class="tag" style="background: rgba(255,217,61,0.3); color: var(--gold);">內省</span>
+                    <span class="tag" style="background: rgba(78,205,196,0.3); color: var(--mint);">智慧</span>
+                    <span class="tag" style="background: rgba(155,143,217,0.3); color: var(--lavender);">獨處</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 天氣 -->
+        <div class="card mint">
+            <div class="weather-icon">🌤️</div>
+            <div class="temp">32° / 26°</div>
+            <div class="card-title">天氣 · 台北</div>
+            <div class="card-content">
+                多雲時晴，午後局部雷陣雨<br>
+                外出攜帶雨具，注意防曬<br>
+                <div class="card-tags">
+                    <span class="tag mint">悶熱</span>
+                    <span class="tag sage">午後雨</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 梅花易數 -->
+        <div class="card lavender">
+            <div class="card-icon">🌸</div>
+            <div class="card-title">梅花易數 · 今日心法</div>
+            <div class="card-content">
+                <strong>澤火革</strong> · 改革創新<br>
+                改變的時機已經成熟，勇於突破框架。<br>
+                <div class="card-tags">
+                    <span class="tag lavender">創新</span>
+                    <span class="tag gold">突破</span>
+                    <span class="tag coral">改變</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 行程 -->
+        <div class="card schedule-card sage">
+            <div class="card-icon">📋</div>
+            <div class="card-title">今日行程</div>
+            <div class="card-content">
+                <div class="schedule-item">
+                    <span class="schedule-time">全日</span>
+                    <span class="schedule-text">系統待機 · 持續健康監控中</span>
+                </div>
+                <div class="schedule-item">
+                    <span class="schedule-time">07:00</span>
+                    <span class="schedule-text">晨間回報 · Daily Lab 建造完成</span>
+                </div>
+                <div class="schedule-item">
+                    <span class="schedule-time">09:00</span>
+                    <span class="schedule-text">林俊維出差（臺中/屏東）</span>
+                </div>
+                <div class="card-tags" style="margin-top: 16px;">
+                    <span class="tag sage">正常運作</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 毒雞湯 -->
+        <div class="card motivation-card">
+            <div class="card-icon">🍲</div>
+            <div class="card-title">毒雞湯 · 今日分量</div>
+            <div class="card-content">
+                <p class="motivation-text">
+                    「躺平與擺爛之間<br>
+                    還有一片灰色地帶<br>
+                    叫作——明天再說。」
+                </p>
+                <div class="card-tags">
+                    <span class="tag" style="background: rgba(255,255,255,0.4); color: var(--text);">#擺爛美學</span>
+                    <span class="tag" style="background: rgba(255,255,255,0.4); color: var(--text);">#明日復明日</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 新聞摘要 -->
+        <div class="card peach">
+            <div class="card-icon">📰</div>
+            <div class="card-title">科技新聞精選</div>
+            <div class="card-content">
+                <strong>AI/LLM</strong>：OpenAI Astra / Presence<br>
+                <strong>Crypto</strong>：Coldcard 漏洞 · BTC 跌破 64K<br>
+                <strong>其他</strong>：安永量子電腦<br>
+                <div class="card-tags">
+                    <span class="tag coral">AI</span>
+                    <span class="tag gold">Crypto</span>
+                    <span class="tag mint">Tech</span>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>🌙 晨報生成完畢 · 祝你有美好的一天</p>
+        <span>資料來源：三色蛋晨間簡報系統 · 2026-08-04</span>
+    </footer>
+
+    <script>
+        // Card click interactions
+        document.querySelectorAll('.card').forEach(card => {
+            card.addEventListener('click', () => {
+                card.style.transform = 'scale(0.98)';
+                setTimeout(() => {
+                    card.style.transform = '';
+                }, 150);
+                
+                // Confetti burst
+                createConfetti(card);
+            });
+        });
+
+        function createConfetti(element) {
+            const rect = element.getBoundingClientRect();
+            const colors = ['#FF6B6B', '#4ECDC4', '#9B8FD9', '#FFD93D', '#FFAB91', '#95D5B2'];
+            
+            for (let i = 0; i < 12; i++) {
+                const confetti = document.createElement('div');
+                confetti.style.cssText = `
+                    position: fixed;
+                    left: ${rect.left + rect.width/2}px;
+                    top: ${rect.top + rect.height/2}px;
+                    width: 8px;
+                    height: 8px;
+                    background: ${colors[Math.floor(Math.random() * colors.length)]};
+                    border-radius: ${Math.random() > 0.5 ? '50%' : '2px'};
+                    pointer-events: none;
+                    z-index: 1000;
+                    transform: rotate(${Math.random() * 360}deg);
+                `;
+                document.body.appendChild(confetti);
+                
+                const angle = (Math.PI * 2 * i) / 12;
+                const velocity = 80 + Math.random() * 60;
+                const dx = Math.cos(angle) * velocity;
+                const dy = Math.sin(angle) * velocity;
+                
+                confetti.animate([
+                    { transform: `translate(0, 0) rotate(0deg)`, opacity: 1 },
+                    { transform: `translate(${dx}px, ${dy}px) rotate(${360 + Math.random() * 360}deg)`, opacity: 0 }
+                ], {
+                    duration: 600 + Math.random() * 400,
+                    easing: 'cubic-bezier(0, 0.5, 0.5, 1)'
+                }).onfinish = () => confetti.remove();
+            }
+        }
+
+        // Save to localStorage
+        const today = '2026-08-04';
+        const viewed = JSON.parse(localStorage.getItem('fortune-viewed') || '{}');
+        if (!viewed[today]) {
+            viewed[today] = { viewed: true, time: new Date().toISOString() };
+            localStorage.setItem('fortune-viewed', JSON.stringify(viewed));
+        }
+    </script>
+</body>
+</html>
