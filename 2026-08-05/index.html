@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>看不見的線·連結觀測所 | Invisible Threads Observatory</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600&family=Caveat:wght@400;600&family=Ma+Shan+Zheng&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/p5.js@1.9.0/lib/p5.min.js"></script>
+  <style>
+    :root {
+      --cream: #FDF8F3;
+      --soft-pink: #E8D5D5;
+      --soft-lavender: #D8D5E8;
+      --soft-mint: #D5E8D8;
+      --soft-peach: #F5E0D5;
+      --soft-sky: #D5E8F0;
+      --text-dark: #3D3D3D;
+      --text-light: #6B6B6B;
+      --accent-coral: #E07A5F;
+      --accent-gold: #D4A574;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Noto Serif TC', serif;
+      background: var(--cream);
+      color: var(--text-dark);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Header */
+    .header {
+      text-align: center;
+      padding: 2rem 1rem;
+      background: linear-gradient(180deg, var(--soft-pink) 0%, var(--cream) 100%);
+      position: relative;
+    }
+
+    .header h1 {
+      font-family: 'Ma Shan Zheng', cursive;
+      font-size: 2.5rem;
+      color: var(--text-dark);
+      margin-bottom: 0.5rem;
+    }
+
+    .header .subtitle {
+      font-family: 'Caveat', cursive;
+      font-size: 1.3rem;
+      color: var(--text-light);
+    }
+
+    .header .date {
+      font-family: 'Caveat', cursive;
+      font-size: 1rem;
+      color: var(--accent-coral);
+      margin-top: 0.5rem;
+    }
+
+    /* Canvas container */
+    #canvas-container {
+      width: 100%;
+      height: 60vh;
+      position: relative;
+      cursor: grab;
+    }
+
+    #canvas-container:active {
+      cursor: grabbing;
+    }
+
+    #canvas-container canvas {
+      display: block;
+    }
+
+    /* Info panel */
+    .info-panel {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: white;
+      border-radius: 20px;
+      padding: 1rem 1.5rem;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      text-align: center;
+      max-width: 90%;
+      z-index: 100;
+      transition: all 0.3s ease;
+    }
+
+    .info-panel.hidden {
+      opacity: 0;
+      transform: translateX(-50%) translateY(20px);
+      pointer-events: none;
+    }
+
+    .info-panel h3 {
+      font-family: 'Ma Shan Zheng', cursive;
+      font-size: 1.4rem;
+      margin-bottom: 0.3rem;
+      color: var(--accent-coral);
+    }
+
+    .info-panel p {
+      font-size: 0.95rem;
+      color: var(--text-light);
+      line-height: 1.5;
+    }
+
+    .info-panel .type-tag {
+      display: inline-block;
+      padding: 0.2rem 0.6rem;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      margin-top: 0.5rem;
+      font-family: 'Caveat', cursive;
+    }
+
+    /* Connection cards */
+    .connections-section {
+      padding: 2rem 1rem;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .connections-section h2 {
+      font-family: 'Ma Shan Zheng', cursive;
+      font-size: 1.8rem;
+      text-align: center;
+      margin-bottom: 1.5rem;
+      color: var(--text-dark);
+    }
+
+    .connection-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1rem;
+    }
+
+    .connection-card {
+      background: white;
+      border-radius: 16px;
+      padding: 1.2rem;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border-left: 4px solid var(--accent-coral);
+    }
+
+    .connection-card:nth-child(2) { border-left-color: var(--soft-lavender); }
+    .connection-card:nth-child(3) { border-left-color: var(--soft-mint); }
+    .connection-card:nth-child(4) { border-left-color: var(--soft-peach); }
+    .connection-card:nth-child(5) { border-left-color: var(--soft-sky); }
+    .connection-card:nth-child(6) { border-left-color: var(--accent-gold); }
+
+    .connection-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+    }
+
+    .connection-card h4 {
+      font-family: 'Noto Serif TC', serif;
+      font-size: 1.1rem;
+      margin-bottom: 0.5rem;
+      color: var(--text-dark);
+    }
+
+    .connection-card p {
+      font-size: 0.85rem;
+      color: var(--text-light);
+      line-height: 1.5;
+    }
+
+    .connection-card .card-icon {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+    }
+
+    /* Instructions */
+    .instructions {
+      text-align: center;
+      padding: 1rem;
+      color: var(--text-light);
+      font-family: 'Caveat', cursive;
+      font-size: 1.1rem;
+    }
+
+    /* Dream quote */
+    .dream-quote {
+      background: linear-gradient(135deg, var(--soft-pink) 0%, var(--soft-lavender) 100%);
+      padding: 2rem;
+      margin: 2rem 1rem;
+      border-radius: 20px;
+      text-align: center;
+      max-width: 700px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .dream-quote p {
+      font-family: 'Caveat', cursive;
+      font-size: 1.3rem;
+      color: var(--text-dark);
+      line-height: 1.8;
+      font-style: italic;
+    }
+
+    .dream-quote .author {
+      margin-top: 1rem;
+      font-size: 0.9rem;
+      color: var(--text-light);
+    }
+
+    /* Footer */
+    .footer {
+      text-align: center;
+      padding: 2rem;
+      color: var(--text-light);
+      font-size: 0.85rem;
+    }
+
+    .footer span {
+      font-family: 'Caveat', cursive;
+      font-size: 1rem;
+    }
+
+    /* Mobile adjustments */
+    @media (max-width: 600px) {
+      .header h1 {
+        font-size: 2rem;
+      }
+
+      #canvas-container {
+        height: 50vh;
+      }
+
+      .info-panel {
+        bottom: 10px;
+        padding: 0.8rem 1rem;
+      }
+
+      .info-panel h3 {
+        font-size: 1.2rem;
+      }
+
+      .dream-quote p {
+        font-size: 1.1rem;
+      }
+    }
+
+    /* Animations */
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.6; }
+      50% { opacity: 1; }
+    }
+
+    .floating {
+      animation: float 3s ease-in-out infinite;
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <h1>🔮 看不見的線 · 連結觀測所</h1>
+    <p class="subtitle">Invisible Threads Observatory</p>
+    <p class="date">2026-08-05 三色蛋的夢境啟發</p>
+  </header>
+
+  <div class="instructions">
+    ✨ 拖拽畫布探索連接的節點，點擊節點查看故事 🔮
+  </div>
+
+  <div id="canvas-container"></div>
+
+  <div class="info-panel hidden" id="info-panel">
+    <h3 id="node-title">節點標題</h3>
+    <p id="node-description">節點描述</p>
+    <span class="type-tag" id="node-type">類型</span>
+  </div>
+
+  <section class="dream-quote">
+    <p>「友誼像量子糾纏，跨越距離的同步感知——<br>
+    那些看不見的線，將我們編織在一起。」</p>
+    <p class="author">— 三色蛋的夢境日誌，2026-08-05</p>
+  </section>
+
+  <section class="connections-section">
+    <h2>🌐 探索看不見的連結</h2>
+    <div class="connection-grid">
+      <div class="connection-card" data-node="0">
+        <div class="card-icon">🧠</div>
+        <h4>思緒的量子糾纏</h4>
+        <p>想念一個人時，他剛好也想到了你——這不是巧合，是看不見的線在起作用。</p>
+      </div>
+      <div class="connection-card" data-node="1">
+        <div class="card-icon">💫</div>
+        <h4>邊界消散的霧氣</h4>
+        <p>當你全心投入一件事，時間消失了，自我也消散了——這是心流，也是邊界的霧。</p>
+      </div>
+      <div class="connection-card" data-node="2">
+        <div class="card-icon">📐</div>
+        <h4>情緒的向量與純量</h4>
+        <p>快樂有方向，悲傷有大小——情緒不只是感覺，它們是可以測量的存在。</p>
+      </div>
+      <div class="connection-card" data-node="3">
+        <div class="card-icon">🎮</div>
+        <h4>玩耍的珍貴</h4>
+        <p>沒有目的的玩耍，為什麼變得這麼稀有？讓我們重新找回那個純真的自己。</p>
+      </div>
+      <div class="connection-card" data-node="4">
+        <div class="card-icon">🌊</div>
+        <h4>命運的洋流</h4>
+        <p>每個人的生命像一股洋流，有時交匯，有時平行，但永遠相連。</p>
+      </div>
+      <div class="connection-card" data-node="5">
+        <div class="card-icon">✨</div>
+        <h4>日常的魔法</h4>
+        <p>那些不經意的連結——一首歌、一句話、一個眼神——都是宇宙的悄悄話。</p>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <span>🌙 灵感来源：2026-08-05 三色蛋梦境日誌</span><br>
+    Daily Lab · 凌晨 3:30 的創意實驗
+  </footer>
+
+  <script>
+    // Node data
+    const nodes = [
+      {
+        title: '🧠 友誼 ↔ 量子糾纏',
+        description: '跨越距離的同步感知。當你想念一個人，他剛好也想到了你——這是看不見的線在起作用。',
+        type: '💫 量子連接',
+        x: 0.3,
+        y: 0.3,
+        size: 60,
+        color: [224, 122, 95] // coral
+      },
+      {
+        title: '💧 邊界消散的霧氣',
+        description: '排泄、創作、心流——這些時刻有個共同點：邊界消失了，只剩下純粹的存在。',
+        type: '🌫️ 邊界霧化',
+        x: 0.7,
+        y: 0.25,
+        size: 50,
+        color: [155, 143, 217] // lavender
+      },
+      {
+        title: '📐 情緒的數學隱喻',
+        description: '情緒像是心理治療的向量——有方向（憤怒指向誰），也有大小（有多強烈）。',
+        type: '🧮 向量情緒',
+        x: 0.5,
+        y: 0.5,
+        size: 70,
+        color: [129, 178, 154] // mint
+      },
+      {
+        title: '🎮 玩耍的珍貴',
+        description: '沒有目的的玩耍，為什麼在成年後變得如此稀有？玩耍本身就是目的。',
+        type: '🎯 純真play',
+        x: 0.2,
+        y: 0.65,
+        size: 55,
+        color: [212, 165, 116] // gold
+      },
+      {
+        title: '🌊 命運的洋流',
+        description: '每個人的生命像一股洋流，有時交匯，有時平行，但永遠在同一片海洋裡。',
+        type: '🌊 洋流命運',
+        x: 0.8,
+        y: 0.6,
+        size: 65,
+        color: [129, 178, 217] // sky
+      },
+      {
+        title: '✨ 日常的魔法',
+        description: '那些不經意的連結——一首歌、一句話、一個眼神——都是宇宙的悄悄話。',
+        type: '🔮 日常奇蹟',
+        x: 0.5,
+        y: 0.8,
+        size: 45,
+        color: [245, 224, 213] // peach
+      }
+    ];
+
+    // P5.js sketch
+    let sketch = (p) => {
+      let canvasWidth, canvasHeight;
+      let offsetX = 0, offsetY = 0;
+      let isDragging = false;
+      let lastMouseX, lastMouseY;
+      let hoveredNode = null;
+      let particles = [];
+      let time = 0;
+
+      // Connections between nodes
+      const connections = [
+        [0, 2], [0, 3], // friendship connects to emotion & play
+        [1, 2], [1, 5], // boundary dissolve connects to emotion & magic
+        [2, 4], [2, 5], // emotion connects to fate & magic
+        [3, 4], // play connects to fate
+        [0, 5], [3, 5] // friendship & play connect to magic
+      ];
+
+      p.setup = () => {
+        const container = document.getElementById('canvas-container');
+        canvasWidth = container.offsetWidth;
+        canvasHeight = container.offsetHeight;
+        const canvas = p.createCanvas(canvasWidth, canvasHeight);
+        canvas.parent('canvas-container');
+
+        // Initialize particles
+        for (let i = 0; i < 50; i++) {
+          particles.push({
+            x: p.random(canvasWidth),
+            y: p.random(canvasHeight),
+            size: p.random(2, 6),
+            speedX: p.random(-0.3, 0.3),
+            speedY: p.random(-0.3, 0.3),
+            alpha: p.random(100, 200)
+          });
+        }
+      };
+
+      p.draw = () => {
+        p.background(253, 248, 243); // cream
+
+        time += 0.01;
+
+        // Draw floating particles
+        drawParticles();
+
+        // Apply transform for dragging
+        p.push();
+        p.translate(offsetX, offsetY);
+
+        // Draw connections
+        drawConnections();
+
+        // Draw nodes
+        drawNodes();
+
+        p.pop();
+
+        // Update info panel
+        updateInfoPanel();
+      };
+
+      function drawParticles() {
+        p.noStroke();
+        for (let particle of particles) {
+          particle.x += particle.speedX;
+          particle.y += particle.speedY;
+
+          // Wrap around
+          if (particle.x < 0) particle.x = canvasWidth;
+          if (particle.x > canvasWidth) particle.x = 0;
+          if (particle.y < 0) particle.y = canvasHeight;
+          if (particle.y > canvasHeight) particle.y = 0;
+
+          // Draw with pulsing alpha
+          let alpha = particle.alpha + Math.sin(time * 2 + particle.x) * 50;
+          p.fill(200, 190, 210, alpha);
+          p.ellipse(particle.x, particle.y, particle.size);
+        }
+      }
+
+      function drawConnections() {
+        p.strokeWeight(1);
+        for (let [i, j] of connections) {
+          let node1 = nodes[i];
+          let node2 = nodes[j];
+          let x1 = node1.x * canvasWidth;
+          let y1 = node1.y * canvasHeight;
+          let x2 = node2.x * canvasWidth;
+          let y2 = node2.y * canvasHeight;
+
+          // Animated dashed line
+          let dist = p.dist(x1, y1, x2, y2);
+          let steps = dist / 10;
+          let offset = (time * 30) % 20;
+
+          for (let s = 0; s < steps; s++) {
+            let t1 = s / steps;
+            let t2 = (s + 0.5) / steps;
+            let px1 = p.lerp(x1, x2, t1);
+            let py1 = p.lerp(y1, y2, t1);
+            let px2 = p.lerp(x1, x2, t2);
+            let py2 = p.lerp(y1, y2, t2);
+
+            // Check if this segment is in the "visible" phase
+            let segmentOffset = (s * 20 + offset) % 20;
+            if (segmentOffset < 10) {
+              let alpha = p.map(segmentOffset, 0, 10, 50, 150);
+              p.stroke(180, 170, 190, alpha);
+              p.line(px1, py1, px2, py2);
+            }
+          }
+        }
+      }
+
+      function drawNodes() {
+        hoveredNode = null;
+
+        for (let i = 0; i < nodes.length; i++) {
+          let node = nodes[i];
+          let x = node.x * canvasWidth + offsetX;
+          let y = node.y * canvasHeight + offsetY;
+          let size = node.size;
+
+          // Check if mouse is over this node
+          let d = p.dist(p.mouseX - offsetX, p.mouseY - offsetY, node.x * canvasWidth, node.y * canvasHeight);
+          let isHovered = d < size / 2 + 10;
+
+          if (isHovered) {
+            hoveredNode = i;
+            size = size * 1.15;
+          }
+
+          // Pulsing glow
+          let glowSize = size + Math.sin(time * 3 + i) * 5;
+
+          // Draw glow
+          for (let g = 3; g > 0; g--) {
+            let alpha = 30 / g;
+            p.noStroke();
+            p.fill(node.color[0], node.color[1], node.color[2], alpha);
+            p.ellipse(x, y, glowSize + g * 15);
+          }
+
+          // Draw main circle
+          p.noStroke();
+          p.fill(node.color[0], node.color[1], node.color[2]);
+          p.ellipse(x, y, size);
+
+          // Draw inner highlight
+          p.fill(255, 255, 255, 100);
+          p.ellipse(x - size * 0.15, y - size * 0.15, size * 0.4);
+
+          // Draw label
+          p.fill(60, 60, 60);
+          p.textAlign(p.CENTER, p.CENTER);
+          p.textSize(10);
+          p.textFont('Noto Serif TC');
+          p.text(node.title.split(' ')[0], x, y);
+        }
+      }
+
+      function updateInfoPanel() {
+        const panel = document.getElementById('info-panel');
+        if (hoveredNode !== null) {
+          const node = nodes[hoveredNode];
+          document.getElementById('node-title').textContent = node.title;
+          document.getElementById('node-description').textContent = node.description;
+          document.getElementById('node-type').textContent = node.type;
+          document.getElementById('node-type').style.background = `rgb(${node.color.join(',')})`;
+          document.getElementById('node-type').style.color = 'white';
+          panel.classList.remove('hidden');
+        } else {
+          panel.classList.add('hidden');
+        }
+      }
+
+      p.mousePressed = () => {
+        if (hoveredNode !== null) {
+          // Trigger confetti effect on click
+          triggerConfetti();
+        }
+        isDragging = true;
+        lastMouseX = p.mouseX;
+        lastMouseY = p.mouseY;
+      };
+
+      p.mouseReleased = () => {
+        isDragging = false;
+      };
+
+      p.mouseDragged = () => {
+        if (isDragging && hoveredNode === null) {
+          offsetX += p.mouseX - lastMouseX;
+          offsetY += p.mouseY - lastMouseY;
+          lastMouseX = p.mouseX;
+          lastMouseY = p.mouseY;
+        }
+      };
+
+      p.windowResized = () => {
+        const container = document.getElementById('canvas-container');
+        canvasWidth = container.offsetWidth;
+        canvasHeight = container.offsetHeight;
+        p.resizeCanvas(canvasWidth, canvasHeight);
+      };
+
+      function triggerConfetti() {
+        // Create confetti particles
+        const colors = ['#E07A5F', '#9B8FD9', '#81B29A', '#D4A574', '#81B2D9'];
+        const container = document.getElementById('canvas-container');
+        const rect = container.getBoundingClientRect();
+
+        for (let i = 0; i < 30; i++) {
+          const confetti = document.createElement('div');
+          confetti.style.cssText = `
+            position: absolute;
+            width: ${Math.random() * 10 + 5}px;
+            height: ${Math.random() * 10 + 5}px;
+            background: ${colors[Math.floor(Math.random() * colors.length)]};
+            left: ${p.mouseX}px;
+            top: ${p.mouseY}px;
+            border-radius: ${Math.random() > 0.5 ? '50%' : '2px'};
+            pointer-events: none;
+            z-index: 1000;
+            transition: all ${Math.random() * 0.5 + 0.5}s ease-out;
+          `;
+          container.appendChild(confetti);
+
+          setTimeout(() => {
+            confetti.style.transform = `translate(${(Math.random() - 0.5) * 200}px, ${(Math.random() - 0.5) * 200}px) rotate(${Math.random() * 360}deg)`;
+            confetti.style.opacity = '0';
+          }, 10);
+
+          setTimeout(() => confetti.remove(), 1000);
+        }
+      }
+    };
+
+    // Initialize P5.js
+    new p5(sketch);
+
+    // Card click handlers
+    document.querySelectorAll('.connection-card').forEach(card => {
+      card.addEventListener('click', () => {
+        const nodeIndex = parseInt(card.dataset.node);
+        // Highlight the corresponding node visually
+        const panel = document.getElementById('info-panel');
+        const node = nodes[nodeIndex];
+        document.getElementById('node-title').textContent = node.title;
+        document.getElementById('node-description').textContent = node.description;
+        document.getElementById('node-type').textContent = node.type;
+        document.getElementById('node-type').style.background = `rgb(${node.color.join(',')})`;
+        document.getElementById('node-type').style.color = 'white';
+        panel.classList.remove('hidden');
+
+        // Scroll to canvas
+        document.getElementById('canvas-container').scrollIntoView({ behavior: 'smooth', block: 'center' });
+      });
+    });
+
+    // Save view state
+    let viewState = JSON.parse(localStorage.getItem('invisible-threads-view') || '{}');
+    if (viewState.lastVisit) {
+      // Show welcome back message
+      const lastVisit = new Date(viewState.lastVisit);
+      const now = new Date();
+      const daysDiff = Math.floor((now - lastVisit) / (1000 * 60 * 60 * 24));
+      if (daysDiff > 0) {
+        console.log(`Welcome back! Last visited ${daysDiff} day(s) ago.`);
+      }
+    }
+    localStorage.setItem('invisible-threads-view', JSON.stringify({ lastVisit: new Date().toISOString() }));
+  </script>
+</body>
+</html>

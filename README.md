@@ -1,8 +1,10 @@
 # Daily Lab
 
-Total entries: 136
+Total entries: 137
 
 ## Featured (Latest 3)
+
+- **2026-08-05** [🔮 看不見的線·連結觀測所 (Invisible Threads Observatory)](2026-08-05/README.md) — Interactive Node Constellation × Dreamy Quote 互動式節點星圖視覺化，探索人與人之間那些「看不見的線」——同步感知、量子糾纏般的友誼、心流狀態等主題。
 
 - **2026-08-04** [📰 晨報 · 命理資訊站](2026-08-04/README.md) — Mystical Morning News × Serene Divination 晨報風格的命理資訊站，以溫暖的紙張質感搭配神秘學元素，提供每日早晨的神秘力量指引。
 
@@ -84,6 +86,8 @@ Total entries: 136
 - 2026-05-10 — [🌅 早晨 Routine 打卡機](2026-05-10/README.md)
 
 ### interactive
+
+- 2026-08-05 — [🔮 看不見的線·連結觀測所 (Invisible Threads Observatory)](2026-08-05/README.md)
 
 - 2026-07-17 — [⏳ 時光命理軸](2026-07-17/README.md)
 - 2026-07-07 — [🔮 神秘的每日三張牌](2026-07-07/README.md)
