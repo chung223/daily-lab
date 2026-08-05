@@ -1,14 +1,14 @@
 # Daily Lab
 
-Total entries: 137
+Total entries: 138
 
 ## Featured (Latest 3)
 
+- **2026-08-06** [🌅 晨間前線 MORNING FRONT](2026-08-06/README.md) — Newsprint Newspaper × Editorial Typography 新聞報紙風格的每日晨間資訊前線，以經典報紙排版美學呈現當日重要資訊。
+
 - **2026-08-05** [🔮 看不見的線·連結觀測所 (Invisible Threads Observatory)](2026-08-05/README.md) — Interactive Node Constellation × Dreamy Quote 互動式節點星圖視覺化，探索人與人之間那些「看不見的線」——同步感知、量子糾纏般的友誼、心流狀態等主題。
 
-- **2026-08-04** [📰 晨報 · 命理資訊站](2026-08-04/README.md) — Mystical Morning News × Serene Divination 晨報風格的命理資訊站，以溫暖的紙張質感搭配神秘學元素，提供每日早晨的神秘力量指引。
-
-- **2026-08-03** [🌍 IFYE 2026 大使畫廊 (Ambassador Gallery)](2026-08-03/README.md) — Warm Editorial × Gallery Card 亮色編輯卡片風格的大使畫廊與站點收藏系統。九位代表卡片展示國籍與站點數量、五十一站按類別分類、點擊站點觸發彩屑慶祝動畫、localStorage 持久化收集進度。
+- **2026-08-04** [📰 晨報 · 命理資訊站](2026-08-04/README.md) — Mystical Morning News × Serene Divination 晨報風格的命理資訊站，以溫暖的紙張質感搭配神秘學元素，提供每日早晨的神秘力量指引。九位代表卡片展示國籍與站點數量、五十一站按類別分類、點擊站點觸發彩屑慶祝動畫、localStorage 持久化收集進度。
 
 - **2026-08-02** [🌊 身體時鐘深海觀測所 (Deep Body Clock Observatory)](2026-08-02/README.md) — Deep Bioluminescent Ocean × Serene Observatory 深海發光生物 × 靜謐觀測所風格的身體時鐘互動體驗。24小時洋流時間線、12種身體狀態對應的深海生物卡片、此刻身體狀態指示器、呼吸練習功能。
 
@@ -87,6 +87,7 @@ Total entries: 137
 
 ### interactive
 
+- 2026-08-06 — [🌅 晨間前線 MORNING FRONT](2026-08-06/README.md)
 - 2026-08-05 — [🔮 看不見的線·連結觀測所 (Invisible Threads Observatory)](2026-08-05/README.md)
 
 - 2026-07-17 — [⏳ 時光命理軸](2026-07-17/README.md)
