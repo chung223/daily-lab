@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IFE 2026 世界大使館 — Geo Ambassador Atlas</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&family=Noto+Serif+TC:wght@400;500;700&family=DM+Sans:wght@400;500;600;700&family=Caveat:wght@400;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --navy: #1E3A5F;
+            --gold: #D4A574;
+            --coral: #E07A5F;
+            --mint: #81B29A;
+            --lavender: #9B8FD9;
+            --cream: #FDF9F4;
+            --text: #1A1814;
+            --text-light: #5A5A5A;
+        }
+
+        body {
+            font-family: 'DM Sans', 'Noto Serif TC', sans-serif;
+            background: var(--cream);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Header */
+        .header {
+            background: var(--navy);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            opacity: 0.3;
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .header-eyebrow {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.75rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--gold);
+            margin-bottom: 0.5rem;
+        }
+
+        .header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            font-weight: 900;
+            margin-bottom: 0.5rem;
+        }
+
+        .header-subtitle {
+            font-family: 'Caveat', cursive;
+            font-size: 1.25rem;
+            color: rgba(255,255,255,0.8);
+        }
+
+        /* Stats Bar */
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1px;
+            background: var(--navy);
+            border-bottom: 4px solid var(--gold);
+        }
+
+        .stat-item {
+            background: white;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-family: 'Playfair Display', serif;
+            font-size: 3rem;
+            font-weight: 900;
+            color: var(--navy);
+            line-height: 1;
+        }
+
+        .stat-number.gold { color: var(--gold); }
+        .stat-number.coral { color: var(--coral); }
+        .stat-number.mint { color: var(--mint); }
+
+        .stat-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-light);
+            margin-top: 0.5rem;
+        }
+
+        /* World Map Section */
+        .map-section {
+            padding: 3rem 2rem;
+            background: linear-gradient(180deg, #f8f6f1 0%, var(--cream) 100%);
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .section-title h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            color: var(--navy);
+            margin-bottom: 0.5rem;
+        }
+
+        .section-title p {
+            font-family: 'Caveat', cursive;
+            font-size: 1.25rem;
+            color: var(--text-light);
+        }
+
+        /* Simplified World Map SVG */
+        .world-map-container {
+            max-width: 1000px;
+            margin: 0 auto 3rem;
+            position: relative;
+        }
+
+        .world-map {
+            width: 100%;
+            height: auto;
+            filter: drop-shadow(0 4px 20px rgba(0,0,0,0.1));
+        }
+
+        .world-map path {
+            fill: #E8E4DE;
+            stroke: white;
+            stroke-width: 0.5;
+            transition: all 0.3s ease;
+        }
+
+        .world-map path.highlighted {
+            fill: var(--gold);
+        }
+
+        .world-map path.active {
+            fill: var(--coral);
+        }
+
+        /* Ambassador Cards Grid */
+        .ambassador-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .ambassador-card {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .ambassador-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+        }
+
+        .ambassador-card.ph { border-color: #0038A8; }
+        .ambassador-card.th { border-color: #A51931; }
+        .ambassador-card.kr { border-color: #CD2E3A; }
+        .ambassador-card.ch { border-color: #FF0000; }
+        .ambassador-card.gh { border-color: #FCD116; }
+
+        .card-header {
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .card-header.ph { background: linear-gradient(135deg, #0038A8 0%, #00267F 100%); }
+        .card-header.th { background: linear-gradient(135deg, #A51931 0%, #7A1425 100%); }
+        .card-header.kr { background: linear-gradient(135deg, #CD2E3A 0%, #9A1F28 100%); }
+        .card-header.ch { background: linear-gradient(135deg, #FF0000 0%, #CC0000 100%); }
+        .card-header.gh { background: linear-gradient(135deg, #FCD116 0%, #D4A000 100%); color: #1A1814; }
+
+        .country-flag {
+            font-size: 3rem;
+            line-height: 1;
+        }
+
+        .country-info h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.25rem;
+            color: white;
+            margin-bottom: 0.25rem;
+        }
+
+        .card-header.gh .country-info h3 { color: #1A1814; }
+
+        .country-info span {
+            font-size: 0.8rem;
+            color: rgba(255,255,255,0.8);
+        }
+
+        .card-header.gh .country-info span { color: rgba(26,24,20,0.7); }
+
+        .card-body {
+            padding: 1.5rem;
+        }
+
+        .station-count {
+            display: flex;
+            align-items: baseline;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .station-count .number {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: var(--navy);
+        }
+
+        .station-count .label {
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+
+        .station-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .station-tag {
+            background: var(--cream);
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            color: var(--text);
+            border: 1px solid #E8E4DE;
+        }
+
+        .station-tag.type-pickup { background: #FFF0E8; border-color: var(--coral); color: var(--coral); }
+        .station-tag.type-send { background: #E8F4F0; border-color: var(--mint); color: #2D6A4F; }
+        .station-tag.type-agri { background: #F0E8FF; border-color: var(--lavender); color: #5B4A8A; }
+        .station-tag.type-event { background: #FFF8E8; border-color: var(--gold); color: #8B6914; }
+
+        /* Footer */
+        .footer {
+            background: var(--navy);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .footer-text {
+            font-family: 'Caveat', cursive;
+            font-size: 1.1rem;
+            color: rgba(255,255,255,0.8);
+        }
+
+        .footer-link {
+            color: var(--gold);
+            text-decoration: none;
+        }
+
+        .footer-link:hover {
+            text-decoration: underline;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header h1 { font-size: 1.75rem; }
+            .stats-bar { grid-template-columns: repeat(2, 1fr); }
+            .stat-number { font-size: 2rem; }
+            .ambassador-grid { grid-template-columns: 1fr; }
+            .card-header { padding: 1rem; }
+            .country-flag { font-size: 2rem; }
+        }
+
+        /* Click animation */
+        @keyframes cardPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+            100% { transform: scale(1); }
+        }
+
+        .ambassador-card.pulse {
+            animation: cardPulse 0.3s ease;
+        }
+
+        /* Collected state */
+        .ambassador-card.collected .card-header::after {
+            content: '✓';
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            width: 28px;
+            height: 28px;
+            background: var(--mint);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            color: white;
+        }
+
+        .ambassador-card.collected {
+            position: relative;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <div class="header-eyebrow">IFYE 2026 世界大使館</div>
+            <h1>Geo Ambassador Atlas</h1>
+            <p class="header-subtitle">九位代表 × 五十一站 × 世界的角落</p>
+        </div>
+    </header>
+
+    <section class="stats-bar">
+        <div class="stat-item">
+            <div class="stat-number">9</div>
+            <div class="stat-label">國家代表</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number gold">51</div>
+            <div class="stat-label">服務站點</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number coral">4</div>
+            <div class="stat-label">站點類型</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number mint" id="collected-count">0</div>
+            <div class="stat-label">已探索</div>
+        </div>
+    </section>
+
+    <section class="map-section">
+        <div class="section-title">
+            <h2>世界足跡</h2>
+            <p>點擊卡片，探索每位代表的服務站點</p>
+        </div>
+
+        <div class="world-map-container">
+            <svg class="world-map" viewBox="0 0 1000 500" preserveAspectRatio="xMidYMid meet">
+                <!-- Simplified World Map -->
+                <!-- North America -->
+                <path id="na" d="M150,120 L280,100 L320,140 L300,200 L250,220 L180,200 L140,160 Z" />
+                <!-- South America -->
+                <path id="sa" d="M250,260 L300,250 L320,320 L280,400 L240,380 L220,300 Z" />
+                <!-- Europe -->
+                <path id="eu" d="M480,100 L580,90 L600,130 L560,160 L500,150 L470,130 Z" />
+                <!-- Africa -->
+                <path id="af" d="M480,180 L560,170 L580,280 L520,350 L460,300 L450,220 Z" />
+                <!-- Asia -->
+                <path id="as" d="M600,80 L800,60 L880,120 L850,200 L750,220 L650,180 L600,130 Z" />
+                <!-- Southeast Asia (highlighted) -->
+                <path id="sea" class="highlighted" d="M750,220 L820,200 L850,250 L800,280 L750,260 Z" />
+                <!-- Oceania -->
+                <path id="oc" d="M820,320 L920,300 L950,360 L900,400 L830,380 Z" />
+            </svg>
+        </div>
+
+        <div class="ambassador-grid" id="ambassador-grid">
+            <!-- Ambassador cards will be generated by JS -->
+        </div>
+    </section>
+
+    <footer class="footer">
+        <p class="footer-text">
+            IFYE 2026 世界大使館 — 
+            <a href="https://index.4-h.me/ifye/2026/" target="_blank" class="footer-link">完整站點名單</a>
+        </p>
+    </footer>
+
+    <script>
+        // Ambassador Data
+        const ambassadors = [
+            {
+                id: 'ph',
+                country: '菲律宾',
+                flag: '🇵🇭',
+                stations: 12,
+                types: ['接送機', '國際農水', '年會', '接送機'],
+                region: 'sea'
+            },
+            {
+                id: 'th',
+                country: '泰国',
+                flag: '🇹🇭',
+                stations: 10,
+                types: ['接送機', '國際農水', '年會'],
+                region: 'sea'
+            },
+            {
+                id: 'kr',
+                country: '韩国',
+                flag: '🇰🇷',
+                stations: 12,
+                types: ['接送機', '國際農水', '年會', '接送機'],
+                region: 'as'
+            },
+            {
+                id: 'ch',
+                country: '瑞士',
+                flag: '🇨🇭',
+                stations: 12,
+                types: ['接送機', '國際農水', '年會', '接送機'],
+                region: 'eu'
+            },
+            {
+                id: 'gh',
+                country: '迦纳',
+                flag: '🇬🇭',
+                stations: 5,
+                types: ['接送機', '年會'],
+                region: 'af'
+            }
+        ];
+
+        // Station type mapping
+        const typeLabels = {
+            '接送機': { class: 'type-pickup', icon: '✈️' },
+            '國際農水': { class: 'type-agri', icon: '🌾' },
+            '年會': { class: 'type-event', icon: '🎪' }
+        };
+
+        // Get unique station types
+        function getUniqueTypes(types) {
+            return [...new Set(types)];
+        }
+
+        // Load collected state
+        let collected = JSON.parse(localStorage.getItem('ambassador-collected') || '[]');
+
+        // Render cards
+        function renderCards() {
+            const grid = document.getElementById('ambassador-grid');
+            grid.innerHTML = ambassadors.map(amb => {
+                const isCollected = collected.includes(amb.id);
+                const uniqueTypes = getUniqueTypes(amb.types);
+                
+                return `
+                    <div class="ambassador-card ${amb.id} ${isCollected ? 'collected' : ''}" 
+                         data-id="${amb.id}" 
+                         data-region="${amb.region}">
+                        <div class="card-header ${amb.id}">
+                            <div class="country-flag">${amb.flag}</div>
+                            <div class="country-info">
+                                <h3>${amb.country}</h3>
+                                <span>代表 ${amb.id.toUpperCase()}</span>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="station-count">
+                                <span class="number">${amb.stations}</span>
+                                <span class="label">個站點</span>
+                            </div>
+                            <div class="station-list">
+                                ${uniqueTypes.map(type => {
+                                    const typeInfo = typeLabels[type] || { class: '', icon: '📍' };
+                                    return `<span class="station-tag ${typeInfo.class}">${typeInfo.icon} ${type}</span>`;
+                                }).join('')}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            // Update collected count
+            document.getElementById('collected-count').textContent = collected.length;
+
+            // Add click handlers
+            document.querySelectorAll('.ambassador-card').forEach(card => {
+                card.addEventListener('click', () => {
+                    const id = card.dataset.id;
+                    const region = card.dataset.region;
+
+                    // Toggle collected state
+                    if (!collected.includes(id)) {
+                        collected.push(id);
+                        localStorage.setItem('ambassador-collected', JSON.stringify(collected));
+                        card.classList.add('collected');
+                        document.getElementById('collected-count').textContent = collected.length;
+                        
+                        // Confetti!
+                        confetti({
+                            particlecount: 50,
+                            spread: 60,
+                            origin: { y: 0.6 },
+                            colors: ['#D4A574', '#E07A5F', '#81B29A', '#9B8FD9']
+                        });
+                    } else {
+                        // Already collected - show different effect
+                        card.classList.add('pulse');
+                        setTimeout(() => card.classList.remove('pulse'), 300);
+                    }
+
+                    // Highlight region on map
+                    const regionPath = document.getElementById(region);
+                    if (regionPath) {
+                        regionPath.classList.add('active');
+                        setTimeout(() => regionPath.classList.remove('active'), 1000);
+                    }
+                });
+            });
+        }
+
+        // Initialize
+        renderCards();
+
+        // Highlight all collected regions on load
+        collected.forEach(id => {
+            const amb = ambassadors.find(a => a.id === id);
+            if (amb) {
+                const regionPath = document.getElementById(amb.region);
+                if (regionPath) {
+                    regionPath.classList.add('highlighted');
+                }
+            }
+        });
+    </script>
+</body>
+</html>

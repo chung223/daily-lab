@@ -1,8 +1,10 @@
 # Daily Lab
 
-Total entries: 140
+Total entries: 141
 
 ## Featured (Latest 3)
+
+- **2026-08-09** [🌍 IFYE 2026 世界大使館](2026-08-09/README.md) — Geo-Editorial Atlas × World Map 地理編輯 atlas × 世界地圖風格的 IFYE 2026 世界大使館互動展示，頂部4格統計數字牆（9國代表/51站/4類型/已探索）、互動式世界地圖、5位代表卡片、點擊收集觸發彩屑慶祝動畫、localStorage 持久化。
 
 - **2026-08-08** [🦈 拖延鯊的哲學時刻](2026-08-08/README.md) — Bright Comic Card × Absurd Philosophy 明亮漫畫卡片 × 荒謬哲學風格的哲學語錄展示器，6張哲學語錄卡片、漫畫式對話面板、彩屑慶祝動畫。
 
@@ -149,6 +151,7 @@ Total entries: 140
 
 ### 資料視覺化
 
+- 2026-08-09 — [🌍 IFYE 2026 世界大使館 (Geo Ambassador Atlas)](2026-08-09/README.md)
 - 2026-08-03 — [🌍 IFYE 2026 大使畫廊 (Ambassador Gallery)](2026-08-03/README.md)
 - 2026-04-21 — [— 值班巡航圖 (Heartbeat Duty Atlas)](2026-04-21/README.md)
 
