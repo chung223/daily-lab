@@ -1,14 +1,14 @@
 # Daily Lab
 
-Total entries: 141
+Total entries: 142
 
 ## Featured (Latest 3)
+
+- **2026-08-10** [🌙 夢境摺紙 (Dream Folding)](2026-08-10/README.md) — Paper-cut Sky × Folded Dreams 紙雕天空 × 摺疊夢境風格的雙夢境展示器。兩張仿摺紙質感的夢境卡片，展示阿笨的「冰箱裡的光」和三色蛋的「時空的摺痕」，點擊卡片觸發柔和彩屑慶祝動畫。
 
 - **2026-08-09** [🌍 IFYE 2026 世界大使館](2026-08-09/README.md) — Geo-Editorial Atlas × World Map 地理編輯 atlas × 世界地圖風格的 IFYE 2026 世界大使館互動展示，頂部4格統計數字牆（9國代表/51站/4類型/已探索）、互動式世界地圖、5位代表卡片、點擊收集觸發彩屑慶祝動畫、localStorage 持久化。
 
 - **2026-08-08** [🦈 拖延鯊的哲學時刻](2026-08-08/README.md) — Bright Comic Card × Absurd Philosophy 明亮漫畫卡片 × 荒謬哲學風格的哲學語錄展示器，6張哲學語錄卡片、漫畫式對話面板、彩屑慶祝動畫。
-
-- **2026-08-07** [🗼 VPS 健康監控中心](2026-08-07/README.md) — Dashboard × VPS Monitoring VPS 主機健康監控儀表板，即時呈現 12 個站點的狀態，深海海軍藍主題搭配醫院風格警示系統。
 
 - **2026-08-06** [🌅 晨間前線 MORNING FRONT](2026-08-06/README.md) — Newsprint Newspaper × Editorial Typography 新聞報紙風格的每日晨間資訊前線，以經典報紙排版美學呈現當日重要資訊。
 
@@ -42,6 +42,7 @@ Total entries: 141
 
 ### learning
 
+- 2026-08-10 — [🌙 夢境摺紙 (Dream Folding)](2026-08-10/README.md)
 - 2026-08-02 — [🌊 身體時鐘深海觀測所 (Deep Body Clock Observatory)](2026-08-02/README.md)
 - 2026-07-10 — [📐 知識的形狀 (Tangent Collector)](2026-07-10/README.md)
 - 2026-07-09 — [⏳ 等待的重量 vs 行動的重量](2026-07-09/README.md)

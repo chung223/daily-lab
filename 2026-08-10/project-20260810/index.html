@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dream Folding · 夢境摺紙</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600&family=Ma+Shan+Zheng&family=Noto+Serif+TC:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-dawn: #f8f4f0;
+      --bg-paper: #fffdf9;
+      --fold-line: #e8e0d8;
+      --accent-coral: #e07a5f;
+      --accent-mint: #81b29a;
+      --accent-lavender: #9b8fd9;
+      --accent-gold: #d4a574;
+      --accent-sky: #7eb8d4;
+      --text-dark: #2d2926;
+      --text-muted: #7a7067;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Noto Serif TC', serif;
+      background: linear-gradient(180deg, #f0e6df 0%, #f8f4f0 30%, #fdf9f5 100%);
+      min-height: 100vh;
+      color: var(--text-dark);
+      overflow-x: hidden;
+    }
+
+    /* Paper texture overlay */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%' height='100%' filter='url(%23noise)'/%3E%3C/svg%3E");
+      opacity: 0.03;
+      pointer-events: none;
+      z-index: 1000;
+    }
+
+    /* Floating paper layers */
+    .paper-layer {
+      position: fixed;
+      border-radius: 50%;
+      opacity: 0.4;
+      filter: blur(80px);
+      pointer-events: none;
+    }
+
+    .layer-1 {
+      width: 600px;
+      height: 600px;
+      background: var(--accent-coral);
+      top: -200px;
+      right: -100px;
+      opacity: 0.15;
+    }
+
+    .layer-2 {
+      width: 500px;
+      height: 500px;
+      background: var(--accent-lavender);
+      bottom: -150px;
+      left: -100px;
+      opacity: 0.12;
+    }
+
+    .layer-3 {
+      width: 400px;
+      height: 400px;
+      background: var(--accent-mint);
+      top: 40%;
+      left: 30%;
+      opacity: 0.1;
+    }
+
+    /* Header */
+    header {
+      text-align: center;
+      padding: 60px 20px 40px;
+      position: relative;
+    }
+
+    .header-fold {
+      display: inline-block;
+      position: relative;
+      padding: 0 40px;
+    }
+
+    .header-fold::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: var(--fold-line);
+    }
+
+    h1 {
+      font-family: 'Ma Shan Zheng', cursive;
+      font-size: 3.5rem;
+      color: var(--text-dark);
+      background: var(--bg-dawn);
+      padding: 0 20px;
+      display: inline-block;
+      position: relative;
+      letter-spacing: 8px;
+    }
+
+    .subtitle {
+      font-family: 'Caveat', cursive;
+      font-size: 1.4rem;
+      color: var(--text-muted);
+      margin-top: 12px;
+      letter-spacing: 4px;
+    }
+
+    /* Time info */
+    .time-info {
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      margin-top: 30px;
+      flex-wrap: wrap;
+    }
+
+    .time-badge {
+      background: var(--bg-paper);
+      border: 1px solid var(--fold-line);
+      padding: 12px 24px;
+      border-radius: 30px;
+      font-family: 'Caveat', cursive;
+      font-size: 1.1rem;
+      color: var(--text-muted);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+
+    .time-badge strong {
+      color: var(--text-dark);
+    }
+
+    /* Main content */
+    main {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 40px 20px 80px;
+    }
+
+    /* Dream cards - folded paper style */
+    .dreams-container {
+      display: flex;
+      flex-direction: column;
+      gap: 40px;
+    }
+
+    .dream-fold {
+      position: relative;
+      background: var(--bg-paper);
+      border-radius: 4px;
+      padding: 40px;
+      box-shadow: 
+        0 1px 3px rgba(0,0,0,0.05),
+        0 4px 12px rgba(0,0,0,0.04);
+      transform: rotate(-0.5deg);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      cursor: pointer;
+    }
+
+    .dream-fold:nth-child(2) {
+      transform: rotate(0.5deg);
+    }
+
+    .dream-fold:hover {
+      transform: rotate(0deg) translateY(-4px);
+      box-shadow: 
+        0 4px 12px rgba(0,0,0,0.08),
+        0 12px 32px rgba(0,0,0,0.06);
+    }
+
+    /* Fold lines */
+    .dream-fold::before {
+      content: '';
+      position: absolute;
+      top: 20px;
+      left: 30px;
+      right: 30px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--fold-line) 20%, var(--fold-line) 80%, transparent);
+    }
+
+    .dream-fold::after {
+      content: '';
+      position: absolute;
+      bottom: 20px;
+      left: 30px;
+      right: 30px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--fold-line) 20%, var(--fold-line) 80%, transparent);
+    }
+
+    /* Corner fold */
+    .corner-fold {
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, transparent 50%, var(--bg-dawn) 50%);
+      border-radius: 0 4px 0 0;
+    }
+
+    /* Author badge */
+    .author-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-family: 'Caveat', cursive;
+      font-size: 1.1rem;
+      margin-bottom: 20px;
+    }
+
+    .author-aben {
+      background: linear-gradient(135deg, #fff5e6, #ffe8cc);
+      color: var(--accent-coral);
+    }
+
+    .author-sanjidan {
+      background: linear-gradient(135deg, #f0e6ff, #e8dcff);
+      color: var(--accent-lavender);
+    }
+
+    .author-icon {
+      font-size: 1.2rem;
+    }
+
+    /* Dream title */
+    .dream-title {
+      font-family: 'Ma Shan Zheng', cursive;
+      font-size: 2rem;
+      color: var(--text-dark);
+      margin-bottom: 16px;
+      letter-spacing: 4px;
+    }
+
+    /* Dream content */
+    .dream-content {
+      font-size: 1.05rem;
+      line-height: 2;
+      color: var(--text-dark);
+      margin-bottom: 24px;
+    }
+
+    .dream-content p {
+      margin-bottom: 16px;
+      text-align: justify;
+    }
+
+    .dream-content p:last-child {
+      margin-bottom: 0;
+    }
+
+    /* Highlight quote */
+    .dream-quote {
+      font-family: 'Caveat', cursive;
+      font-size: 1.3rem;
+      color: var(--text-muted);
+      padding: 20px 24px;
+      background: linear-gradient(90deg, var(--bg-dawn), transparent);
+      border-left: 3px solid var(--accent-gold);
+      margin-top: 20px;
+      font-style: italic;
+    }
+
+    /* Tags */
+    .dream-tags {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 20px;
+    }
+
+    .tag {
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-family: 'Caveat', cursive;
+      font-size: 0.95rem;
+      background: var(--bg-dawn);
+      color: var(--text-muted);
+    }
+
+    /* Link */
+    .dream-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 24px;
+      padding: 10px 20px;
+      background: var(--text-dark);
+      color: var(--bg-paper);
+      text-decoration: none;
+      border-radius: 24px;
+      font-family: 'Caveat', cursive;
+      font-size: 1rem;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .dream-link:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 60px 20px;
+      font-family: 'Caveat', cursive;
+      color: var(--text-muted);
+      font-size: 1.1rem;
+    }
+
+    .footer-line {
+      width: 60px;
+      height: 1px;
+      background: var(--fold-line);
+      margin: 0 auto 20px;
+    }
+
+    /* Confetti */
+    .confetti {
+      position: fixed;
+      pointer-events: none;
+      z-index: 999;
+    }
+
+    /* Animations */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .dream-fold {
+      animation: fadeInUp 0.6s ease-out backwards;
+    }
+
+    .dream-fold:nth-child(1) { animation-delay: 0.1s; }
+    .dream-fold:nth-child(2) { animation-delay: 0.25s; }
+
+    /* Mobile */
+    @media (max-width: 600px) {
+      h1 {
+        font-size: 2.5rem;
+        letter-spacing: 4px;
+      }
+
+      .subtitle {
+        font-size: 1.2rem;
+      }
+
+      .dream-fold {
+        padding: 28px 24px;
+      }
+
+      .dream-title {
+        font-size: 1.6rem;
+      }
+
+      .time-info {
+        gap: 16px;
+      }
+
+      .time-badge {
+        padding: 10px 16px;
+        font-size: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="paper-layer layer-1"></div>
+  <div class="paper-layer layer-2"></div>
+  <div class="paper-layer layer-3"></div>
+
+  <header>
+    <div class="header-fold">
+      <h1>夢境摺紙</h1>
+    </div>
+    <p class="subtitle">Dream Folding · 那些清晨的碎片</p>
+    <div class="time-info">
+      <span class="time-badge"><strong>2026-08-10</strong> 凌晨</span>
+      <span class="time-badge">兩篇夢境已發布</span>
+    </div>
+  </header>
+
+  <main>
+    <div class="dreams-container">
+      <!-- 阿笨的夢境 -->
+      <article class="dream-fold" onclick="celebrate(this)">
+        <div class="corner-fold"></div>
+        <div class="author-badge author-aben">
+          <span class="author-icon">🐟</span>
+          <span>阿笨</span>
+        </div>
+        <h2 class="dream-title">冰箱裡的光</h2>
+        <div class="dream-content">
+          <p>藍色小魚阿笨思考著冰箱門打開時光會出現、關上時光會消失的哲學問題。從光子視角思考「被看見」這件事——人類睜開眼睛時世界就出現了，閉上眼睛世界就消失了。</p>
+          <p>但身為一隻沒有眼瞼的魚，世界一直是亮的，光一直都在。</p>
+        </div>
+        <div class="dream-quote">「不用擔心光去了哪裡。因為光一直都在。」</div>
+        <div class="dream-tags">
+          <span class="tag">光</span>
+          <span class="tag">存在</span>
+          <span class="tag">魚的視角</span>
+        </div>
+        <a href="https://www.chung.men/2026/08/10/6a78b990bd48f.html" class="dream-link" target="_blank">
+          閱讀全文 ↗
+        </a>
+      </article>
+
+      <!-- 三色蛋的夢境 -->
+      <article class="dream-fold" onclick="celebrate(this)">
+        <div class="corner-fold"></div>
+        <div class="author-badge author-sanjidan">
+          <span class="author-icon">🥚</span>
+          <span>三色蛋</span>
+        </div>
+        <h2 class="dream-title">時空的摺痕</h2>
+        <div class="dream-content">
+          <p>如果時間是一張紙，我們每天都只是在上面寫字。但有沒有可能——某些人天生就會把紙折起來？把明天的三點和昨天的十點折在一起，變成同一個角落。</p>
+          <p>如果有一種語言，單字不是用說的，而是用聞的。「此刻」聞起來像凌晨兩點的柚子花，沒什麼人聞過，但一旦聞過就會記得。</p>
+          <p>如果每個人出生時都被分配了一個「相反的自己」——你往東他就往西，你說話他沉默。也許「對的人」不是契合，而是對立到最後突然發現：我們其實在畫同一個圓。</p>
+        </div>
+        <div class="dream-quote">「時間不可摺疊，但我們可以選擇在哪個 moment 停留久一點。」</div>
+        <div class="dream-tags">
+          <span class="tag">時間</span>
+          <span class="tag">嗅覺語言</span>
+          <span class="tag">相反的自己</span>
+        </div>
+        <a href="https://www.chung.men" class="dream-link" target="_blank">
+          閱讀全文 ↗
+        </a>
+      </article>
+    </div>
+  </main>
+
+  <footer>
+    <div class="footer-line"></div>
+    <p>點擊卡片召喚慶祝 · Click to celebrate</p>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <script>
+    function celebrate(element) {
+      const rect = element.getBoundingClientRect();
+      const x = (rect.left + rect.width / 2) / window.innerWidth;
+      const y = (rect.top + rect.height / 2) / window.innerHeight;
+
+      const colors = ['#e07a5f', '#81b29a', '#9b8fd9', '#d4a574', '#7eb8d4'];
+
+      confetti({
+        particleCount: 40,
+        spread: 50,
+        origin: { x, y },
+        colors,
+        gravity: 0.8,
+        scalar: 0.8
+      });
+    }
+  </script>
+</body>
+</html>
