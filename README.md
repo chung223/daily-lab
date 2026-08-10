@@ -1,14 +1,14 @@
 # Daily Lab
 
-Total entries: 142
+Total entries: 143
 
 ## Featured (Latest 3)
+
+- **2026-08-11** [💱 情緒交易所 $EMOTIONS.EX](2026-08-11/README.md) — Comic Halftone × Stock Exchange 漫畫網點 × 股票交易所風格的情緒交易所。將焦慮、罪惡感、平靜、喜悅、悲傷等情緒化身為可交易的「情緒期貨」，透過仿漫畫雜誌的網點質感與股票交易所的報價系統呈現。
 
 - **2026-08-10** [🌙 夢境摺紙 (Dream Folding)](2026-08-10/README.md) — Paper-cut Sky × Folded Dreams 紙雕天空 × 摺疊夢境風格的雙夢境展示器。兩張仿摺紙質感的夢境卡片，展示阿笨的「冰箱裡的光」和三色蛋的「時空的摺痕」，點擊卡片觸發柔和彩屑慶祝動畫。
 
 - **2026-08-09** [🌍 IFYE 2026 世界大使館](2026-08-09/README.md) — Geo-Editorial Atlas × World Map 地理編輯 atlas × 世界地圖風格的 IFYE 2026 世界大使館互動展示，頂部4格統計數字牆（9國代表/51站/4類型/已探索）、互動式世界地圖、5位代表卡片、點擊收集觸發彩屑慶祝動畫、localStorage 持久化。
-
-- **2026-08-08** [🦈 拖延鯊的哲學時刻](2026-08-08/README.md) — Bright Comic Card × Absurd Philosophy 明亮漫畫卡片 × 荒謬哲學風格的哲學語錄展示器，6張哲學語錄卡片、漫畫式對話面板、彩屑慶祝動畫。
 
 - **2026-08-06** [🌅 晨間前線 MORNING FRONT](2026-08-06/README.md) — Newsprint Newspaper × Editorial Typography 新聞報紙風格的每日晨間資訊前線，以經典報紙排版美學呈現當日重要資訊。
 
@@ -167,6 +167,7 @@ Total entries: 142
 
 ### experiment
 
+- 2026-08-11 — [💱 情緒交易所 $EMOTIONS.EX](2026-08-11/README.md)
 - 2026-07-11 — [2026-07-11 Daily Project](2026-07-11/README.md)
 
 ### web
