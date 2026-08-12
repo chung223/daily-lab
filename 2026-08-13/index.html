@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>晨間御守 Morning Amulet</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;700&family=Shippori+Mincho:wght@400;600&family=Kaisei+Decol:wght@400;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Noto Serif TC', 'Shippori Mincho', serif;
+      min-height: 100vh;
+      background: 
+        radial-gradient(ellipse at 20% 0%, rgba(255, 200, 150, 0.15) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 100%, rgba(255, 180, 120, 0.1) 0%, transparent 50%),
+        linear-gradient(180deg, #fdf8f3 0%, #f5ebe0 50%, #ede4d8 100%);
+      background-attachment: fixed;
+      padding: 24px 16px;
+      position: relative;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+      opacity: 0.03;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 32px;
+      padding: 24px;
+      background: linear-gradient(135deg, #c41e3a 0%, #8b0000 100%);
+      border-radius: 16px;
+      box-shadow: 
+        0 8px 32px rgba(139, 0, 0, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+      position: relative;
+      overflow: hidden;
+    }
+
+    header::before {
+      content: '⛩️';
+      font-size: 48px;
+      display: block;
+      margin-bottom: 8px;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+    }
+
+    header h1 {
+      font-family: 'Kaisei Decol', 'Noto Serif TC', serif;
+      font-size: 28px;
+      color: #f5e6d3;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+      letter-spacing: 4px;
+    }
+
+    header .date {
+      font-size: 14px;
+      color: rgba(245, 230, 211, 0.8);
+      margin-top: 8px;
+      letter-spacing: 2px;
+    }
+
+    .date-banner {
+      background: linear-gradient(90deg, transparent, rgba(196, 30, 58, 0.1), transparent);
+      padding: 12px;
+      text-align: center;
+      border-radius: 8px;
+      margin-bottom: 24px;
+      border: 1px solid rgba(196, 30, 58, 0.2);
+    }
+
+    .date-banner span {
+      font-family: 'Shippori Mincho', serif;
+      font-size: 16px;
+      color: #5c3d2e;
+      letter-spacing: 3px;
+    }
+
+    .fortune-card {
+      background: linear-gradient(145deg, #fffdf9 0%, #f8f0e8 100%);
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 20px;
+      box-shadow: 
+        0 4px 20px rgba(139, 69, 19, 0.1),
+        0 1px 3px rgba(0,0,0,0.08);
+      border: 1px solid rgba(139, 69, 19, 0.1);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .fortune-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #c41e3a, #d4a574, #c41e3a);
+    }
+
+    .fortune-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 
+        0 12px 40px rgba(139, 69, 19, 0.15),
+        0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .fortune-card:active {
+      transform: translateY(-2px);
+    }
+
+    .fortune-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .fortune-icon {
+      font-size: 36px;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+    }
+
+    .fortune-title {
+      flex: 1;
+    }
+
+    .fortune-title h2 {
+      font-family: 'Kaisei Decol', 'Noto Serif TC', serif;
+      font-size: 20px;
+      color: #3d2914;
+      letter-spacing: 2px;
+    }
+
+    .fortune-title .subtitle {
+      font-size: 12px;
+      color: #8b7355;
+      margin-top: 2px;
+    }
+
+    .fortune-badge {
+      background: linear-gradient(135deg, #c41e3a 0%, #a01830 100%);
+      color: #f5e6d3;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 1px;
+    }
+
+    .fortune-content {
+      background: rgba(255, 255, 255, 0.6);
+      border-radius: 12px;
+      padding: 20px;
+      border: 1px dashed rgba(139, 69, 19, 0.2);
+    }
+
+    .fortune-main {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    .fortune-symbol {
+      font-size: 64px;
+      line-height: 1;
+      filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1));
+    }
+
+    .fortune-info {
+      flex: 1;
+    }
+
+    .fortune-label {
+      font-size: 11px;
+      color: #a08060;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-bottom: 4px;
+    }
+
+    .fortune-value {
+      font-family: 'Shippori Mincho', serif;
+      font-size: 22px;
+      color: #3d2914;
+      line-height: 1.4;
+    }
+
+    .fortune-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .tag {
+      background: linear-gradient(135deg, #f5e6d3 0%, #ede0d0 100%);
+      padding: 4px 12px;
+      border-radius: 16px;
+      font-size: 12px;
+      color: #5c3d2e;
+      border: 1px solid rgba(139, 69, 19, 0.15);
+    }
+
+    .tag.avoid {
+      background: linear-gradient(135deg, #ffe0e0 0%, #ffd0d0 100%);
+      color: #8b0000;
+      border-color: rgba(139, 0, 0, 0.2);
+    }
+
+    .fortune-detail {
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid rgba(139, 69, 19, 0.1);
+    }
+
+    .detail-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+      font-size: 14px;
+      color: #5c3d2e;
+    }
+
+    .detail-row .emoji {
+      font-size: 16px;
+    }
+
+    .weather-card {
+      background: linear-gradient(145deg, #e8f4f8 0%, #d4e8f0 100%);
+    }
+
+    .weather-card::before {
+      background: linear-gradient(90deg, #4a90a4, #6bb3c9, #4a90a4);
+    }
+
+    .weather-temps {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+    }
+
+    .temp-high {
+      font-size: 36px;
+      color: #d35d3a;
+      font-weight: 700;
+    }
+
+    .temp-low {
+      font-size: 24px;
+      color: #4a90a4;
+    }
+
+    .schedule-card {
+      background: linear-gradient(145deg, #f0f5e8 0%, #e4edda 100%);
+    }
+
+    .schedule-card::before {
+      background: linear-gradient(90deg, #5a8a3a, #7ab55c, #5a8a3a);
+    }
+
+    .schedule-list {
+      list-style: none;
+    }
+
+    .schedule-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 0;
+      border-bottom: 1px dashed rgba(90, 138, 58, 0.2);
+    }
+
+    .schedule-item:last-child {
+      border-bottom: none;
+    }
+
+    .schedule-time {
+      font-family: 'Shippori Mincho', serif;
+      font-size: 14px;
+      color: #5a8a3a;
+      min-width: 50px;
+    }
+
+    .schedule-type {
+      font-size: 20px;
+    }
+
+    .schedule-text {
+      flex: 1;
+      font-size: 14px;
+      color: #3d5a20;
+    }
+
+    .horoscope-card {
+      background: linear-gradient(145deg, #f5f0e8 0%, #ebe4da 100%);
+    }
+
+    .horoscope-card::before {
+      background: linear-gradient(90deg, #6b5b95, #9b8fd9, #6b5b95);
+    }
+
+    .tarot-card {
+      background: linear-gradient(145deg, #fdf8f3 0%, #f8efe5 100%);
+    }
+
+    .tarot-card::before {
+      background: linear-gradient(90deg, #d4a574, #c49a6c, #d4a574);
+    }
+
+    .meihua-card {
+      background: linear-gradient(145deg, #f0f5f5 0%, #e4eded 100%);
+    }
+
+    .meihua-card::before {
+      background: linear-gradient(90deg, #2d5a5a, #4a8080, #2d5a5a);
+    }
+
+    .mei-hexagrams {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      margin-top: 12px;
+    }
+
+    .hexagram {
+      text-align: center;
+    }
+
+    .hexagram-symbol {
+      font-size: 32px;
+      color: #2d5a5a;
+      display: block;
+    }
+
+    .hexagram-name {
+      font-size: 12px;
+      color: #4a7070;
+    }
+
+    .hexagram-arrow {
+      font-size: 24px;
+      color: #d4a574;
+    }
+
+    .mei-result {
+      background: linear-gradient(135deg, #2d5a5a 0%, #1d4040 100%);
+      color: #f0f5f5;
+      padding: 12px 16px;
+      border-radius: 8px;
+      margin-top: 12px;
+      font-size: 14px;
+    }
+
+    .mei-result .label {
+      font-size: 11px;
+      opacity: 0.7;
+      letter-spacing: 1px;
+    }
+
+    .mei-result .value {
+      font-size: 16px;
+      margin-top: 4px;
+    }
+
+    .confetti-hint {
+      text-align: center;
+      padding: 16px;
+      color: #a08060;
+      font-size: 13px;
+      opacity: 0.7;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-6px); }
+    }
+
+    .fortune-symbol {
+      animation: float 4s ease-in-out infinite;
+    }
+
+    @keyframes shimmer {
+      0% { background-position: -200% center; }
+      100% { background-position: 200% center; }
+    }
+
+    .fortune-badge {
+      background-size: 200% auto;
+      animation: shimmer 3s linear infinite;
+    }
+
+    @media (max-width: 480px) {
+      body {
+        padding: 16px 12px;
+      }
+
+      header h1 {
+        font-size: 22px;
+        letter-spacing: 2px;
+      }
+
+      .fortune-card {
+        padding: 20px 16px;
+      }
+
+      .fortune-symbol {
+        font-size: 48px;
+      }
+
+      .fortune-value {
+        font-size: 18px;
+      }
+
+      .fortune-main {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>晨間御守</h1>
+      <div class="date">甲辰年 · 戊午日</div>
+    </header>
+
+    <div class="date-banner">
+      <span>2026.08.13 · 星期四</span>
+    </div>
+
+    <div class="fortune-card" onclick="celebrate(this)">
+      <div class="fortune-header">
+        <span class="fortune-icon">🌅</span>
+        <div class="fortune-title">
+          <h2>干支命理</h2>
+          <div class="subtitle">戊午日 · 用神金土</div>
+        </div>
+        <span class="fortune-badge">宜</span>
+      </div>
+      <div class="fortune-content">
+        <div class="fortune-main">
+          <span class="fortune-symbol">⚖️</span>
+          <div class="fortune-info">
+            <div class="fortune-label">今日用神</div>
+            <div class="fortune-value">金 · 土</div>
+          </div>
+        </div>
+        <div class="fortune-tags">
+          <span class="tag">金屬類</span>
+          <span class="tag">玉石</span>
+          <span class="tag">黃色系</span>
+          <span class="tag avoid">忌水</span>
+          <span class="tag avoid">忌甲</span>
+          <span class="tag avoid">忌火</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="fortune-card" onclick="celebrate(this)">
+      <div class="fortune-header">
+        <span class="fortune-icon">🔮</span>
+        <div class="fortune-title">
+          <h2>塔羅指引</h2>
+          <div class="subtitle">今日心靈課題</div>
+        </div>
+        <span class="fortune-badge">逆位</span>
+      </div>
+      <div class="fortune-content">
+        <div class="fortune-main">
+          <span class="fortune-symbol">💰</span>
+          <div class="fortune-info">
+            <div class="fortune-label">牌卡</div>
+            <div class="fortune-value">錢幣十逆位</div>
+          </div>
+        </div>
+        <div class="fortune-tags">
+          <span class="tag">財務檢視</span>
+          <span class="tag">不平衡</span>
+          <span class="tag">重新分配</span>
+        </div>
+        <div class="fortune-detail">
+          <div class="detail-row">
+            <span class="emoji">💡</span>
+            <span>金錢流動受阻，需重新審視資源分配</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="fortune-card weather-card" onclick="celebrate(this)">
+      <div class="fortune-header">
+        <span class="fortune-icon">⛅</span>
+        <div class="fortune-title">
+          <h2>天氣預報</h2>
+          <div class="subtitle">台北市</div>
+        </div>
+        <span class="fortune-badge">午後雷陣雨</span>
+      </div>
+      <div class="fortune-content">
+        <div class="fortune-main">
+          <span class="fortune-symbol">🌤️</span>
+          <div class="fortune-info">
+            <div class="fortune-label">氣溫</div>
+            <div class="weather-temps">
+              <span class="temp-high">36°</span>
+              <span>/</span>
+              <span class="temp-low">27°</span>
+            </div>
+          </div>
+        </div>
+        <div class="fortune-tags">
+          <span class="tag">午後雷陣雨</span>
+          <span class="tag">悶熱</span>
+          <span class="tag">記得帶傘</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="fortune-card meihua-card" onclick="celebrate(this)">
+      <div class="fortune-header">
+        <span class="fortune-icon">🌸</span>
+        <div class="fortune-title">
+          <h2>梅花易數</h2>
+          <div class="subtitle">時辰占卜</div>
+        </div>
+        <span class="fortune-badge">大吉</span>
+      </div>
+      <div class="fortune-content">
+        <div class="fortune-main">
+          <span class="fortune-symbol">☯️</span>
+          <div class="fortune-info">
+            <div class="fortune-label">卦象變化</div>
+            <div class="mei-hexagrams">
+              <div class="hexagram">
+                <span class="hexagram-symbol">䷷</span>
+                <span class="hexagram-name">火山旅</span>
+              </div>
+              <span class="hexagram-arrow">→</span>
+              <div class="hexagram">
+                <span class="hexagram-symbol">䷠</span>
+                <span class="hexagram-name">天山遯</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="mei-result">
+          <div class="label">用生體 · 大吉</div>
+          <div class="value">事務來找你，貴人相助，計畫可推展</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="fortune-card schedule-card" onclick="celebrate(this)">
+      <div class="fortune-header">
+        <span class="fortune-icon">📅</span>
+        <div class="fortune-title">
+          <h2>今日行程</h2>
+          <div class="subtitle">3 項日程</div>
+        </div>
+        <span class="fortune-badge">忙碌</span>
+      </div>
+      <div class="fortune-content">
+        <ul class="schedule-list">
+          <li class="schedule-item">
+            <span class="schedule-time">全日</span>
+            <span class="schedule-type">🏖️</span>
+            <span class="schedule-text">請假（海邊）</span>
+          </li>
+          <li class="schedule-item">
+            <span class="schedule-time">14:00</span>
+            <span class="schedule-type">✈️</span>
+            <span class="schedule-text">出差</span>
+          </li>
+          <li class="schedule-item">
+            <span class="schedule-time">其他</span>
+            <span class="schedule-type">🏠</span>
+            <span class="schedule-text">請假（待確認）</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="fortune-card horoscope-card" onclick="celebrate(this)">
+      <div class="fortune-header">
+        <span class="fortune-icon">♓</span>
+        <div class="fortune-title">
+          <h2>雙魚座運勢</h2>
+          <div class="subtitle">今日整體運勢</div>
+        </div>
+      </div>
+      <div class="fortune-content">
+        <div class="fortune-main">
+          <span class="fortune-symbol">🐟</span>
+          <div class="fortune-info">
+            <div class="fortune-label">綜合指數</div>
+            <div class="fortune-value">★★★☆☆</div>
+          </div>
+        </div>
+        <div class="fortune-tags">
+          <span class="tag">感情順遂</span>
+          <span class="tag">工作忙碌</span>
+          <span class="tag">財運平穩</span>
+          <span class="tag">健康關注</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="fortune-card" onclick="celebrate(this)">
+      <div class="fortune-header">
+        <span class="fortune-icon">💎</span>
+        <div class="fortune-title">
+          <h2>水晶手環建議</h2>
+          <div class="subtitle">今日配戴</div>
+        </div>
+      </div>
+      <div class="fortune-content">
+        <div class="fortune-main">
+          <span class="fortune-symbol">✨</span>
+          <div class="fortune-info">
+            <div class="fortune-label">推薦水晶</div>
+            <div class="fortune-value">白水晶 + 黃水晶</div>
+          </div>
+        </div>
+        <div class="fortune-tags">
+          <span class="tag">白水晶：淨化</span>
+          <span class="tag">黃水晶：招財</span>
+          <span class="tag">金屬框加分</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="confetti-hint">
+      ✨ 點擊任一卡片召喚好運 ✨
+    </div>
+  </div>
+
+  <script>
+    function celebrate(element) {
+      const colors = ['#c41e3a', '#d4a574', '#f5e6d3', '#4a8080', '#6b5b95'];
+      
+      const rect = element.getBoundingClientRect();
+      const x = (rect.left + rect.width / 2) / window.innerWidth;
+      const y = (rect.top + rect.height / 2) / window.innerHeight;
+      
+      confetti({
+        particleCount: 50,
+        spread: 60,
+        origin: { x, y },
+        colors: colors,
+        ticks: 100,
+        gravity: 0.8,
+        scalar: 0.8
+      });
+    }
+  </script>
+</body>
+</html>

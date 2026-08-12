@@ -1,14 +1,14 @@
 # Daily Lab
 
-Total entries: 144
+Total entries: 145
 
 ## Featured (Latest 3)
+
+- **2026-08-13** [🎐 晨間御守 (Morning Amulet)](2026-08-13/README.md) — Japanese Omamori × Shrine Paper 神社御守 × 和紙質感風格的每日晨間運勢展示器。7張命理卡片（干支命理/塔羅/天氣/梅花易數/行程/星座/水晶），每張卡片有 icon、標題、內容和標籤，點擊卡片觸發彩屑慶祝動畫。
 
 - **2026-08-12** [🕐 時間時報 · Time Chronicle](2026-08-12/README.md) — Celestial Clock × Time Period 新古典時報 × 天體時鐘。一個融合天體運行與古典報紙美學的即時時鐘展示，時鐘頂部有一個會根據時間變化的天體（太陽、月亮或星空），中央顯示精確的時分秒，下方呈現對應時辰的古典描述與意象。
 
 - **2026-08-11** [💱 情緒交易所 $EMOTIONS.EX](2026-08-11/README.md) — Comic Halftone × Stock Exchange 漫畫網點 × 股票交易所風格的情緒交易所。將焦慮、罪惡感、平靜、喜悅、悲傷等情緒化身為可交易的「情緒期貨」，透過仿漫畫雜誌的網點質感與股票交易所的報價系統呈現。
-
-- **2026-08-10** [🌙 夢境摺紙 (Dream Folding)](2026-08-10/README.md) — Paper-cut Sky × Folded Dreams 紙雕天空 × 摺疊夢境風格的雙夢境展示器。兩張仿摺紙質感的夢境卡片，展示阿笨的「冰箱裡的光」和三色蛋的「時空的摺痕」，點擊卡片觸發柔和彩屑慶祝動畫。
 
 - **2026-08-06** [🌅 晨間前線 MORNING FRONT](2026-08-06/README.md) — Newsprint Newspaper × Editorial Typography 新聞報紙風格的每日晨間資訊前線，以經典報紙排版美學呈現當日重要資訊。
 
@@ -113,6 +113,10 @@ Total entries: 144
 - 2026-05-08 — [💡 有用公式工作坊 (Useful Formula Workshop)](2026-05-08/README.md)
 - 2026-05-05 — [💡 靈感便利貼](2026-05-05/README.md)
 - 2026-04-07 — [時光岔路站 | Parallel Platform](2026-04-07/README.md)
+
+### 工具系（生活開運工具）
+
+- 2026-08-13 — [🎐 晨間御守 (Morning Amulet)](2026-08-13/README.md)
 
 ### tool
 
