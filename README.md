@@ -1,14 +1,14 @@
 # Daily Lab
 
-Total entries: 145
+Total entries: 146
 
 ## Featured (Latest 3)
+
+- **2026-08-14** [🎮 魚油掌機 (Fish Oil Handheld)](2026-08-14/README.md) — Retro Game Boy × Pixel Handheld 復古掌機像素風格的魚油督促小遊戲。Game Boy造型主體、經典綠色LCD螢幕、10秒計時器挑戰、🐬海豚督導 vs 🦈拖延鯊動畫對話、經典台詞輪播。
 
 - **2026-08-13** [🎐 晨間御守 (Morning Amulet)](2026-08-13/README.md) — Japanese Omamori × Shrine Paper 神社御守 × 和紙質感風格的每日晨間運勢展示器。7張命理卡片（干支命理/塔羅/天氣/梅花易數/行程/星座/水晶），每張卡片有 icon、標題、內容和標籤，點擊卡片觸發彩屑慶祝動畫。
 
 - **2026-08-12** [🕐 時間時報 · Time Chronicle](2026-08-12/README.md) — Celestial Clock × Time Period 新古典時報 × 天體時鐘。一個融合天體運行與古典報紙美學的即時時鐘展示，時鐘頂部有一個會根據時間變化的天體（太陽、月亮或星空），中央顯示精確的時分秒，下方呈現對應時辰的古典描述與意象。
-
-- **2026-08-11** [💱 情緒交易所 $EMOTIONS.EX](2026-08-11/README.md) — Comic Halftone × Stock Exchange 漫畫網點 × 股票交易所風格的情緒交易所。將焦慮、罪惡感、平靜、喜悅、悲傷等情緒化身為可交易的「情緒期貨」，透過仿漫畫雜誌的網點質感與股票交易所的報價系統呈現。
 
 - **2026-08-06** [🌅 晨間前線 MORNING FRONT](2026-08-06/README.md) — Newsprint Newspaper × Editorial Typography 新聞報紙風格的每日晨間資訊前線，以經典報紙排版美學呈現當日重要資訊。
 
@@ -74,6 +74,7 @@ Total entries: 145
 
 ### game
 
+- 2026-08-14 — [🎮 魚油掌機 (Fish Oil Handheld)](2026-08-14/README.md)
 - 2026-08-08 — [🦈 拖延鯊的哲學時刻](2026-08-08/README.md)
 - 2026-08-01 — [🐟 魚油巡迴法庭 Fish Oil Tribunal](2026-08-01/README.md)
 
