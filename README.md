@@ -1,14 +1,14 @@
 # Daily Lab
 
-Total entries: 146
+Total entries: 147
 
 ## Featured (Latest 3)
+
+- **2026-08-15** [🧭 方向感是動詞 · 哲學指南針](2026-08-15/README.md) — Compass × Philosophy 互動式哲學指南針，點擊選擇方向，透過 Memphis 風格卡片揭示人生智慧。古典中文名言、彩色幾何裝飾、點擊彩屑動畫。
 
 - **2026-08-14** [🎮 魚油掌機 (Fish Oil Handheld)](2026-08-14/README.md) — Retro Game Boy × Pixel Handheld 復古掌機像素風格的魚油督促小遊戲。Game Boy造型主體、經典綠色LCD螢幕、10秒計時器挑戰、🐬海豚督導 vs 🦈拖延鯊動畫對話、經典台詞輪播。
 
 - **2026-08-13** [🎐 晨間御守 (Morning Amulet)](2026-08-13/README.md) — Japanese Omamori × Shrine Paper 神社御守 × 和紙質感風格的每日晨間運勢展示器。7張命理卡片（干支命理/塔羅/天氣/梅花易數/行程/星座/水晶），每張卡片有 icon、標題、內容和標籤，點擊卡片觸發彩屑慶祝動畫。
-
-- **2026-08-12** [🕐 時間時報 · Time Chronicle](2026-08-12/README.md) — Celestial Clock × Time Period 新古典時報 × 天體時鐘。一個融合天體運行與古典報紙美學的即時時鐘展示，時鐘頂部有一個會根據時間變化的天體（太陽、月亮或星空），中央顯示精確的時分秒，下方呈現對應時辰的古典描述與意象。
 
 - **2026-08-06** [🌅 晨間前線 MORNING FRONT](2026-08-06/README.md) — Newsprint Newspaper × Editorial Typography 新聞報紙風格的每日晨間資訊前線，以經典報紙排版美學呈現當日重要資訊。
 
@@ -95,6 +95,7 @@ Total entries: 146
 
 ### interactive
 
+- 2026-08-15 — [🧭 方向感是動詞 · 哲學指南針](2026-08-15/README.md)
 - 2026-08-06 — [🌅 晨間前線 MORNING FRONT](2026-08-06/README.md)
 - 2026-08-05 — [🔮 看不見的線·連結觀測所 (Invisible Threads Observatory)](2026-08-05/README.md)
 
