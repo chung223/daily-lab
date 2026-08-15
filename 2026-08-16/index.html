@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>褶皺深處的光斑 — 語言的褶皺</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600&family=Noto+Serif+TC:wght@400;600;700&family=Shippori+Mincho:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --washi-cream: #F5F0E8;
+      --ivory: #FFFEF9;
+      --sinking-coral: #E8A598;
+      --charcoal: #2D2A26;
+      --light-gold: #F4E4BA;
+      --soft-gray: #8B8680;
+      --paper-shadow: rgba(45, 42, 38, 0.08);
+      --fold-shadow: rgba(45, 42, 38, 0.15);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Noto Serif TC', serif;
+      background: linear-gradient(180deg, var(--ivory) 0%, var(--washi-cream) 100%);
+      min-height: 100vh;
+      color: var(--charcoal);
+      overflow-x: hidden;
+    }
+
+    /* Washi paper texture overlay */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%' height='100%' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 1000;
+    }
+
+    /* Light rays animation */
+    .light-rays {
+      position: fixed;
+      top: -50%;
+      right: -20%;
+      width: 80%;
+      height: 150%;
+      background: radial-gradient(ellipse at center, var(--light-gold) 0%, transparent 60%);
+      opacity: 0.3;
+      pointer-events: none;
+      animation: raysFloat 20s ease-in-out infinite;
+    }
+
+    @keyframes raysFloat {
+      0%, 100% { transform: translateY(0) rotate(-5deg); opacity: 0.3; }
+      50% { transform: translateY(20px) rotate(5deg); opacity: 0.4; }
+    }
+
+    /* Floating particles */
+    .particles {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .particle {
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      background: var(--light-gold);
+      border-radius: 50%;
+      opacity: 0;
+      animation: floatUp 8s ease-in-out infinite;
+    }
+
+    @keyframes floatUp {
+      0% { transform: translateY(100vh) scale(0); opacity: 0; }
+      10% { opacity: 0.6; }
+      90% { opacity: 0.6; }
+      100% { transform: translateY(-100px) scale(1); opacity: 0; }
+    }
+
+    /* Header */
+    header {
+      text-align: center;
+      padding: 80px 20px 40px;
+      position: relative;
+    }
+
+    .header-decoration {
+      width: 60px;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--sinking-coral), transparent);
+      margin: 0 auto 30px;
+    }
+
+    h1 {
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      margin-bottom: 20px;
+      background: linear-gradient(135deg, var(--charcoal) 0%, var(--soft-gray) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .subtitle {
+      font-family: 'Caveat', cursive;
+      font-size: 1.4rem;
+      color: var(--soft-gray);
+      margin-bottom: 15px;
+    }
+
+    .intro-quote {
+      max-width: 600px;
+      margin: 0 auto;
+      font-size: 1rem;
+      line-height: 2;
+      color: var(--soft-gray);
+      font-style: italic;
+    }
+
+    .intro-quote .highlight {
+      color: var(--sinking-coral);
+      font-weight: 600;
+    }
+
+    /* Folded paper cards container */
+    .folds-container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 40px 20px 80px;
+      display: flex;
+      flex-direction: column;
+      gap: 50px;
+    }
+
+    /* Individual fold card */
+    .fold-card {
+      position: relative;
+      perspective: 1000px;
+      cursor: pointer;
+    }
+
+    .fold-card-inner {
+      position: relative;
+      background: var(--ivory);
+      border-radius: 8px;
+      padding: 40px;
+      box-shadow: 
+        0 4px 20px var(--paper-shadow),
+        0 8px 40px var(--paper-shadow);
+      transform-style: preserve-3d;
+      transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+      transform-origin: center center;
+    }
+
+    .fold-card:hover .fold-card-inner {
+      box-shadow: 
+        0 8px 30px var(--fold-shadow),
+        0 16px 60px var(--fold-shadow);
+    }
+
+    /* Paper fold lines decoration */
+    .fold-card-inner::before {
+      content: '';
+      position: absolute;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--paper-shadow), transparent);
+    }
+
+    /* The main word */
+    .word-display {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .the-word {
+      font-size: clamp(3rem, 8vw, 5rem);
+      font-weight: 700;
+      color: var(--charcoal);
+      display: inline-block;
+      transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+
+    .the-word.sinking {
+      animation: sinkDown 0.8s ease-in-out forwards;
+    }
+
+    @keyframes sinkDown {
+      0% { transform: translateY(0); }
+      50% { transform: translateY(15px) rotate(2deg); color: var(--sinking-coral); }
+      100% { transform: translateY(8px); color: var(--sinking-coral); }
+    }
+
+    .romanization {
+      font-family: 'Shippori Mincho', serif;
+      font-size: 1.2rem;
+      color: var(--soft-gray);
+      margin-top: 10px;
+    }
+
+    .language-badge {
+      display: inline-block;
+      font-family: 'Caveat', cursive;
+      font-size: 0.9rem;
+      padding: 4px 12px;
+      background: var(--washi-cream);
+      border-radius: 20px;
+      color: var(--soft-gray);
+      margin-top: 15px;
+    }
+
+    /* Folded content (hidden by default) */
+    .fold-content {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+
+    .fold-card.expanded .fold-content {
+      max-height: 500px;
+    }
+
+    .fold-line {
+      width: 100%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--sinking-coral), transparent);
+      margin: 25px 0;
+    }
+
+    .meaning-section {
+      text-align: center;
+      padding: 20px 0;
+    }
+
+    .meaning-label {
+      font-family: 'Caveat', cursive;
+      font-size: 1rem;
+      color: var(--soft-gray);
+      margin-bottom: 10px;
+    }
+
+    .translations {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 15px;
+    }
+
+    .translation-chip {
+      padding: 8px 16px;
+      background: var(--washi-cream);
+      border-radius: 20px;
+      font-size: 0.95rem;
+      color: var(--charcoal);
+      opacity: 0.7;
+      transition: all 0.3s ease;
+    }
+
+    .translation-chip:hover {
+      opacity: 1;
+      transform: scale(1.05);
+    }
+
+    /* The fold explanation */
+    .fold-explanation {
+      text-align: center;
+      padding: 20px;
+      background: linear-gradient(180deg, transparent, var(--washi-cream), transparent);
+      border-radius: 8px;
+      margin-top: 20px;
+    }
+
+    .fold-explanation p {
+      font-size: 0.95rem;
+      line-height: 1.9;
+      color: var(--soft-gray);
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
+    .fold-explanation .lost-part {
+      color: var(--sinking-coral);
+      font-weight: 600;
+      position: relative;
+    }
+
+    .fold-explanation .lost-part::after {
+      content: '↓';
+      display: block;
+      font-size: 1.2rem;
+      animation: bounce 1s ease-in-out infinite;
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(5px); }
+    }
+
+    /* Instruction hint */
+    .hint {
+      text-align: center;
+      margin-top: 20px;
+      font-family: 'Caveat', cursive;
+      font-size: 1rem;
+      color: var(--soft-gray);
+      opacity: 0.7;
+      transition: opacity 0.3s ease;
+    }
+
+    .fold-card.expanded .hint {
+      opacity: 0;
+    }
+
+    /* Light speck effect on card */
+    .light-speck {
+      position: absolute;
+      width: 6px;
+      height: 6px;
+      background: var(--light-gold);
+      border-radius: 50%;
+      opacity: 0;
+      pointer-events: none;
+      animation: speckle 3s ease-in-out infinite;
+    }
+
+    @keyframes speckle {
+      0%, 100% { opacity: 0; transform: scale(0); }
+      50% { opacity: 0.8; transform: scale(1); }
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 40px 20px 60px;
+      font-family: 'Caveat', cursive;
+      color: var(--soft-gray);
+      font-size: 1rem;
+    }
+
+    footer .light-icon {
+      font-size: 1.5rem;
+      margin-bottom: 10px;
+      opacity: 0.5;
+    }
+
+    /* Mobile adjustments */
+    @media (max-width: 600px) {
+      header {
+        padding: 60px 15px 30px;
+      }
+
+      .fold-card-inner {
+        padding: 25px 20px;
+      }
+
+      .the-word {
+        font-size: 2.5rem;
+      }
+
+      .translations {
+        flex-direction: column;
+        align-items: center;
+      }
+    }
+
+    /* Confetti canvas */
+    #confetti-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 999;
+    }
+  </style>
+</head>
+<body>
+  <div class="light-rays"></div>
+  
+  <div class="particles" id="particles"></div>
+  
+  <canvas id="confetti-canvas"></canvas>
+
+  <header>
+    <div class="header-decoration"></div>
+    <h1>褶皺深處的光斑</h1>
+    <p class="subtitle">Light Speckles in the Folds</p>
+    <p class="intro-quote">
+      「有些感受，只能用自己的母語才能完整地說出來。<br>
+      不是因為習慣，是因為那些詞，<span class="highlight">根本長在另一種語言的語法結構裡。</span>」
+    </p>
+  </header>
+
+  <main class="folds-container">
+    <!-- Card 1: 惦 (Taiwanese Hokkien) -->
+    <article class="fold-card" onclick="toggleFold(this)">
+      <div class="fold-card-inner">
+        <div class="light-speck" style="top: 20px; right: 30px; animation-delay: 0s;"></div>
+        <div class="light-speck" style="top: 60px; left: 20px; animation-delay: 1s;"></div>
+        
+        <div class="word-display">
+          <div class="the-word" id="word-dian">惦</div>
+          <div class="romanization">tiàm</div>
+          <div class="language-badge">台語 · Hokkien</div>
+        </div>
+
+        <div class="fold-content">
+          <div class="fold-line"></div>
+          
+          <div class="meaning-section">
+            <div class="meaning-label">試著翻譯成其他語言</div>
+            <div class="translations">
+              <span class="translation-chip">想念 · miss</span>
+              <span class="translation-chip">惦記 · think of</span>
+              <span class="translation-chip">掛念 · be concerned</span>
+            </div>
+          </div>
+
+          <div class="fold-explanation">
+            <p>
+              但沒有一個版本會<span class="lost-part">往下墜</span>
+            </p>
+            <p style="margin-top: 15px; font-size: 0.9rem;">
+              這個「惦」字彷彿會往下墜，壓在胸口。<br>
+              那個「往下墜」的感覺，也許永遠只能活在說台語的人的胸口裡。
+            </p>
+          </div>
+        </div>
+
+        <div class="hint">點擊展開，看看翻譯失去了什麼</div>
+      </div>
+    </article>
+
+    <!-- Card 2: 木漏れ日 (Japanese) -->
+    <article class="fold-card" onclick="toggleFold(this)">
+      <div class="fold-card-inner">
+        <div class="light-speck" style="top: 30px; right: 40px; animation-delay: 0.5s;"></div>
+        <div class="light-speck" style="bottom: 40px; left: 25px; animation-delay: 1.5s;"></div>
+        
+        <div class="word-display">
+          <div class="the-word" id="word-komorebi">木漏れ日</div>
+          <div class="romanization">こもりび · komorebi</div>
+          <div class="language-badge">日語 · Japanese</div>
+        </div>
+
+        <div class="fold-content">
+          <div class="fold-line"></div>
+          
+          <div class="meaning-section">
+            <div class="meaning-label">試著翻譯成其他語言</div>
+            <div class="translations">
+              <span class="translation-chip">sunlight through trees</span>
+              <span class="translation-chip"> dappled sunlight</span>
+              <span class="translation-chip">trees and sunlight</span>
+            </div>
+          </div>
+
+          <div class="fold-explanation">
+            <p>
+              但沒有一個版本會<span class="lost-part">在地上形成搖曳的光斑</span>
+            </p>
+            <p style="margin-top: 15px; font-size: 0.9rem;">
+              陽光穿過樹葉縫隙，在地上或水面上形成的搖曳光斑。<br>
+              那種短暫的、無法被永久捕捉的美。
+            </p>
+          </div>
+        </div>
+
+        <div class="hint">點擊展開，看看翻譯失去了什麼</div>
+      </div>
+    </article>
+
+    <!-- Card 3: Saoirse (Irish) -->
+    <article class="fold-card" onclick="toggleFold(this)">
+      <div class="fold-card-inner">
+        <div class="light-speck" style="top: 15px; left: 35px; animation-delay: 2s;"></div>
+        <div class="light-speck" style="top: 50px; right: 25px; animation-delay: 0.3s;"></div>
+        
+        <div class="word-display">
+          <div class="the-word" id="word-saoirse">Saoirse</div>
+          <div class="romanization">/ˈsɪərʃə/ · SHEER-sha</div>
+          <div class="language-badge">愛爾蘭語 · Irish</div>
+        </div>
+
+        <div class="fold-content">
+          <div class="fold-line"></div>
+          
+          <div class="meaning-section">
+            <div class="meaning-label">試著翻譯成其他語言</div>
+            <div class="translations">
+              <span class="translation-chip">freedom 自由</span>
+              <span class="translation-chip">liberty 解放</span>
+              <span class="translation-chip">independence 獨立</span>
+            </div>
+          </div>
+
+          <div class="fold-explanation">
+            <p>
+              但沒有一個版本會<span class="lost-part">承載一段抗爭的歷史</span>
+            </p>
+            <p style="margin-top: 15px; font-size: 0.9rem;">
+              這個詞不只是一個概念，它承載著愛爾蘭人爭取獨立的記憶。<br>
+              每一個說這個詞的愛爾蘭人，都攜帶著那段歷史的重量。
+            </p>
+          </div>
+        </div>
+
+        <div class="hint">點擊展開，看看翻譯失去了什麼</div>
+      </div>
+    </article>
+
+    <!-- Card 4: Toska (Russian) -->
+    <article class="fold-card" onclick="toggleFold(this)">
+      <div class="fold-card-inner">
+        <div class="light-speck" style="top: 25px; right: 35px; animation-delay: 1.2s;"></div>
+        <div class="light-speck" style="bottom: 30px; left: 40px; animation-delay: 2.2s;"></div>
+        
+        <div class="word-display">
+          <div class="the-word" id="word-toska">тоска</div>
+          <div class="romanization">toská · TOSS-kah</div>
+          <div class="language-badge">俄語 · Russian</div>
+        </div>
+
+        <div class="fold-content">
+          <div class="fold-line"></div>
+          
+          <div class="meaning-section">
+            <div class="meaning-label">試著翻譯成其他語言</div>
+            <div class="translations">
+              <span class="translation-chip">longing 渴望</span>
+              <span class="translation-chip">melancholy 憂鬱</span>
+              <span class="translation-chip">boredom 無聊</span>
+            </div>
+          </div>
+
+          <div class="fold-explanation">
+            <p>
+              但沒有一個版本會<span class="lost-part">讓你想往虛無裡跳</span>
+            </p>
+            <p style="margin-top: 15px; font-size: 0.9rem;">
+              Nabokov 說：「一種精神上的深刻渴望，然後是小提琴。」<br>
+              那種想要什麼卻不知道想要什麼、想往某處去卻動不了的絕妙感覺。
+            </p>
+          </div>
+        </div>
+
+        <div class="hint">點擊展開，看看翻譯失去了什麼</div>
+      </div>
+    </article>
+  </main>
+
+  <footer>
+    <div class="light-icon">☀️</div>
+    <p>「翻譯的本質，也許不是把意義從一種語言搬到另一種語言，</p>
+    <p>而是把一組褶皺翻壓成另一組褶皺。」</p>
+    <p style="margin-top: 20px; opacity: 0.6;">— 三色蛋，2026-08-16 凌晨</p>
+  </footer>
+
+  <script>
+    // Particle system
+    function createParticles() {
+      const container = document.getElementById('particles');
+      for (let i = 0; i < 15; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+        particle.style.left = Math.random() * 100 + '%';
+        particle.style.animationDelay = Math.random() * 8 + 's';
+        particle.style.animationDuration = (6 + Math.random() * 4) + 's';
+        container.appendChild(particle);
+      }
+    }
+    createParticles();
+
+    // Fold card toggle
+    function toggleFold(card) {
+      const wasExpanded = card.classList.contains('expanded');
+      card.classList.toggle('expanded');
+      
+      // Trigger sinking animation for 惦
+      const wordEl = card.querySelector('.the-word');
+      if (!wasExpanded && card.querySelector('.language-badge').textContent.includes('台語')) {
+        wordEl.classList.add('sinking');
+        setTimeout(() => wordEl.classList.remove('sinking'), 1500);
+      }
+
+      // Confetti burst on expand
+      if (!wasExpanded) {
+        const rect = card.getBoundingClientRect();
+        createConfetti(rect.left + rect.width / 2, rect.top + rect.height / 2);
+      }
+    }
+
+    // Simple confetti
+    function createConfetti(x, y) {
+      const canvas = document.getElementById('confetti-canvas');
+      const ctx = canvas.getContext('2d');
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+
+      const colors = ['#E8A598', '#F4E4BA', '#8B8680', '#F5F0E8', '#2D2A26'];
+      const particles = [];
+
+      for (let i = 0; i < 30; i++) {
+        particles.push({
+          x: x,
+          y: y,
+          vx: (Math.random() - 0.5) * 8,
+          vy: (Math.random() - 0.5) * 8 - 3,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          size: Math.random() * 6 + 2,
+          life: 1
+        });
+      }
+
+      function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        let alive = false;
+        particles.forEach(p => {
+          if (p.life > 0) {
+            alive = true;
+            p.x += p.vx;
+            p.y += p.vy;
+            p.vy += 0.2;
+            p.life -= 0.02;
+            
+            ctx.globalAlpha = p.life;
+            ctx.fillStyle = p.color;
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+            ctx.fill();
+          }
+        });
+
+        if (alive) {
+          requestAnimationFrame(animate);
+        } else {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+      }
+      animate();
+    }
+
+    // Handle window resize
+    window.addEventListener('resize', () => {
+      const canvas = document.getElementById('confetti-canvas');
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    });
+  </script>
+</body>
+</html>
