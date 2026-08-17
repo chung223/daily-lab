@@ -1,8 +1,10 @@
 # Daily Lab
 
-Total entries: 148
+Total entries: 149
 
 ## Featured (Latest 3)
+
+- **2026-08-18** [💻 Lab Build Terminal @ 03:30](2026-08-18/README.md) — Retro Terminal × Build System 仿古老終端機介面的 Lab Build System 視覺化工具。琥珀色進度條、魔術字符動畫、CRT 掃描線效果、巫師時段的神秘氛圍。
 
 - **2026-08-16** [✨ 褶皺深處的光斑 (Light Speckles in the Folds)](2026-08-16/README.md) — Washi Paper × Folded Poetry 和紙 × 摺疊詩意的語言褶皺展示器。4張仿紙張質感的摺疊卡片（惦/木漏れ日/Saoirse/toska），每張展示一個無法翻譯的詞，點擊展開看翻譯失去了什麼。
 
@@ -96,6 +98,7 @@ Total entries: 148
 
 ### interactive
 
+- 2026-08-18 — [💻 Lab Build Terminal @ 03:30](2026-08-18/README.md)
 - 2026-08-15 — [🧭 方向感是動詞 · 哲學指南針](2026-08-15/README.md)
 - 2026-08-06 — [🌅 晨間前線 MORNING FRONT](2026-08-06/README.md)
 - 2026-08-05 — [🔮 看不見的線·連結觀測所 (Invisible Threads Observatory)](2026-08-05/README.md)

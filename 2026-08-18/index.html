@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lab Build Terminal @ 03:30</title>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-dark: #0a0a0a;
+      --bg-terminal: #0d1117;
+      --amber: #ffb000;
+      --amber-dim: #b37c00;
+      --green: #39ff14;
+      --red: #ff3333;
+      --blue: #58a6ff;
+      --gray: #8b949e;
+      --scanline: rgba(0, 0, 0, 0.15);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: var(--bg-dark);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      font-family: 'JetBrains Mono', 'Share Tech Mono', monospace;
+    }
+
+    .terminal-container {
+      width: 100%;
+      max-width: 900px;
+      background: var(--bg-terminal);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 
+        0 0 0 1px rgba(255, 176, 0, 0.3),
+        0 20px 60px rgba(0, 0, 0, 0.5),
+        0 0 100px rgba(255, 176, 0, 0.1);
+      position: relative;
+    }
+
+    .terminal-header {
+      background: linear-gradient(180deg, #1a1f29 0%, #141921 100%);
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-bottom: 1px solid rgba(255, 176, 0, 0.2);
+    }
+
+    .terminal-btn {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+
+    .btn-close { background: #ff5f56; }
+    .btn-minimize { background: #ffbd2e; }
+    .btn-maximize { background: #27ca40; }
+
+    .terminal-title {
+      flex: 1;
+      text-align: center;
+      color: var(--gray);
+      font-size: 13px;
+      letter-spacing: 1px;
+    }
+
+    .terminal-body {
+      padding: 24px;
+      min-height: 500px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Scanline effect */
+    .terminal-body::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        var(--scanline) 2px,
+        var(--scanline) 4px
+      );
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    /* CRT flicker */
+    .terminal-body::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: radial-gradient(ellipse at center, transparent 0%, rgba(0,0,0,0.3) 100%);
+      pointer-events: none;
+      z-index: 11;
+    }
+
+    .line {
+      margin-bottom: 4px;
+      line-height: 1.6;
+      position: relative;
+      z-index: 1;
+    }
+
+    .line-number {
+      color: var(--amber-dim);
+      margin-right: 16px;
+      user-select: none;
+    }
+
+    .prompt {
+      color: var(--green);
+    }
+
+    .command {
+      color: var(--amber);
+    }
+
+    .output {
+      color: #c9d1d9;
+    }
+
+    .success {
+      color: var(--green);
+    }
+
+    .error {
+      color: var(--red);
+    }
+
+    .info {
+      color: var(--blue);
+    }
+
+    .warning {
+      color: #f0b429;
+    }
+
+    .timestamp {
+      color: var(--gray);
+      font-size: 11px;
+    }
+
+    .ascii-art {
+      color: var(--amber);
+      font-size: 10px;
+      line-height: 1.2;
+      margin: 16px 0;
+      white-space: pre;
+    }
+
+    .progress-bar {
+      background: #21262d;
+      border-radius: 4px;
+      height: 20px;
+      margin: 8px 0;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .progress-fill {
+      background: linear-gradient(90deg, var(--amber-dim), var(--amber));
+      height: 100%;
+      border-radius: 4px;
+      transition: width 0.3s ease;
+      position: relative;
+    }
+
+    .progress-fill::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(255,255,255,0.2) 50%,
+        transparent 100%
+      );
+      animation: shimmer 1.5s infinite;
+    }
+
+    @keyframes shimmer {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
+    }
+
+    .progress-text {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: white;
+      font-size: 11px;
+      font-weight: bold;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+      z-index: 1;
+    }
+
+    .typing-cursor {
+      display: inline-block;
+      width: 8px;
+      height: 16px;
+      background: var(--amber);
+      animation: blink 1s step-end infinite;
+      vertical-align: middle;
+      margin-left: 2px;
+    }
+
+    @keyframes blink {
+      0%, 50% { opacity: 1; }
+      51%, 100% { opacity: 0; }
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 12px;
+      margin: 16px 0;
+    }
+
+    .stat-card {
+      background: rgba(255, 176, 0, 0.1);
+      border: 1px solid rgba(255, 176, 0, 0.3);
+      border-radius: 8px;
+      padding: 12px;
+      text-align: center;
+    }
+
+    .stat-value {
+      color: var(--amber);
+      font-size: 24px;
+      font-weight: bold;
+    }
+
+    .stat-label {
+      color: var(--gray);
+      font-size: 11px;
+      margin-top: 4px;
+    }
+
+    .emoji-badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      margin-left: 8px;
+    }
+
+    .badge-success { background: rgba(57, 255, 20, 0.2); color: var(--green); }
+    .badge-warning { background: rgba(240, 180, 41, 0.2); color: #f0b429; }
+    .badge-info { background: rgba(88, 166, 255, 0.2); color: var(--blue); }
+
+    .magic-effect {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 100;
+    }
+
+    .magic-char {
+      position: absolute;
+      color: var(--amber);
+      font-size: 16px;
+      animation: floatUp 2s ease-out forwards;
+      font-family: monospace;
+    }
+
+    @keyframes floatUp {
+      0% {
+        opacity: 1;
+        transform: translateY(0) rotate(0deg);
+      }
+      100% {
+        opacity: 0;
+        transform: translateY(-200px) rotate(360deg);
+      }
+    }
+
+    .reboot-btn {
+      position: absolute;
+      bottom: 20px;
+      right: 20px;
+      background: linear-gradient(135deg, var(--amber-dim), var(--amber));
+      color: var(--bg-dark);
+      border: none;
+      padding: 10px 20px;
+      border-radius: 6px;
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.2s;
+      z-index: 20;
+    }
+
+    .reboot-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 20px rgba(255, 176, 0, 0.5);
+    }
+
+    .hidden { display: none; }
+
+    @media (max-width: 600px) {
+      .terminal-body { padding: 16px; }
+      .ascii-art { font-size: 6px; }
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+</head>
+<body>
+  <div class="terminal-container">
+    <div class="terminal-header">
+      <div class="terminal-btn btn-close"></div>
+      <div class="terminal-btn btn-minimize"></div>
+      <div class="terminal-btn btn-maximize"></div>
+      <div class="terminal-title">LAB_BUILD_TERMINAL — Daily Build System v3.3.7</div>
+    </div>
+    <div class="terminal-body" id="terminal">
+      <!-- Output will be injected here -->
+    </div>
+    <button class="reboot-btn" onclick="rebootTerminal()">⟳ REBOOT SYSTEM</button>
+  </div>
+
+  <div class="magic-effect" id="magic"></div>
+
+  <script>
+    const terminal = document.getElementById('terminal');
+    const magic = document.getElementById('magic');
+    let lineNumber = 1;
+    let typingSpeed = 15;
+
+    function getTimestamp() {
+      const now = new Date();
+      return now.toTimeString().split(' ')[0];
+    }
+
+    function addLine(content, className = '') {
+      const line = document.createElement('div');
+      line.className = `line ${className}`;
+      line.innerHTML = `<span class="line-number">${String(lineNumber).padStart(4, '0')}</span>${content}`;
+      terminal.appendChild(line);
+      terminal.scrollTop = terminal.scrollHeight;
+      lineNumber++;
+    }
+
+    function addAsciiArt(art) {
+      const pre = document.createElement('div');
+      pre.className = 'ascii-art';
+      pre.textContent = art;
+      terminal.appendChild(pre);
+      terminal.scrollTop = terminal.scrollHeight;
+    }
+
+    function addProgressBar(label, percentage) {
+      const container = document.createElement('div');
+      container.innerHTML = `
+        <div class="line">
+          <span class="line-number">${String(lineNumber).padStart(4, '0')}</span>
+          <span class="output">${label}</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" style="width: 0%"></div>
+          <span class="progress-text">0%</span>
+        </div>
+      `;
+      terminal.appendChild(container);
+      lineNumber++;
+
+      // Animate progress
+      const fill = container.querySelector('.progress-fill');
+      const text = container.querySelector('.progress-text');
+      setTimeout(() => {
+        fill.style.width = percentage + '%';
+        text.textContent = percentage + '%';
+      }, 100);
+    }
+
+    async function typeText(text, className = '') {
+      return new Promise(resolve => {
+        const line = document.createElement('div');
+        line.className = `line ${className}`;
+        line.innerHTML = `<span class="line-number">${String(lineNumber).padStart(4, '0')}</span><span class="typing-cursor"></span>`;
+        terminal.appendChild(line);
+        const cursor = line.querySelector('.typing-cursor');
+
+        let i = 0;
+        const interval = setInterval(() => {
+          if (i < text.length) {
+            cursor.insertAdjacentText('beforebegin', text[i]);
+            i++;
+            terminal.scrollTop = terminal.scrollHeight;
+          } else {
+            clearInterval(interval);
+            cursor.remove();
+            lineNumber++;
+            resolve();
+          }
+        }, typingSpeed);
+      });
+    }
+
+    function createMagicChars(x, y) {
+      const chars = ['◆', '◇', '◈', '◎', '●', '○', '★', '☆', '⚡', '✨', '◉', '◐'];
+      for (let i = 0; i < 8; i++) {
+        const char = document.createElement('div');
+        char.className = 'magic-char';
+        char.textContent = chars[Math.floor(Math.random() * chars.length)];
+        char.style.left = (x + (Math.random() - 0.5) * 60) + 'px';
+        char.style.top = y + 'px';
+        char.style.color = Math.random() > 0.5 ? '#ffb000' : '#39ff14';
+        magic.appendChild(char);
+        setTimeout(() => char.remove(), 2000);
+      }
+    }
+
+    terminal.addEventListener('click', (e) => {
+      const rect = terminal.getBoundingClientRect();
+      createMagicChars(e.clientX - rect.left, e.clientY - rect.top);
+    });
+
+    async function buildSequence() {
+      // Boot sequence
+      addLine(`<span class="timestamp">[${getTimestamp()}]</span> <span class="success">★</span> Lab Build System Initializing...`, 'info');
+      await delay(300);
+
+      addLine(`<span class="timestamp">[${getTimestamp()}]</span> <span class="info">→</span> Loading kernel modules...`, '');
+      await delay(200);
+      addLine(`<span class="timestamp">[${getTimestamp()}]</span> <span class="success">✓</span> kernel_core.ko <span class="success">loaded</span>`, 'success');
+      addLine(`<span class="timestamp">[${getTimestamp()}]</span> <span class="success">✓</span> memory_manager.ko <span class="success">loaded</span>`, 'success');
+      addLine(`<span class="timestamp">[${getTimestamp()}]</span> <span class="success">✓</span> dream_processor.ko <span class="success">loaded</span>`, 'success');
+      await delay(400);
+
+      addAsciiArt(`
+   ██╗  ██╗ █████╗  ██████╗██╗  ██╗███████╗██████╗  ██████╗ ███████╗
+   ██║  ██║██╔══██╗██╔════╝██║ ██╔╝██╔════╝██╔══██╗██╔═══██╗██╔════╝
+   ███████║███████║██║     █████╔╝ █████╗  ██████╔╝██║   ██║███████╗
+   ██╔══██║██╔══██║██║     ██╔═██╗ ██╔══╝  ██╔══██╗██║   ██║╚════██║
+   ██║  ██║██║  ██║╚██████╗██║  ██╗███████╗██║  ██║╚██████╔╝███████║
+   ╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝ ╚═════╝ ╚══════╝
+      `);
+
+      addLine(`<span class="warning">⚠</span> Build Environment: <span class="command">chung@lab-server</span>`, 'warning');
+      addLine(`<span class="info">ℹ</span> Current Time: <span class="command">03:30 AM</span> — The Witching Hour <span class="emoji-badge badge-warning">👻</span>`, 'info');
+      await delay(500);
+
+      // Build phases
+      addLine('', '');
+      addLine(`<span class="prompt">$</span> <span class="command">./build.sh --daily --creative --mode=chaos</span>`, 'command');
+      await delay(300);
+
+      addLine(`<span class="info">→</span> Starting daily build process...`, '');
+      await delay(200);
+
+      addProgressBar('▓░░░░░░░░░ Compiling creativity modules...', 15);
+      await delay(600);
+      addLine(`<span class="timestamp">[${getTimestamp()}]</span> <span class="success">✓</span> creative_module_v2.1.js <span class="success">compiled</span>`, 'success');
+
+      addProgressBar('▓▓░░░░░░░░ Fetching inspiration from memory banks...', 30);
+      await delay(500);
+      addLine(`<span class="timestamp">[${getTimestamp()}]</span> <span class="success">✓</span> 3 dream posts loaded`, 'success');
+      addLine(`<span class="timestamp">[${getTimestamp()}]</span> <span class="info">ℹ</span> Memory banks: <span class="command">EMPTY</span> <span class="emoji-badge badge-warning">3:30 AM too early?</span>`, 'info');
+
+      addProgressBar('▓▓▓▓░░░░░░ Initializing AI creative engine...', 45);
+      await delay(400);
+      addLine(`<span class="timestamp">[${getTimestamp()}]</span> <span class="success">✓</span> GPT-4-Turbo <span class="success">connected</span>`);
+      addLine(`<span class="timestamp">[${getTimestamp()}]</span> <span class="success">✓</span> Claude-3-Opus <span class="success">connected</span>`);
+
+      addProgressBar('▓▓▓▓▓▓░░░░░ Generating project concepts...', 60);
+      await delay(500);
+      addLine(`<span class="warning">⚡</span> Concept #1: <span class="command">Retro Terminal Aesthetics</span> <span class="emoji-badge badge-success">SELECTED</span>`, 'warning');
+      addLine(`<span class="timestamp">[${getTimestamp()}]</span> <span class="info">ℹ</span> Rejected: Dark space theme (used 3 times recently)`, 'info');
+      addLine(`<span class="timestamp">[${getTimestamp()}]</span> <span class="info">ℹ</span> Rejected: Paper craft aesthetic (used yesterday)`, 'info');
+
+      addProgressBar('▓▓▓▓▓▓▓▓░░░ Rendering HTML/CSS/JS...', 75);
+      await delay(400);
+      addLine(`<span class="timestamp">[${getTimestamp()}]</span> <span class="success">✓</span> index.html <span class="success">generated</span>`);
+      addLine(`<span class="timestamp">[${getTimestamp()}]</span> <span class="success">✓</span> styles.css <span class="success">optimized</span>`);
+      addLine(`<span class="timestamp">[${getTimestamp()}]</span> <span class="success">✓</span> main.js <span class="success">minified</span>`);
+
+      addProgressBar('▓▓▓▓▓▓▓▓▓▓ Running sanity checks...', 90);
+      await delay(300);
+      addLine(`<span class="timestamp">[${getTimestamp()}]</span> <span class="success">✓</span> Mobile responsive <span class="success">passed</span>`);
+      addLine(`<span class="timestamp">[${getTimestamp()}]</span> <span class="success">✓</span> Accessibility <span class="success">passed</span>`);
+      addLine(`<span class="timestamp">[${getTimestamp()}]</span> <span class="success">✓</span> No React dependencies <span class="success">verified</span>`);
+
+      addProgressBar('▓▓▓▓▓▓▓▓▓▓ Deployment...', 100);
+      await delay(300);
+
+      addLine('', '');
+      addLine(`<span class="success">═══════════════════════════════════════════════════════════════</span>`, 'success');
+      addLine(`<span class="success">✓ BUILD COMPLETE</span> <span class="emoji-badge badge-success">🎉</span>`, 'success');
+
+      // Stats
+      const stats = [
+        { value: '18', label: 'AUG 2026' },
+        { value: '03:30', label: 'BUILD TIME' },
+        { value: '847', label: 'LINES OF CODE' },
+        { value: '∞', label: 'CREATIVITY' }
+      ];
+
+      const statsHtml = stats.map(s => `
+        <div class="stat-card">
+          <div class="stat-value">${s.value}</div>
+          <div class="stat-label">${s.label}</div>
+        </div>
+      `).join('');
+
+      const statsContainer = document.createElement('div');
+      statsContainer.className = 'stats-grid';
+      statsContainer.innerHTML = statsHtml;
+      terminal.appendChild(statsContainer);
+
+      addLine('', '');
+      addLine(`<span class="info">ℹ</span> Project: <span class="command">Retro Terminal / Hacker Aesthetics</span>`, 'info');
+      addLine(`<span class="info">ℹ</span> Theme: <span class="command">Amber on Black</span> with <span class="command">Scanlines</span>`, 'info');
+      addLine(`<span class="info">ℹ</span> Inspiration: <span class="command">3:30 AM — The Witching Hour</span> <span class="emoji-badge badge-info">👨‍💻</span>`, 'info');
+      addLine(`<span class="warning">⚠</span> Memory banks empty — no dream posts found for today`, 'warning');
+      addLine(`<span class="warning">⚠</span> Build proceeded with universal creativity module`, 'warning');
+      addLine('', '');
+      addLine(`<span class="prompt">$</span> <span class="command">echo "Good morning, Chung. The build is ready."</span>`, 'command');
+      await delay(200);
+      addLine(`<span class="success">Good morning, Chung. The build is ready. ☕</span>`, 'success');
+      addLine(`<span class="info">ℹ</span> Click anywhere for magic effect! <span class="emoji-badge badge-info">✨</span>`, 'info');
+    }
+
+    function rebootTerminal() {
+      terminal.innerHTML = '';
+      lineNumber = 1;
+      buildSequence();
+    }
+
+    function delay(ms) {
+      return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    // Start the build sequence
+    buildSequence();
+  </script>
+</body>
+</html>
