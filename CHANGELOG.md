@@ -6,7 +6,7 @@
 
 Changes since 2026-02-01:
 
-- `pending` Daily Lab 2026-08-19: 🎫 懷疑的門票 (The Doubt Passport) — *chung* (2026-08-19)
+- `92ab235` Daily Lab 2026-08-19: 🎫 懷疑的門票 (The Doubt Passport) — *chung* (2026-08-19)
 - `6f6be52` Daily Lab 2026-08-18: 💻 Lab Build Terminal @ 03:30 — *chung0223* (2026-08-18)
 - `03c56c0` docs: update changelog 2026-08-18 — *chung0223* (2026-08-18)
 - `14e90d3` docs: update changelog 2026-08-17 — *chung0223* (2026-08-17)
