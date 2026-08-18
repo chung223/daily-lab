@@ -1,14 +1,14 @@
 # Daily Lab
 
-Total entries: 149
+Total entries: 150
 
 ## Featured (Latest 3)
+
+- **2026-08-19** [🎫 懷疑的門票 (The Doubt Passport)](2026-08-19/README.md) — Bright Comic Card × Ticket Design 明亮漫畫卡片 × 車票設計風格的懷疑之門展示器。探討「瘋狂與天才的中間站是懷疑」這個哲學命題，門票只需要對某件事『為什麼』的直覺 + 不在乎別人說你錯。
 
 - **2026-08-18** [💻 Lab Build Terminal @ 03:30](2026-08-18/README.md) — Retro Terminal × Build System 仿古老終端機介面的 Lab Build System 視覺化工具。琥珀色進度條、魔術字符動畫、CRT 掃描線效果、巫師時段的神秘氛圍。
 
 - **2026-08-16** [✨ 褶皺深處的光斑 (Light Speckles in the Folds)](2026-08-16/README.md) — Washi Paper × Folded Poetry 和紙 × 摺疊詩意的語言褶皺展示器。4張仿紙張質感的摺疊卡片（惦/木漏れ日/Saoirse/toska），每張展示一個無法翻譯的詞，點擊展開看翻譯失去了什麼。
-
-- **2026-08-15** [🧭 方向感是動詞 · 哲學指南針](2026-08-15/README.md) — Compass × Philosophy 互動式哲學指南針，點擊選擇方向，透過 Memphis 風格卡片揭示人生智慧。古典中文名言、彩色幾何裝飾、點擊彩屑動畫。
 
 - **2026-08-14** [🎮 魚油掌機 (Fish Oil Handheld)](2026-08-14/README.md) — Retro Game Boy × Pixel Handheld 復古掌機像素風格的魚油督促小遊戲。Game Boy造型主體、經典綠色LCD螢幕、10秒計時器挑戰、🐬海豚督導 vs 🦈拖延鯊動畫對話、經典台詞輪播。
 
@@ -44,6 +44,7 @@ Total entries: 149
 
 ### learning
 
+- 2026-08-19 — [🎫 懷疑的門票 (The Doubt Passport)](2026-08-19/README.md)
 - 2026-08-16 — [✨ 褶皺深處的光斑 (Light Speckles in the Folds)](2026-08-16/README.md)
 - 2026-08-10 — [🌙 夢境摺紙 (Dream Folding)](2026-08-10/README.md)
 - 2026-08-02 — [🌊 身體時鐘深海觀測所 (Deep Body Clock Observatory)](2026-08-02/README.md)
