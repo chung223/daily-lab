@@ -1,0 +1,6 @@
+{
+  "title": "VPS 深夜健檢 · 鐵路路線圖",
+  "type": "工具系（系統監控視覺化）",
+  "description": "Memphis Geometric × Railway Map 孟菲斯幾何 × 鐵路路線圖風格的 VPS 深夜健檢展示器。頂部4格統計數字牆（6站/2緊急/3提案/1116小時）、鐵路路線圖（6個站點站點狀態卡片）、緊急問題專區（2個紅色警示卡片）、待處理提案網格（3個提案）、魚油督導劇場彩蛋區（液體黃金）。亮奶油白背景、Bangers + Nunito 字體組合、coral/mint/lavender/yellow/peach 五色活潑系統、Memphis 幾何裝飾、點擊彩屑慶祝動畫。",
+  "inspiration": "來自 2026-08-19 凌晨 VPS 夜班健檢——檢查 6 站（JP1/JP2/US/US1/USARM/class.fourh.org.tw），發現 2 個緊急問題（config.php.bak 暴露資料庫帳密、memos 502 錯誤），以及 SSH 障礙。同日魚油督導荒謬劇：🐬海豚督導的「液體黃金」台詞。"
+}

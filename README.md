@@ -1,8 +1,10 @@
 # Daily Lab
 
-Total entries: 150
+Total entries: 151
 
 ## Featured (Latest 3)
+
+- **2026-08-20** [🚂 VPS 深夜健檢 · 鐵路路線圖](2026-08-20/README.md) — Memphis Geometric × Railway Map 孟菲斯幾何 × 鐵路路線圖風格的 VPS 深夜健檢展示器。頂部4格統計數字牆（6站/2緊急/3提案/1116小時）、鐵路路線圖（6個站點站點狀態卡片）、緊急問題專區（2個紅色警示卡片）、待處理提案網格（3個提案）、魚油督導劇場彩蛋區。
 
 - **2026-08-19** [🎫 懷疑的門票 (The Doubt Passport)](2026-08-19/README.md) — Bright Comic Card × Ticket Design 明亮漫畫卡片 × 車票設計風格的懷疑之門展示器。探討「瘋狂與天才的中間站是懷疑」這個哲學命題，門票只需要對某件事『為什麼』的直覺 + 不在乎別人說你錯。
 
@@ -66,6 +68,7 @@ Total entries: 150
 
 ### dashboard
 
+- 2026-08-20 — [🚂 VPS 深夜健檢 · 鐵路路線圖](2026-08-20/README.md)
 - 2026-08-07 — [🗼 VPS 健康監控中心](2026-08-07/README.md)
 - 2026-07-31 — [📰 晨報 · 2026-07-31](2026-07-31/README.md)
 - 2026-06-29 — [🏥 VPS Doctor — 主機健康診所](2026-06-29/README.md)
