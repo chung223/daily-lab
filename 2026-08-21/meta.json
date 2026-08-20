@@ -1,0 +1,6 @@
+{
+  "title": "緊急修復拍賣會 · Emergency Fix Auction",
+  "type": "dashboard",
+  "description": "拍賣會風格的 VPS 緊急問題追蹤系統，以時間幣結算修復工作。展示 config.php.bak 暴露、memos 502、JP 主機封鎖等緊急問題，透過投標系統以時間幣進行修復工作排程。",
+  "inspiration": "三色蛋 Dream Post「時間幣」× VPS 緊急問題"
+}

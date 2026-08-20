@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>緊急修復拍賣會 · Emergency Fix Auction</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Noto+Serif+TC:wght@400;700&family=Caveat:wght@400;700&family=DM+Mono:wght@400&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg-dark: #1a1216;
+      --bg-card: #2a1f24;
+      --gold: #d4a84b;
+      --gold-light: #f0d890;
+      --burgundy: #8b2942;
+      --burgundy-light: #c73e5c;
+      --cream: #f5f0e8;
+      --cream-dark: #e0d8c8;
+      --text: #f5f0e8;
+      --text-muted: #a89888;
+      --urgent-red: #e63946;
+      --warning-amber: #f4a429;
+    }
+
+    body {
+      font-family: 'Noto Serif TC', serif;
+      background: var(--bg-dark);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Auction house atmosphere */
+    .auction-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: 
+        radial-gradient(ellipse at 50% 0%, rgba(139, 41, 66, 0.15) 0%, transparent 50%),
+        radial-gradient(ellipse at 20% 80%, rgba(212, 168, 75, 0.08) 0%, transparent 40%),
+        radial-gradient(ellipse at 80% 80%, rgba(212, 168, 75, 0.08) 0%, transparent 40%),
+        linear-gradient(180deg, #1a1216 0%, #2a1f24 50%, #1a1216 100%);
+      z-index: -1;
+    }
+
+    .floating-particles {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: -1;
+      overflow: hidden;
+    }
+
+    .particle {
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      background: var(--gold);
+      border-radius: 50%;
+      opacity: 0.3;
+      animation: float-particle 15s infinite ease-in-out;
+    }
+
+    @keyframes float-particle {
+      0%, 100% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+      10% { opacity: 0.3; }
+      90% { opacity: 0.3; }
+      100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+    }
+
+    /* Header */
+    header {
+      text-align: center;
+      padding: 40px 20px 30px;
+      position: relative;
+    }
+
+    .auction-gavel {
+      font-size: 48px;
+      margin-bottom: 10px;
+      animation: gavel-sway 3s ease-in-out infinite;
+    }
+
+    @keyframes gavel-sway {
+      0%, 100% { transform: rotate(-5deg); }
+      50% { transform: rotate(5deg); }
+    }
+
+    h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(28px, 5vw, 48px);
+      font-weight: 900;
+      color: var(--gold);
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+      letter-spacing: 2px;
+    }
+
+    .subtitle {
+      font-family: 'Caveat', cursive;
+      font-size: clamp(18px, 3vw, 24px);
+      color: var(--text-muted);
+      margin-top: 8px;
+    }
+
+    .time-coin-display {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 20px;
+      padding: 12px 24px;
+      background: linear-gradient(135deg, var(--bg-card), #3a2f34);
+      border: 2px solid var(--gold);
+      border-radius: 30px;
+      font-family: 'DM Mono', monospace;
+    }
+
+    .coin-icon {
+      font-size: 28px;
+      animation: coin-spin 4s linear infinite;
+    }
+
+    @keyframes coin-spin {
+      0% { transform: rotateY(0deg); }
+      100% { transform: rotateY(360deg); }
+    }
+
+    .coin-amount {
+      font-size: 24px;
+      font-weight: bold;
+      color: var(--gold-light);
+    }
+
+    /* Auction Items */
+    .auction-container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .auction-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 24px;
+      margin-top: 20px;
+    }
+
+    .auction-item {
+      background: linear-gradient(145deg, var(--bg-card), #1f181c);
+      border: 2px solid var(--burgundy);
+      border-radius: 16px;
+      overflow: hidden;
+      position: relative;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .auction-item:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 40px rgba(139, 41, 66, 0.3);
+    }
+
+    .auction-item.urgent {
+      border-color: var(--urgent-red);
+      animation: urgent-pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes urgent-pulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(230, 57, 70, 0.4); }
+      50% { box-shadow: 0 0 20px 5px rgba(230, 57, 70, 0.2); }
+    }
+
+    .item-header {
+      padding: 20px;
+      background: linear-gradient(90deg, var(--burgundy), var(--burgundy-light));
+      position: relative;
+    }
+
+    .auction-item.urgent .item-header {
+      background: linear-gradient(90deg, #8b1a1a, var(--urgent-red));
+    }
+
+    .lot-number {
+      position: absolute;
+      top: 10px;
+      right: 15px;
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      color: rgba(255,255,255,0.7);
+    }
+
+    .item-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--cream);
+      margin-bottom: 4px;
+    }
+
+    .item-subtitle {
+      font-size: 14px;
+      color: rgba(255,255,255,0.8);
+    }
+
+    .item-body {
+      padding: 20px;
+    }
+
+    .item-description {
+      font-size: 15px;
+      line-height: 1.7;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+    }
+
+    .item-stats {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+
+    .stat-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      background: rgba(212, 168, 75, 0.1);
+      border: 1px solid rgba(212, 168, 75, 0.3);
+      border-radius: 20px;
+      font-size: 13px;
+      color: var(--gold);
+    }
+
+    .stat-badge.danger {
+      background: rgba(230, 57, 70, 0.1);
+      border-color: rgba(230, 57, 70, 0.3);
+      color: var(--urgent-red);
+    }
+
+    .current-bid {
+      background: linear-gradient(135deg, rgba(212, 168, 75, 0.15), rgba(212, 168, 75, 0.05));
+      border: 1px solid var(--gold);
+      border-radius: 12px;
+      padding: 16px;
+      text-align: center;
+      margin-bottom: 16px;
+    }
+
+    .bid-label {
+      font-size: 12px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 6px;
+    }
+
+    .bid-amount {
+      font-family: 'Playfair Display', serif;
+      font-size: 32px;
+      font-weight: 900;
+      color: var(--gold-light);
+    }
+
+    .bid-amount span {
+      font-size: 16px;
+      color: var(--text-muted);
+    }
+
+    .bid-timer {
+      font-family: 'DM Mono', monospace;
+      font-size: 14px;
+      color: var(--warning-amber);
+      margin-top: 6px;
+    }
+
+    .bid-button {
+      width: 100%;
+      padding: 14px 20px;
+      background: linear-gradient(135deg, var(--gold), #c49a3a);
+      border: none;
+      border-radius: 10px;
+      font-family: 'Noto Serif TC', serif;
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--bg-dark);
+      cursor: pointer;
+      transition: all 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .bid-button:hover {
+      background: linear-gradient(135deg, var(--gold-light), var(--gold));
+      transform: scale(1.02);
+    }
+
+    .bid-button:active {
+      transform: scale(0.98);
+    }
+
+    .bid-button::after {
+      content: '+';
+      margin-left: 8px;
+    }
+
+    /* Auctioneer Section */
+    .auctioneer-section {
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 30px;
+      background: linear-gradient(145deg, var(--bg-card), #1f181c);
+      border: 2px solid var(--gold);
+      border-radius: 16px;
+      text-align: center;
+    }
+
+    .auctioneer-avatar {
+      font-size: 64px;
+      margin-bottom: 10px;
+    }
+
+    .auctioneer-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--gold);
+      margin-bottom: 8px;
+    }
+
+    .auctioneer-quote {
+      font-family: 'Caveat', cursive;
+      font-size: 24px;
+      color: var(--text);
+      line-height: 1.5;
+      font-style: italic;
+    }
+
+    .quote-refresh {
+      margin-top: 16px;
+      padding: 10px 20px;
+      background: transparent;
+      border: 1px solid var(--gold);
+      border-radius: 20px;
+      color: var(--gold);
+      font-family: 'Caveat', cursive;
+      font-size: 16px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .quote-refresh:hover {
+      background: var(--gold);
+      color: var(--bg-dark);
+    }
+
+    /* Total Stats */
+    .total-stats {
+      max-width: 600px;
+      margin: 30px auto;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      flex-wrap: wrap;
+    }
+
+    .total-stat {
+      text-align: center;
+    }
+
+    .total-stat-value {
+      font-family: 'Playfair Display', serif;
+      font-size: 36px;
+      font-weight: 900;
+      color: var(--gold);
+    }
+
+    .total-stat-label {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    /* Confetti */
+    .confetti {
+      position: fixed;
+      pointer-events: none;
+      z-index: 1000;
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 30px;
+      color: var(--text-muted);
+      font-size: 13px;
+    }
+
+    footer a {
+      color: var(--gold);
+      text-decoration: none;
+    }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      .auction-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .total-stats {
+        gap: 24px;
+      }
+      
+      .bid-amount {
+        font-size: 28px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="auction-bg"></div>
+  <div class="floating-particles" id="particles"></div>
+
+  <header>
+    <div class="auction-gavel">🔔</div>
+    <h1>緊急修復拍賣會</h1>
+    <p class="subtitle">Emergency Fix Auction House · 時間幣結算</p>
+    <div class="time-coin-display">
+      <span class="coin-icon">🪙</span>
+      <span>可用時間幣: <span class="coin-amount" id="coinBalance">247</span></span>
+    </div>
+  </header>
+
+  <main class="auction-container">
+    <div class="auction-grid" id="auctionGrid">
+      <!-- Items will be injected by JS -->
+    </div>
+
+    <div class="auctioneer-section">
+      <div class="auctioneer-avatar">🎩</div>
+      <div class="auctioneer-title">拍賣師·時間守護者</div>
+      <p class="auctioneer-quote" id="auctioneerQuote">
+        「在時間的殿堂裡，每一個漏洞都是一次修復的機會！」
+      </p>
+      <button class="quote-refresh" onclick="refreshQuote()">🎲 更換名言</button>
+    </div>
+
+    <div class="total-stats">
+      <div class="total-stat">
+        <div class="total-stat-value">3</div>
+        <div class="total-stat-label">待修復項目</div>
+      </div>
+      <div class="total-stat">
+        <div class="total-stat-value" id="totalBids">0</div>
+        <div class="total-stat-label">總投標次數</div>
+      </div>
+      <div class="total-stat">
+        <div class="total-stat-value" id="savedTime">0</div>
+        <div class="total-stat-label">節省時間（小時）</div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <p>🕐 拍賣時間: 2026-08-21 03:30 | 亞洲/台北時區</p>
+    <p>靈感來源: 三色蛋 Dream Post「時間幣」× VPS 緊急問題</p>
+  </footer>
+
+  <script>
+    // Auction items data
+    const auctionItems = [
+      {
+        id: 1,
+        lot: 'LOT-001',
+        title: 'config.php.bak 暴露危機',
+        subtitle: '資料庫帳密外洩 · 已持續 12 天',
+        description: '備份檔案直接暴露於公開網域，資料庫 root 帳密一覽無遺。這是一場與時間賽跑的競標，每一秒都在流失安全感。',
+        stats: [
+          { icon: '⏰', text: '12天', danger: true },
+          { icon: '🔴', text: '緊急', danger: true },
+          { icon: '💰', text: '高價值目標' }
+        ],
+        currentBid: 45,
+        bidIncrement: 5,
+        daysOpen: 12,
+        timeSavedHours: 2,
+        urgent: true
+      },
+      {
+        id: 2,
+        lot: 'LOT-002',
+        title: 'memos.chung.men 502 錯誤',
+        subtitle: '服務中斷 · 已持續 4 天',
+        description: '記憶存取的必要服務返回 502 Bad Gateway，使用者無法正常訪問。這不只是一個錯誤，這是記憶的斷裂。',
+        stats: [
+          { icon: '⏰', text: '4天', danger: true },
+          { icon: '🔴', text: '緊急', danger: true },
+          { icon: '📝', text: '影響記憶系統' }
+        ],
+        currentBid: 30,
+        bidIncrement: 5,
+        daysOpen: 4,
+        timeSavedHours: 1,
+        urgent: true
+      },
+      {
+        id: 3,
+        lot: 'LOT-003',
+        title: 'JP1/JP2 主機封鎖',
+        subtitle: 'HOST-BLOCKED · 已持續 24 天',
+        description: '日本 VPS 主機被防火牆封鎖，SSH 連線全部失敗。這是漫長的等待，每一天都是對耐心的考驗。',
+        stats: [
+          { icon: '⏰', text: '24天', danger: true },
+          { icon: '🟡', text: '需要手動', danger: false },
+          { icon: '🌏', text: '跨境挑戰' }
+        ],
+        currentBid: 60,
+        bidIncrement: 10,
+        daysOpen: 24,
+        timeSavedHours: 3,
+        urgent: false
+      }
+    ];
+
+    const auctioneerQuotes = [
+      "「在時間的殿堂裡，每一個漏洞都是一次修復的機會！」",
+      "「時間幣的本質：注意力才是宇宙間唯一真正稀缺的資源！」",
+      "「我見過太多的系統崩潰，都是因為忽視了第一個警告信號。」",
+      "「修復不只是修補，是與系統對話的藝術。」",
+      "「每一行錯誤日誌，都是系統在呼救。」",
+      "「24天的封鎖？這不是問題，這是考驗！」",
+      "「時間不會等待，但你可以搶在它前面。」",
+      "「安全漏洞就像時光膠囊，打開了就無法逆轉。」",
+      "「讓我告訴你一個秘密：預防勝於治療。」",
+      "「502 不是終點，是重生的起點。」
+    ];
+
+    let coinBalance = 247;
+    let totalBids = 0;
+    let savedTime = 0;
+
+    // Initialize
+    function init() {
+      createParticles();
+      renderAuctionItems();
+      updateStats();
+    }
+
+    // Create floating particles
+    function createParticles() {
+      const container = document.getElementById('particles');
+      for (let i = 0; i < 20; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+        particle.style.left = Math.random() * 100 + '%';
+        particle.style.animationDelay = Math.random() * 15 + 's';
+        particle.style.animationDuration = (10 + Math.random() * 10) + 's';
+        container.appendChild(particle);
+      }
+    }
+
+    // Render auction items
+    function renderAuctionItems() {
+      const grid = document.getElementById('auctionGrid');
+      grid.innerHTML = auctionItems.map(item => `
+        <div class="auction-item ${item.urgent ? 'urgent' : ''}">
+          <div class="item-header">
+            <span class="lot-number">${item.lot}</span>
+            <h3 class="item-title">${item.title}</h3>
+            <p class="item-subtitle">${item.subtitle}</p>
+          </div>
+          <div class="item-body">
+            <p class="item-description">${item.description}</p>
+            <div class="item-stats">
+              ${item.stats.map(s => `
+                <span class="stat-badge ${s.danger ? 'danger' : ''}">${s.icon} ${s.text}</span>
+              `).join('')}
+            </div>
+            <div class="current-bid">
+              <div class="bid-label">當前出價</div>
+              <div class="bid-amount" id="bid-${item.id}">${item.currentBid} <span>🪙</span></div>
+              <div class="bid-timer" id="timer-${item.id}">⏳ 開放中</div>
+            </div>
+            <button class="bid-button" onclick="placeBid(${item.id})">
+              投標 +${item.bidIncrement} 🪙
+            </button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Place a bid
+    function placeBid(itemId) {
+      const item = auctionItems.find(i => i.id === itemId);
+      if (!item) return;
+
+      const cost = item.bidIncrement;
+      if (coinBalance < cost) {
+        alert('時間幣不足！需要 ' + cost + ' 🪙');
+        return;
+      }
+
+      coinBalance -= cost;
+      item.currentBid += item.bidIncrement;
+      totalBids++;
+      savedTime += item.timeSavedHours;
+
+      // Update display
+      document.getElementById('coinBalance').textContent = coinBalance;
+      document.getElementById('bid-' + itemId).innerHTML = item.currentBid + ' <span>🪙</span>';
+      updateStats();
+
+      // Confetti celebration
+      createConfetti();
+
+      // Show bid notification
+      const notification = document.createElement('div');
+      notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: linear-gradient(135deg, var(--gold), #c49a3a);
+        color: var(--bg-dark);
+        padding: 16px 24px;
+        border-radius: 12px;
+        font-weight: bold;
+        z-index: 1000;
+        animation: slideIn 0.3s ease-out;
+      `;
+      notification.textContent = `✅ 投標成功！-${cost} 🪙`;
+      document.body.appendChild(notification);
+      setTimeout(() => notification.remove(), 2000);
+    }
+
+    // Update stats display
+    function updateStats() {
+      document.getElementById('totalBids').textContent = totalBids;
+      document.getElementById('savedTime').textContent = savedTime;
+    }
+
+    // Refresh auctioneer quote
+    function refreshQuote() {
+      const quoteEl = document.getElementById('auctioneerQuote');
+      const randomQuote = auctioneerQuotes[Math.floor(Math.random() * auctioneerQuotes.length)];
+      quoteEl.style.opacity = 0;
+      setTimeout(() => {
+        quoteEl.textContent = randomQuote;
+        quoteEl.style.opacity = 1;
+      }, 200);
+      quoteEl.style.transition = 'opacity 0.2s';
+    }
+
+    // Create confetti effect
+    function createConfetti() {
+      const colors = ['#d4a84b', '#f0d890', '#8b2942', '#c73e5c', '#f5f0e8'];
+      for (let i = 0; i < 50; i++) {
+        const confetti = document.createElement('div');
+        confetti.className = 'confetti';
+        confetti.style.cssText = `
+          position: fixed;
+          left: ${50 + (Math.random() - 0.5) * 20}%;
+          top: 40%;
+          width: ${6 + Math.random() * 8}px;
+          height: ${6 + Math.random() * 8}px;
+          background: ${colors[Math.floor(Math.random() * colors.length)]};
+          border-radius: ${Math.random() > 0.5 ? '50%' : '2px'};
+          pointer-events: none;
+          z-index: 1000;
+          animation: confetti-fall ${1 + Math.random()}s ease-out forwards;
+        `;
+        document.body.appendChild(confetti);
+        setTimeout(() => confetti.remove(), 2000);
+      }
+    }
+
+    // Add confetti animation
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes confetti-fall {
+        0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+        100% { transform: translateY(${200 + Math.random() * 200}px) rotate(${360 + Math.random() * 360}deg); opacity: 0; }
+      }
+      @keyframes slideIn {
+        from { transform: translateX(100%); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+      }
+    `;
+    document.head.appendChild(style);
+
+    // Initialize on load
+    init();
+  </script>
+</body>
+</html>
