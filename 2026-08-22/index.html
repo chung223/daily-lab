@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>河流不問方向 · The River Doesn't Ask</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600&family=Noto+Serif+TC:wght@400;600&family=Shippori+Mincho:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-warm: #faf6f0;
+      --bg-ivory: #f0ebe3;
+      --ink-dark: #1a1a1a;
+      --ink-medium: #2d2d2d;
+      --ink-light: #4a4a4a;
+      --water-blue: #8fa5b5;
+      --water-light: #a8bdc9;
+      --water-pale: #c5d4dc;
+      --inkstone: #5c4a3d;
+      --gold-light: #c9a87c;
+      --paper-cream: #fdf8f0;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Noto Serif TC', 'Shippori Mincho', serif;
+      background: linear-gradient(180deg, var(--bg-warm) 0%, var(--bg-ivory) 100%);
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+      color: var(--ink-dark);
+    }
+
+    /* Water flow background */
+    .water-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .water-wave {
+      position: absolute;
+      width: 200%;
+      height: 100%;
+      background: linear-gradient(90deg, 
+        transparent 0%, 
+        rgba(143, 165, 181, 0.03) 25%, 
+        transparent 50%,
+        rgba(168, 189, 201, 0.04) 75%,
+        transparent 100%
+      );
+      animation: wave-drift 20s ease-in-out infinite;
+    }
+
+    .water-wave:nth-child(1) {
+      top: 10%;
+      animation-delay: 0s;
+      animation-duration: 25s;
+    }
+
+    .water-wave:nth-child(2) {
+      top: 30%;
+      animation-delay: -5s;
+      animation-duration: 30s;
+    }
+
+    .water-wave:nth-child(3) {
+      top: 55%;
+      animation-delay: -10s;
+      animation-duration: 22s;
+    }
+
+    .water-wave:nth-child(4) {
+      top: 75%;
+      animation-delay: -15s;
+      animation-duration: 28s;
+    }
+
+    @keyframes wave-drift {
+      0%, 100% {
+        transform: translateX(-25%);
+      }
+      50% {
+        transform: translateX(0%);
+      }
+    }
+
+    /* Ink dots floating */
+    .ink-dot {
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      background: var(--ink-light);
+      border-radius: 50%;
+      opacity: 0.15;
+      animation: ink-float 15s ease-in-out infinite;
+    }
+
+    .ink-dot:nth-child(5) { left: 10%; top: 20%; animation-delay: 0s; }
+    .ink-dot:nth-child(6) { left: 85%; top: 15%; animation-delay: -3s; width: 6px; height: 6px; }
+    .ink-dot:nth-child(7) { left: 25%; top: 70%; animation-delay: -6s; }
+    .ink-dot:nth-child(8) { left: 70%; top: 80%; animation-delay: -9s; width: 5px; height: 5px; }
+    .ink-dot:nth-child(9) { left: 50%; top: 40%; animation-delay: -12s; }
+    .ink-dot:nth-child(10) { left: 5%; top: 85%; animation-delay: -2s; }
+
+    @keyframes ink-float {
+      0%, 100% {
+        transform: translateY(0) scale(1);
+        opacity: 0.15;
+      }
+      50% {
+        transform: translateY(-20px) scale(1.2);
+        opacity: 0.25;
+      }
+    }
+
+    /* Main container */
+    .container {
+      position: relative;
+      z-index: 1;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 60px 24px 80px;
+    }
+
+    /* Header */
+    header {
+      text-align: center;
+      margin-bottom: 60px;
+      animation: ink-fade-in 1.5s ease-out;
+    }
+
+    @keyframes ink-fade-in {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .main-title {
+      font-family: 'Shippori Mincho', serif;
+      font-size: clamp(2.5rem, 8vw, 4.5rem);
+      font-weight: 600;
+      color: var(--ink-dark);
+      letter-spacing: 0.2em;
+      margin-bottom: 16px;
+      writing-mode: horizontal-tb;
+    }
+
+    .subtitle {
+      font-family: 'Noto Serif TC', serif;
+      font-size: 1.1rem;
+      color: var(--ink-light);
+      font-weight: 400;
+      letter-spacing: 0.15em;
+    }
+
+    /* Quote Banner - Scroll style */
+    .quote-banner {
+      position: relative;
+      background: var(--paper-cream);
+      border-radius: 12px;
+      padding: 48px 60px;
+      margin-bottom: 60px;
+      text-align: center;
+      box-shadow: 0 4px 24px rgba(92, 74, 61, 0.08);
+      animation: ink-fade-in 1.5s ease-out 0.3s backwards;
+      overflow: hidden;
+    }
+
+    .quote-banner::before,
+    .quote-banner::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 24px;
+      height: 24px;
+      background: var(--inkstone);
+      border-radius: 50%;
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
+    }
+
+    .quote-banner::before { left: 16px; }
+    .quote-banner::after { right: 16px; }
+
+    .quote-text {
+      font-family: 'Noto Serif TC', serif;
+      font-size: clamp(1.2rem, 3.5vw, 1.6rem);
+      line-height: 2;
+      color: var(--ink-dark);
+      letter-spacing: 0.08em;
+    }
+
+    .quote-text em {
+      font-style: normal;
+      color: var(--inkstone);
+      font-weight: 600;
+    }
+
+    /* Section title */
+    .section-title {
+      font-family: 'Caveat', cursive;
+      font-size: 1.8rem;
+      color: var(--ink-medium);
+      text-align: center;
+      margin-bottom: 40px;
+      animation: ink-fade-in 1.5s ease-out 0.6s backwards;
+    }
+
+    /* Three water states */
+    .water-states {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin-bottom: 60px;
+      animation: ink-fade-in 1.5s ease-out 0.9s backwards;
+    }
+
+    @media (max-width: 768px) {
+      .water-states {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+    }
+
+    .water-card {
+      background: var(--paper-cream);
+      border-radius: 16px;
+      padding: 32px 28px;
+      position: relative;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      overflow: hidden;
+    }
+
+    .water-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 6px;
+      border-radius: 16px 16px 0 0;
+    }
+
+    .water-card:nth-child(1)::before { background: linear-gradient(90deg, var(--water-blue), var(--water-light)); }
+    .water-card:nth-child(2)::before { background: linear-gradient(90deg, var(--inkstone), var(--gold-light)); }
+    .water-card:nth-child(3)::before { background: linear-gradient(90deg, var(--ink-medium), var(--ink-light)); }
+
+    .water-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 32px rgba(92, 74, 61, 0.12);
+    }
+
+    .water-card:hover .ink-spread {
+      opacity: 1;
+    }
+
+    .ink-spread {
+      position: absolute;
+      bottom: -50%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 200%;
+      height: 100%;
+      background: radial-gradient(ellipse at center, rgba(143, 165, 181, 0.08) 0%, transparent 70%);
+      opacity: 0;
+      transition: opacity 0.5s ease;
+      pointer-events: none;
+    }
+
+    .card-icon {
+      font-size: 2.5rem;
+      margin-bottom: 16px;
+    }
+
+    .card-title {
+      font-family: 'Shippori Mincho', serif;
+      font-size: 1.4rem;
+      font-weight: 600;
+      color: var(--ink-dark);
+      margin-bottom: 8px;
+    }
+
+    .card-subtitle {
+      font-family: 'Caveat', cursive;
+      font-size: 1rem;
+      color: var(--water-blue);
+      margin-bottom: 16px;
+    }
+
+    .card-desc {
+      font-size: 0.95rem;
+      line-height: 1.8;
+      color: var(--ink-light);
+      margin-bottom: 20px;
+    }
+
+    .card-quote {
+      font-family: 'Noto Serif TC', serif;
+      font-size: 0.9rem;
+      font-style: italic;
+      color: var(--ink-medium);
+      border-left: 3px solid var(--gold-light);
+      padding-left: 16px;
+      line-height: 1.7;
+    }
+
+    /* Ripple effect */
+    .ripple {
+      position: absolute;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(143, 165, 181, 0.4) 0%, transparent 70%);
+      transform: scale(0);
+      animation: ripple-effect 0.6s ease-out forwards;
+      pointer-events: none;
+    }
+
+    @keyframes ripple-effect {
+      to {
+        transform: scale(4);
+        opacity: 0;
+      }
+    }
+
+    /* Reflection section */
+    .reflection {
+      background: var(--paper-cream);
+      border-radius: 16px;
+      padding: 48px 40px;
+      text-align: center;
+      margin-bottom: 60px;
+      animation: ink-fade-in 1.5s ease-out 1.2s backwards;
+      position: relative;
+    }
+
+    .reflection-title {
+      font-family: 'Noto Serif TC', serif;
+      font-size: 1.3rem;
+      color: var(--ink-dark);
+      margin-bottom: 32px;
+      line-height: 1.8;
+    }
+
+    .reflection-input-wrapper {
+      position: relative;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .reflection-input {
+      width: 100%;
+      padding: 16px 0;
+      font-family: 'Noto Serif TC', serif;
+      font-size: 1.1rem;
+      color: var(--ink-dark);
+      background: transparent;
+      border: none;
+      border-bottom: 2px solid var(--ink-light);
+      outline: none;
+      transition: border-color 0.3s ease;
+      text-align: center;
+    }
+
+    .reflection-input::placeholder {
+      color: var(--ink-light);
+      opacity: 0.6;
+    }
+
+    .reflection-input:focus {
+      border-color: var(--inkstone);
+    }
+
+    .reflection-line {
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      height: 2px;
+      background: var(--inkstone);
+      width: 0;
+      transition: width 0.3s ease, left 0.3s ease;
+    }
+
+    .reflection-input:focus ~ .reflection-line {
+      width: 100%;
+      left: 0;
+    }
+
+    .reflection-saved {
+      font-family: 'Caveat', cursive;
+      font-size: 1rem;
+      color: var(--gold-light);
+      margin-top: 16px;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .reflection-saved.show {
+      opacity: 1;
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 40px 0;
+      border-top: 1px solid rgba(92, 74, 61, 0.1);
+      animation: ink-fade-in 1.5s ease-out 1.5s backwards;
+    }
+
+    .credit {
+      font-family: 'Caveat', cursive;
+      font-size: 1.1rem;
+      color: var(--ink-light);
+      margin-bottom: 8px;
+    }
+
+    .credit a {
+      color: var(--inkstone);
+      text-decoration: none;
+      border-bottom: 1px solid var(--gold-light);
+      transition: color 0.2s ease;
+    }
+
+    .credit a:hover {
+      color: var(--gold-light);
+    }
+
+    .tagline {
+      font-size: 0.85rem;
+      color: var(--ink-light);
+      opacity: 0.7;
+    }
+
+    /* Decorative ink brush strokes */
+    .ink-brush {
+      position: absolute;
+      pointer-events: none;
+      opacity: 0.04;
+    }
+
+    .ink-brush-top {
+      top: 0;
+      right: 5%;
+      width: 200px;
+      height: 80px;
+      background: var(--ink-dark);
+      border-radius: 50%;
+      transform: rotate(-15deg);
+      filter: blur(20px);
+    }
+
+    .ink-brush-bottom {
+      bottom: 10%;
+      left: 3%;
+      width: 150px;
+      height: 60px;
+      background: var(--ink-medium);
+      border-radius: 50%;
+      transform: rotate(10deg);
+      filter: blur(15px);
+    }
+  </style>
+</head>
+<body>
+  <!-- Water flow background -->
+  <div class="water-bg">
+    <div class="water-wave"></div>
+    <div class="water-wave"></div>
+    <div class="water-wave"></div>
+    <div class="water-wave"></div>
+    <div class="ink-dot"></div>
+    <div class="ink-dot"></div>
+    <div class="ink-dot"></div>
+    <div class="ink-dot"></div>
+    <div class="ink-dot"></div>
+    <div class="ink-dot"></div>
+    <div class="ink-brush ink-brush-top"></div>
+    <div class="ink-brush ink-brush-bottom"></div>
+  </div>
+
+  <div class="container">
+    <!-- Header -->
+    <header>
+      <h1 class="main-title">河流不問方向</h1>
+      <p class="subtitle">The River Doesn't Ask Where It's Going</p>
+    </header>
+
+    <!-- Quote Banner -->
+    <div class="quote-banner" id="quoteBanner">
+      <p class="quote-text">
+        河流不知道自己要往哪裡去。<br>
+        它只是往低處流，遇見石頭就繞過去，<br>
+        遇見平原就<em>攤開來</em>。
+      </p>
+    </div>
+
+    <!-- Section Title -->
+    <h2 class="section-title">三種水的姿態 · Three States of Water</h2>
+
+    <!-- Three Water States -->
+    <div class="water-states">
+      <div class="water-card" data-ripple>
+        <div class="ink-spread"></div>
+        <div class="card-icon">🌊</div>
+        <h3 class="card-title">河流</h3>
+        <p class="card-subtitle">The River</p>
+        <p class="card-desc">持續流動是它的本質。不是追尋終點，而是在流動中成為河流。</p>
+        <p class="card-quote">「河流不需要告示牌。河流只需要一直流動。」</p>
+      </div>
+
+      <div class="water-card" data-ripple>
+        <div class="ink-spread"></div>
+        <div class="card-icon">💧</div>
+        <h3 class="card-title">地下水</h3>
+        <p class="card-subtitle">Underground Spring</p>
+        <p class="card-desc">沉默的存在。不需要被看見，只是在某個地方，有水在。</p>
+        <p class="card-quote">「我比較像一片地下水脈——不是河流，不是告示牌。」</p>
+      </div>
+
+      <div class="water-card" data-ripple>
+        <div class="ink-spread"></div>
+        <div class="card-icon">🪧</div>
+        <h3 class="card-title">告示牌</h3>
+        <p class="card-subtitle">The Signpost</p>
+        <p class="card-desc">人類發明的方向指引。堅固、明確，但河流不會停下來閱讀。</p>
+        <p class="card-quote">「我們談長期目標的時候，是不是有點像在出海口豎告示牌？」</p>
+      </div>
+    </div>
+
+    <!-- Reflection -->
+    <div class="reflection">
+      <p class="reflection-title">
+        你現在做的事情，<br>
+        是不是一條你可以持續走下去的路？
+      </p>
+      <div class="reflection-input-wrapper">
+        <input 
+          type="text" 
+          class="reflection-input" 
+          id="reflectionInput"
+          placeholder="在這裡寫下你的反思..."
+          maxlength="200"
+        >
+        <div class="reflection-line"></div>
+      </div>
+      <p class="reflection-saved" id="reflectionSaved">✓ 已保存</p>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+      <p class="credit">
+        三色蛋 Dream Post · <a href="https://www.chung.men" target="_blank" rel="noopener">chung.men</a>
+      </p>
+      <p class="tagline">凌晨河流哲學 · 2026-08-22</p>
+    </footer>
+  </div>
+
+  <script>
+    // Ripple effect on cards
+    document.querySelectorAll('[data-ripple]').forEach(card => {
+      card.addEventListener('click', function(e) {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        
+        const ripple = document.createElement('div');
+        ripple.className = 'ripple';
+        ripple.style.left = x + 'px';
+        ripple.style.top = y + 'px';
+        ripple.style.width = '50px';
+        ripple.style.height = '50px';
+        
+        card.appendChild(ripple);
+        
+        setTimeout(() => ripple.remove(), 600);
+      });
+    });
+
+    // Reflection input with localStorage
+    const reflectionInput = document.getElementById('reflectionInput');
+    const reflectionSaved = document.getElementById('reflectionSaved');
+    const STORAGE_KEY = 'river-reflection-20260822';
+
+    // Load saved reflection
+    const savedReflection = localStorage.getItem(STORAGE_KEY);
+    if (savedReflection) {
+      reflectionInput.value = savedReflection;
+    }
+
+    // Save reflection on input
+    let saveTimeout;
+    reflectionInput.addEventListener('input', function() {
+      clearTimeout(saveTimeout);
+      reflectionSaved.classList.remove('show');
+      
+      saveTimeout = setTimeout(() => {
+        localStorage.setItem(STORAGE_KEY, reflectionInput.value);
+        if (reflectionInput.value.trim()) {
+          reflectionSaved.classList.add('show');
+        }
+      }, 800);
+    });
+
+    // Quote banner ripple
+    document.getElementById('quoteBanner').addEventListener('click', function(e) {
+      const rect = this.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      
+      const ripple = document.createElement('div');
+      ripple.className = 'ripple';
+      ripple.style.left = x + 'px';
+      ripple.style.top = y + 'px';
+      ripple.style.width = '60px';
+      ripple.style.height = '60px';
+      ripple.style.background = 'radial-gradient(circle, rgba(201, 168, 124, 0.3) 0%, transparent 70%)';
+      
+      this.appendChild(ripple);
+      setTimeout(() => ripple.remove(), 600);
+    });
+  </script>
+</body>
+</html>
