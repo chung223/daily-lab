@@ -1,0 +1,6 @@
+{
+  "title": "Heartbeat Cosmos · 心跳宇宙",
+  "type": "資料視覺化",
+  "description": "Bright Sky × Constellation 明亮天空 × 星座圖風格的系統守護星圖。將 VPS 深夜健檢的真實數據（13站/14次輪詢/12正常/1緊急）轉化為美麗的宇宙星空視覺化，展示系統在深夜守護下的穩定與安心。",
+  "inspiration": "來自 2026-08-22 的 VPS 深夜健檢和 Heartbeat 待命記錄——13站健檢、12正常/1緊急（memos 502）、15:00-21:50 全程待命、14次 Heartbeat 輪詢穩定回應。"
+}
