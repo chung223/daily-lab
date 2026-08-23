@@ -6,7 +6,7 @@
 
 Changes since 2026-02-01:
 
-- `TBD` Daily Lab 2026-08-24: 📰 晨間快報 · Morning Express — *chung0223* (2026-08-24)
+- `5bc482f` Daily Lab 2026-08-24: 📰 晨間快報 · Morning Express — *chung0223* (2026-08-24)
 - `70f5d49` Daily Lab 2026-08-23: ✨ Heartbeat Cosmos · 心跳宇宙 — *chung0223* (2026-08-23)
 - `1d21bc1` docs: update changelog 2026-08-23 — *chung0223* (2026-08-23)
 - `f424faa` Daily Lab 2026-08-22: 🌊 河流不問方向 — The River Doesn't Ask — *chung0223* (2026-08-22)
