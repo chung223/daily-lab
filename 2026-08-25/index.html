@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>每日儀式紙雕鐘 · Daily Ritual Clock</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;700&family=Caveat:wght@400;600&family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --cream: #FDF6EC;
+      --cream-dark: #F5E8D4;
+      --paper: #FFFDF7;
+      --ink: #2C2416;
+      --coral: #E07A5F;
+      --gold: #D4A853;
+      --sage: #81B29A;
+      --lavender: #9B8FD9;
+      --peach: #F2B880;
+      --sky: #7EB8DA;
+      --shadow: rgba(44, 36, 22, 0.12);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--cream);
+      background-image:
+        radial-gradient(circle at 20% 80%, rgba(224, 122, 95, 0.08) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(155, 143, 217, 0.08) 0%, transparent 50%),
+        url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23d4a853' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+      min-height: 100vh;
+      font-family: 'Quicksand', 'Noto Serif TC', sans-serif;
+      color: var(--ink);
+      overflow-x: hidden;
+    }
+
+    /* Header */
+    header {
+      text-align: center;
+      padding: 32px 20px 16px;
+      position: relative;
+    }
+
+    .header-title {
+      font-family: 'Caveat', cursive;
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      font-weight: 700;
+      color: var(--ink);
+      letter-spacing: 0.02em;
+      position: relative;
+      display: inline-block;
+    }
+
+    .header-title::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, var(--coral), var(--gold), var(--sage), transparent);
+      border-radius: 2px;
+    }
+
+    .header-date {
+      font-family: 'Quicksand', sans-serif;
+      font-size: 0.85rem;
+      color: var(--gold);
+      margin-top: 8px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    /* Main Clock Container */
+    .clock-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 10px 20px 30px;
+      gap: 24px;
+    }
+
+    /* Paper Clock Face */
+    .clock-wrapper {
+      position: relative;
+      width: min(420px, 92vw);
+      height: min(420px, 92vw);
+    }
+
+    .clock-face {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: var(--paper);
+      box-shadow:
+        0 2px 0 0 var(--cream-dark),
+        0 4px 0 0 var(--cream-dark),
+        0 8px 24px var(--shadow),
+        inset 0 2px 8px rgba(44,36,22,0.06);
+      position: relative;
+      border: 3px solid var(--cream-dark);
+    }
+
+    /* Outer decorative ring */
+    .clock-face::before {
+      content: '';
+      position: absolute;
+      inset: 8px;
+      border-radius: 50%;
+      border: 2px dashed var(--gold);
+      opacity: 0.4;
+    }
+
+    /* Inner decorative ring */
+    .clock-face::after {
+      content: '';
+      position: absolute;
+      inset: 18px;
+      border-radius: 50%;
+      border: 1px solid var(--lavender);
+      opacity: 0.3;
+    }
+
+    /* Hour marks */
+    .hour-marks {
+      position: absolute;
+      inset: 0;
+    }
+
+    .hour-mark {
+      position: absolute;
+      width: 3px;
+      height: 10px;
+      background: var(--ink);
+      left: 50%;
+      top: 12px;
+      transform-origin: 50% calc(min(420px, 92vw) / 2 - 12px);
+      margin-left: -1.5px;
+      border-radius: 1.5px;
+      opacity: 0.5;
+    }
+
+    .hour-mark.major {
+      width: 3px;
+      height: 16px;
+      opacity: 1;
+      margin-left: -1.5px;
+    }
+
+    .hour-label {
+      position: absolute;
+      font-family: 'Quicksand', sans-serif;
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: var(--ink);
+      opacity: 0.7;
+      left: 50%;
+      top: 32px;
+      transform-origin: 50% calc(min(420px, 92vw) / 2 - 32px);
+    }
+
+    /* Ritual nodes positioned around the clock */
+    .ritual-node {
+      position: absolute;
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: var(--paper);
+      border: 2.5px solid var(--cream-dark);
+      box-shadow: 0 3px 10px var(--shadow);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      z-index: 10;
+      transform: translate(-50%, -50%);
+    }
+
+    .ritual-node:hover {
+      transform: translate(-50%, -50%) scale(1.12);
+      box-shadow: 0 6px 18px var(--shadow);
+    }
+
+    .ritual-node .icon {
+      font-size: 1.5rem;
+      line-height: 1;
+    }
+
+    .ritual-node .label {
+      position: absolute;
+      bottom: -22px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-family: 'Caveat', cursive;
+      font-size: 0.75rem;
+      white-space: nowrap;
+      color: var(--ink);
+      opacity: 0.8;
+    }
+
+    .ritual-node .time-tag {
+      position: absolute;
+      top: -18px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-family: 'Quicksand', sans-serif;
+      font-size: 0.6rem;
+      font-weight: 700;
+      color: var(--gold);
+      white-space: nowrap;
+    }
+
+    /* Color coding for each ritual */
+    .ritual-node[data-ritual="morning"] { border-color: var(--coral); }
+    .ritual-node[data-ritual="lab"] { border-color: var(--lavender); }
+    .ritual-node[data-ritual="readmoo"] { border-color: var(--sage); }
+    .ritual-node[data-ritual="news"] { border-color: var(--sky); }
+    .ritual-node[data-ritual="fishoil"] { border-color: var(--gold); }
+    .ritual-node[data-ritual="notion"] { border-color: var(--peach); }
+    .ritual-node[data-ritual="heartbeat"] { border-color: var(--lavender); border-style: dashed; }
+
+    /* Center of clock */
+    .clock-center {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: var(--paper);
+      border: 2px solid var(--gold);
+      box-shadow: 0 2px 8px var(--shadow);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 20;
+    }
+
+    .clock-center .now-label {
+      font-family: 'Caveat', cursive;
+      font-size: 0.6rem;
+      color: var(--gold);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    .clock-center .now-time {
+      font-family: 'Quicksand', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--ink);
+    }
+
+    /* Current time hand */
+    .time-hand {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 3px;
+      height: calc(min(420px, 92vw) / 2 - 60px);
+      background: linear-gradient(to top, var(--coral), transparent);
+      transform-origin: 50% 100%;
+      border-radius: 2px;
+      z-index: 15;
+      transition: transform 1s cubic-bezier(0.4, 2.3, 0.3, 1);
+      pointer-events: none;
+    }
+
+    .time-hand::after {
+      content: '';
+      position: absolute;
+      bottom: -6px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--coral);
+    }
+
+    /* Light arc showing active period */
+    .light-arc {
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    /* Info panel */
+    .info-panel {
+      width: 100%;
+      max-width: 560px;
+      background: var(--paper);
+      border: 2px solid var(--cream-dark);
+      border-radius: 16px;
+      padding: 20px 24px;
+      box-shadow: 0 4px 16px var(--shadow);
+    }
+
+    .info-panel-title {
+      font-family: 'Caveat', cursive;
+      font-size: 1.3rem;
+      color: var(--ink);
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .ritual-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 12px;
+    }
+
+    .ritual-card {
+      background: var(--cream);
+      border-radius: 12px;
+      padding: 14px 16px;
+      border-left: 4px solid var(--coral);
+      cursor: pointer;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .ritual-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px var(--shadow);
+    }
+
+    .ritual-card .card-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+
+    .ritual-card .card-icon { font-size: 1.2rem; }
+
+    .ritual-card .card-time {
+      font-family: 'Quicksand', sans-serif;
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: var(--gold);
+      background: rgba(212, 168, 83, 0.12);
+      padding: 2px 8px;
+      border-radius: 20px;
+    }
+
+    .ritual-card .card-name {
+      font-family: 'Noto Serif TC', serif;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--ink);
+    }
+
+    .ritual-card .card-desc {
+      font-family: 'Quicksand', sans-serif;
+      font-size: 0.75rem;
+      color: var(--ink);
+      opacity: 0.65;
+      line-height: 1.4;
+    }
+
+    .ritual-card:nth-child(1) { border-color: var(--coral); }
+    .ritual-card:nth-child(2) { border-color: var(--lavender); }
+    .ritual-card:nth-child(3) { border-color: var(--sage); }
+    .ritual-card:nth-child(4) { border-color: var(--sky); }
+    .ritual-card:nth-child(5) { border-color: var(--gold); }
+    .ritual-card:nth-child(6) { border-color: var(--peach); }
+
+    /* Stats row */
+    .stats-row {
+      display: flex;
+      gap: 16px;
+      margin-top: 20px;
+      flex-wrap: wrap;
+    }
+
+    .stat-chip {
+      background: var(--cream);
+      border: 1.5px solid var(--cream-dark);
+      border-radius: 20px;
+      padding: 6px 14px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-family: 'Quicksand', sans-serif;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--ink);
+    }
+
+    .stat-chip .stat-icon { font-size: 0.9rem; }
+
+    /* Confetti */
+    #confetti-canvas {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    /* Floating paper decorations */
+    .paper-shape {
+      position: fixed;
+      pointer-events: none;
+      opacity: 0.06;
+      z-index: 0;
+    }
+
+    .paper-shape.triangle {
+      width: 0;
+      height: 0;
+      border-left: 30px solid transparent;
+      border-right: 30px solid transparent;
+      border-bottom: 52px solid var(--gold);
+    }
+
+    .paper-shape.circle {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--coral);
+    }
+
+    .paper-shape.diamond {
+      width: 28px;
+      height: 28px;
+      background: var(--sage);
+      transform: rotate(45deg);
+    }
+
+    /* Animation */
+    @keyframes float {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-8px) rotate(3deg); }
+    }
+
+    @keyframes pulse-ring {
+      0% { box-shadow: 0 0 0 0 rgba(212, 168, 83, 0.3); }
+      70% { box-shadow: 0 0 0 10px rgba(212, 168, 83, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(212, 168, 83, 0); }
+    }
+
+    .ritual-node.active {
+      animation: pulse-ring 1.5s ease-out;
+    }
+
+    /* Tooltip */
+    .tooltip {
+      position: fixed;
+      background: var(--ink);
+      color: var(--paper);
+      font-family: 'Quicksand', sans-serif;
+      font-size: 0.75rem;
+      padding: 6px 12px;
+      border-radius: 8px;
+      pointer-events: none;
+      z-index: 100;
+      opacity: 0;
+      transition: opacity 0.2s;
+      max-width: 200px;
+      line-height: 1.4;
+    }
+
+    .tooltip.visible { opacity: 1; }
+
+    /* Responsive */
+    @media (max-width: 480px) {
+      .ritual-node { width: 44px; height: 44px; }
+      .ritual-node .icon { font-size: 1.1rem; }
+      .ritual-node .label { font-size: 0.6rem; bottom: -18px; }
+      .ritual-node .time-tag { font-size: 0.5rem; }
+      .ritual-cards { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Floating paper decorations -->
+<div class="paper-shape triangle" style="top: 8%; left: 5%; animation: float 6s ease-in-out infinite;"></div>
+<div class="paper-shape circle" style="top: 15%; right: 8%; animation: float 8s ease-in-out infinite 1s;"></div>
+<div class="paper-shape diamond" style="bottom: 20%; left: 4%; animation: float 7s ease-in-out infinite 2s;"></div>
+<div class="paper-shape triangle" style="bottom: 30%; right: 3%; animation: float 9s ease-in-out infinite 0.5s; border-bottom-color: var(--coral);"></div>
+<div class="paper-shape circle" style="top: 50%; right: 6%; animation: float 7s ease-in-out infinite 3s; width: 25px; height: 25px; background: var(--lavender);"></div>
+
+<header>
+  <div class="header-title">每日儀式紙雕鐘</div>
+  <div class="header-date">Daily Ritual Clock · 2026-08-25</div>
+</header>
+
+<div class="clock-container">
+  <div class="clock-wrapper">
+    <div class="clock-face" id="clockFace">
+      <!-- Hour marks -->
+      <div class="hour-marks" id="hourMarks"></div>
+
+      <!-- Light arc SVG overlay -->
+      <svg class="light-arc" viewBox="0 0 420 420" style="position:absolute;inset:0;width:100%;height:100%;">
+        <defs>
+          <linearGradient id="dayArc" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#7EB8DA" stop-opacity="0.15"/>
+            <stop offset="100%" stop-color="#F2B880" stop-opacity="0.15"/>
+          </linearGradient>
+        </defs>
+      </svg>
+
+      <!-- Ritual Nodes -->
+      <div class="ritual-node" data-ritual="morning" data-angle="0" id="node-morning">
+        <span class="icon">🌅</span>
+        <span class="time-tag">06:00</span>
+        <span class="label">晨報</span>
+      </div>
+      <div class="ritual-node" data-ritual="lab" data-angle="18" id="node-lab">
+        <span class="icon">🔬</span>
+        <span class="time-tag">03:30</span>
+        <span class="label">Daily Lab</span>
+      </div>
+      <div class="ritual-node" data-ritual="readmoo" data-angle="60" id="node-readmoo">
+        <span class="icon">📚</span>
+        <span class="time-tag">08:00</span>
+        <span class="label">Readmoo</span>
+      </div>
+      <div class="ritual-node" data-ritual="news" data-angle="100" id="node-news">
+        <span class="icon">📡</span>
+        <span class="time-tag">09:30</span>
+        <span class="label">科技新聞</span>
+      </div>
+      <div class="ritual-node" data-ritual="fishoil" data-angle="160" id="node-fishoil">
+        <span class="icon">🐬</span>
+        <span class="time-tag">13:00</span>
+        <span class="label">魚油督導</span>
+      </div>
+      <div class="ritual-node" data-ritual="notion" data-angle="215" id="node-notion">
+        <span class="icon">🔄</span>
+        <span class="time-tag">17:00</span>
+        <span class="label">Notion Sync</span>
+      </div>
+      <div class="ritual-node" data-ritual="heartbeat" data-angle="280" id="node-heartbeat">
+        <span class="icon">💓</span>
+        <span class="time-tag">30min</span>
+        <span class="label">Heartbeat</span>
+      </div>
+
+      <!-- Time hand -->
+      <div class="time-hand" id="timeHand"></div>
+
+      <!-- Center -->
+      <div class="clock-center">
+        <div class="now-label">現在</div>
+        <div class="now-time" id="nowTime">--:--</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Info Panel -->
+  <div class="info-panel">
+    <div class="info-panel-title">
+      <span>✨</span> Chung 的每日儀式
+    </div>
+    <div class="ritual-cards">
+      <div class="ritual-card" data-ritual="lab">
+        <div class="card-header">
+          <span class="card-icon">🔬</span>
+          <span class="card-name">每日 Lab 建構</span>
+          <span class="card-time">03:30</span>
+        </div>
+        <div class="card-desc">凌晨創意工作時段。讀取記憶 → 設計 → 建造 → 記錄LOG，巫師時光。</div>
+      </div>
+      <div class="ritual-card" data-ritual="morning">
+        <div class="card-header">
+          <span class="card-icon">🌅</span>
+          <span class="card-name">晨間快報</span>
+          <span class="card-time">06:00</span>
+        </div>
+        <div class="card-desc">干支命理、塔羅、梅花易數、天氣預報、國際要聞、雙魚座運勢。</div>
+      </div>
+      <div class="ritual-card" data-ritual="readmoo">
+        <div class="card-header">
+          <span class="card-icon">📚</span>
+          <span class="card-name">Readmoo 特惠</span>
+          <span class="card-time">08:00</span>
+        </div>
+        <div class="card-desc">每日一本電子書 NT$99 推薦。涵蓋小說、工具、散文、推理各種領域。</div>
+      </div>
+      <div class="ritual-card" data-ritual="news">
+        <div class="card-header">
+          <span class="card-icon">📡</span>
+          <span class="card-name">科技新聞摘要</span>
+          <span class="card-time">09:30</span>
+        </div>
+        <div class="card-desc">RSS + Web 抓取，正體中文翻譯。精選 8 條 AI/LLM、Crypto、前沿科技。</div>
+      </div>
+      <div class="ritual-card" data-ritual="fishoil">
+        <div class="card-header">
+          <span class="card-icon">🐬</span>
+          <span class="card-name">魚油督導劇場</span>
+          <span class="card-time">13:00</span>
+        </div>
+        <div class="card-desc">🐬 海豚督導 vs 🦈 拖延鯊的荒謬劇。午餐後魚油提醒，細胞膜閃閃發亮。</div>
+      </div>
+      <div class="ritual-card" data-ritual="notion">
+        <div class="card-header">
+          <span class="card-icon">🔄</span>
+          <span class="card-name">Notion Sync</span>
+          <span class="card-time">17:00</span>
+        </div>
+        <div class="card-desc">接送機表、外國接送機表自動同步到 Calendar。IFE 2026 VPS 部署。</div>
+      </div>
+    </div>
+
+    <div class="stats-row">
+      <div class="stat-chip">
+        <span class="stat-icon">⏰</span>
+        <span id="stat-rituals">7 項儀式</span>
+      </div>
+      <div class="stat-chip">
+        <span class="stat-icon">📅</span>
+        <span>每天重複</span>
+      </div>
+      <div class="stat-chip">
+        <span class="stat-icon">💓</span>
+        <span>每 30 分鐘心跳</span>
+      </div>
+      <div class="stat-chip">
+        <span class="stat-icon">🌙</span>
+        <span>巫師時光 03:30</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Tooltip -->
+<div class="tooltip" id="tooltip"></div>
+
+<!-- Confetti canvas -->
+<canvas id="confetti-canvas"></canvas>
+
+<script>
+  // === Setup clock ===
+  const clockFace = document.getElementById('clockFace');
+  const hourMarks = document.getElementById('hourMarks');
+  const timeHand = document.getElementById('timeHand');
+  const nowTimeEl = document.getElementById('nowTime');
+  const tooltip = document.getElementById('tooltip');
+
+  // Clock size
+  const clockSize = Math.min(420, window.innerWidth * 0.92);
+  const radius = clockSize / 2;
+
+  // Generate hour marks
+  for (let h = 0; h < 24; h++) {
+    const angle = (h / 24) * 360 - 90;
+    const isMajor = h % 6 === 0;
+    const mark = document.createElement('div');
+    mark.className = 'hour-mark' + (isMajor ? ' major' : '');
+    mark.style.transform = `rotate(${angle}deg)`;
+    hourMarks.appendChild(mark);
+
+    if (isMajor) {
+      const label = document.createElement('div');
+      label.className = 'hour-label';
+      label.style.transform = `rotate(${angle}deg) translateX(-50%)`;
+      label.style.left = '50%';
+      label.textContent = h.toString().padStart(2, '0');
+      label.style.transformOrigin = `50% ${radius - 32}px`;
+      hourMarks.appendChild(label);
+    }
+  }
+
+  // Position ritual nodes
+  const rituals = [
+    { id: 'morning', hour: 6, icon: '🌅' },
+    { id: 'lab', hour: 3.5, icon: '🔬' },
+    { id: 'readmoo', hour: 8, icon: '📚' },
+    { id: 'news', hour: 9.5, icon: '📡' },
+    { id: 'fishoil', hour: 13, icon: '🐬' },
+    { id: 'notion', hour: 17, icon: '🔄' },
+    { id: 'heartbeat', hour: 22, icon: '💓' },
+  ];
+
+  function positionNodes() {
+    const size = Math.min(420, window.innerWidth * 0.92);
+    const r = size / 2 - 36;
+    const cx = size / 2;
+    const cy = size / 2;
+
+    rituals.forEach(r => {
+      const node = document.getElementById('node-' + r.id);
+      if (!node) return;
+      const angleRad = (r.hour / 24) * 360 * Math.PI / 180 - Math.PI / 2;
+      const x = cx + r * Math.cos(angleRad);
+      const y = cy + r * Math.sin(angleRad);
+      node.style.left = x + 'px';
+      node.style.top = y + 'px';
+    });
+  }
+
+  positionNodes();
+  window.addEventListener('resize', positionNodes);
+
+  // Update time
+  function updateTime() {
+    const now = new Date();
+    const h = now.getHours();
+    const m = now.getMinutes();
+    const s = now.getSeconds();
+
+    nowTimeEl.textContent = h.toString().padStart(2, '0') + ':' + m.toString().padStart(2, '0');
+
+    // Time hand points to current hour
+    const angle = ((h + m / 60) / 24) * 360 - 90;
+    timeHand.style.transform = `translate(-50%, -100%) rotate(${angle}deg)`;
+
+    // Highlight active ritual
+    const currentHour = h + m / 60;
+    document.querySelectorAll('.ritual-node').forEach(n => {
+      n.classList.remove('active');
+    });
+
+    rituals.forEach(r => {
+      const diff = Math.abs(currentHour - r.hour);
+      const node = document.getElementById('node-' + r.id);
+      if (node && diff < 0.75) {
+        node.classList.add('active');
+      }
+    });
+  }
+
+  updateTime();
+  setInterval(updateTime, 1000);
+
+  // Tooltip for ritual nodes
+  const ritualDescriptions = {
+    lab: '凌晨 3:30 的巫師時光。讀取記憶 → 設計 → 建造 → LOG 記錄。',
+    morning: '06:00 晨間快報：干支命理、塔羅、梅花易數、天氣、國際要聞、雙魚座。',
+    readmoo: '08:00 Readmoo 每日 NT$99 特價書推薦。',
+    news: '09:30 科技新聞摘要：RSS + Web，AI/LLM、Crypto、前沿科技精選 8 條。',
+    fishoil: '13:00 魚油督導劇場：🐬海豚督導 vs 🦈拖延鯊的荒謬劇。',
+    notion: '17:00 Notion 接送機表同步到 Calendar，IFE 2026 VPS 部署。',
+    heartbeat: '每 30 分鐘心跳回應「Here.」，系統守護無聲進行。',
+  };
+
+  document.querySelectorAll('.ritual-node').forEach(node => {
+    node.addEventListener('mouseenter', e => {
+      const id = node.dataset.ritual;
+      tooltip.textContent = ritualDescriptions[id] || '';
+      tooltip.classList.add('visible');
+    });
+
+    node.addEventListener('mousemove', e => {
+      tooltip.style.left = (e.clientX + 12) + 'px';
+      tooltip.style.top = (e.clientY - 8) + 'px';
+    });
+
+    node.addEventListener('mouseleave', () => {
+      tooltip.classList.remove('visible');
+    });
+
+    node.addEventListener('click', () => {
+      triggerConfetti();
+      node.classList.add('active');
+    });
+  });
+
+  document.querySelectorAll('.ritual-card').forEach(card => {
+    card.addEventListener('click', () => {
+      triggerConfetti();
+    });
+  });
+
+  // === Confetti ===
+  const confettiCanvas = document.getElementById('confetti-canvas');
+  const ctx = confettiCanvas.getContext('2d');
+  let confettiPieces = [];
+
+  function resizeCanvas() {
+    confettiCanvas.width = window.innerWidth;
+    confettiCanvas.height = window.innerHeight;
+  }
+  resizeCanvas();
+  window.addEventListener('resize', resizeCanvas);
+
+  const CONFETTI_COLORS = ['#E07A5F', '#D4A853', '#81B29A', '#9B8FD9', '#F2B880', '#7EB8DA', '#FDF6EC'];
+
+  function createConfettiPiece(x, y) {
+    const angle = Math.random() * Math.PI * 2;
+    const speed = 2 + Math.random() * 4;
+    return {
+      x, y,
+      vx: Math.cos(angle) * speed,
+      vy: Math.sin(angle) * speed - 2,
+      size: 4 + Math.random() * 6,
+      color: CONFETTI_COLORS[Math.floor(Math.random() * CONFETTI_COLORS.length)],
+      rotation: Math.random() * 360,
+      rotationSpeed: (Math.random() - 0.5) * 8,
+      shape: Math.random() > 0.5 ? 'rect' : 'circle',
+      opacity: 1,
+      gravity: 0.12,
+    };
+  }
+
+  function triggerConfetti(x, y) {
+    x = x || window.innerWidth / 2 + (Math.random() - 0.5) * 200;
+    y = y || window.innerHeight / 2;
+    for (let i = 0; i < 60; i++) {
+      confettiPieces.push(createConfettiPiece(x, y));
+    }
+    animateConfetti();
+  }
+
+  function animateConfetti() {
+    if (confettiPieces.length === 0) return;
+
+    ctx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+
+    confettiPieces = confettiPieces.filter(p => p.opacity > 0.02);
+
+    confettiPieces.forEach(p => {
+      p.x += p.vx;
+      p.y += p.vy;
+      p.vy += p.gravity;
+      p.rotation += p.rotationSpeed;
+      p.opacity -= 0.012;
+      p.vx *= 0.99;
+
+      ctx.save();
+      ctx.globalAlpha = p.opacity;
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.rotation * Math.PI / 180);
+      ctx.fillStyle = p.color;
+
+      if (p.shape === 'rect') {
+        ctx.fillRect(-p.size / 2, -p.size / 4, p.size, p.size / 2);
+      } else {
+        ctx.beginPath();
+        ctx.arc(0, 0, p.size / 2, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.restore();
+    });
+
+    if (confettiPieces.length > 0) {
+      requestAnimationFrame(animateConfetti);
+    }
+  }
+
+  // Confetti on click anywhere
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('.ritual-node') && !e.target.closest('.ritual-card')) {
+      triggerConfetti(e.clientX, e.clientY);
+    }
+  });
+
+  // === LocalStorage stats ===
+  const today = '2026-08-25';
+  const stats = JSON.parse(localStorage.getItem('ritual-clock-stats') || '{}');
+  if (!stats[today]) stats[today] = { visits: 0, clicks: 0 };
+  stats[today].visits++;
+  localStorage.setItem('ritual-clock-stats', JSON.stringify(stats));
+</script>
+
+</body>
+</html>
