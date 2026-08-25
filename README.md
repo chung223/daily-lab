@@ -1,14 +1,14 @@
 # Daily Lab
 
-Total entries: 156
+Total entries: 157
 
 ## Featured (Latest 3)
+
+- **2026-08-26** [🫧 系統小窩 · System Pet](2026-08-26/README.md) — System Pet × Cozy Interaction 溫馨的虛擬寵物系統小窩，用純 HTML + CSS + JS 打造的可愛互動體驗。照顧你的系統寵物，餵食、玩耍、睡眠、清潔！
 
 - **2026-08-25** [🗻 每日儀式紙雕鐘 · Daily Ritual Clock](2026-08-25/README.md) — Paper Carving × Ritual Clock 以紙雕藝術風格呈現的每日儀式時間視覺化工具，融合精美時鐘與儀式追蹤功能。
 
 - **2026-08-24** [📰 晨間快報 · Morning Express](2026-08-24/README.md) — Newspaper Halftone × Editorial Typography 新聞報紙風格的每日晨間資訊平台，整合塔羅指引、水晶能量、梅花易數、今日天氣與國際要聞，為新的一天提供全方位的開始。
-
-- **2026-08-23** [✨ Heartbeat Cosmos · 心跳宇宙](2026-08-23/README.md) — Bright Sky × Constellation 明亮天空 × 星座圖風格的系統守護星圖。將 VPS 深夜健檢的真實數據（13站/14次輪詢/12正常/1緊急）轉化為美麗的宇宙星空視覺化，展示系統在深夜守護下的穩定與安心。
 
 - **2026-08-16** [✨ 褶皺深處的光斑 (Light Speckles in the Folds)](2026-08-16/README.md) — Washi Paper × Folded Poetry 和紙 × 摺疊詩意的語言褶皺展示器。4張仿紙張質感的摺疊卡片（惦/木漏れ日/Saoirse/toska），每張展示一個無法翻譯的詞，點擊展開看翻譯失去了什麼。
 
@@ -104,6 +104,7 @@ Total entries: 156
 
 ### interactive
 
+- 2026-08-26 — [🫧 系統小窩 · System Pet](2026-08-26/README.md)
 - 2026-08-24 — [📰 晨間快報 · Morning Express](2026-08-24/README.md)
 - 2026-08-18 — [💻 Lab Build Terminal @ 03:30](2026-08-18/README.md)
 - 2026-08-15 — [🧭 方向感是動詞 · 哲學指南針](2026-08-15/README.md)
