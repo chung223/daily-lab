@@ -20,3 +20,4 @@ node_modules/
 
 # Jekyll (disable for SPA)
 .nojekyll
+node_modules/
