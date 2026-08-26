@@ -4,6 +4,7 @@ Total entries: 157
 
 ## Featured (Latest 3)
 
+- **2026-08-26** [📊 磁碟空間分析器](2026-08-26-disk-analyzer/README.md) — 磁碟空間分析腳本，找出最大消耗者，直接緩解 96% 滿緊急狀態。
 - **2026-08-26** [🫧 系統小窩 · System Pet](2026-08-26/README.md) — System Pet × Cozy Interaction 溫馨的虛擬寵物系統小窩，用純 HTML + CSS + JS 打造的可愛互動體驗。照顧你的系統寵物，餵食、玩耍、睡眠、清潔！
 
 - **2026-08-25** [🗻 每日儀式紙雕鐘 · Daily Ritual Clock](2026-08-25/README.md) — Paper Carving × Ritual Clock 以紙雕藝術風格呈現的每日儀式時間視覺化工具，融合精美時鐘與儀式追蹤功能。
