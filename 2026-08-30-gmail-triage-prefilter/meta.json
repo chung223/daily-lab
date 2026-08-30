@@ -1,0 +1,24 @@
+{
+  "name": "Gmail Triage Prefilter",
+  "version": "1.0.0",
+  "date": "2026-08-30",
+  "slug": "gmail-triage-prefilter",
+  "category": "automation",
+  "tags": ["gmail", "triage", "filter", "automation", "chung-work"],
+  "author": "玉子燒",
+  "description": "Gmail 外文來信 triage 前處理器，用 heuristic 規則先行過濾偽陽，減少 LLM API 呼叫",
+  "pain_point": "Gmail triage 每日掃描大量未讀，多數為偽陽（行銷信/平台通知），每封跑 LLM 代價高。8/27掃40封命中3封、8/29掃201封候選5封全排除。",
+  "evidence_sessions": [
+    "2026-08-27 recap: Gmail triage 晨間命中3封（Addatu/Marjaana/Gumarur）",
+    "2026-08-29 recap: Gmail triage 晚間掃201封，候選5封全排除（10times/Zep x2/翁梨娟/Umaru）"
+  ],
+  "validation": {
+    "test_cases": 7,
+    "passed": 7,
+    "test_type": "retrospective_real_cases"
+  },
+  "files": [
+    "gmail_prefilter.py",
+    "README.md"
+  ]
+}
