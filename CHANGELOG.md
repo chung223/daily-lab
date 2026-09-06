@@ -8,6 +8,7 @@ Changes since 2026-02-01:
 
 - `42666ec` docs: update changelog 2026-08-24 — *chung0223* (2026-08-24)
 - `5bc482f` Daily Lab 2026-08-24: 📰 晨間快報 · Morning Express — *chung0223* (2026-08-24)
+- `NEW` Daily Lab 2026-09-06: 🔍 IFYE 資料一致性稽核工具 — *chung0223* (2026-09-06)
 - `NEW` Daily Lab 2026-08-30: 🔍 Gmail Triage Prefilter — *chung0223* (2026-08-30)
 - `NEW` Daily Lab 2026-08-26: 🫧 系統小窩 · System Pet — *chung0223* (2026-08-26)
 - `e67b301` docs: update changelog 2026-08-24 — *chung0223* (2026-08-24)

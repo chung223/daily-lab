@@ -4,6 +4,7 @@ Total entries: 157
 
 ## Featured (Latest 3)
 
+- **2026-09-06** [🔍 IFYE 資料一致性稽核工具](2026-09-06-ifye-data-audit/README.md) — 檢查 Notion 來源與 JSON 的一致性，發現 9 筆記錄未寫入、rsync 部署 Permission denied。IFYE sync 每日跑 4 次但輸出不變，缺乏即時稽核。
 - **2026-08-30** [🔍 Gmail Triage Prefilter](2026-08-30-gmail-triage-prefilter/README.md) — 用 heuristic 規則在 LLM triage 之前先行過濾 Gmail 偽陽，減少 API 呼叫。基於 8/27~29 實戰數據（掃40封命中3封、掃201封候選5封全排除）。
 - **2026-08-26** [🫧 系統小窩 · System Pet](2026-08-26/README.md) — System Pet × Cozy Interaction 溫馨的虛擬寵物系統小窩，用純 HTML + CSS + JS 打造的可愛互動體驗。照顧你的系統寵物，餵食、玩耍、睡眠、清潔！
 
