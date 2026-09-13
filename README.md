@@ -1,8 +1,10 @@
 # Daily Lab
 
-Total entries: 157
+Total entries: 158
 
 ## Featured (Latest 3)
+
+- **2026-09-13** [🔍 IFYE Sync Gap Finder](2026-09-13-ifye-sync-gap-finder/README.md) — 驗證 IFYE Notion → JSON 同步缺口。實際執行發現 24 筆缺口（relation空白 18 + 名稱比對失敗 6）。揪出 sync 腳本漏掉 Sven Bucheli、Mr.Phoobet 等人的關鍵問題。
 
 - **2026-09-06** [🔍 IFYE 資料一致性稽核工具](2026-09-06-ifye-data-audit/README.md) — 檢查 Notion 來源與 JSON 的一致性，發現 9 筆記錄未寫入、rsync 部署 Permission denied。IFYE sync 每日跑 4 次但輸出不變，缺乏即時稽核。
 - **2026-08-30** [🔍 Gmail Triage Prefilter](2026-08-30-gmail-triage-prefilter/README.md) — 用 heuristic 規則在 LLM triage 之前先行過濾 Gmail 偽陽，減少 API 呼叫。基於 8/27~29 實戰數據（掃40封命中3封、掃201封候選5封全排除）。
