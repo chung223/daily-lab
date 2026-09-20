@@ -1,0 +1,10 @@
+{
+  "name": "edmom-captcha-solver",
+  "date": "2026-09-20",
+  "slug": "edmom-captcha-solver",
+  "problem": "EDMoms 公文系統驗證碼 OCR 失敗導致全日公文同步中斷（12+次失敗）",
+  "solution": "MLX OCR + Tesseract 雙引擎驗證碼破解，透過 Playwright CDP 截圖整合進現有流程",
+  "files": ["edmom_captcha_solve.py", "README.md", "meta.json"],
+  "status": "verified_syntax_and_imports",
+  "github_path": "daily-lab/2026-09-20-edmom-captcha-solver"
+}

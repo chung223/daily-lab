@@ -1,11 +1,12 @@
 # Daily Lab Changelog
 
-*Updated: 2026-09-13 08:15*
+*Updated: 2026-09-20 08:15*
 
 # Changelog — daily-lab
 
 Changes since 2026-02-01:
 
+- `NEW` Daily Lab 2026-09-20: 🔓 EDMoms 驗證碼破解器 — EDMoms 登入驗證碼 OCR 失敗問題解決（MLX OCR + Tesseract 雙引擎） — *chung0223* (2026-09-20)
 - `NEW` Daily Lab 2026-09-13: 🔍 IFYE Sync Gap Finder — 驗證 IFYE Notion → JSON 同步缺口，發現 24 筆缺口 — *chung0223* (2026-09-13)
 - `42666ec` docs: update changelog 2026-08-24 — *chung0223* (2026-08-24)
 - `5bc482f` Daily Lab 2026-08-24: 📰 晨間快報 · Morning Express — *chung0223* (2026-08-24)
