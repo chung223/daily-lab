@@ -1,0 +1,12 @@
+{
+  "name": "Cron Alive Checker",
+  "date": "2026-10-04",
+  "slug": "cron-alive-checker",
+  "category": "system-maintenance",
+  "problem": "cron 任務引用不存在的腳本（discord_send.py 等），導致所有推播靜默失效，無從察覺",
+  "solution": "一次性腳本，檢查所有已知依賴是否存在，並可選發送 Discord 報告",
+  "verified": true,
+  "test_output": "7 項失效（2 critical, 5 high），Discord webhook 未設定",
+  "author": "玉子燒",
+  "tags": ["cron", "monitoring", "discord", "system-health"]
+}

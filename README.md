@@ -1,0 +1,12 @@
+# Daily Lab
+
+每日 Workbench 成品存放處。每個子目錄為獨立的專案工具。
+
+## 目錄
+
+- `2026-09-27-edmoms-ifye-diagnosis/` — EDMoms + IFYE 系統診斷工具（靜態分析 + log 分析，開出 3 個改善提案）
+- `2026-10-04-cron-alive-checker/` — cron 依賴腳本存活檢查工具（檢測 7 項失效，2 critical, 5 high）
+
+## 維護說明
+
+所有成品從 `Lab/YYYY-MM-DD-主題slug/` 複製過來。請勿直接修改這裡的檔案，應在 `Lab/` 實驗，完成並驗證後再複製過來。
