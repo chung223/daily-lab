@@ -6,6 +6,7 @@
 
 - `2026-09-27-edmoms-ifye-diagnosis/` — EDMoms + IFYE 系統診斷工具（靜態分析 + log 分析，開出 3 個改善提案）
 - `2026-10-04-cron-alive-checker/` — cron 依賴腳本存活檢查工具（檢測 7 項失效，2 critical, 5 high）
+- `2026-10-11-discord-send-shim/` — `discord_send.py` Shim（填補從未建立的腳本，讓所有 Discord 推播恢復運作）
 
 ## 維護說明
 

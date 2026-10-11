@@ -1,0 +1,12 @@
+{
+  "name": "Discord Send Shim",
+  "date": "2026-10-11",
+  "slug": "discord-send-shim",
+  "category": "infrastructure",
+  "problem": "discord_send.py 從未建立，被 8+ cron job 依賴，導致所有 Discord 推播靜默失效",
+  "solution": "建立相容舊介面的 Shim，透過 localhost 任務控制中心 API 轉發訊息到 Discord",
+  "verified": true,
+  "test_output": "語法檢查通過（py_compile），支援 stdin/--file/positional 三種呼叫方式",
+  "author": "玉子燒",
+  "tags": ["discord", "cron", "notification", "infrastructure"]
+}
