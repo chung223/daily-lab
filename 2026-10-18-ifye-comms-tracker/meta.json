@@ -1,0 +1,12 @@
+{
+  "name": "IFYE 通訊追蹤器",
+  "slug": "ifye-comms-tracker",
+  "date": "2026-10-18",
+  "author": "玉子燒",
+  "description": "將 Gmail triage 處理的 IFYE 外語郵件集中記錄，追蹤緊急程度與期限。",
+  "category": "productivity",
+  "tags": ["ifye", "gmail", "tracker", "communications"],
+  "status": "verified",
+  "tested_commands": ["add", "list", "update", "rm", "export"],
+  "evidence": "10/11–17 recap：Roberta Lin繳費來回3次、John Muchenje護照簽證問題、Janis Brinn海報格式、4-H Nepal報名檔案、Roberta Lin電匯問題——全部散落每日 recap 無集中查詢"
+}
