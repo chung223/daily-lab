@@ -1,0 +1,22 @@
+{
+  "name": "Discord Safe Send",
+  "slug": "discord-safe-send",
+  "date": "2026-10-25",
+  "author": "玉子燒",
+  "description": "可驗證、去重的 Discord 發送工具。直接走 REST API，送出後回讀確認落地，內容雜湊去重防止重複推播。",
+  "category": "productivity",
+  "tags": ["discord", "notification", "dedup", "verification", "cron"],
+  "status": "verified",
+  "entrypoint": "discord_safe_send.py",
+  "tested_commands": ["send", "duplicate-rejection", "integration-replay", "prune-tests", "delete-id", "dry-run", "too-long"],
+  "evidence": "10/22、10/23、10/25 連續三天 Discord 重複推播事故：同一則訊息分別送出 2、2、4 則，另有測試訊息殘留，全部靠人工呼叫 Discord REST API 逐一刪除。根因為 discord_send.py 的 fallback 只看 stdout 含 'sent' 就回報成功，gateway(127.0.0.1:18789)與任務控制中心(127.0.0.1:18792)掛掉時仍回 True，上游誤以為未送出而重送；且 gateway 掛掉時無法回讀驗證。",
+  "verification": {
+    "send_verified": true,
+    "duplicate_blocked": true,
+    "channel_count_after_retry": 1,
+    "prune_tests_deleted": 3,
+    "too_long_blocked": true,
+    "dry_run_no_send": true,
+    "bug_found_and_fixed": "第一版 ledger 漏存 sha256 欄位導致去重失配，已修正並重新驗證"
+  }
+}
