@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>週間時刻表 | Weekly Departure Board</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg-dark: #0D1117;
+      --bg-card: #161B22;
+      --lcd-green: #39D353;
+      --lcd-green-dim: #1B4D2E;
+      --lcd-amber: #F0B429;
+      --lcd-red: #F85149;
+      --lcd-blue: #58A6FF;
+      --text-light: #E6EDF3;
+      --text-dim: #7D8590;
+      --border: #30363D;
+    }
+
+    body {
+      font-family: 'IBM Plex Mono', monospace;
+      background: var(--bg-dark);
+      min-height: 100vh;
+      color: var(--text-light);
+      overflow-x: hidden;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    /* Header */
+    .header {
+      text-align: center;
+      padding: 30px 0 20px;
+      border-bottom: 2px solid var(--border);
+      margin-bottom: 30px;
+    }
+
+    .header-subtitle {
+      font-size: 12px;
+      color: var(--lcd-amber);
+      letter-spacing: 8px;
+      margin-bottom: 8px;
+    }
+
+    .header-title {
+      font-size: 36px;
+      font-weight: 700;
+      color: var(--lcd-green);
+      text-shadow: 0 0 20px var(--lcd-green-dim);
+      letter-spacing: 4px;
+    }
+
+    .header-time {
+      font-size: 14px;
+      color: var(--text-dim);
+      margin-top: 10px;
+    }
+
+    /* Status Bar */
+    .status-bar {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      padding: 12px 20px;
+      background: var(--bg-card);
+      border-radius: 8px;
+      margin-bottom: 30px;
+      border: 1px solid var(--border);
+    }
+
+    .status-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+
+    .status-dot.green { background: var(--lcd-green); }
+    .status-dot.amber { background: var(--lcd-amber); }
+    .status-dot.blue { background: var(--lcd-blue); }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    /* Board Container */
+    .board {
+      background: var(--bg-card);
+      border-radius: 12px;
+      border: 2px solid var(--border);
+      overflow: hidden;
+      margin-bottom: 30px;
+    }
+
+    .board-header {
+      background: linear-gradient(90deg, var(--lcd-green-dim), transparent);
+      padding: 15px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .board-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--lcd-green);
+      letter-spacing: 2px;
+    }
+
+    .board-date {
+      font-size: 12px;
+      color: var(--text-dim);
+    }
+
+    .board-body {
+      padding: 0;
+    }
+
+    /* Train Row */
+    .train-row {
+      display: grid;
+      grid-template-columns: 100px 80px 1fr 120px 100px;
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+      transition: all 0.3s ease;
+      cursor: pointer;
+      align-items: center;
+    }
+
+    .train-row:last-child {
+      border-bottom: none;
+    }
+
+    .train-row:hover {
+      background: rgba(57, 211, 83, 0.1);
+    }
+
+    .train-row.departed {
+      opacity: 0.5;
+    }
+
+    .train-row.departed:hover {
+      background: rgba(125, 133, 144, 0.1);
+    }
+
+    .train-row.current {
+      background: rgba(57, 211, 83, 0.15);
+      border-left: 3px solid var(--lcd-green);
+    }
+
+    .train-number {
+      font-size: 11px;
+      color: var(--text-dim);
+      margin-bottom: 4px;
+    }
+
+    .train-day {
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .train-day.chinese {
+      font-family: 'Noto Sans TC', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .train-time {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--lcd-green);
+      letter-spacing: 2px;
+    }
+
+    .train-time.arrived {
+      color: var(--text-dim);
+      font-size: 14px;
+    }
+
+    .train-destination {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .destination-main {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-light);
+      font-family: 'Noto Sans TC', sans-serif;
+    }
+
+    .destination-sub {
+      font-size: 11px;
+      color: var(--text-dim);
+    }
+
+    .train-status {
+      text-align: right;
+    }
+
+    .status-badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 1px;
+    }
+
+    .status-badge.departed {
+      background: rgba(125, 133, 144, 0.2);
+      color: var(--text-dim);
+    }
+
+    .status-badge.arrived {
+      background: rgba(57, 211, 83, 0.2);
+      color: var(--lcd-green);
+    }
+
+    .status-badge.current {
+      background: rgba(240, 180, 41, 0.2);
+      color: var(--lcd-amber);
+      animation: pulse 1s infinite;
+    }
+
+    .status-badge.scheduled {
+      background: rgba(88, 166, 255, 0.2);
+      color: var(--lcd-blue);
+    }
+
+    .train-countdown {
+      text-align: right;
+      font-size: 12px;
+      color: var(--text-dim);
+    }
+
+    .countdown-value {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--lcd-amber);
+    }
+
+    /* WAIC Section */
+    .waic-section {
+      background: var(--bg-card);
+      border-radius: 12px;
+      border: 2px solid var(--border);
+      padding: 25px;
+      margin-bottom: 30px;
+    }
+
+    .waic-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .waic-badge {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 1px;
+    }
+
+    .waic-title {
+      font-family: 'Noto Sans TC', sans-serif;
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--text-light);
+    }
+
+    .waic-timeline {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 15px;
+    }
+
+    .waic-day {
+      background: rgba(102, 126, 234, 0.1);
+      border: 1px solid rgba(102, 126, 234, 0.3);
+      border-radius: 8px;
+      padding: 15px;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+
+    .waic-day:hover {
+      background: rgba(102, 126, 234, 0.2);
+      transform: translateY(-2px);
+    }
+
+    .waic-day-date {
+      font-size: 11px;
+      color: var(--text-dim);
+      margin-bottom: 6px;
+    }
+
+    .waic-day-name {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--lcd-amber);
+      margin-bottom: 4px;
+    }
+
+    .waic-day-status {
+      font-size: 11px;
+      color: var(--lcd-green);
+    }
+
+    .waic-day.future {
+      opacity: 0.5;
+    }
+
+    .waic-day.future .waic-day-status {
+      color: var(--text-dim);
+    }
+
+    /* Input Section */
+    .input-section {
+      background: var(--bg-card);
+      border-radius: 12px;
+      border: 2px solid var(--border);
+      padding: 25px;
+      margin-bottom: 30px;
+    }
+
+    .input-header {
+      font-family: 'Noto Sans TC', sans-serif;
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--lcd-amber);
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .input-row {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+
+    .input-field {
+      flex: 1;
+      background: var(--bg-dark);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 12px 15px;
+      color: var(--text-light);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 14px;
+      transition: border-color 0.3s;
+    }
+
+    .input-field:focus {
+      outline: none;
+      border-color: var(--lcd-green);
+    }
+
+    .input-field::placeholder {
+      color: var(--text-dim);
+    }
+
+    .btn {
+      background: var(--lcd-green-dim);
+      color: var(--lcd-green);
+      border: 1px solid var(--lcd-green);
+      border-radius: 6px;
+      padding: 12px 24px;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .btn:hover {
+      background: var(--lcd-green);
+      color: var(--bg-dark);
+    }
+
+    /* Intent List */
+    .intent-list {
+      margin-top: 20px;
+    }
+
+    .intent-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 15px;
+      background: var(--bg-dark);
+      border-radius: 6px;
+      margin-bottom: 8px;
+      border: 1px solid var(--border);
+    }
+
+    .intent-checkbox {
+      width: 20px;
+      height: 20px;
+      border: 2px solid var(--lcd-green);
+      border-radius: 4px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s;
+    }
+
+    .intent-checkbox:hover {
+      background: rgba(57, 211, 83, 0.2);
+    }
+
+    .intent-checkbox.checked {
+      background: var(--lcd-green);
+    }
+
+    .intent-checkbox.checked::after {
+      content: '✓';
+      color: var(--bg-dark);
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .intent-text {
+      flex: 1;
+      font-size: 14px;
+      color: var(--text-light);
+    }
+
+    .intent-text.completed {
+      text-decoration: line-through;
+      color: var(--text-dim);
+    }
+
+    .intent-delete {
+      color: var(--lcd-red);
+      cursor: pointer;
+      opacity: 0.6;
+      transition: opacity 0.3s;
+    }
+
+    .intent-delete:hover {
+      opacity: 1;
+    }
+
+    /* Confetti */
+    .confetti {
+      position: fixed;
+      width: 10px;
+      height: 10px;
+      pointer-events: none;
+      z-index: 1000;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .train-row {
+        grid-template-columns: 70px 60px 1fr;
+        gap: 10px;
+      }
+
+      .train-status, .train-countdown {
+        display: none;
+      }
+
+      .waic-timeline {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .status-bar {
+        flex-wrap: wrap;
+        gap: 15px;
+      }
+
+      .header-title {
+        font-size: 24px;
+      }
+    }
+
+    /* Train animation for current */
+    .current-indicator {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      background: var(--lcd-amber);
+      border-radius: 50%;
+      margin-left: 8px;
+      animation: blink 1s infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <div class="header">
+      <div class="header-subtitle">WEEKLY DEPARTURE BOARD</div>
+      <h1 class="header-title">週間時刻表</h1>
+      <div class="header-time" id="currentTime"></div>
+    </div>
+
+    <!-- Status Bar -->
+    <div class="status-bar">
+      <div class="status-item">
+        <span class="status-dot green"></span>
+        <span>SYSTEM ACTIVE</span>
+      </div>
+      <div class="status-item">
+        <span class="status-dot amber"></span>
+        <span>WEEK IN PROGRESS</span>
+      </div>
+      <div class="status-item">
+        <span class="status-dot blue"></span>
+        <span>WAIC 2026 COMPLETE</span>
+      </div>
+    </div>
+
+    <!-- Weekly Board -->
+    <div class="board">
+      <div class="board-header">
+        <span class="board-title">2026 WEEK 30 — DEPARTURES</span>
+        <span class="board-date">Jul 21 - Jul 25</span>
+      </div>
+      <div class="board-body" id="weeklyBoard">
+        <!-- Rows generated by JS -->
+      </div>
+    </div>
+
+    <!-- WAIC Section -->
+    <div class="waic-section">
+      <div class="waic-header">
+        <span class="waic-badge">EVENT</span>
+        <span class="waic-title">WAIC 2026 世界人工智能大会 — 圆满闭幕</span>
+      </div>
+      <div class="waic-timeline">
+        <div class="waic-day">
+          <div class="waic-day-date">JUL 17</div>
+          <div class="waic-day-name">THU</div>
+          <div class="waic-day-status">✓ ARRIVED</div>
+        </div>
+        <div class="waic-day">
+          <div class="waic-day-date">JUL 18</div>
+          <div class="waic-day-name">FRI</div>
+          <div class="waic-day-status">✓ ARRIVED</div>
+        </div>
+        <div class="waic-day">
+          <div class="waic-day-date">JUL 19</div>
+          <div class="waic-day-name">SAT</div>
+          <div class="waic-day-status">✓ ARRIVED</div>
+        </div>
+        <div class="waic-day future">
+          <div class="waic-day-date">JUL 20</div>
+          <div class="waic-day-name">SUN</div>
+          <div class="waic-day-status">FINAL DAY</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Weekly Intent Input -->
+    <div class="input-section">
+      <div class="input-header">
+        📝 本周目标 / Weekly Intent
+      </div>
+      <div class="input-row">
+        <input type="text" class="input-field" id="intentInput" placeholder="输入本周想要完成的目标..." maxlength="100">
+        <button class="btn" onclick="addIntent()">追加</button>
+      </div>
+      <div class="intent-list" id="intentList">
+        <!-- Intents from localStorage -->
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Week data
+    const weekData = [
+      {
+        day: 'MON',
+        chinese: '週一',
+        date: 'Jul 21',
+        time: '08:00',
+        destination: 'Monday Mission',
+        sub: '新一周开始 · Wiki Cycle 启动',
+        status: 'departed',
+        statusText: 'DEPARTED'
+      },
+      {
+        day: 'TUE',
+        chinese: '週二',
+        date: 'Jul 22',
+        time: '08:00',
+        destination: 'Tuesday Momentum',
+        sub: 'WAIC 收尾 · Hump Day 前夕',
+        status: 'current',
+        statusText: 'CURRENT'
+      },
+      {
+        day: 'WED',
+        chinese: '週三',
+        date: 'Jul 23',
+        time: '08:00',
+        destination: 'Hump Day冲刺',
+        sub: '週三转折点 · 决定週走向',
+        status: 'scheduled',
+        statusText: 'SCHEDULED'
+      },
+      {
+        day: 'THU',
+        chinese: '週四',
+        date: 'Jul 24',
+        time: '08:00',
+        destination: 'Thursday Wisdom',
+        sub: '收尾准备 · 週末倒数',
+        status: 'scheduled',
+        statusText: 'SCHEDULED'
+      },
+      {
+        day: 'FRI',
+        chinese: '週五',
+        date: 'Jul 25',
+        time: '08:00',
+        destination: 'Friday Freedom',
+        sub: '週末来临 · 本周结算',
+        status: 'scheduled',
+        statusText: 'SCHEDULED'
+      }
+    ];
+
+    // Render weekly board
+    function renderBoard() {
+      const board = document.getElementById('weeklyBoard');
+      const now = new Date();
+      const dayNames = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
+      const currentDay = dayNames[now.getDay()];
+
+      let html = '';
+      weekData.forEach((train, idx) => {
+        const isPast = train.status === 'departed';
+        const isCurrent = train.status === 'current';
+        const rowClass = isPast ? 'departed' : (isCurrent ? 'current' : '');
+
+        // Calculate countdown for scheduled
+        let countdown = '';
+        if (train.status === 'scheduled') {
+          const daysUntil = idx - 1; // 0-based from TUE
+          countdown = `<div class="train-countdown"><div class="countdown-value">${daysUntil}D</div></div>`;
+        }
+
+        html += `
+          <div class="train-row ${rowClass}">
+            <div>
+              <div class="train-number">TRAIN ${idx + 1}</div>
+              <div class="train-day">${train.day}</div>
+              <div class="train-day chinese">${train.chinese}</div>
+            </div>
+            <div class="train-time ${isPast ? 'arrived' : ''}">${isPast ? 'ARR' : train.time}</div>
+            <div class="train-destination">
+              <div class="destination-main">${train.destination}${isCurrent ? '<span class="current-indicator"></span>' : ''}</div>
+              <div class="destination-sub">${train.sub}</div>
+            </div>
+            <div class="train-status">
+              <span class="status-badge ${train.status}">${train.statusText}</span>
+            </div>
+            ${countdown}
+          </div>
+        `;
+      });
+      board.innerHTML = html;
+    }
+
+    // Update clock
+    function updateTime() {
+      const now = new Date();
+      const options = {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        timeZoneName: 'short'
+      };
+      document.getElementById('currentTime').textContent = now.toLocaleString('zh-TW', options);
+    }
+
+    // Intent management
+    function getIntents() {
+      const stored = localStorage.getItem('weekly-intents-2026-W30');
+      return stored ? JSON.parse(stored) : [];
+    }
+
+    function saveIntents(intents) {
+      localStorage.setItem('weekly-intents-2026-W30', JSON.stringify(intents));
+    }
+
+    function renderIntents() {
+      const intents = getIntents();
+      const list = document.getElementById('intentList');
+
+      if (intents.length === 0) {
+        list.innerHTML = '<div style="color: var(--text-dim); font-size: 13px; text-align: center; padding: 20px;">暂无目标 — 输入上方框框添加本周目标</div>';
+        return;
+      }
+
+      list.innerHTML = intents.map((intent, idx) => `
+        <div class="intent-item">
+          <div class="intent-checkbox ${intent.completed ? 'checked' : ''}" onclick="toggleIntent(${idx})"></div>
+          <span class="intent-text ${intent.completed ? 'completed' : ''}">${intent.text}</span>
+          <span class="intent-delete" onclick="deleteIntent(${idx})">✕</span>
+        </div>
+      `).join('');
+    }
+
+    function addIntent() {
+      const input = document.getElementById('intentInput');
+      const text = input.value.trim();
+      if (!text) return;
+
+      const intents = getIntents();
+      intents.push({ text, completed: false, created: new Date().toISOString() });
+      saveIntents(intents);
+      input.value = '';
+      renderIntents();
+      spawnConfetti();
+    }
+
+    function toggleIntent(idx) {
+      const intents = getIntents();
+      intents[idx].completed = !intents[idx].completed;
+      saveIntents(intents);
+      renderIntents();
+      if (intents[idx].completed) spawnConfetti();
+    }
+
+    function deleteIntent(idx) {
+      const intents = getIntents();
+      intents.splice(idx, 1);
+      saveIntents(intents);
+      renderIntents();
+    }
+
+    // Confetti effect
+    function spawnConfetti() {
+      const colors = ['#39D353', '#F0B429', '#58A6FF', '#F85149', '#A371F7'];
+      for (let i = 0; i < 30; i++) {
+        const confetti = document.createElement('div');
+        confetti.className = 'confetti';
+        confetti.style.left = Math.random() * window.innerWidth + 'px';
+        confetti.style.top = '-10px';
+        confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+        confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
+        document.body.appendChild(confetti);
+
+        const animation = confetti.animate([
+          { transform: `translateY(0) rotate(0deg)`, opacity: 1 },
+          { transform: `translateY(${window.innerHeight}px) rotate(${Math.random() * 720}deg)`, opacity: 0 }
+        ], {
+          duration: 2000 + Math.random() * 1000,
+          easing: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)'
+        });
+
+        animation.onfinish = () => confetti.remove();
+      }
+    }
+
+    // Enter key for input
+    document.getElementById('intentInput').addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') addIntent();
+    });
+
+    // Init
+    renderBoard();
+    renderIntents();
+    updateTime();
+    setInterval(updateTime, 1000);
+  </script>
+</body>
+</html>

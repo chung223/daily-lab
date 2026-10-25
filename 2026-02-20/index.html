@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aurora Words — 極光語</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@300;500&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-primary: #050810;
+      --bg-secondary: #0a0f1a;
+      --text-primary: #e8f0f5;
+      --text-secondary: #7a8a9a;
+      --aurora-1: #00ffa3;
+      --aurora-2: #00d4ff;
+      --aurora-3: #a855f7;
+      --aurora-4: #ff6b9d;
+      --accent: #00ffa3;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Noto Serif TC', serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      min-height: 100vh;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Grain overlay */
+    .grain {
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+      opacity: 0.04;
+      pointer-events: none;
+      z-index: 100;
+    }
+
+    /* Aurora background layers */
+    .aurora-bg {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .aurora-layer {
+      position: absolute;
+      width: 200%;
+      height: 60%;
+      left: -50%;
+      top: 20%;
+      border-radius: 50% 50% 0 0;
+      filter: blur(80px);
+      opacity: 0.3;
+      animation: aurora-drift 20s ease-in-out infinite;
+    }
+
+    .aurora-layer:nth-child(1) {
+      background: linear-gradient(90deg, var(--aurora-1), transparent, var(--aurora-2));
+      animation-delay: 0s;
+    }
+
+    .aurora-layer:nth-child(2) {
+      background: linear-gradient(90deg, var(--aurora-3), transparent, var(--aurora-1));
+      top: 30%;
+      animation-delay: -7s;
+      opacity: 0.25;
+    }
+
+    .aurora-layer:nth-child(3) {
+      background: linear-gradient(90deg, var(--aurora-2), transparent, var(--aurora-4));
+      top: 40%;
+      animation-delay: -14s;
+      opacity: 0.2;
+    }
+
+    @keyframes aurora-drift {
+      0%, 100% { transform: translateX(-10%) scaleY(1); }
+      50% { transform: translateX(10%) scaleY(1.1); }
+    }
+
+    /* Stars */
+    .stars {
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+    }
+
+    .star {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      background: var(--text-primary);
+      border-radius: 50%;
+      opacity: 0.6;
+      animation: twinkle 3s ease-in-out infinite;
+    }
+
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 0.8; }
+    }
+
+    /* Main container */
+    .container {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 2rem;
+    }
+
+    h1 {
+      font-size: clamp(2rem, 6vw, 3.5rem);
+      font-weight: 300;
+      letter-spacing: 0.15em;
+      margin-bottom: 0.5rem;
+      background: linear-gradient(135deg, var(--aurora-1), var(--aurora-2), var(--aurora-3));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-align: center;
+    }
+
+    .subtitle {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      margin-bottom: 3rem;
+      letter-spacing: 0.1em;
+    }
+
+    .input-wrapper {
+      position: relative;
+      width: 100%;
+      max-width: 500px;
+    }
+
+    input {
+      width: 100%;
+      padding: 1.2rem 1.5rem;
+      font-family: 'Noto Serif TC', serif;
+      font-size: 1.1rem;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      color: var(--text-primary);
+      outline: none;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+    }
+
+    input::placeholder {
+      color: var(--text-secondary);
+      font-style: italic;
+    }
+
+    input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 30px rgba(0, 255, 163, 0.1);
+    }
+
+    /* Floating words container */
+    .words-container {
+      position: fixed;
+      inset: 0;
+      z-index: 5;
+      pointer-events: none;
+    }
+
+    .floating-word {
+      position: absolute;
+      font-family: 'Noto Serif TC', serif;
+      font-size: 1.2rem;
+      font-weight: 300;
+      white-space: nowrap;
+      animation: float-up 8s ease-out forwards;
+      text-shadow: 0 0 20px currentColor;
+    }
+
+    @keyframes float-up {
+      0% {
+        opacity: 0;
+        transform: translateY(0) scale(0.8);
+      }
+      10% {
+        opacity: 1;
+        transform: translateY(-20px) scale(1);
+      }
+      100% {
+        opacity: 0;
+        transform: translateY(-400px) scale(0.9);
+      }
+    }
+
+    /* Word bank */
+    .word-bank {
+      position: fixed;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 10;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      justify-content: center;
+      max-width: 90vw;
+      padding: 1rem;
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 12px;
+      backdrop-filter: blur(10px);
+    }
+
+    .saved-word {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.75rem;
+      padding: 0.4rem 0.8rem;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .saved-word:hover {
+      background: rgba(0, 255, 163, 0.1);
+      border-color: var(--accent);
+      color: var(--text-primary);
+    }
+
+    .saved-word.aurora-1 { color: var(--aurora-1); }
+    .saved-word.aurora-2 { color: var(--aurora-2); }
+    .saved-word.aurora-3 { color: var(--aurora-3); }
+    .saved-word.aurora-4 { color: var(--aurora-4); }
+
+    /* Counter */
+    .counter {
+      position: fixed;
+      top: 2rem;
+      right: 2rem;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      z-index: 10;
+    }
+
+    .counter span {
+      color: var(--accent);
+      font-size: 1.2rem;
+    }
+
+    /* Hint */
+    .hint {
+      position: fixed;
+      bottom: 6rem;
+      left: 50%;
+      transform: translateX(-50%);
+      font-family: 'DM Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--text-secondary);
+      opacity: 0.6;
+      z-index: 10;
+    }
+
+    @media (max-width: 768px) {
+      .container { padding: 1rem; }
+      h1 { font-size: 2rem; }
+      .word-bank { bottom: 1rem; padding: 0.8rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="grain"></div>
+  
+  <div class="aurora-bg">
+    <div class="aurora-layer"></div>
+    <div class="aurora-layer"></div>
+    <div class="aurora-layer"></div>
+  </div>
+  
+  <div class="stars" id="stars"></div>
+  
+  <div class="words-container" id="words-container"></div>
+  
+  <div class="container">
+    <h1>極光語</h1>
+    <p class="subtitle">AURORA WORDS</p>
+    
+    <div class="input-wrapper">
+      <input 
+        type="text" 
+        id="word-input" 
+        placeholder="輸入一句話，讓它化為極光..." 
+        maxlength="20"
+        autocomplete="off"
+      >
+    </div>
+  </div>
+  
+  <p class="hint">按下 Enter 釋放文字</p>
+  
+  <div class="word-bank" id="word-bank"></div>
+  
+  <div class="counter">
+    累積 <span id="count">0</span> 道極光
+  </div>
+
+  <script>
+    // Initialize stars
+    const starsContainer = document.getElementById('stars');
+    for (let i = 0; i < 80; i++) {
+      const star = document.createElement('div');
+      star.className = 'star';
+      star.style.left = Math.random() * 100 + '%';
+      star.style.top = Math.random() * 60 + '%';
+      star.style.animationDelay = Math.random() * 3 + 's';
+      star.style.width = (Math.random() * 2 + 1) + 'px';
+      star.style.height = star.style.width;
+      starsContainer.appendChild(star);
+    }
+
+    // Aurora colors
+    const auroraColors = [
+      'var(--aurora-1)',
+      'var(--aurora-2)',
+      'var(--aurora-3)',
+      'var(--aurora-4)'
+    ];
+
+    // LocalStorage keys
+    const STORAGE_KEY = 'aurora-words-saved';
+    const COUNT_KEY = 'aurora-words-count';
+
+    // Load saved data
+    let savedWords = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+    let totalCount = parseInt(localStorage.getItem(COUNT_KEY) || '0');
+
+    // Render saved words
+    function renderWordBank() {
+      const bank = document.getElementById('word-bank');
+      bank.innerHTML = '';
+      savedWords.slice(-12).forEach((word, i) => {
+        const span = document.createElement('span');
+        span.className = `saved-word aurora-${(i % 4) + 1}`;
+        span.textContent = word;
+        span.onclick = () => releaseWord(word);
+        bank.appendChild(span);
+      });
+    }
+
+    // Update counter
+    function updateCounter() {
+      document.getElementById('count').textContent = totalCount;
+    }
+
+    // Release a floating word
+    function releaseWord(text) {
+      const container = document.getElementById('words-container');
+      const word = document.createElement('div');
+      word.className = 'floating-word';
+      word.textContent = text;
+      
+      // Random position and color
+      const x = Math.random() * 60 + 20;
+      const colorIndex = Math.floor(Math.random() * 4);
+      word.style.left = x + '%';
+      word.style.bottom = '20%';
+      word.style.color = auroraColors[colorIndex];
+      
+      container.appendChild(word);
+      
+      // Remove after animation
+      setTimeout(() => word.remove(), 8000);
+      
+      // Update count
+      totalCount++;
+      localStorage.setItem(COUNT_KEY, totalCount);
+      updateCounter();
+    }
+
+    // Handle input
+    const input = document.getElementById('word-input');
+    input.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter' && input.value.trim()) {
+        const word = input.value.trim();
+        
+        // Save to localStorage if new
+        if (!savedWords.includes(word)) {
+          savedWords.push(word);
+          if (savedWords.length > 50) savedWords.shift();
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(savedWords));
+          renderWordBank();
+        }
+        
+        releaseWord(word);
+        input.value = '';
+      }
+    });
+
+    // Click on saved words to re-release
+    document.querySelectorAll('.saved-word').forEach(el => {
+      el.addEventListener('click', () => releaseWord(el.textContent));
+    });
+
+    // Initial render
+    renderWordBank();
+    updateCounter();
+  </script>
+</body>
+</html>

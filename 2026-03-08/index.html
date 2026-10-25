@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>幾何花園 | Geometric Garden</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Noto+Sans+TC:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-deep: #0a0a12;
+      --bg-card: rgba(20, 20, 35, 0.85);
+      --crystal-cyan: #00f5ff;
+      --prism-purple: #a855f7;
+      --warm-amber: #fbbf24;
+      --connect-line: rgba(0, 245, 255, 0.15);
+      --text-primary: #e8e8f0;
+      --text-muted: #8888a0;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Noto Sans TC', sans-serif;
+      background: var(--bg-deep);
+      color: var(--text-primary);
+      overflow: hidden;
+      height: 100vh;
+      width: 100vw;
+    }
+
+    /* Background layers */
+    .bg-layer {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .bg-stars {
+      background: 
+        radial-gradient(1px 1px at 20% 30%, rgba(255,255,255,0.8), transparent),
+        radial-gradient(1px 1px at 40% 70%, rgba(255,255,255,0.5), transparent),
+        radial-gradient(1.5px 1.5px at 60% 20%, rgba(255,255,255,0.9), transparent),
+        radial-gradient(1px 1px at 80% 50%, rgba(255,255,255,0.6), transparent),
+        radial-gradient(1px 1px at 10% 80%, rgba(255,255,255,0.4), transparent),
+        radial-gradient(1.5px 1.5px at 90% 10%, rgba(255,255,255,0.7), transparent),
+        radial-gradient(1px 1px at 50% 90%, rgba(255,255,255,0.5), transparent),
+        radial-gradient(1px 1px at 70% 60%, rgba(255,255,255,0.6), transparent);
+      background-size: 200% 200%;
+      animation: drift 60s ease-in-out infinite;
+    }
+
+    .bg-gradient {
+      background: 
+        radial-gradient(ellipse at 20% 80%, rgba(168, 85, 247, 0.08) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 20%, rgba(0, 245, 255, 0.06) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 50%, rgba(251, 191, 36, 0.03) 0%, transparent 60%);
+    }
+
+    @keyframes drift {
+      0%, 100% { background-position: 0% 0%; }
+      50% { background-position: 100% 100%; }
+    }
+
+    /* Canvas */
+    #garden-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      cursor: crosshair;
+    }
+
+    /* Floating Panel */
+    .control-panel {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 100;
+      background: var(--bg-card);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(0, 245, 255, 0.2);
+      border-radius: 16px;
+      padding: 20px;
+      min-width: 200px;
+      box-shadow: 
+        0 0 40px rgba(0, 245, 255, 0.1),
+        inset 0 1px 0 rgba(255,255,255,0.05);
+    }
+
+    .panel-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--crystal-cyan);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-bottom: 16px;
+      text-align: center;
+      text-shadow: 0 0 20px var(--crystal-cyan);
+    }
+
+    .shape-selector {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+      justify-content: center;
+    }
+
+    .shape-btn {
+      width: 44px;
+      height: 44px;
+      border: 2px solid rgba(255,255,255,0.15);
+      background: rgba(255,255,255,0.03);
+      border-radius: 10px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+      color: var(--text-muted);
+      font-size: 18px;
+    }
+
+    .shape-btn:hover {
+      border-color: var(--crystal-cyan);
+      background: rgba(0, 245, 255, 0.1);
+      color: var(--crystal-cyan);
+    }
+
+    .shape-btn.active {
+      border-color: var(--crystal-cyan);
+      background: rgba(0, 245, 255, 0.15);
+      color: var(--crystal-cyan);
+      box-shadow: 0 0 20px rgba(0, 245, 255, 0.3);
+    }
+
+    .color-picker {
+      margin-bottom: 16px;
+    }
+
+    .color-picker label {
+      display: block;
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .color-options {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .color-option {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: 2px solid transparent;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .color-option:hover {
+      transform: scale(1.15);
+    }
+
+    .color-option.active {
+      border-color: white;
+      box-shadow: 0 0 15px currentColor;
+    }
+
+    .color-cyan { background: #00f5ff; }
+    .color-purple { background: #a855f7; }
+    .color-amber { background: #fbbf24; }
+    .color-pink { background: #ec4899; }
+    .color-green { background: #10b981; }
+    .color-white { background: #ffffff; }
+
+    .action-btns {
+      display: flex;
+      gap: 8px;
+    }
+
+    .action-btn {
+      flex: 1;
+      padding: 10px;
+      border: 1px solid rgba(255,255,255,0.15);
+      background: rgba(255,255,255,0.03);
+      color: var(--text-primary);
+      border-radius: 8px;
+      cursor: pointer;
+      font-family: 'Noto Sans TC', sans-serif;
+      font-size: 12px;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .action-btn:hover {
+      background: rgba(255,255,255,0.1);
+      border-color: var(--crystal-cyan);
+    }
+
+    .action-btn.clear {
+      border-color: rgba(239, 68, 68, 0.5);
+    }
+
+    .action-btn.clear:hover {
+      background: rgba(239, 68, 68, 0.2);
+      border-color: #ef4444;
+    }
+
+    /* Stats */
+    .stats {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      z-index: 100;
+      background: var(--bg-card);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(0, 245, 255, 0.15);
+      border-radius: 12px;
+      padding: 12px 20px;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .stats span {
+      color: var(--crystal-cyan);
+      font-weight: 700;
+    }
+
+    /* Hint */
+    .hint {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 100;
+      font-size: 13px;
+      color: var(--text-muted);
+      opacity: 0.7;
+      animation: pulse-hint 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse-hint {
+      0%, 100% { opacity: 0.5; }
+      50% { opacity: 0.9; }
+    }
+
+    /* Shape SVGs */
+    .shape-svg {
+      width: 24px;
+      height: 24px;
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-layer bg-stars"></div>
+  <div class="bg-layer bg-gradient"></div>
+  
+  <canvas id="garden-canvas"></canvas>
+
+  <div class="control-panel">
+    <div class="panel-title">幾何花園</div>
+    
+    <div class="shape-selector">
+      <button class="shape-btn active" data-shape="triangle" title="三角形">
+        <svg class="shape-svg" viewBox="0 0 24 24" fill="currentColor">
+          <polygon points="12,3 22,21 2,21"/>
+        </svg>
+      </button>
+      <button class="shape-btn" data-shape="hexagon" title="六邊形">
+        <svg class="shape-svg" viewBox="0 0 24 24" fill="currentColor">
+          <polygon points="12,2 22,7 22,17 12,22 2,17 2,7"/>
+        </svg>
+      </button>
+      <button class="shape-btn" data-shape="circle" title="圓形">
+        <svg class="shape-svg" viewBox="0 0 24 24" fill="currentColor">
+          <circle cx="12" cy="12" r="10"/>
+        </svg>
+      </button>
+      <button class="shape-btn" data-shape="diamond" title="菱形">
+        <svg class="shape-svg" viewBox="0 0 24 24" fill="currentColor">
+          <polygon points="12,2 22,12 12,22 2,12"/>
+        </svg>
+      </button>
+      <button class="shape-btn" data-shape="star" title="星星">
+        <svg class="shape-svg" viewBox="0 0 24 24" fill="currentColor">
+          <polygon points="12,2 15,9 22,9 16,14 18,22 12,17 6,22 8,14 2,9 9,9"/>
+        </svg>
+      </button>
+    </div>
+
+    <div class="color-picker">
+      <label>色彩主題</label>
+      <div class="color-options">
+        <div class="color-option color-cyan active" data-color="#00f5ff"></div>
+        <div class="color-option color-purple" data-color="#a855f7"></div>
+        <div class="color-option color-amber" data-color="#fbbf24"></div>
+        <div class="color-option color-pink" data-color="#ec4899"></div>
+        <div class="color-option color-green" data-color="#10b981"></div>
+        <div class="color-option color-white" data-color="#ffffff"></div>
+      </div>
+    </div>
+
+    <div class="action-btns">
+      <button class="action-btn" id="undo-btn">還原</button>
+      <button class="action-btn clear" id="clear-btn">清除</button>
+    </div>
+  </div>
+
+  <div class="stats">
+    圖形數量: <span id="shape-count">0</span>
+  </div>
+
+  <div class="hint">點擊或拖曳產生幾何圖形</div>
+
+  <script>
+    // Canvas setup
+    const canvas = document.getElementById('garden-canvas');
+    const ctx = canvas.getContext('2d');
+    
+    let width, height;
+    let shapes = [];
+    let selectedShape = 'triangle';
+    let selectedColor = '#00f5ff';
+    let isDragging = false;
+    let lastSpawnTime = 0;
+    let history = [];
+
+    function resize() {
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+    }
+    
+    window.addEventListener('resize', resize);
+    resize();
+
+    // Shape class
+    class Shape {
+      constructor(x, y, type, color) {
+        this.x = x;
+        this.y = y;
+        this.type = type;
+        this.color = color;
+        this.size = 0;
+        this.targetSize = 25 + Math.random() * 20;
+        this.rotation = Math.random() * Math.PI * 2;
+        this.rotationSpeed = (Math.random() - 0.5) * 0.02;
+        this.opacity = 1;
+        this.pulsePhase = Math.random() * Math.PI * 2;
+        this.born = Date.now();
+        this.glowIntensity = 0.8 + Math.random() * 0.4;
+      }
+
+      update() {
+        // Bloom animation
+        if (this.size < this.targetSize) {
+          this.size += (this.targetSize - this.size) * 0.15;
+        }
+        
+        // Rotation
+        this.rotation += this.rotationSpeed;
+        
+        // Pulse
+        this.pulsePhase += 0.05;
+      }
+
+      draw(ctx) {
+        const pulse = 1 + Math.sin(this.pulsePhase) * 0.1;
+        const currentSize = this.size * pulse;
+        
+        ctx.save();
+        ctx.translate(this.x, this.y);
+        ctx.rotate(this.rotation);
+        
+        // Glow
+        ctx.shadowColor = this.color;
+        ctx.shadowBlur = 20 * this.glowIntensity;
+        ctx.strokeStyle = this.color;
+        ctx.lineWidth = 2;
+        ctx.fillStyle = this.color + '22';
+        
+        ctx.beginPath();
+        
+        switch(this.type) {
+          case 'triangle':
+            this.drawPolygon(ctx, 3, currentSize);
+            break;
+          case 'hexagon':
+            this.drawPolygon(ctx, 6, currentSize);
+            break;
+          case 'circle':
+            ctx.arc(0, 0, currentSize, 0, Math.PI * 2);
+            break;
+          case 'diamond':
+            ctx.moveTo(0, -currentSize);
+            ctx.lineTo(currentSize, 0);
+            ctx.lineTo(0, currentSize);
+            ctx.lineTo(-currentSize, 0);
+            ctx.closePath();
+            break;
+          case 'star':
+            this.drawStar(ctx, 5, currentSize, currentSize * 0.5);
+            break;
+        }
+        
+        ctx.fill();
+        ctx.stroke();
+        
+        // Inner detail
+        ctx.shadowBlur = 0;
+        ctx.strokeStyle = this.color + '60';
+        ctx.lineWidth = 1;
+        
+        ctx.beginPath();
+        switch(this.type) {
+          case 'triangle':
+            this.drawPolygon(ctx, 3, currentSize * 0.5);
+            break;
+          case 'hexagon':
+            this.drawPolygon(ctx, 6, currentSize * 0.5);
+            break;
+          case 'circle':
+            ctx.arc(0, 0, currentSize * 0.5, 0, Math.PI * 2);
+            break;
+          case 'diamond':
+            ctx.moveTo(0, -currentSize * 0.5);
+            ctx.lineTo(currentSize * 0.5, 0);
+            ctx.lineTo(0, currentSize * 0.5);
+            ctx.lineTo(-currentSize * 0.5, 0);
+            ctx.closePath();
+            break;
+          case 'star':
+            this.drawStar(ctx, 5, currentSize * 0.5, currentSize * 0.25);
+            break;
+        }
+        ctx.stroke();
+        
+        ctx.restore();
+      }
+
+      drawPolygon(ctx, sides, radius) {
+        const angle = (Math.PI * 2) / sides;
+        for (let i = 0; i < sides; i++) {
+          const x = Math.cos(angle * i - Math.PI / 2) * radius;
+          const y = Math.sin(angle * i - Math.PI / 2) * radius;
+          if (i === 0) ctx.moveTo(x, y);
+          else ctx.lineTo(x, y);
+        }
+        ctx.closePath();
+      }
+
+      drawStar(ctx, points, outerRadius, innerRadius) {
+        const angle = Math.PI / points;
+        for (let i = 0; i < points * 2; i++) {
+          const radius = i % 2 === 0 ? outerRadius : innerRadius;
+          const x = Math.cos(angle * i - Math.PI / 2) * radius;
+          const y = Math.sin(angle * i - Math.PI / 2) * radius;
+          if (i === 0) ctx.moveTo(x, y);
+          else ctx.lineTo(x, y);
+        }
+        ctx.closePath();
+      }
+    }
+
+    // Draw connections between nearby shapes
+    function drawConnections() {
+      const maxDistance = 200;
+      
+      for (let i = 0; i < shapes.length; i++) {
+        for (let j = i + 1; j < shapes.length; j++) {
+          const dx = shapes[i].x - shapes[j].x;
+          const dy = shapes[i].y - shapes[j].y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          
+          if (dist < maxDistance) {
+            const alpha = (1 - dist / maxDistance) * 0.3;
+            const gradient = ctx.createLinearGradient(
+              shapes[i].x, shapes[i].y,
+              shapes[j].x, shapes[j].y
+            );
+            gradient.addColorStop(0, shapes[i].color + Math.floor(alpha * 255).toString(16).padStart(2, '0'));
+            gradient.addColorStop(1, shapes[j].color + Math.floor(alpha * 255).toString(16).padStart(2, '0'));
+            
+            ctx.strokeStyle = gradient;
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(shapes[i].x, shapes[i].y);
+            ctx.lineTo(shapes[j].x, shapes[j].y);
+            ctx.stroke();
+          }
+        }
+      }
+    }
+
+    // Animation loop
+    function animate() {
+      ctx.clearRect(0, 0, width, height);
+      
+      // Draw connections first (behind shapes)
+      drawConnections();
+      
+      // Update and draw shapes
+      shapes.forEach(shape => {
+        shape.update();
+        shape.draw(ctx);
+      });
+      
+      // Update stats
+      document.getElementById('shape-count').textContent = shapes.length;
+      
+      requestAnimationFrame(animate);
+    }
+
+    // Spawn shape at position
+    function spawnShape(x, y) {
+      const now = Date.now();
+      if (now - lastSpawnTime < 50) return; // Throttle
+      lastSpawnTime = now;
+      
+      // Save state for undo
+      if (shapes.length > 0) {
+        history.push([...shapes.map(s => ({...s}))]);
+        if (history.length > 20) history.shift();
+      }
+      
+      const shape = new Shape(x, y, selectedShape, selectedColor);
+      shapes.push(shape);
+    }
+
+    // Mouse/touch events
+    canvas.addEventListener('mousedown', (e) => {
+      isDragging = true;
+      spawnShape(e.clientX, e.clientY);
+    });
+
+    canvas.addEventListener('mousemove', (e) => {
+      if (isDragging) {
+        spawnShape(e.clientX, e.clientY);
+      }
+    });
+
+    canvas.addEventListener('mouseup', () => {
+      isDragging = false;
+    });
+
+    canvas.addEventListener('mouseleave', () => {
+      isDragging = false;
+    });
+
+    // Touch support
+    canvas.addEventListener('touchstart', (e) => {
+      e.preventDefault();
+      isDragging = true;
+      const touch = e.touches[0];
+      spawnShape(touch.clientX, touch.clientY);
+    });
+
+    canvas.addEventListener('touchmove', (e) => {
+      e.preventDefault();
+      if (isDragging) {
+        const touch = e.touches[0];
+        spawnShape(touch.clientX, touch.clientY);
+      }
+    });
+
+    canvas.addEventListener('touchend', () => {
+      isDragging = false;
+    });
+
+    // Shape selector
+    document.querySelectorAll('.shape-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.shape-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        selectedShape = btn.dataset.shape;
+      });
+    });
+
+    // Color selector
+    document.querySelectorAll('.color-option').forEach(opt => {
+      opt.addEventListener('click', () => {
+        document.querySelectorAll('.color-option').forEach(o => o.classList.remove('active'));
+        opt.classList.add('active');
+        selectedColor = opt.dataset.color;
+      });
+    });
+
+    // Clear button
+    document.getElementById('clear-btn').addEventListener('click', () => {
+      history.push([...shapes.map(s => ({...s}))]);
+      if (history.length > 20) history.shift();
+      shapes = [];
+    });
+
+    // Undo button
+    document.getElementById('undo-btn').addEventListener('click', () => {
+      if (history.length > 0) {
+        const previousState = history.pop();
+        shapes = previousState.map(s => {
+          const shape = new Shape(s.x, s.y, s.type, s.color);
+          shape.size = s.size;
+          shape.targetSize = s.targetSize;
+          shape.rotation = s.rotation;
+          return shape;
+        });
+      }
+    });
+
+    // Save to localStorage
+    function saveState() {
+      const state = shapes.map(s => ({
+        x: s.x, y: s.y, type: s.type, color: s.color
+      }));
+      localStorage.setItem('geometric-garden', JSON.stringify(state));
+    }
+
+    function loadState() {
+      const saved = localStorage.getItem('geometric-garden');
+      if (saved) {
+        try {
+          const state = JSON.parse(saved);
+          shapes = state.map(s => new Shape(s.x, s.y, s.type, s.color));
+        } catch(e) {}
+      }
+    }
+
+    // Auto-save periodically
+    setInterval(saveState, 2000);
+    loadState();
+
+    // Start animation
+    animate();
+  </script>
+</body>
+</html>

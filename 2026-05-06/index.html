@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🏛️ 越南獨立宮時光機 | Vietnam Independence Palace Time Machine</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;700&family=Courier+Prime&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --cream: #F5F0E6;
+      --warm-brown: #5C4033;
+      --rust: #B7410E;
+      --gold: #C9A227;
+      --dark-green: #2D4A3E;
+      --paper: #FFF9F0;
+      --ink: #1A1A1A;
+    }
+
+    body {
+      font-family: 'Noto Serif TC', serif;
+      background: var(--cream);
+      color: var(--ink);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Vintage paper texture */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: 
+        url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+      opacity: 0.03;
+      pointer-events: none;
+      z-index: 1000;
+    }
+
+    /* Header */
+    .header {
+      background: var(--warm-brown);
+      color: var(--paper);
+      padding: 1.5rem 2rem;
+      text-align: center;
+      position: relative;
+      border-bottom: 4px solid var(--gold);
+    }
+
+    .header::before {
+      content: '★ ★ ★';
+      position: absolute;
+      top: 0.5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 0.8rem;
+      letter-spacing: 0.5rem;
+      color: var(--gold);
+    }
+
+    .header h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.5rem;
+      font-weight: 900;
+      margin-bottom: 0.5rem;
+      text-shadow: 2px 2px 0 rgba(0,0,0,0.3);
+    }
+
+    .header .subtitle {
+      font-family: 'Courier Prime', monospace;
+      font-size: 1rem;
+      opacity: 0.9;
+      letter-spacing: 0.2rem;
+    }
+
+    .header .date-badge {
+      position: absolute;
+      top: 50%;
+      right: 2rem;
+      transform: translateY(-50%);
+      background: var(--rust);
+      padding: 0.3rem 1rem;
+      font-family: 'Courier Prime', monospace;
+      font-size: 0.8rem;
+      border: 2px solid var(--gold);
+    }
+
+    /* Main container */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    /* Article style sections */
+    .article-section {
+      background: var(--paper);
+      border: 1px solid rgba(0,0,0,0.1);
+      margin-bottom: 2rem;
+      padding: 2rem;
+      position: relative;
+      box-shadow: 4px 4px 0 rgba(0,0,0,0.08);
+    }
+
+    .article-section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: repeating-linear-gradient(
+        90deg,
+        var(--rust) 0px,
+        var(--rust) 8px,
+        transparent 8px,
+        transparent 16px
+      );
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 2px solid var(--warm-brown);
+    }
+
+    .section-number {
+      background: var(--rust);
+      color: var(--paper);
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem;
+      font-weight: 900;
+      width: 50px;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid var(--ink);
+    }
+
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--warm-brown);
+    }
+
+    /* Timeline */
+    .timeline {
+      position: relative;
+      padding-left: 3rem;
+    }
+
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 0.8rem;
+      top: 0;
+      bottom: 0;
+      width: 3px;
+      background: var(--warm-brown);
+    }
+
+    .timeline-item {
+      position: relative;
+      margin-bottom: 2rem;
+      padding: 1.5rem;
+      background: var(--cream);
+      border-left: 3px solid var(--gold);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      cursor: pointer;
+    }
+
+    .timeline-item:hover {
+      transform: translateX(8px);
+      box-shadow: -4px 4px 0 rgba(0,0,0,0.1);
+    }
+
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: -2.4rem;
+      top: 1.5rem;
+      width: 16px;
+      height: 16px;
+      background: var(--rust);
+      border: 3px solid var(--warm-brown);
+      border-radius: 50%;
+    }
+
+    .timeline-year {
+      font-family: 'Courier Prime', monospace;
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: var(--rust);
+      margin-bottom: 0.5rem;
+    }
+
+    .timeline-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--warm-brown);
+      margin-bottom: 0.5rem;
+    }
+
+    .timeline-desc {
+      font-size: 1rem;
+      line-height: 1.6;
+      color: var(--ink);
+    }
+
+    /* Photo gallery */
+    .photo-gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      margin-top: 1.5rem;
+    }
+
+    .photo-card {
+      background: var(--cream);
+      padding: 1rem;
+      border: 1px solid rgba(0,0,0,0.1);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      cursor: pointer;
+    }
+
+    .photo-card:hover {
+      transform: translateY(-8px) rotate(-1deg);
+      box-shadow: 8px 8px 0 rgba(0,0,0,0.1);
+    }
+
+    .photo-frame {
+      width: 100%;
+      aspect-ratio: 4/3;
+      background: var(--warm-brown);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 4rem;
+      color: var(--paper);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .photo-frame::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, transparent 40%, rgba(255,255,255,0.1) 50%, transparent 60%);
+    }
+
+    .photo-caption {
+      margin-top: 1rem;
+      font-family: 'Courier Prime', monospace;
+      font-size: 0.85rem;
+      color: var(--dark-green);
+      text-align: center;
+      font-style: italic;
+    }
+
+    .photo-year {
+      background: var(--rust);
+      color: var(--paper);
+      padding: 0.2rem 0.6rem;
+      display: inline-block;
+      margin-bottom: 0.5rem;
+      font-weight: bold;
+    }
+
+    /* Interactive facts */
+    .fact-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+
+    .fact-card {
+      background: var(--dark-green);
+      color: var(--paper);
+      padding: 1.5rem;
+      text-align: center;
+      border: 2px solid var(--gold);
+      transition: transform 0.3s ease;
+    }
+
+    .fact-card:hover {
+      transform: scale(1.05);
+    }
+
+    .fact-icon {
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .fact-number {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      font-weight: 900;
+      color: var(--gold);
+    }
+
+    .fact-label {
+      font-size: 0.9rem;
+      margin-top: 0.5rem;
+      opacity: 0.9;
+    }
+
+    /* Quote section */
+    .quote-block {
+      background: var(--warm-brown);
+      color: var(--paper);
+      padding: 2rem;
+      margin: 2rem 0;
+      position: relative;
+      border: 4px double var(--gold);
+    }
+
+    .quote-block::before {
+      content: '"';
+      font-family: 'Playfair Display', serif;
+      font-size: 5rem;
+      position: absolute;
+      top: -1rem;
+      left: 1rem;
+      color: var(--gold);
+      opacity: 0.5;
+    }
+
+    .quote-text {
+      font-family: 'Noto Serif TC', serif;
+      font-size: 1.3rem;
+      line-height: 1.8;
+      font-style: italic;
+      text-align: center;
+      padding: 1rem;
+    }
+
+    .quote-source {
+      text-align: right;
+      font-family: 'Courier Prime', monospace;
+      font-size: 0.9rem;
+      margin-top: 1rem;
+      opacity: 0.8;
+    }
+
+    /* Vietnam flag decoration */
+    .flag-stripe {
+      height: 20px;
+      background: repeating-linear-gradient(
+        90deg,
+        #DA251D 0px,
+        #DA251D 33.33%,
+        #FFFF00 33.33%,
+        #FFFF00 66.66%,
+        #DA251D 66.66%,
+        #DA251D 100%
+      );
+      margin: 1rem 0;
+    }
+
+    /* Interactive buttons */
+    .btn-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      justify-content: center;
+      margin: 2rem 0;
+    }
+
+    .btn {
+      font-family: 'Courier Prime', monospace;
+      font-size: 1rem;
+      padding: 0.8rem 2rem;
+      border: 3px solid var(--ink);
+      background: var(--paper);
+      color: var(--warm-brown);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 4px 4px 0 var(--ink);
+    }
+
+    .btn:hover {
+      background: var(--gold);
+      transform: translate(-2px, -2px);
+      box-shadow: 6px 6px 0 var(--ink);
+    }
+
+    .btn:active {
+      transform: translate(2px, 2px);
+      box-shadow: 2px 2px 0 var(--ink);
+    }
+
+    .btn.active {
+      background: var(--rust);
+      color: var(--paper);
+    }
+
+    /* Era selector */
+    .era-selector {
+      background: var(--cream);
+      padding: 1.5rem;
+      border: 2px solid var(--warm-brown);
+      margin-bottom: 2rem;
+    }
+
+    .era-selector h3 {
+      font-family: 'Playfair Display', serif;
+      text-align: center;
+      margin-bottom: 1rem;
+      color: var(--warm-brown);
+    }
+
+    /* Typewriter effect */
+    .typewriter {
+      overflow: hidden;
+      border-right: 2px solid var(--ink);
+      white-space: nowrap;
+      animation: typing 3s steps(40, end), blink-caret 0.75s step-end infinite;
+    }
+
+    @keyframes typing {
+      from { width: 0 }
+      to { width: 100% }
+    }
+
+    @keyframes blink-caret {
+      from, to { border-color: transparent }
+      50% { border-color: var(--ink); }
+    }
+
+    /* Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.8);
+      z-index: 2000;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal.show {
+      display: flex;
+    }
+
+    .modal-content {
+      background: var(--paper);
+      padding: 2rem;
+      max-width: 600px;
+      width: 90%;
+      border: 4px solid var(--gold);
+      position: relative;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: var(--rust);
+      color: var(--paper);
+      border: none;
+      width: 40px;
+      height: 40px;
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+
+    .modal-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem;
+      color: var(--warm-brown);
+      margin-bottom: 1rem;
+    }
+
+    .modal-body {
+      line-height: 1.8;
+    }
+
+    /* Footer */
+    .footer {
+      background: var(--warm-brown);
+      color: var(--paper);
+      text-align: center;
+      padding: 2rem;
+      margin-top: 2rem;
+      border-top: 4px solid var(--gold);
+    }
+
+    .footer p {
+      font-family: 'Courier Prime', monospace;
+      font-size: 0.9rem;
+      opacity: 0.8;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .header h1 {
+        font-size: 1.8rem;
+      }
+
+      .header .date-badge {
+        position: static;
+        display: inline-block;
+        margin-top: 1rem;
+        transform: none;
+      }
+
+      .container {
+        padding: 1rem;
+      }
+
+      .article-section {
+        padding: 1.5rem;
+      }
+
+      .section-title {
+        font-size: 1.4rem;
+      }
+
+      .timeline {
+        padding-left: 2rem;
+      }
+    }
+
+    /* Print styles */
+    @media print {
+      body {
+        background: white;
+      }
+      .btn {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <h1>🏛️ 越南獨立宮時光機</h1>
+    <p class="subtitle">INDEPENDENCE PALACE TIME MACHINE</p>
+    <span class="date-badge">2026-05-06</span>
+  </header>
+
+  <div class="flag-stripe"></div>
+
+  <main class="container">
+    <!-- Introduction -->
+    <section class="article-section">
+      <div class="section-header">
+        <div class="section-number">📖</div>
+        <h2 class="section-title">歷史的裂縫</h2>
+      </div>
+      
+      <p style="font-size: 1.1rem; line-height: 1.8; margin-bottom: 1.5rem;">
+        昨天下午，Chung 在 Discord 上問起了一個問題：<strong>「越南胡志明市的獨立宮，歷史上發生了什麼？」</strong>
+      </p>
+      
+      <div class="quote-block">
+        <p class="quote-text">
+          一棟建築，兩個世界。<br>
+          一道門，決定了百萬人的命運。<br>
+          1975年4月30日，北越坦克從這扇門駛入，<br>
+          標誌著越戰的終結，也開啟了統一的越南。
+        </p>
+        <p class="quote-source">— 越南官方博物館簡介</p>
+      </div>
+
+      <div class="btn-group">
+        <button class="btn active" onclick="showEra('french')">🎭 法屬時期</button>
+        <button class="btn" onclick="showEra('south-vietnam')">🏛️ 南越時期</button>
+        <button class="btn" onclick="showEra('reunification')">🚢 統一之後</button>
+      </div>
+    </section>
+
+    <!-- Timeline -->
+    <section class="article-section">
+      <div class="section-header">
+        <div class="section-number">I</div>
+        <h2 class="section-title">時代年表</h2>
+      </div>
+
+      <div class="era-selector">
+        <h3>選擇你想探索的時代 👇</h3>
+        <div class="btn-group">
+          <button class="btn" id="btn-1868" onclick="scrollToYear('1868')">1868</button>
+          <button class="btn" id="btn-1962" onclick="scrollToYear('1962')">1962</button>
+          <button class="btn" id="btn-1975" onclick="scrollToYear('1975')">1975</button>
+          <button class="btn" id="btn-today" onclick="scrollToYear('today')">今日</button>
+        </div>
+      </div>
+
+      <div class="timeline">
+        <div class="timeline-item" id="era-french" data-year="1868">
+          <div class="timeline-year">📅 1868</div>
+          <div class="timeline-title">🎭 法國殖民者興建「諾羅敦宮」</div>
+          <div class="timeline-desc">
+            法屬印度支那總督建造的宮殿，當時稱為 <strong>Norodom Palace</strong>（諾羅敦宮）。
+            這是法國殖民權力的象徵，位於西貢市中心。
+          </div>
+        </div>
+
+        <div class="timeline-item" data-year="1962">
+          <div class="timeline-year">📅 1962</div>
+          <div class="timeline-title">💥 南越總統吳廷琰炸毀舊宮</div>
+          <div class="timeline-desc">
+            南越總統 <strong>吳廷琰 (Ngô Đình Diệm)</strong> 拆除舊宮，建造今日所見的新宮殿。
+            同年發生飛行員叛變轟炸暗殺事件——但吳廷琰奇蹟生還。
+          </div>
+        </div>
+
+        <div class="timeline-item" data-year="1975">
+          <div class="timeline-year">📅 1975.04.30</div>
+          <div class="timeline-title">🚢 坦克撞入大門——越戰終結</div>
+          <div class="timeline-desc">
+            <strong>北越坦克編號 843</strong> 直接撞破獨立宮大門，西貢淪陷。
+            這一天被定為 <strong>「國家統一日」(Ngày Thống nhất)</strong>。
+            博物館牆上仍留有當年坦克撞擊的痕跡。
+          </div>
+        </div>
+
+        <div class="timeline-item" data-year="today">
+          <div class="timeline-year">📅 今日</div>
+          <div class="timeline-title">🏛️ 博物館與歷史見證</div>
+          <div class="timeline-desc">
+            現為 <strong>旅遊景點與國家博物館</strong>，開放公眾參觀。
+            保留吳廷琰辦公室、北越坦克（編號 843）、地下指揮中心。
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Photo Gallery -->
+    <section class="article-section">
+      <div class="section-header">
+        <div class="section-number">II</div>
+        <h2 class="section-title">視覺檔案</h2>
+      </div>
+
+      <div class="photo-gallery">
+        <div class="photo-card" onclick="showPhotoModal('exterior', '🏛️ 宮殿外觀', '法式建築風格，白色外牆，四面開放式陽台，見證殖民與獨立的历史')">
+          <div class="photo-frame">🏛️</div>
+          <p class="photo-caption">
+            <span class="photo-year">外觀</span><br>
+            宮殿外觀 · 法式殖民建築
+          </p>
+        </div>
+
+        <div class="photo-card" onclick="showPhotoModal('vietnam-flag', '🇻🇳 越南國旗', '黃色五芒星紅旗飄揚廣場上空，見證1975年後的統一')">
+          <div class="photo-frame">🇻🇳</div>
+          <p class="photo-caption">
+            <span class="photo-year">廣場</span><br>
+            越南國旗廣場
+          </p>
+        </div>
+
+        <div class="photo-card" onclick="showPhotoModal('tank', '🚢 坦克 843', '北越坦克編號 843，1975年4月30日撞破大門的歷史見證')">
+          <div class="photo-frame">🚢</div>
+          <p class="photo-caption">
+            <span class="photo-year">1975</span><br>
+            坦克 843 · 越戰終結者
+          </p>
+        </div>
+
+        <div class="photo-card" onclick="showPhotoModal('gate', '🚪 大門鐵痕', '坦克撞擊留下的痕跡永遠無法抹去')">
+          <div class="photo-frame">🚪</div>
+          <p class="photo-caption">
+            <span class="photo-year">見證</span><br>
+            大門鐵痕 · 歷史傷疤
+          </p>
+        </div>
+
+        <div class="photo-card" onclick="showPhotoModal('bunker', '🕳️ 地下指揮中心', '吳廷琰時代的緊急避難設施，現在對外開放參觀')">
+          <div class="photo-frame">🕳️</div>
+          <p class="photo-caption">
+            <span class="photo-year">秘密</span><br>
+            地下指揮中心
+          </p>
+        </div>
+
+        <div class="photo-card" onclick="showPhotoModal('office', '📋 吳廷琰辦公室', '保持原狀的總統辦公室，見證南越最後的日子')">
+          <div class="photo-frame">📋</div>
+          <p class="photo-caption">
+            <span class="photo-year">總統府</span><br>
+            吳廷琰辦公室
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Key Facts -->
+    <section class="article-section">
+      <div class="section-header">
+        <div class="section-number">III</div>
+        <h2 class="section-title">關鍵數據</h2>
+      </div>
+
+      <div class="fact-grid">
+        <div class="fact-card">
+          <div class="fact-icon">🏗️</div>
+          <div class="fact-number">1868</div>
+          <div class="fact-label">宮殿初建年份</div>
+        </div>
+        <div class="fact-card">
+          <div class="fact-icon">📐</div>
+          <div class="fact-number">25,000㎡</div>
+          <div class="fact-label">佔地面積</div>
+        </div>
+        <div class="fact-card">
+          <div class="fact-icon">🏛️</div>
+          <div class="fact-number">3層</div>
+          <div class="fact-label">地上建築樓層</div>
+        </div>
+        <div class="fact-card">
+          <div class="fact-icon">🕳️</div>
+          <div class="fact-number">-1層</div>
+          <div class="fact-label">地下指揮中心</div>
+        </div>
+        <div class="fact-card">
+          <div class="fact-icon">🚢</div>
+          <div class="fact-number">843</div>
+          <div class="fact-label">坦克編號</div>
+        </div>
+        <div class="fact-card">
+          <div class="fact-icon">📅</div>
+          <div class="fact-number">04.30</div>
+          <div class="fact-label">統一日 (1975)</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Chung's Connection -->
+    <section class="article-section">
+      <div class="section-header">
+        <div class="section-number">📝</div>
+        <h2 class="section-title">給 Chung 的備忘</h2>
+      </div>
+
+      <p style="line-height: 1.8; margin-bottom: 1rem;">
+        昨天下午你在 Discord 上問起獨立宮的歷史，這份互動式時光機是 <strong>3:30 Daily Lab</strong> 的創意回應 🎨
+      </p>
+
+      <div class="quote-block">
+        <p class="quote-text">
+          有時候，一個問題就能開啟一扇門。<br>
+          感謝你的好奇，讓這個凌晨多了意義。
+        </p>
+        <p class="quote-source">— 來自 2026-05-06 03:30 Daily Lab</p>
+      </div>
+
+      <div class="btn-group">
+        <button class="btn" onclick="saveToLocal()">💾 儲存到瀏覽器</button>
+        <button class="btn" onclick="shareMemory()">🔗 分享這個回憶</button>
+        <button class="btn" onclick="window.print()">🖨️ 列印</button>
+      </div>
+    </section>
+  </main>
+
+  <div class="flag-stripe"></div>
+
+  <footer class="footer">
+    <p>🏛️ 越南獨立宮時光機 | 靈感來自 2026-05-05 下午 Chung 的提問</p>
+    <p style="margin-top: 0.5rem;">Daily Lab @ 03:30 | 2026-05-06</p>
+  </footer>
+
+  <!-- Modal -->
+  <div class="modal" id="photoModal">
+    <div class="modal-content">
+      <button class="modal-close" onclick="closeModal()">×</button>
+      <h3 class="modal-title" id="modalTitle"></h3>
+      <div class="modal-body" id="modalBody"></div>
+    </div>
+  </div>
+
+  <script>
+    // Era display control
+    let currentEra = 'french';
+
+    const eraData = {
+      'french': {
+        title: '🎭 法屬時期 (1868-1945)',
+        color: '#5C4033',
+        description: '法國殖民者建造的權力象徵，白色宮殿見證殖民統治'
+      },
+      'south-vietnam': {
+        title: '🏛️ 南越時期 (1955-1975)',
+        color: '#B7410E',
+        description: '吳廷琰時期的政治中心，宮殿見證冷戰時代的分裂'
+      },
+      'reunification': {
+        title: '🚢 統一之後 (1975-至今)',
+        color: '#2D4A3E',
+        description: '越戰終結的歷史見證，今日的國家博物館'
+      }
+    };
+
+    function showEra(era) {
+      currentEra = era;
+      document.querySelectorAll('.btn-group .btn').forEach(btn => {
+        btn.classList.remove('active');
+        if (btn.textContent.includes(eraData[era].title.split(' ')[0])) {
+          btn.classList.add('active');
+        }
+      });
+      
+      // Scroll effect simulation
+      const timeline = document.querySelector('.timeline');
+      timeline.style.opacity = '0';
+      setTimeout(() => {
+        timeline.style.opacity = '1';
+      }, 300);
+    }
+
+    function scrollToYear(year) {
+      const items = document.querySelectorAll('.timeline-item');
+      items.forEach(item => {
+        item.style.borderLeftColor = '#C9A227'; // Default gold
+      });
+      
+      if (year === 'today') {
+        const todayItem = document.querySelector('[data-year="today"]');
+        if (todayItem) {
+          todayItem.style.borderLeftColor = '#DA251D';
+          todayItem.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      } else {
+        const targetItem = document.querySelector(`[data-year="${year}"]`);
+        if (targetItem) {
+          targetItem.style.borderLeftColor = '#DA251D';
+          targetItem.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }
+
+      // Highlight button
+      const btnId = `btn-${year}`;
+      document.querySelectorAll('.era-selector .btn').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      const targetBtn = document.getElementById(btnId);
+      if (targetBtn) targetBtn.classList.add('active');
+    }
+
+    function showPhotoModal(photoId, title, description) {
+      const modal = document.getElementById('photoModal');
+      document.getElementById('modalTitle').textContent = title;
+      document.getElementById('modalBody').innerHTML = `
+        <p style="font-size: 4rem; text-align: center; margin: 1rem 0;">${title.split(' ')[0]}</p>
+        <p style="line-height: 1.8;">${description}</p>
+        <p style="margin-top: 1rem; font-size: 0.9rem; color: #666;">
+          照片 ID: ${photoId}
+        </p>
+      `;
+      modal.classList.add('show');
+    }
+
+    function closeModal() {
+      document.getElementById('photoModal').classList.remove('show');
+    }
+
+    // Close modal on background click
+    document.getElementById('photoModal').addEventListener('click', function(e) {
+      if (e.target === this) closeModal();
+    });
+
+    function saveToLocal() {
+      const data = {
+        date: '2026-05-06',
+        project: '越南獨立宮時光機',
+        viewed: true,
+        timestamp: new Date().toISOString()
+      };
+      localStorage.setItem('daily-lab-20260506', JSON.stringify(data));
+      alert('已儲存到瀏覽器！💾');
+    }
+
+    function shareMemory() {
+      const text = '🏛️ 越南獨立宮時光機 | Daily Lab 2026-05-06\n';
+      const url = 'https://chung223.github.io/daily-lab/2026-05-06/';
+      if (navigator.share) {
+        navigator.share({ title: '越南獨立宮時光機', text: text, url: url });
+      } else {
+        navigator.clipboard.writeText(text + url);
+        alert('連結已複製！🔗');
+      }
+    }
+
+    // Keyboard navigation
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') closeModal();
+    });
+
+    // Intersection Observer for timeline animations
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.style.opacity = '1';
+          entry.target.style.transform = 'translateX(0)';
+        }
+      });
+    }, { threshold: 0.2 });
+
+    document.querySelectorAll('.timeline-item').forEach(item => {
+      item.style.opacity = '0';
+      item.style.transform = 'translateX(-20px)';
+      item.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+      observer.observe(item);
+    });
+
+    // Initial animation
+    setTimeout(() => {
+      document.querySelectorAll('.timeline-item').forEach((item, index) => {
+        setTimeout(() => {
+          item.style.opacity = '1';
+          item.style.transform = 'translateX(0)';
+        }, index * 200);
+      });
+    }, 500);
+  </script>
+</body>
+</html>

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BOLD 美學範例</title>
+  <style>
+    body { font-family: system-ui, sans-serif; margin: 0; padding: 20px; background: #111; color: #fff; }
+    h1 { text-align: center; margin-bottom: 30px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+    .card { border-radius: 12px; padding: 24px; min-height: 200px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
+    
+    /* 1. Brutally Minimal */
+    .minimal { background: #000; }
+    .minimal h2 { font-size: 3rem; font-weight: 900; letter-spacing: -2px; margin: 0; }
+    .minimal p { color: #666; margin-top: 10px; }
+    
+    /* 2. Maximalist Chaos */
+    .chaos { background: linear-gradient(45deg, #ff0066, #00ff66, #0066ff, #ff0066); background-size: 400% 400%; animation: chaosBg 5s ease infinite; position: relative; overflow: hidden; }
+    .chaos::before { content: "★"; position: absolute; top: 10px; left: 20px; font-size: 40px; transform: rotate(15deg); }
+    .chaos::after { content: "♦"; position: absolute; bottom: 20px; right: 30px; font-size: 60px; color: rgba(255,255,255,0.3); }
+    .chaos h2 { font-size: 2rem; text-shadow: 2px 2px 0 #000; position: relative; }
+    .chaos p { background: #fff; color: #000; padding: 5px 15px; transform: rotate(-2deg); }
+    
+    /* 3. Retro-Futuristic */
+    .retro { background: #0a0a12; border: 2px solid #00ff88; box-shadow: 0 0 20px #00ff8844, inset 0 0 30px #00ff8811; }
+    .retro h2 { color: #00ff88; font-family: 'Courier New', monospace; text-shadow: 0 0 10px #00ff88; letter-spacing: 4px; }
+    .retro p { color: #00ff88; opacity: 0.7; }
+    .retro::before { content: ">_"; position: absolute; top: 10px; left: 15px; color: #00ff88; font-family: monospace; }
+    
+    /* 4. Luxury/Refined */
+    .luxury { background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%); border: 1px solid #d4af37; }
+    .luxury h2 { font-family: 'Times New Roman', serif; color: #d4af37; font-size: 1.8rem; letter-spacing: 3px; }
+    .luxury p { color: #888; font-style: italic; }
+    .luxury::before { content: "✦"; color: #d4af37; font-size: 30px; margin-bottom: 10px; }
+    
+    /* 5. Brutalist/Raw */
+    .brutalist { background: #f5f5f5; color: #000; border: 4px solid #000; }
+    .brutalist h2 { font-family: Helvetica, Arial, sans-serif; font-weight: 900; text-transform: uppercase; letter-spacing: -1px; }
+    .brutalist p { font-family: monospace; background: #000; color: #fff; padding: 10px; }
+    
+    /* 6. Art Deco */
+    .deco { background: linear-gradient(180deg, #1a1510 0%, #2a2015 100%); border: 3px double #c9a86c; }
+    .deco h2 { font-family: Georgia, serif; color: #c9a86c; letter-spacing: 8px; }
+    .deco p { color: #8a7a5a; }
+    .deco::before { content: "▮▯▮▯▮"; color: #c9a86c; letter-spacing: 10px; }
+    
+    .label { font-size: 0.75rem; opacity: 0.5; margin-bottom: 8px; }
+  </style>
+</head>
+<body>
+  <h1>🎨 BOLD 美學方向範例</h1>
+  <div class="grid">
+    <div class="card minimal">
+      <span class="label">Brutally Minimal</span>
+      <h2>LESS IS MORE</h2>
+      <p>稀疏 · 單色 · 粗大Typography</p>
+    </div>
+    <div class="card chaos">
+      <span class="label" style="color:#fff">Maximalist Chaos</span>
+      <h2>MORE IS MORE</h2>
+      <p>層次 · 疊加 · 失控</p>
+    </div>
+    <div class="card retro">
+      <span class="label">Retro-Futuristic</span>
+      <h2>SYSTEM_ONLINE</h2>
+      <p>霓虹 · CRT · 賽博龐克</p>
+    </div>
+    <div class="card luxury">
+      <span class="label">Luxury/Refined</span>
+      <h2>ÉLÉGANCE</h2>
+      <p>金色 · 奢華 · 微妙動畫</p>
+    </div>
+    <div class="card brutalist">
+      <span class="label">Brutalist/Raw</span>
+      <h2>NO STYLE IS STYLE</h2>
+      <p>RAW CODE</p>
+    </div>
+    <div class="card deco">
+      <span class="label">Art Deco/Geometric</span>
+      <h2>GOLDEN AGE</h2>
+      <p>對稱 · 幾何 · 裝飾藝術</p>
+    </div>
+  </div>
+</body>
+</html>

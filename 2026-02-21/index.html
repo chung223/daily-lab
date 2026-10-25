@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stardust Memory — 星塵記憶</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-deep: #05050a;
+      --bg-primary: #0a0a12;
+      --text-primary: #e8e6e3;
+      --text-secondary: #6b6b7b;
+      --accent-gold: #d4a853;
+      --accent-coral: #e07a5f;
+      --accent-cyan: #81b29a;
+      --accent-violet: #9d8cbb;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Noto Serif TC', serif;
+      background: var(--bg-deep);
+      color: var(--text-primary);
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* Cosmic background layers */
+    .bg-layer {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .bg-deep {
+      background: radial-gradient(ellipse at 50% 0%, #12121f 0%, var(--bg-deep) 70%);
+    }
+
+    .stars {
+      background-image: 
+        radial-gradient(1px 1px at 20px 30px, #fff, transparent),
+        radial-gradient(1px 1px at 40px 70px, rgba(255,255,255,0.8), transparent),
+        radial-gradient(1px 1px at 50px 160px, rgba(255,255,255,0.6), transparent),
+        radial-gradient(1px 1px at 90px 40px, #fff, transparent),
+        radial-gradient(1px 1px at 130px 80px, rgba(255,255,255,0.7), transparent),
+        radial-gradient(1.5px 1.5px at 160px 120px, #fff, transparent),
+        radial-gradient(1px 1px at 200px 50px, rgba(255,255,255,0.5), transparent),
+        radial-gradient(1px 1px at 250px 180px, #fff, transparent),
+        radial-gradient(1px 1px at 280px 90px, rgba(255,255,255,0.6), transparent),
+        radial-gradient(1.5px 1.5px at 320px 150px, #fff, transparent);
+      background-repeat: repeat;
+      background-size: 350px 200px;
+      animation: twinkle 8s ease-in-out infinite;
+    }
+
+    .stars:nth-child(2) {
+      background-size: 400px 250px;
+      animation-delay: -2s;
+      opacity: 0.6;
+    }
+
+    .stars:nth-child(3) {
+      background-size: 500px 300px;
+      animation-delay: -4s;
+      opacity: 0.4;
+    }
+
+    @keyframes twinkle {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    /* Nebula glow */
+    .nebula {
+      position: fixed;
+      width: 600px;
+      height: 600px;
+      border-radius: 50%;
+      filter: blur(120px);
+      opacity: 0.15;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .nebula-1 {
+      top: -200px;
+      left: -100px;
+      background: var(--accent-violet);
+      animation: drift 20s ease-in-out infinite;
+    }
+
+    .nebula-2 {
+      bottom: -200px;
+      right: -100px;
+      background: var(--accent-coral);
+      animation: drift 25s ease-in-out infinite reverse;
+    }
+
+    @keyframes drift {
+      0%, 100% { transform: translate(0, 0); }
+      50% { transform: translate(30px, 20px); }
+    }
+
+    /* Grain overlay */
+    .grain {
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+      opacity: 0.035;
+      pointer-events: none;
+      z-index: 100;
+    }
+
+    /* Main content */
+    main {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 2rem 1.5rem;
+    }
+
+    .container {
+      max-width: 520px;
+      width: 100%;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 2.2rem;
+      font-weight: 600;
+      letter-spacing: 0.15em;
+      margin-bottom: 0.5rem;
+      background: linear-gradient(135deg, var(--accent-gold) 0%, var(--accent-coral) 50%, var(--accent-violet) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .subtitle {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      letter-spacing: 0.2em;
+      margin-bottom: 3rem;
+      text-transform: uppercase;
+    }
+
+    /* Input area */
+    .input-wrapper {
+      position: relative;
+      margin-bottom: 2rem;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 1.2rem 1.5rem;
+      font-family: 'Noto Serif TC', serif;
+      font-size: 1rem;
+      color: var(--text-primary);
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      outline: none;
+      transition: all 0.3s ease;
+    }
+
+    input[type="text"]::placeholder {
+      color: var(--text-secondary);
+    }
+
+    input[type="text"]:focus {
+      border-color: rgba(212, 168, 83, 0.4);
+      background: rgba(255, 255, 255, 0.05);
+      box-shadow: 0 0 30px rgba(212, 168, 83, 0.1);
+    }
+
+    .input-hint {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--text-secondary);
+      margin-top: 0.8rem;
+      letter-spacing: 0.1em;
+    }
+
+    /* Counter */
+    .counter {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      margin-top: 2rem;
+    }
+
+    .counter span {
+      color: var(--accent-gold);
+      font-size: 1.4rem;
+      font-weight: 400;
+      margin: 0 0.3rem;
+    }
+
+    /* Floating memories container */
+    .memories-container {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 5;
+      overflow: hidden;
+    }
+
+    .memory {
+      position: absolute;
+      font-size: 0.85rem;
+      color: var(--text-primary);
+      white-space: nowrap;
+      opacity: 0;
+      animation: floatUp 8s ease-out forwards;
+      pointer-events: none;
+      text-shadow: 0 0 10px rgba(212, 168, 83, 0.5);
+    }
+
+    @keyframes floatUp {
+      0% {
+        opacity: 0;
+        transform: translateY(0) scale(0.8);
+      }
+      10% {
+        opacity: 0.9;
+        transform: translateY(-20px) scale(1);
+      }
+      80% {
+        opacity: 0.6;
+      }
+      100% {
+        opacity: 0;
+        transform: translateY(-400px) scale(0.5);
+      }
+    }
+
+    /* Particle burst */
+    .particle {
+      position: absolute;
+      width: 3px;
+      height: 3px;
+      border-radius: 50%;
+      pointer-events: none;
+      animation: particleBurst 1.5s ease-out forwards;
+    }
+
+    @keyframes particleBurst {
+      0% {
+        opacity: 1;
+        transform: translate(0, 0) scale(1);
+      }
+      100% {
+        opacity: 0;
+        transform: translate(var(--tx), var(--ty)) scale(0);
+      }
+    }
+
+    /* Mobile */
+    @media (max-width: 480px) {
+      h1 {
+        font-size: 1.6rem;
+      }
+      .subtitle {
+        font-size: 0.7rem;
+      }
+      input[type="text"] {
+        padding: 1rem 1.2rem;
+        font-size: 0.95rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-layer bg-deep"></div>
+  <div class="bg-layer stars"></div>
+  <div class="bg-layer stars"></div>
+  <div class="bg-layer stars"></div>
+  <div class="nebula nebula-1"></div>
+  <div class="nebula nebula-2"></div>
+  <div class="grain"></div>
+
+  <div class="memories-container" id="memories"></div>
+
+  <main>
+    <div class="container">
+      <h1>星塵記憶</h1>
+      <p class="subtitle">Stardust Memory</p>
+
+      <div class="input-wrapper">
+        <input 
+          type="text" 
+          id="memoryInput" 
+          placeholder="寫下一個瞬間..." 
+          autocomplete="off"
+        >
+        <p class="input-hint">按下 Enter 將記憶化為星塵</p>
+      </div>
+
+      <div class="counter">
+        已有 <span id="count">0</span> 段記憶飛向星河
+      </div>
+    </div>
+  </main>
+
+  <script>
+    const input = document.getElementById('memoryInput');
+    const memoriesContainer = document.getElementById('memories');
+    const countEl = document.getElementById('count');
+
+    // Load count from localStorage
+    let memoryCount = parseInt(localStorage.getItem('stardustCount') || '0');
+    countEl.textContent = memoryCount;
+
+    // Create floating memory
+    function createMemory(text) {
+      const el = document.createElement('div');
+      el.className = 'memory';
+      el.textContent = text;
+      
+      // Random horizontal position
+      const x = Math.random() * (window.innerWidth - 100) + 50;
+      el.style.left = `${x}px`;
+      el.style.top = `${window.innerHeight - 100}px`;
+      
+      // Random color
+      const colors = ['var(--accent-gold)', 'var(--accent-coral)', 'var(--accent-cyan)', 'var(--accent-violet)'];
+      el.style.color = colors[Math.floor(Math.random() * colors.length)];
+      
+      memoriesContainer.appendChild(el);
+
+      // Create particle burst
+      createParticles(x, window.innerHeight - 100);
+
+      // Remove after animation
+      setTimeout(() => el.remove(), 8000);
+    }
+
+    // Create particle burst effect
+    function createParticles(x, y) {
+      const colors = ['#d4a853', '#e07a5f', '#81b29a', '#9d8cbb', '#fff'];
+      
+      for (let i = 0; i < 12; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+        particle.style.left = `${x}px`;
+        particle.style.top = `${y}px`;
+        particle.style.background = colors[Math.floor(Math.random() * colors.length)];
+        
+        const angle = (Math.PI * 2 * i) / 12;
+        const distance = 30 + Math.random() * 40;
+        particle.style.setProperty('--tx', `${Math.cos(angle) * distance}px`);
+        particle.style.setProperty('--ty', `${Math.sin(angle) * distance}px`);
+        
+        memoriesContainer.appendChild(particle);
+        
+        setTimeout(() => particle.remove(), 1500);
+      }
+    }
+
+    // Handle input
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && input.value.trim()) {
+        const text = input.value.trim();
+        
+        // Create floating memory
+        createMemory(text);
+        
+        // Update counter
+        memoryCount++;
+        localStorage.setItem('stardustCount', memoryCount.toString());
+        countEl.textContent = memoryCount;
+        
+        // Clear input
+        input.value = '';
+      }
+    });
+  </script>
+</body>
+</html>

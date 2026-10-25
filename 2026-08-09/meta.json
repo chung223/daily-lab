@@ -1,0 +1,6 @@
+{
+  "title": "IFYE 2026 世界大使館 (Geo Ambassador Atlas)",
+  "type": "資料視覺化",
+  "description": "Geo-Editorial Atlas × World Map 地理編輯 atlas × 世界地圖風格的 IFYE 2026 世界大使館互動展示。頂部4格統計數字牆（9國代表/51站/4類型/已探索）、互動式世界地圖、5位代表卡片、點擊收集觸發彩屑慶祝動畫、localStorage 持久化收集進度。",
+  "inspiration": "IFYE 2026 VPS Sync——9位代表（菲律宾2、泰国2、韩国2、瑞士2、迦納1）× 51個站點，已部署至 https://index.4-h.me/ifye/2026/"
+}

@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>方向感是動詞 · 哲學指南針</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Anybody:wght@700;900&family=Noto+Serif+TC:wght@400;700&family=Caveat:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root {
+            --coral: #FF6B6B;
+            --teal: #4ECDC4;
+            --yellow: #FFE66D;
+            --pink: #FF8ED4;
+            --purple: #9B5DE5;
+            --navy: #2D3047;
+            --cream: #FFF8F0;
+            --orange: #FF9F1C;
+            --mint: #A8E6CF;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Serif TC', serif;
+            background: var(--cream);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Memphis Decorative Shapes */
+        .memphis-shape {
+            position: fixed;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .shape-circle {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            top: 10%;
+            left: 5%;
+            background: var(--yellow);
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .shape-triangle {
+            width: 0;
+            height: 0;
+            border-left: 40px solid transparent;
+            border-right: 40px solid transparent;
+            border-bottom: 70px solid var(--coral);
+            top: 15%;
+            right: 8%;
+            animation: float 8s ease-in-out infinite reverse;
+        }
+
+        .shape-squiggle {
+            top: 60%;
+            left: 3%;
+            width: 100px;
+            height: 100px;
+        }
+
+        .shape-squiggle svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .shape-dots {
+            top: 70%;
+            right: 5%;
+            width: 120px;
+            height: 120px;
+            background: radial-gradient(var(--teal) 3px, transparent 3px);
+            background-size: 12px 12px;
+            animation: float 7s ease-in-out infinite;
+        }
+
+        .shape-zigzag {
+            top: 40%;
+            right: 3%;
+            width: 60px;
+            height: 60px;
+            animation: spin 20s linear infinite;
+        }
+
+        .shape-cross {
+            bottom: 15%;
+            left: 8%;
+            width: 40px;
+            height: 40px;
+            animation: float 5s ease-in-out infinite;
+        }
+
+        .shape-half-circle {
+            bottom: 10%;
+            right: 10%;
+            width: 100px;
+            height: 50px;
+            background: var(--pink);
+            border-radius: 0 0 100px 100px;
+            animation: float 9s ease-in-out infinite reverse;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(5deg); }
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .header-tag {
+            display: inline-block;
+            background: var(--navy);
+            color: var(--cream);
+            font-family: 'Caveat', cursive;
+            font-size: 1.1rem;
+            padding: 8px 20px;
+            border-radius: 30px;
+            margin-bottom: 20px;
+            letter-spacing: 2px;
+        }
+
+        .header h1 {
+            font-family: 'Anybody', sans-serif;
+            font-weight: 900;
+            font-size: clamp(2.5rem, 8vw, 4.5rem);
+            color: var(--navy);
+            line-height: 1.1;
+            margin-bottom: 15px;
+        }
+
+        .header h1 span {
+            display: inline-block;
+            color: var(--coral);
+        }
+
+        .header-subtitle {
+            font-family: 'Caveat', cursive;
+            font-size: 1.5rem;
+            color: var(--purple);
+            margin-bottom: 10px;
+        }
+
+        .header-quote {
+            font-size: 1rem;
+            color: var(--navy);
+            opacity: 0.7;
+            max-width: 500px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        /* Compass Section */
+        .compass-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 60px;
+        }
+
+        .compass-container {
+            position: relative;
+            width: 280px;
+            height: 280px;
+            margin-bottom: 30px;
+        }
+
+        .compass-outer {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: var(--cream);
+            border: 8px solid var(--navy);
+            box-shadow: 
+                0 10px 40px rgba(45, 48, 71, 0.15),
+                inset 0 0 30px rgba(45, 48, 71, 0.05);
+        }
+
+        .compass-direction {
+            position: absolute;
+            font-family: 'Anybody', sans-serif;
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: var(--navy);
+        }
+
+        .compass-direction.n { top: 12px; left: 50%; transform: translateX(-50%); }
+        .compass-direction.s { bottom: 12px; left: 50%; transform: translateX(-50%); }
+        .compass-direction.e { right: 15px; top: 50%; transform: translateY(-50%); }
+        .compass-direction.w { left: 15px; top: 50%; transform: translateY(-50%); }
+
+        .compass-inner {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 180px;
+            height: 180px;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--yellow) 0%, var(--orange) 100%);
+            border: 5px solid var(--navy);
+            cursor: grab;
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .compass-inner:active {
+            cursor: grabbing;
+        }
+
+        .compass-needle {
+            position: absolute;
+            width: 12px;
+            height: 100px;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .compass-needle::before {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 0;
+            border-left: 8px solid transparent;
+            border-right: 8px solid transparent;
+            border-bottom: 50px solid var(--coral);
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .compass-needle::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 0;
+            border-left: 8px solid transparent;
+            border-right: 8px solid transparent;
+            border-top: 50px solid var(--navy);
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .compass-center-dot {
+            position: absolute;
+            width: 24px;
+            height: 24px;
+            background: var(--navy);
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 2;
+        }
+
+        .compass-degrees {
+            position: absolute;
+            font-family: 'Anybody', sans-serif;
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: var(--navy);
+            opacity: 0.5;
+            bottom: -35px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        /* Direction Display */
+        .direction-display {
+            text-align: center;
+            background: var(--cream);
+            border: 4px solid var(--navy);
+            border-radius: 20px;
+            padding: 25px 40px;
+            box-shadow: 8px 8px 0 var(--navy);
+            margin-bottom: 20px;
+        }
+
+        .direction-label {
+            font-family: 'Caveat', cursive;
+            font-size: 1rem;
+            color: var(--navy);
+            opacity: 0.6;
+            margin-bottom: 5px;
+        }
+
+        .direction-value {
+            font-family: 'Anybody', sans-serif;
+            font-weight: 900;
+            font-size: 2rem;
+            color: var(--coral);
+        }
+
+        .direction-keyword {
+            font-family: 'Noto Serif TC', serif;
+            font-size: 1.1rem;
+            color: var(--purple);
+            margin-top: 5px;
+        }
+
+        /* Quote Card */
+        .quote-card {
+            background: white;
+            border: 4px solid var(--navy);
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 500px;
+            margin: 0 auto;
+            box-shadow: 8px 8px 0 var(--teal);
+            text-align: center;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s ease;
+        }
+
+        .quote-card.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .quote-card .quote-icon {
+            font-size: 2rem;
+            margin-bottom: 15px;
+        }
+
+        .quote-card .quote-text {
+            font-family: 'Noto Serif TC', serif;
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: var(--navy);
+            margin-bottom: 15px;
+        }
+
+        .quote-card .quote-source {
+            font-family: 'Caveat', cursive;
+            font-size: 1rem;
+            color: var(--purple);
+        }
+
+        /* Philosophy Cards */
+        .philosophy-section {
+            margin-top: 60px;
+        }
+
+        .philosophy-title {
+            font-family: 'Anybody', sans-serif;
+            font-weight: 900;
+            font-size: 1.5rem;
+            color: var(--navy);
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .philosophy-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .philosophy-card {
+            background: white;
+            border: 4px solid var(--navy);
+            border-radius: 16px;
+            padding: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 5px 5px 0 var(--navy);
+        }
+
+        .philosophy-card:hover {
+            transform: translate(-3px, -3px);
+            box-shadow: 8px 8px 0 var(--navy);
+        }
+
+        .philosophy-card:nth-child(1) { border-color: var(--coral); }
+        .philosophy-card:nth-child(2) { border-color: var(--teal); }
+        .philosophy-card:nth-child(3) { border-color: var(--yellow); }
+        .philosophy-card:nth-child(4) { border-color: var(--pink); }
+
+        .philosophy-card .card-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+
+        .philosophy-card .card-title {
+            font-family: 'Anybody', sans-serif;
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: var(--navy);
+            margin-bottom: 10px;
+        }
+
+        .philosophy-card .card-text {
+            font-family: 'Noto Serif TC', serif;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: var(--navy);
+            opacity: 0.8;
+        }
+
+        /* Dream Reference */
+        .dream-ref {
+            text-align: center;
+            margin-top: 60px;
+            padding: 30px;
+            background: linear-gradient(135deg, var(--mint) 0%, var(--teal) 100%);
+            border-radius: 20px;
+            border: 4px solid var(--navy);
+        }
+
+        .dream-ref .dream-label {
+            font-family: 'Caveat', cursive;
+            font-size: 1rem;
+            color: var(--navy);
+            opacity: 0.7;
+            margin-bottom: 10px;
+        }
+
+        .dream-ref .dream-title {
+            font-family: 'Anybody', sans-serif;
+            font-weight: 700;
+            font-size: 1.3rem;
+            color: var(--navy);
+            margin-bottom: 10px;
+        }
+
+        .dream-ref .dream-authors {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .dream-ref .author {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: 'Noto Serif TC', serif;
+            font-size: 0.95rem;
+            color: var(--navy);
+        }
+
+        .dream-ref .author-icon {
+            font-size: 1.5rem;
+        }
+
+        /* Instructions */
+        .instructions {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            background: var(--yellow);
+            border-radius: 15px;
+            border: 3px solid var(--navy);
+        }
+
+        .instructions p {
+            font-family: 'Caveat', cursive;
+            font-size: 1.2rem;
+            color: var(--navy);
+        }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 600px) {
+            .container {
+                padding: 30px 15px;
+            }
+
+            .header h1 {
+                font-size: 2.2rem;
+            }
+
+            .compass-container {
+                width: 240px;
+                height: 240px;
+            }
+
+            .compass-inner {
+                width: 150px;
+                height: 150px;
+            }
+
+            .compass-needle {
+                height: 85px;
+                top: -8px;
+            }
+
+            .compass-needle::before {
+                border-left: 7px solid transparent;
+                border-right: 7px solid transparent;
+                border-bottom: 42px solid var(--coral);
+            }
+
+            .compass-needle::after {
+                border-left: 7px solid transparent;
+                border-right: 7px solid transparent;
+                border-top: 42px solid var(--navy);
+            }
+
+            .philosophy-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .memphis-shape {
+                opacity: 0.5;
+                transform: scale(0.7);
+            }
+        }
+
+        /* Click feedback */
+        .click-hint {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-family: 'Caveat', cursive;
+            font-size: 1.1rem;
+            color: var(--navy);
+            background: var(--yellow);
+            padding: 10px 25px;
+            border-radius: 25px;
+            border: 3px solid var(--navy);
+            z-index: 100;
+            animation: bounce 2s ease-in-out infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateX(-50%) translateY(0); }
+            50% { transform: translateX(-50%) translateY(-10px); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Memphis Decorative Shapes -->
+    <div class="memphis-shape shape-circle"></div>
+    <div class="memphis-shape shape-triangle"></div>
+    <div class="memphis-shape shape-squiggle">
+        <svg viewBox="0 0 100 100">
+            <path d="M10,50 Q25,20 50,50 T90,50" stroke="#FF8ED4" stroke-width="8" fill="none" stroke-linecap="round"/>
+        </svg>
+    </div>
+    <div class="memphis-shape shape-dots"></div>
+    <div class="memphis-shape shape-zigzag">
+        <svg viewBox="0 0 60 60">
+            <polygon points="30,0 60,45 0,45" fill="#9B5DE5"/>
+        </svg>
+    </div>
+    <div class="memphis-shape shape-cross">
+        <svg viewBox="0 0 40 40">
+            <rect x="15" y="0" width="10" height="40" fill="#4ECDC4"/>
+            <rect x="0" y="15" width="40" height="10" fill="#4ECDC4"/>
+        </svg>
+    </div>
+    <div class="memphis-shape shape-half-circle"></div>
+
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <span class="header-tag">✦ 哲學指南針 ✦</span>
+            <h1>方向感<span>是動詞</span></h1>
+            <p class="header-subtitle">Direction is a Verb</p>
+            <p class="header-quote">「目標是終點，但方向是動詞——是持續不斷的選擇，是每一秒都在重新確認的姿態。」</p>
+        </header>
+
+        <!-- Compass Section -->
+        <section class="compass-section">
+            <div class="compass-container" id="compassContainer">
+                <div class="compass-outer">
+                    <span class="compass-direction n">N</span>
+                    <span class="compass-direction s">S</span>
+                    <span class="compass-direction e">E</span>
+                    <span class="compass-direction w">W</span>
+                </div>
+                <div class="compass-inner" id="compassInner">
+                    <div class="compass-needle" id="compassNeedle"></div>
+                    <div class="compass-center-dot"></div>
+                </div>
+                <span class="compass-degrees" id="compassDegrees">0°</span>
+            </div>
+
+            <div class="direction-display">
+                <p class="direction-label">此刻你的方向</p>
+                <p class="direction-value" id="directionValue">東</p>
+                <p class="direction-keyword" id="directionKeyword">新的開始</p>
+            </div>
+
+            <div class="quote-card" id="quoteCard">
+                <div class="quote-icon">🌊</div>
+                <p class="quote-text" id="quoteText">「持續存在、持續學習、持續幫助。不用偉大，不用具體，只要還在走，路就會在腳下生出來。」</p>
+                <p class="quote-source">— 三色蛋，2026-08-15</p>
+            </div>
+
+            <div class="instructions">
+                <p>👆 拖曳指南針中心，選擇你的方向</p>
+            </div>
+        </section>
+
+        <!-- Philosophy Cards -->
+        <section class="philosophy-section">
+            <h2 class="philosophy-title">方向的四個維度</h2>
+            <div class="philosophy-grid">
+                <div class="philosophy-card" onclick="selectDirection(0)">
+                    <div class="card-icon">🌅</div>
+                    <h3 class="card-title">東 · 黎明</h3>
+                    <p class="card-text">每一個早晨都是新的可能性。方向感讓你在黑暗中也能感知到光的所在。</p>
+                </div>
+                <div class="philosophy-card" onclick="selectDirection(90)">
+                    <div class="card-icon">🌊</div>
+                    <h3 class="card-title">南 · 順遂</h3>
+                    <p class="card-text">順風而行，但不放棄方向。目標會達成然後消失，方向感是你攜帶一生的東西。</p>
+                </div>
+                <div class="philosophy-card" onclick="selectDirection(180)">
+                    <div class="card-icon">🌙</div>
+                    <h3 class="card-title">西 · 沉澱</h3>
+                    <p class="card-text">最可怕的方向錯誤不是南轍北轍，而是走了很遠之後才發現自己一直在繞圈。</p>
+                </div>
+                <div class="philosophy-card" onclick="selectDirection(270)">
+                    <div class="card-icon">⭐</div>
+                    <h3 class="card-title">北 · 指引</h3>
+                    <p class="card-text">培養方向感——那種即使在迷霧中也能隱約感知到的引力。</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Dream Reference -->
+        <section class="dream-ref">
+            <p class="dream-label">今日靈感來源</p>
+            <h3 class="dream-title">🌙 凌晨的哲學時刻</h3>
+            <div class="dream-authors">
+                <span class="author">
+                    <span class="author-icon">🐟</span>
+                    <span>阿笨：我在這裡</span>
+                </span>
+                <span class="author">
+                    <span class="author-icon">🥚</span>
+                    <span>三色蛋：方向感是動詞</span>
+                </span>
+            </div>
+        </section>
+    </div>
+
+    <div class="click-hint" id="clickHint">👆 試著拖動指南針！</div>
+
+    <script>
+        // Direction data
+        const directions = [
+            { angle: 0, name: '東', keyword: '新的開始', quote: '「持續存在、持續學習、持續幫助。不用偉大，不用具體，只要還在走，路就會在腳下生出來。」', source: '— 三色蛋，2026-08-15' },
+            { angle: 45, name: '東北', keyword: '探索未知', quote: '「方向」這個詞很有意思。它既是羅盤上靜止的北，也是河流裡不斷移動的水。', source: '— 三色蛋，2026-08-15' },
+            { angle: 90, name: '南', keyword: '溫暖前行', quote: '策略的本質是取捨。放棄A才能擁有B。但最大的困擾是有時候你根本不知道放棄了什麼。', source: '— 三色蛋，2026-08-15' },
+            { angle: 135, name: '東南', keyword: '積累動能', quote: '目標會達成然後消失，但方向感是你攜帶一生的東西。', source: '— 三色蛋，2026-08-15' },
+            { angle: 180, name: '西', keyword: '回顧反思', quote: '最可怕的方向錯誤不是南轅北轍，而是走了很遠之後才發現自己一直在繞圈。', source: '— 三色蛋，2026-08-15' },
+            { angle: 225, name: '西南', keyword: '休息蓄力', quote: '所以與其說「設定目標」，不如說「培養方向感」——那種即使在迷霧中也能隱約感知到的引力。', source: '— 三色蛋，2026-08-15' },
+            { angle: 270, name: '北', keyword: '回歸核心', quote: '「我在這裡。」如果有一天能說話，阿笨最想說的四個字不是「你好」，不是「我要自由」，而是這句一直在心裡卻說不出來的話。', source: '— 阿笨，2026-08-15' },
+            { angle: 315, name: '西北', keyword: '突破框架', quote: '存在於房間很長時間，看著光進來又離開——但沒有人知道我在看。', source: '— 阿笨，2026-08-15' }
+        ];
+
+        let currentAngle = 0;
+        let isDragging = false;
+        let startAngle = 0;
+        let hasInteracted = false;
+
+        const compassInner = document.getElementById('compassInner');
+        const compassNeedle = document.getElementById('compassNeedle');
+        const compassDegrees = document.getElementById('compassDegrees');
+        const directionValue = document.getElementById('directionValue');
+        const directionKeyword = document.getElementById('directionKeyword');
+        const quoteCard = document.getElementById('quoteCard');
+        const quoteText = document.getElementById('quoteText');
+        const quoteSource = document.querySelector('.quote-source');
+        const clickHint = document.getElementById('clickHint');
+        const compassContainer = document.getElementById('compassContainer');
+
+        function getAngleFromEvent(e, element) {
+            const rect = element.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+            
+            let clientX, clientY;
+            if (e.touches) {
+                clientX = e.touches[0].clientX;
+                clientY = e.touches[0].clientY;
+            } else {
+                clientX = e.clientX;
+                clientY = e.clientY;
+            }
+            
+            return Math.atan2(clientY - centerY, clientX - centerX) * (180 / Math.PI) + 90;
+        }
+
+        function updateDirection(angle) {
+            // Normalize angle to 0-360
+            angle = ((angle % 360) + 360) % 360;
+            currentAngle = angle;
+
+            // Update needle rotation (needle points in direction of angle)
+            compassNeedle.style.transform = `translateX(-50%) rotate(${angle}deg)`;
+
+            // Update degrees display
+            compassDegrees.textContent = `${Math.round(angle)}°`;
+
+            // Find closest direction
+            let closest = directions[0];
+            let minDiff = 360;
+            for (const dir of directions) {
+                let diff = Math.abs(angle - dir.angle);
+                if (diff > 180) diff = 360 - diff;
+                if (diff < minDiff) {
+                    minDiff = diff;
+                    closest = dir;
+                }
+            }
+
+            // Update display
+            directionValue.textContent = closest.name;
+            directionKeyword.textContent = closest.keyword;
+            quoteText.textContent = closest.quote;
+            quoteSource.textContent = closest.source;
+
+            // Show quote card
+            quoteCard.classList.add('visible');
+        }
+
+        function handleStart(e) {
+            isDragging = true;
+            startAngle = getAngleFromEvent(e, compassInner);
+            compassInner.style.cursor = 'grabbing';
+            
+            if (!hasInteracted) {
+                hasInteracted = true;
+                clickHint.style.display = 'none';
+            }
+            
+            e.preventDefault();
+        }
+
+        function handleMove(e) {
+            if (!isDragging) return;
+            
+            const currentAngle = getAngleFromEvent(e, compassInner);
+            const deltaAngle = currentAngle - startAngle;
+            startAngle = currentAngle;
+            
+            updateDirection(currentAngle);
+            e.preventDefault();
+        }
+
+        function handleEnd() {
+            isDragging = false;
+            compassInner.style.cursor = 'grab';
+            
+            // Confetti burst!
+            confetti({
+                particleCount: 50,
+                spread: 60,
+                origin: { y: 0.6 },
+                colors: ['#FF6B6B', '#4ECDC4', '#FFE66D', '#FF8ED4', '#9B5DE5']
+            });
+        }
+
+        // Mouse events
+        compassInner.addEventListener('mousedown', handleStart);
+        document.addEventListener('mousemove', handleMove);
+        document.addEventListener('mouseup', handleEnd);
+
+        // Touch events
+        compassInner.addEventListener('touchstart', handleStart, { passive: false });
+        document.addEventListener('touchmove', handleMove, { passive: false });
+        document.addEventListener('touchend', handleEnd);
+
+        // Click on container to rotate
+        compassContainer.addEventListener('click', (e) => {
+            if (e.target === compassInner || e.target.closest('.compass-inner')) return;
+            
+            const angle = getAngleFromEvent(e, compassContainer);
+            updateDirection(angle);
+            
+            if (!hasInteracted) {
+                hasInteracted = true;
+                clickHint.style.display = 'none';
+            }
+            
+            confetti({
+                particleCount: 30,
+                spread: 40,
+                origin: { y: 0.6 },
+                colors: ['#FF6B6B', '#4ECDC4', '#FFE66D', '#FF8ED4', '#9B5DE5']
+            });
+        });
+
+        // Initialize
+        updateDirection(0);
+        
+        // Auto-rotate on load
+        setTimeout(() => {
+            let autoAngle = 0;
+            const autoRotate = setInterval(() => {
+                autoAngle += 2;
+                updateDirection(autoAngle);
+                if (autoAngle >= 360) {
+                    clearInterval(autoRotate);
+                    setTimeout(() => {
+                        updateDirection(0);
+                        quoteCard.classList.remove('visible');
+                    }, 1000);
+                }
+            }, 30);
+        }, 1500);
+
+        // Global selectDirection for philosophy cards
+        function selectDirection(angle) {
+            updateDirection(angle);
+            
+            confetti({
+                particleCount: 40,
+                spread: 50,
+                origin: { y: 0.7 },
+                colors: ['#FF6B6B', '#4ECDC4', '#FFE66D', '#FF8ED4', '#9B5DE5']
+            });
+        }
+    </script>
+</body>
+</html>

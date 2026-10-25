@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🐬 腸道冲浪 - Dolphin Surf</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Noto+Sans+TC:wght@400;700&family=Caveat:wght@600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Fredoka', 'Noto Sans TC', sans-serif;
+      background: linear-gradient(180deg, #87CEEB 0%, #98FB98 50%, #F0E68C 100%);
+      min-height: 100vh;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* 沙灘背景 */
+    .beach-bg {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 40%;
+      background: linear-gradient(180deg, #F4D03F 0%, #E8C547 50%, #D4AC0D 100%);
+      z-index: 0;
+    }
+
+    .beach-bg::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: repeating-linear-gradient(
+        90deg,
+        transparent,
+        transparent 20px,
+        rgba(255,255,255,0.1) 20px,
+        rgba(255,255,255,0.1) 40px
+      );
+    }
+
+    /* 海洋背景 */
+    .ocean-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 65%;
+      background: linear-gradient(180deg, #87CEEB 0%, #4682B4 60%, #5F9EA0 100%);
+      z-index: 0;
+    }
+
+    .wave {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 200%;
+      height: 60px;
+      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 120'%3E%3Cpath fill='%235F9EA0' d='M0,60 C150,120 350,0 600,60 C850,120 1050,0 1200,60 L1200,120 L0,120 Z'/%3E%3C/svg%3E") repeat-x;
+      animation: wave 8s linear infinite;
+    }
+
+    .wave:nth-child(2) {
+      bottom: 10px;
+      opacity: 0.5;
+      animation-duration: 10s;
+      animation-direction: reverse;
+    }
+
+    @keyframes wave {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    /* 遊戲容器 */
+    #game-container {
+      position: relative;
+      width: 100%;
+      height: 100vh;
+      z-index: 1;
+    }
+
+    /* 抬頭顯示 */
+    #hud {
+      position: fixed;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 20px;
+      z-index: 100;
+      background: rgba(255,255,255,0.9);
+      padding: 10px 25px;
+      border-radius: 50px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+      font-size: 1.2rem;
+      font-weight: 600;
+    }
+
+    .hud-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .hud-icon {
+      font-size: 1.4rem;
+    }
+
+    #score-display {
+      color: #FF6B6B;
+    }
+
+    #oil-display {
+      color: #FFD93D;
+    }
+
+    /* 開始畫面 */
+    #start-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 200;
+      color: white;
+      text-align: center;
+      padding: 20px;
+    }
+
+    #start-screen h1 {
+      font-size: 3rem;
+      margin-bottom: 10px;
+      text-shadow: 3px 3px 0 #333;
+    }
+
+    #start-screen .subtitle {
+      font-family: 'Caveat', cursive;
+      font-size: 1.8rem;
+      margin-bottom: 30px;
+      opacity: 0.9;
+    }
+
+    #start-screen .instructions {
+      background: rgba(255,255,255,0.2);
+      padding: 20px 30px;
+      border-radius: 20px;
+      margin-bottom: 30px;
+      font-size: 1.1rem;
+      line-height: 1.8;
+    }
+
+    .start-btn {
+      font-family: 'Fredoka', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      padding: 15px 50px;
+      border: none;
+      border-radius: 50px;
+      background: #FFD93D;
+      color: #333;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 6px 0 #E8B800, 0 10px 20px rgba(0,0,0,0.3);
+    }
+
+    .start-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 9px 0 #E8B800, 0 15px 25px rgba(0,0,0,0.3);
+    }
+
+    .start-btn:active {
+      transform: translateY(3px);
+      box-shadow: 0 3px 0 #E8B800, 0 5px 10px rgba(0,0,0,0.3);
+    }
+
+    /* 结束画面 */
+    #game-over {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.8);
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 200;
+      color: white;
+      text-align: center;
+    }
+
+    #game-over h2 {
+      font-size: 2.5rem;
+      margin-bottom: 20px;
+    }
+
+    #game-over .final-score {
+      font-size: 1.5rem;
+      margin-bottom: 30px;
+    }
+
+    #game-over .stats {
+      background: rgba(255,255,255,0.1);
+      padding: 20px 40px;
+      border-radius: 20px;
+      margin-bottom: 30px;
+    }
+
+    /* 海豚 */
+    #dolphin {
+      position: absolute;
+      width: 80px;
+      height: 50px;
+      z-index: 50;
+      transition: transform 0.1s;
+    }
+
+    .dolphin-body {
+      position: relative;
+      width: 100%;
+      height: 100%;
+    }
+
+    .dolphin-body::before {
+      content: '🐬';
+      font-size: 50px;
+      position: absolute;
+      top: 0;
+      left: 0;
+      filter: drop-shadow(2px 2px 3px rgba(0,0,0,0.3));
+    }
+
+    /* 魚油膠囊 */
+    .fish-oil {
+      position: absolute;
+      font-size: 30px;
+      z-index: 30;
+      animation: bobbing 1s ease-in-out infinite;
+      cursor: pointer;
+      filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.3));
+    }
+
+    @keyframes bobbing {
+      0%, 100% { transform: translateY(0) rotate(-5deg); }
+      50% { transform: translateY(-10px) rotate(5deg); }
+    }
+
+    /* 障礙物 */
+    .obstacle {
+      position: absolute;
+      font-size: 35px;
+      z-index: 25;
+      animation: float-up 2s ease-in-out infinite;
+      filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.2));
+    }
+
+    @keyframes float-up {
+      0%, 100% { transform: translateY(0) scale(1); }
+      50% { transform: translateY(-15px) scale(1.05); }
+    }
+
+    /* 雲朵 */
+    .cloud {
+      position: absolute;
+      font-size: 40px;
+      opacity: 0.8;
+      z-index: 5;
+      animation: drift 20s linear infinite;
+    }
+
+    @keyframes drift {
+      0% { transform: translateX(-100px); }
+      100% { transform: translateX(calc(100vw + 100px)); }
+    }
+
+    /* 波浪效果 */
+    .splash {
+      position: absolute;
+      font-size: 24px;
+      pointer-events: none;
+      animation: splash-up 0.5s ease-out forwards;
+      z-index: 60;
+    }
+
+    @keyframes splash-up {
+      0% { opacity: 1; transform: translateY(0) scale(1); }
+      100% { opacity: 0; transform: translateY(-50px) scale(1.5); }
+    }
+
+    /* 吃到魚油特效 */
+    .collect-effect {
+      position: absolute;
+      font-size: 28px;
+      pointer-events: none;
+      animation: collect 0.6s ease-out forwards;
+      z-index: 70;
+    }
+
+    @keyframes collect {
+      0% { opacity: 1; transform: scale(1); }
+      50% { transform: scale(1.8); }
+      100% { opacity: 0; transform: scale(2.5) translateY(-30px); }
+    }
+
+    /* 壓力波紋 */
+    .ripple {
+      position: absolute;
+      border: 3px solid rgba(255,255,255,0.6);
+      border-radius: 50%;
+      pointer-events: none;
+      animation: ripple-out 0.6s ease-out forwards;
+    }
+
+    @keyframes ripple-out {
+      0% { width: 0; height: 0; opacity: 1; }
+      100% { width: 100px; height: 100px; opacity: 0; margin: -50px; }
+    }
+
+    /* Combo 顯示 */
+    .combo-popup {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-family: 'Caveat', cursive;
+      font-size: 4rem;
+      color: #FFD93D;
+      text-shadow: 3px 3px 0 #E8B800, 5px 5px 10px rgba(0,0,0,0.3);
+      pointer-events: none;
+      animation: combo-pop 0.8s ease-out forwards;
+      z-index: 150;
+    }
+
+    @keyframes combo-pop {
+      0% { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
+      30% { opacity: 1; transform: translate(-50%, -50%) scale(1.2); }
+      100% { opacity: 0; transform: translate(-50%, -80%) scale(1); }
+    }
+
+    /* 漂浮裝飾 */
+    .float-decor {
+      position: fixed;
+      font-size: 2rem;
+      opacity: 0.6;
+      z-index: 2;
+      animation: float-around 15s ease-in-out infinite;
+    }
+
+    @keyframes float-around {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      25% { transform: translateY(-20px) rotate(10deg); }
+      75% { transform: translateY(20px) rotate(-10deg); }
+    }
+
+    /* 遊戲進行中的海洋底部裝飾 */
+    .underwater-decor {
+      position: fixed;
+      bottom: 15%;
+      left: 0;
+      width: 100%;
+      height: 100px;
+      z-index: 3;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .seaweed {
+      position: absolute;
+      bottom: 0;
+      font-size: 40px;
+      animation: sway 3s ease-in-out infinite;
+      transform-origin: bottom center;
+    }
+
+    @keyframes sway {
+      0%, 100% { transform: rotate(-10deg); }
+      50% { transform: rotate(10deg); }
+    }
+
+    /* Mobile touch area */
+    #touch-controls {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: none;
+      gap: 30px;
+      z-index: 100;
+    }
+
+    .touch-btn {
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.9);
+      border: 4px solid #FFD93D;
+      font-size: 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      user-select: none;
+      -webkit-user-select: none;
+      touch-action: manipulation;
+    }
+
+    .touch-btn:active {
+      background: #FFD93D;
+      transform: scale(0.95);
+    }
+
+    @media (max-width: 768px) {
+      #touch-controls {
+        display: flex;
+      }
+      
+      #start-screen h1 {
+        font-size: 2rem;
+      }
+      
+      #start-screen .subtitle {
+        font-size: 1.3rem;
+      }
+      
+      #hud {
+        font-size: 1rem;
+        padding: 8px 15px;
+        gap: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- 背景元素 -->
+  <div class="ocean-bg">
+    <div class="wave"></div>
+    <div class="wave"></div>
+  </div>
+  <div class="beach-bg"></div>
+
+  <!-- 漂浮裝飾 -->
+  <div class="float-decor" style="top: 10%; left: 10%; animation-delay: 0s;">🌴</div>
+  <div class="float-decor" style="top: 15%; right: 15%; animation-delay: 3s;">☀️</div>
+  <div class="float-decor" style="top: 25%; left: 80%; animation-delay: 7s;">🐚</div>
+
+  <!-- 遊戲容器 -->
+  <div id="game-container">
+    <!-- HUD -->
+    <div id="hud">
+      <div class="hud-item" id="score-display">
+        <span class="hud-icon">⭐</span>
+        <span>分數: <span id="score">0</span></span>
+      </div>
+      <div class="hud-item" id="oil-display">
+        <span class="hud-icon">🐟</span>
+        <span>魚油: <span id="oil-count">0</span></span>
+      </div>
+      <div class="hud-item" id="combo-display">
+        <span class="hud-icon">🔥</span>
+        <span>連擊: <span id="combo">0</span></span>
+      </div>
+    </div>
+
+    <!-- 海豚 -->
+    <div id="dolphin">
+      <div class="dolphin-body"></div>
+    </div>
+
+    <!-- 開始畫面 -->
+    <div id="start-screen">
+      <h1>🐬 腸道冲浪 🏄</h1>
+      <p class="subtitle">海豚督導的奇幻漂流</p>
+      <div class="instructions">
+        <p>🏄 用鍵盤左右鍵或空白鍵控制海豚</p>
+        <p>🐟 收集魚油丸來獲得分數</p>
+        <p>⚡ 保持連擊獲得高分加成</p>
+        <p>🦈 小心鯊魚障礙物！</p>
+      </div>
+      <button class="start-btn" onclick="startGame()">開始冲浪！</button>
+    </div>
+
+    <!-- 结束画面 -->
+    <div id="game-over">
+      <h2>🏄 衝浪結束！</h2>
+      <p class="final-score">最終分數: <span id="final-score">0</span></p>
+      <div class="stats">
+        <p>🐟 收集魚油: <span id="final-oil">0</span> 顆</p>
+        <p>🔥 最高連擊: <span id="final-combo">0</span> combo</p>
+      </div>
+      <button class="start-btn" onclick="restartGame()">再衝一次！</button>
+    </div>
+
+    <!-- 觸控按鈕 (mobile) -->
+    <div id="touch-controls">
+      <button class="touch-btn" id="left-btn">⬅️</button>
+      <button class="touch-btn" id="right-btn">➡️</button>
+    </div>
+  </div>
+
+  <script>
+    // 遊戲狀態
+    let gameRunning = false;
+    let score = 0;
+    let oilCollected = 0;
+    let combo = 0;
+    let maxCombo = 0;
+    let dolphinX = window.innerWidth / 2 - 40;
+    let dolphinY = window.innerHeight * 0.4;
+    let velocityX = 0;
+    let items = [];
+    let obstacles = [];
+    let keys = { left: false, right: false };
+    let lastTime = 0;
+    let spawnTimer = 0;
+    let obstacleTimer = 0;
+    let gameTime = 0;
+
+    // DOM 元素
+    const dolphin = document.getElementById('dolphin');
+    const scoreEl = document.getElementById('score');
+    const oilCountEl = document.getElementById('oil-count');
+    const comboEl = document.getElementById('combo');
+    const startScreen = document.getElementById('start-screen');
+    const gameOverScreen = document.getElementById('game-over');
+    const finalScoreEl = document.getElementById('final-score');
+    const finalOilEl = document.getElementById('final-oil');
+    const finalComboEl = document.getElementById('final-combo');
+
+    // 初始化海豚位置
+    function initDolphin() {
+      dolphinX = window.innerWidth / 2 - 40;
+      dolphinY = window.innerHeight * 0.35;
+      dolphin.style.left = dolphinX + 'px';
+      dolphin.style.top = dolphinY + 'px';
+      dolphin.style.transform = 'rotate(0deg)';
+    }
+
+    // 開始遊戲
+    function startGame() {
+      gameRunning = true;
+      score = 0;
+      oilCollected = 0;
+      combo = 0;
+      maxCombo = 0;
+      gameTime = 0;
+      items = [];
+      obstacles = [];
+      spawnTimer = 0;
+      obstacleTimer = 0;
+      velocityX = 0;
+      
+      updateHUD();
+      startScreen.style.display = 'none';
+      gameOverScreen.style.display = 'none';
+      initDolphin();
+      
+      // 清除舊的遊戲元素
+      document.querySelectorAll('.fish-oil, .obstacle, .cloud, .seaweed, .ripple').forEach(el => el.remove());
+      
+      // 添加雲朵
+      for (let i = 0; i < 5; i++) {
+        createCloud(Math.random() * window.innerWidth);
+      }
+      
+      // 添加海藻
+      for (let i = 0; i < 8; i++) {
+        createSeaweed(i * (window.innerWidth / 7));
+      }
+      
+      lastTime = performance.now();
+      requestAnimationFrame(gameLoop);
+    }
+
+    // 重新開始
+    function restartGame() {
+      startGame();
+    }
+
+    // 創建雲朵
+    function createCloud(x) {
+      const cloud = document.createElement('div');
+      cloud.className = 'cloud';
+      cloud.textContent = ['☁️', '🌤️', '⛅'][Math.floor(Math.random() * 3)];
+      cloud.style.left = x + 'px';
+      cloud.style.top = (50 + Math.random() * 150) + 'px';
+      cloud.style.animationDuration = (15 + Math.random() * 10) + 's';
+      document.body.appendChild(cloud);
+    }
+
+    // 創建海藻
+    function createSeaweed(x) {
+      const seaweed = document.createElement('div');
+      seaweed.className = 'underwater-decor';
+      const s = document.createElement('div');
+      s.className = 'seaweed';
+      s.textContent = ['🌿', '🌱', '🍀'][Math.floor(Math.random() * 3)];
+      s.style.left = x + 'px';
+      s.style.animationDelay = (Math.random() * 2) + 's';
+      seaweed.appendChild(s);
+      document.body.appendChild(seaweed);
+    }
+
+    // 遊戲主循環
+    function gameLoop(currentTime) {
+      if (!gameRunning) return;
+      
+      const deltaTime = (currentTime - lastTime) / 1000;
+      lastTime = currentTime;
+      gameTime += deltaTime;
+      
+      // 更新海豚位置
+      updateDolphin(deltaTime);
+      
+      // 生成物品
+      spawnTimer += deltaTime;
+      if (spawnTimer > 1.5 - Math.min(gameTime * 0.01, 0.8)) {
+        createFishOil();
+        spawnTimer = 0;
+      }
+      
+      // 生成障礙物
+      obstacleTimer += deltaTime;
+      if (obstacleTimer > 3 - Math.min(gameTime * 0.02, 1.5)) {
+        createObstacle();
+        obstacleTimer = 0;
+      }
+      
+      // 更新物品
+      updateItems(deltaTime);
+      
+      // 更新障礙物
+      updateObstacles(deltaTime);
+      
+      // 碰撞檢測
+      checkCollisions();
+      
+      // 更新 combo衰減
+      if (combo > 0 && gameTime % 2 < deltaTime) {
+        combo = Math.max(0, combo - 1);
+        updateHUD();
+      }
+      
+      requestAnimationFrame(gameLoop);
+    }
+
+    // 更新海豚
+    function updateDolphin(deltaTime) {
+      const acceleration = 1500;
+      const maxSpeed = 500;
+      const friction = 0.92;
+      
+      if (keys.left) velocityX -= acceleration * deltaTime;
+      if (keys.right) velocityX += acceleration * deltaTime;
+      
+      velocityX *= friction;
+      velocityX = Math.max(-maxSpeed, Math.min(maxSpeed, velocityX));
+      
+      dolphinX += velocityX * deltaTime;
+      
+      // 邊界檢測
+      dolphinX = Math.max(0, Math.min(window.innerWidth - 80, dolphinX));
+      
+      // 翻轉效果
+      const tilt = velocityX * 0.05;
+      dolphin.style.transform = `rotate(${tilt}deg)`;
+      
+      dolphin.style.left = dolphinX + 'px';
+      dolphin.style.top = dolphinY + 'px';
+    }
+
+    // 創建魚油
+    function createFishOil() {
+      const oil = document.createElement('div');
+      oil.className = 'fish-oil';
+      oil.textContent = ['🐟', '💊', '🫧'][Math.floor(Math.random() * 3)];
+      oil.style.left = (Math.random() * (window.innerWidth - 50)) + 'px';
+      oil.style.top = '-50px';
+      
+      const item = {
+        el: oil,
+        x: parseFloat(oil.style.left),
+        y: -50,
+        speed: 200 + Math.random() * 100 + gameTime * 5,
+        horizontal: (Math.random() - 0.5) * 50
+      };
+      
+      items.push(item);
+      document.body.appendChild(oil);
+    }
+
+    // 創建障礙物
+    function createObstacle() {
+      const obstacle = document.createElement('div');
+      obstacle.className = 'obstacle';
+      obstacle.textContent = ['🦈', '🐙', '🦀', '水母'][Math.floor(Math.random() * 4)];
+      obstacle.style.left = (Math.random() * (window.innerWidth - 50)) + 'px';
+      obstacle.style.top = '-60px';
+      
+      const obs = {
+        el: obstacle,
+        x: parseFloat(obstacle.style.left),
+        y: -60,
+        speed: 150 + Math.random() * 80 + gameTime * 3,
+        horizontal: (Math.random() - 0.5) * 30
+      };
+      
+      obstacles.push(obs);
+      document.body.appendChild(obstacle);
+    }
+
+    // 更新物品
+    function updateItems(deltaTime) {
+      items = items.filter(item => {
+        item.y += item.speed * deltaTime;
+        item.x += item.horizontal * deltaTime;
+        item.el.style.top = item.y + 'px';
+        item.el.style.left = item.x + 'px';
+        
+        if (item.y > window.innerHeight + 50) {
+          item.el.remove();
+          combo = 0;
+          updateHUD();
+          return false;
+        }
+        return true;
+      });
+    }
+
+    // 更新障礙物
+    function updateObstacles(deltaTime) {
+      obstacles = obstacles.filter(obs => {
+        obs.y += obs.speed * deltaTime;
+        obs.x += obs.horizontal * deltaTime;
+        obs.el.style.top = obs.y + 'px';
+        obs.el.style.left = obs.x + 'px';
+        
+        if (obs.y > window.innerHeight + 50) {
+          obs.el.remove();
+          return false;
+        }
+        return true;
+      });
+    }
+
+    // 碰撞檢測
+    function checkCollisions() {
+      const dLeft = dolphinX;
+      const dRight = dolphinX + 80;
+      const dTop = dolphinY;
+      const dBottom = dolphinY + 50;
+      
+      // 檢查魚油
+      items = items.filter(item => {
+        const iLeft = item.x;
+        const iRight = item.x + 30;
+        const iTop = item.y;
+        const iBottom = item.y + 30;
+        
+        if (dRight > iLeft && dLeft < iRight && dBottom > iTop && dTop < iBottom) {
+          // 收集到魚油
+          score += 10 * (1 + combo * 0.2);
+          oilCollected++;
+          combo++;
+          maxCombo = Math.max(maxCombo, combo);
+          
+          // 特效
+          createCollectEffect(item.x, item.y);
+          createRipple(item.x + 15, item.y + 15);
+          
+          if (combo > 2 && combo % 3 === 0) {
+            showCombo(combo);
+          }
+          
+          updateHUD();
+          item.el.remove();
+          return false;
+        }
+        return true;
+      });
+      
+      // 檢查障礙物
+      obstacles.forEach(obs => {
+        const oLeft = obs.x;
+        const oRight = obs.x + 35;
+        const oTop = obs.y;
+        const oBottom = obs.y + 35;
+        
+        if (dRight > oLeft && dLeft < oRight && dBottom > oTop && dTop < oBottom) {
+          // 撞到障礙物 - 遊戲結束
+          gameOver();
+        }
+      });
+    }
+
+    // 創建收集特效
+    function createCollectEffect(x, y) {
+      const effect = document.createElement('div');
+      effect.className = 'collect-effect';
+      effect.textContent = ['+10', '🐟+1', '✨'][Math.floor(Math.random() * 3)];
+      effect.style.left = x + 'px';
+      effect.style.top = y + 'px';
+      document.body.appendChild(effect);
+      setTimeout(() => effect.remove(), 600);
+    }
+
+    // 創建波紋
+    function createRipple(x, y) {
+      const ripple = document.createElement('div');
+      ripple.className = 'ripple';
+      ripple.style.left = x + 'px';
+      ripple.style.top = y + 'px';
+      document.body.appendChild(ripple);
+      setTimeout(() => ripple.remove(), 600);
+    }
+
+    // 顯示連擊
+    function showCombo(c) {
+      const popup = document.createElement('div');
+      popup.className = 'combo-popup';
+      popup.textContent = `🔥 ${c} COMBO!`;
+      document.body.appendChild(popup);
+      setTimeout(() => popup.remove(), 800);
+    }
+
+    // 更新 HUD
+    function updateHUD() {
+      scoreEl.textContent = Math.floor(score);
+      oilCountEl.textContent = oilCollected;
+      comboEl.textContent = combo;
+    }
+
+    // 遊戲結束
+    function gameOver() {
+      gameRunning = false;
+      finalScoreEl.textContent = Math.floor(score);
+      finalOilEl.textContent = oilCollected;
+      finalComboEl.textContent = maxCombo;
+      gameOverScreen.style.display = 'flex';
+    }
+
+    // 鍵盤控制
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft' || e.key === 'a') keys.left = true;
+      if (e.key === 'ArrowRight' || e.key === 'd') keys.right = true;
+      if (e.key === ' ' && !startScreen.style.display && !gameOverScreen.style.display) {
+        // 加速
+        dolphinY = Math.max(100, dolphinY - 20);
+      }
+    });
+
+    document.addEventListener('keyup', (e) => {
+      if (e.key === 'ArrowLeft' || e.key === 'a') keys.left = false;
+      if (e.key === 'ArrowRight' || e.key === 'd') keys.right = false;
+    });
+
+    // 觸控控制
+    const leftBtn = document.getElementById('left-btn');
+    const rightBtn = document.getElementById('right-btn');
+
+    leftBtn.addEventListener('touchstart', (e) => { e.preventDefault(); keys.left = true; });
+    leftBtn.addEventListener('touchend', (e) => { e.preventDefault(); keys.left = false; });
+    rightBtn.addEventListener('touchstart', (e) => { e.preventDefault(); keys.right = true; });
+    rightBtn.addEventListener('touchend', (e) => { e.preventDefault(); keys.right = false; });
+
+    // 初始化
+    initDolphin();
+  </script>
+</body>
+</html>

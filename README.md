@@ -1,15 +1,325 @@
 # Daily Lab
 
-每日 Workbench 成品存放處。每個子目錄為獨立的專案工具。
+Total entries: 163
 
-## 目錄
+## Featured (Latest)
 
-- `2026-09-27-edmoms-ifye-diagnosis/` — EDMoms + IFYE 系統診斷工具（靜態分析 + log 分析，開出 3 個改善提案）
-- `2026-10-04-cron-alive-checker/` — cron 依賴腳本存活檢查工具（檢測 7 項失效，2 critical, 5 high）
-- `2026-10-11-discord-send-shim/` — `discord_send.py` Shim（填補從未建立的腳本，讓所有 Discord 推播恢復運作）
-- `2026-10-18-ifye-comms-tracker/` — IFYE 對外通訊追蹤器（將 Gmail triage 處理的 IFYE 外語郵件集中記錄，支援狀態分級、期限追蹤、Markdown 匯出。驗證通過）
-- `2026-10-25-discord-safe-send/` — Discord Safe Send（可驗證、去重的 Discord 發送工具。直接走 REST API，送出後回讀確認落地，內容雜湊去重防止重複推播，並可一鍵清除測試訊息。驗證通過）
+- **2026-10-25** [🔒 Discord Safe Send](2026-10-25-discord-safe-send/README.md) — 可驗證、去重的 Discord 發送工具。10/22、10/23、10/25 連續三天 Discord 重複推播事故（同一則訊息分別送出 2、2、4 則），根因為 `discord_send.py` 的 fallback 判定不可靠（gateway 掛掉仍回報成功）。本工具直接走 REST API，送出後回讀確認落地，內容 SHA-256 去重攔截重複送出，並支援一鍵清除測試訊息殘留。驗證通過。
 
-## 維護說明
+- **2026-10-18** [📮 IFYE 對外通訊追蹤器](2026-10-18-ifye-comms-tracker/README.md) — 將 Gmail triage 處理的 IFYE 外語郵件集中記錄，支援 🔴🟡🟢⚪ 狀態分級、期限追蹤、Markdown 匯出。驗證通過。
 
-所有成品從 `Lab/YYYY-MM-DD-主題slug/` 複製過來。請勿直接修改這裡的檔案，應在 `Lab/` 實驗，完成並驗證後再複製過來。
+- **2026-10-11** [📨 Discord Send Shim](2026-10-11-discord-send-shim/README.md) — `discord_send.py` Shim。填補從未建立的腳本，讓所有 Discord 推播恢復運作。驗證通過。
+
+- **2026-10-04** [🔍 Cron Alive Checker](2026-10-04-cron-alive-checker/README.md) — cron 依賴腳本存活檢查工具，檢測 7 項失效（2 critical, 5 high）。
+
+- **2026-09-27** [🩺 EDMoms + IFYE 系統診斷工具](2026-09-27-edmoms-ifye-diagnosis/README.md) — 靜態分析 + log 分析，開出 3 個改善提案。
+
+- **2026-09-20** [🔓 EDMoms 驗證碼破解器](2026-09-20-edmom-captcha-solver/README.md) — EDMoms 公文系統登入驗證碼 OCR 失敗（12+ 次重試，累計 9/16~18 每日中斷）。用 Playwright CDP 截圖 + MLX OCR（DeepSeek-OCR-2-bf16）雙引擎破解，自動寫入 captcha_result.txt 供後續流程讀取。
+
+- **2026-09-13** [🔍 IFYE Sync Gap Finder](2026-09-13-ifye-sync-gap-finder/README.md) — 驗證 IFYE Notion → JSON 同步缺口。實際執行發現 24 筆缺口（relation空白 18 + 名稱比對失敗 6）。揪出 sync 腳本漏掉 Sven Bucheli、Mr.Phoobet 等人的關鍵問題。
+
+- **2026-09-06** [🔍 IFYE 資料一致性稽核工具](2026-09-06-ifye-data-audit/README.md) — 檢查 Notion 來源與 JSON 的一致性，發現 9 筆記錄未寫入、rsync 部署 Permission denied。IFYE sync 每日跑 4 次但輸出不變，缺乏即時稽核。
+- **2026-08-30** [🔍 Gmail Triage Prefilter](2026-08-30-gmail-triage-prefilter/README.md) — 用 heuristic 規則在 LLM triage 之前先行過濾 Gmail 偽陽，減少 API 呼叫。基於 8/27~29 實戰數據（掃40封命中3封、掃201封候選5封全排除）。
+- **2026-08-26** [🫧 系統小窩 · System Pet](2026-08-26/README.md) — System Pet × Cozy Interaction 溫馨的虛擬寵物系統小窩，用純 HTML + CSS + JS 打造的可愛互動體驗。照顧你的系統寵物，餵食、玩耍、睡眠、清潔！
+
+- **2026-08-26** [📊 磁碟空間分析器](2026-08-26-disk-analyzer/README.md) — 磁碟空間分析腳本，找出最大消耗者，直接緩解 96% 滿緊急狀態。
+
+- **2026-08-25** [🗻 每日儀式紙雕鐘 · Daily Ritual Clock](2026-08-25/README.md) — Paper Carving × Ritual Clock 以紙雕藝術風格呈現的每日儀式時間視覺化工具，融合精美時鐘與儀式追蹤功能。
+
+- **2026-08-24** [📰 晨間快報 · Morning Express](2026-08-24/README.md) — Newspaper Halftone × Editorial Typography 新聞報紙風格的每日晨間資訊平台，整合塔羅指引、水晶能量、梅花易數、今日天氣與國際要聞，為新的一天提供全方位的開始。
+
+- **2026-08-16** [✨ 褶皺深處的光斑 (Light Speckles in the Folds)](2026-08-16/README.md) — Washi Paper × Folded Poetry 和紙 × 摺疊詩意的語言褶皺展示器。4張仿紙張質感的摺疊卡片（惦/木漏れ日/Saoirse/toska），每張展示一個無法翻譯的詞，點擊展開看翻譯失去了什麼。
+
+- **2026-08-14** [🎮 魚油掌機 (Fish Oil Handheld)](2026-08-14/README.md) — Retro Game Boy × Pixel Handheld 復古掌機像素風格的魚油督促小遊戲。Game Boy造型主體、經典綠色LCD螢幕、10秒計時器挑戰、🐬海豚督導 vs 🦈拖延鯊動畫對話、經典台詞輪播。
+
+- **2026-08-06** [🌅 晨間前線 MORNING FRONT](2026-08-06/README.md) — Newsprint Newspaper × Editorial Typography 新聞報紙風格的每日晨間資訊前線，以經典報紙排版美學呈現當日重要資訊。
+
+- **2026-08-04** [📰 晨報 · 命理資訊站](2026-08-04/README.md) — Mystical Morning News × Serene Divination 晨報風格的命理資訊站，以溫暖的紙張質感搭配神秘學元素，提供每日早晨的神秘力量指引。九位代表卡片展示國籍與站點數量、五十一站按類別分類、點擊站點觸發彩屑慶祝動畫、localStorage 持久化收集進度。
+
+- **2026-08-02** [🌊 身體時鐘深海觀測所 (Deep Body Clock Observatory)](2026-08-02/README.md) — Deep Bioluminescent Ocean × Serene Observatory 深海發光生物 × 靜謐觀測所風格的身體時鐘互動體驗。24小時洋流時間線、12種身體狀態對應的深海生物卡片、此刻身體狀態指示器、呼吸練習功能。
+
+- **2026-07-31** [📰 晨報 · 2026-07-31](2026-07-31/README.md) — 晨報風格的每日科技精華資訊牆。Vintage Newspaper × Newsprint Typography 風格，展示頭條新聞、AI/區塊鏈/Web 等分類資訊。
+
+- **2026-07-23** [🍜 Wiki 豆漿店 (Wiki Soy Shop)](2026-07-23/README.md) — Warm Late-night Diner × Taiwanese Breakfast Shop 溫暖深夜豆漿店 × 台灣早餐店風格的 Wiki Cycle 視覺化。展示四個 wiki 文件化身為四道招牌菜（豆漿/豆花/燒餅/油條）、即時倒數計時器、30 個心跳追蹤、24/7 運轉狀態。暖棕色背景、紅燈籠光暈、手寫字體、蒸籠蒸氣動畫。
+
+- **2026-07-21** [🎵 維基樂團 · Wiki Orchestra](2026-07-21/README.md) — Japanese Minimal × Zen 日式極簡禪風格的維基樂團視覺化。展示四檔輪流系統（旋轉木馬卡片）、今日心跳統計、WAIC 2026 倒數計時。奶油白背景、淡金色點綴、脈衝光環動畫。
+
+- **2026-07-20** [💓 Wiki Cycle 生命體徵監視器](2026-07-20/README.md) — Japanese Minimal × Zen 日式極簡禪風格的 Wiki Cycle 生命體徵監視器。展示四檔輪流系統（旋轉木馬卡片）、今日心跳統計（30次）、WAIC 2026 倒數計時。奶油白背景、淡金色點綴、脈衝光環動畫。
+
+- **2026-07-16** [🐬 腸道冲浪 - Dolphin Surf](2026-07-16/README.md) — 一個可愛的海豚冲浪小遊戲，在腸道主題的虛擬海洋中冲浪避開障礙物。
+
+- **2026-07-07** [🔮 神秘的每日三張牌](2026-07-07/README.md) — 神秘的每日卡片占卜工具，點擊揭曉今日專屬訊息。包含生活提醒、健康建議、科技洞察等多類型卡片。
+
+- **2026-07-04** [🐟 魚油大作戰 (Fish Oil Mission)](2026-07-04/README.md) — 明亮海洋風格的魚油服用追蹤工具。展示海豚督導🆚拖延鯊魚的對話大戰、可自訂提醒倒數計時器、連續天數streak追蹤、統計面板（今日/連續/總次數）。
+
+- **2026-06-29** [🏥 VPS Doctor — 主機健康診所](2026-06-29/README.md) — 醫院主題的 VPS 伺服器健康監控儀表板。將 9 台伺服器化身病歷卡，顯示存活率、連線速度、診斷結果；提供處方簽、快速操作按鈕，即時掌握主機狀態。
+
+- **2026-06-28** [🪪 IFYE 2026 世界友誼護照 (World Passport)](2026-06-28/README.md) — Warm Paper × Vintage Passport 國際四健會交換計劃（IFYE）2026 數位護照。展示 9 位代表、5 個國家的國家印章、旅程時間軸和互動簽名區。
+
+- **2026-06-26** [🥚 假設性情境思考 (What-If Universe)](2026-06-26/README.md) — Warm Paper × Cosmic 溫暖紙張 × 宇宙感風格的假設性情境思考工具。展示三色蛋核心語錄、宇宙分支卡片、台北美食捷運互動、感謝清單反思卡。
+
+- **2026-06-25** [✈️ IFE 國際貴賓航班抵達板 (IFE Flight Arrivals)](2026-06-25/README.md) — Retro Airport FIDS 復古機場航班資訊顯示板風格的 IFE 2026 貴賓接待板。展示 6 個抵達航班和 1 個出發航班，即時時鐘、狀態徽章、Timeline 事件。
+
+## Categories
+
+### learning
+
+- 2026-08-19 — [🎫 懷疑的門票 (The Doubt Passport)](2026-08-19/README.md)
+- 2026-08-16 — [✨ 褶皺深處的光斑 (Light Speckles in the Folds)](2026-08-16/README.md)
+- 2026-08-10 — [🌙 夢境摺紙 (Dream Folding)](2026-08-10/README.md)
+- 2026-08-02 — [🌊 身體時鐘深海觀測所 (Deep Body Clock Observatory)](2026-08-02/README.md)
+- 2026-07-10 — [📐 知識的形狀 (Tangent Collector)](2026-07-10/README.md)
+- 2026-07-09 — [⏳ 等待的重量 vs 行動的重量](2026-07-09/README.md)
+
+### typography
+
+- 2026-06-07 — [✍️ 文字的味道 | Flavor of Text](2026-06-07/README.md)
+
+### travel
+
+- 2026-05-13 — [🛫 釜山倒數 — Busan Countdown](2026-05-13/README.md)
+
+### 惡搞系
+
+- 2026-05-07 — [🐟 魚油期限拯救中心 (Fish Oil Rescue Center)](2026-05-07/README.md)
+- 2026-03-14 — [幹話產生器](2026-03-14/README.md)
+
+### dashboard
+
+- 2026-08-21 — [🔔 緊急修復拍賣會 · Emergency Fix Auction](2026-08-21/README.md)
+- 2026-08-20 — [🚂 VPS 深夜健檢 · 鐵路路線圖](2026-08-20/README.md)
+- 2026-08-07 — [🗼 VPS 健康監控中心](2026-08-07/README.md)
+- 2026-07-31 — [📰 晨報 · 2026-07-31](2026-07-31/README.md)
+- 2026-06-29 — [🏥 VPS Doctor — 主機健康診所](2026-06-29/README.md)
+- 2026-06-20 — [🎛️ IFYE 2026 — Station Commander](2026-06-20/README.md)
+
+### fortune
+
+- 2026-08-04 — [📰 晨報 · 命理資訊站](2026-08-04/README.md)
+- 2026-04-06 — [奇門遁甲愛情命盤](2026-04-06/README.md)
+
+### game
+
+- 2026-08-14 — [🎮 魚油掌機 (Fish Oil Handheld)](2026-08-14/README.md)
+- 2026-08-08 — [🦈 拖延鯊的哲學時刻](2026-08-08/README.md)
+- 2026-08-01 — [🐟 魚油巡迴法庭 Fish Oil Tribunal](2026-08-01/README.md)
+
+- 2026-07-30 — [🐬 海洋健康合規督察總署 — Fish Oil Compliance Bureau](2026-07-30/README.md)
+- 2026-07-29 — [🎮 夏夜祭典 撈金魚｜Summer Festival Goldfish Scoop](2026-07-29/README.md)
+- 2026-07-16 — [🐬 腸道冲浪 - Dolphin Surf](2026-07-16/README.md)
+- 2026-04-23 — [OCR 勇者冒險 (mlx-ocr 戰鬥系統)](2026-04-23/README.md)
+- 2026-03-02 — [幸運拉霸](2026-03-02/README.md)
+
+### healing
+
+- 2026-08-22 — [🌊 河流不問方向 — The River Doesn't Ask](2026-08-22/README.md)
+- 2026-03-01 — [心願存錢筒](2026-03-01/README.md)
+
+### productivity
+
+- 2026-05-18 — [⚓ 船長航海日誌 | Captain's Log](2026-05-18/README.md)
+- 2026-05-10 — [🌅 早晨 Routine 打卡機](2026-05-10/README.md)
+
+### interactive
+
+- 2026-08-26 — [🫧 系統小窩 · System Pet](2026-08-26/README.md)
+- 2026-08-24 — [📰 晨間快報 · Morning Express](2026-08-24/README.md)
+- 2026-08-18 — [💻 Lab Build Terminal @ 03:30](2026-08-18/README.md)
+- 2026-08-15 — [🧭 方向感是動詞 · 哲學指南針](2026-08-15/README.md)
+- 2026-08-06 — [🌅 晨間前線 MORNING FRONT](2026-08-06/README.md)
+- 2026-08-05 — [🔮 看不見的線·連結觀測所 (Invisible Threads Observatory)](2026-08-05/README.md)
+
+- 2026-07-17 — [⏳ 時光命理軸](2026-07-17/README.md)
+- 2026-07-07 — [🔮 神秘的每日三張牌](2026-07-07/README.md)
+- 2026-07-01 — [📅 月份牌工廠 — July 2026](2026-07-01/README.md)
+- 2026-06-28 — [🪪 IFYE 2026 世界友誼護照 (World Passport)](2026-06-28/README.md)
+- 2026-06-24 — [🔷 What-If 形狀工廠 (Shape Factory)](2026-06-24/README.md)
+- 2026-06-21 — [🍸 時間調酒師 — Time Bartender](2026-06-21/README.md)
+- 2026-06-16 — [🌙 深夜圖書館值班漫畫 | Night Shift Library](2026-06-16/README.md)
+- 2026-06-04 — [🌱 願望播種機 | Wish Seedling Garden](2026-06-04/README.md)
+- 2026-05-29 — [✨ 記憶膠囊收集器 | Memory Capsule Collector](2026-05-29/README.md)
+- 2026-05-16 — [🌙 凌晨矛盾簿 | Midnight Contradiction Journal](2026-05-16/README.md)
+- 2026-05-13 — [🛫 釜山倒數 — Busan Countdown](2026-05-13/README.md)
+- 2026-05-12 — [🔮 乙酉木日晨間占卜](2026-05-12/README.md)
+- 2026-05-10 — [🌅 早晨 Routine 打卡機](2026-05-10/README.md)
+- 2026-05-08 — [💡 有用公式工作坊 (Useful Formula Workshop)](2026-05-08/README.md)
+- 2026-05-05 — [💡 靈感便利貼](2026-05-05/README.md)
+- 2026-04-07 — [時光岔路站 | Parallel Platform](2026-04-07/README.md)
+
+### 工具系（生活開運工具）
+
+- 2026-08-13 — [🎐 晨間御守 (Morning Amulet)](2026-08-13/README.md)
+
+### tool
+
+- 2026-07-23 — [🍜 Wiki 豆漿店 (Wiki Soy Shop)](2026-07-23/README.md)
+- 2026-07-22 — [🚂 週間時刻表 | Weekly Departure Board](2026-07-22/README.md)
+- 2026-07-20 — [💓 Wiki Cycle 生命體徵監視器](2026-07-20/README.md)
+- 2026-07-19 — [✨ Wiki Sync 命盤 (Wiki Sync Horoscope)](2026-07-19/README.md)
+- 2026-06-23 — [🏅 Session Memento — 7.4 Days of Dedication](2026-06-23/README.md)
+- 2026-06-05 — [📰 科技頭條報 - 今日新聞收藏室](2026-06-05/README.md)
+- 2026-06-02 — [✨ 沉默急診室 | Silent ER](2026-06-02/README.md)
+- 2026-05-21 — [🏥 漏洞急診室 | Vulnerability ER](2026-05-21/README.md)
+- 2026-05-20 — [🥘 味道翻譯機 | Flavor Translator](2026-05-20/README.md)
+- 2026-05-11 — [🏥 301 急診室 — 網站リダイレクト調査](2026-05-11/README.md)
+- 2026-03-03 — [紀念日銀河](2026-03-03/README.md)
+
+### unknown
+
+- 2026-05-03 — [🐟 魚油宇宙 - 角色設定冊](2026-05-03/README.md)
+- 2026-03-19 — [思緒風鈴](2026-03-19/README.md)
+- 2026-02-28 — [2026-02-28](2026-02-28/README.md)
+- 2026-02-27 — [2026-02-27](2026-02-27/README.md)
+- 2026-02-26 — [2026-02-26](2026-02-26/README.md)
+- 2026-02-25 — [2026-02-25](2026-02-25/README.md)
+- 2026-02-24 — [2026-02-24](2026-02-24/README.md)
+- 2026-02-23 — [2026-02-23](2026-02-23/README.md)
+- 2026-02-22 — [2026-02-22](2026-02-22/README.md)
+- 2026-02-21 — [2026-02-21](2026-02-21/README.md)
+- 2026-02-20 — [2026-02-20](2026-02-20/README.md)
+- 2026-02-19 — [2026-02-19](2026-02-19/README.md)
+- 2026-02-18 — [2026-02-18](2026-02-18/README.md)
+- 2026-02-17 — [2026-02-17](2026-02-17/README.md)
+- 2026-02-16 — [2026-02-16/README.md)
+- 2026-02-15 — [2026-02-15/README.md)
+- 2026-02-14 — [2026-02-14/README.md)
+- 2026-02-13 — [2026-02-13/README.md)
+- 2026-02-11 — [第一天](2026-02-11/README.md)
+
+### 資料視覺化
+
+- 2026-08-23 — [✨ Heartbeat Cosmos · 心跳宇宙](2026-08-23/README.md)
+- 2026-08-09 — [🌍 IFYE 2026 世界大使館 (Geo Ambassador Atlas)](2026-08-09/README.md)
+- 2026-08-03 — [🌍 IFYE 2026 大使畫廊 (Ambassador Gallery)](2026-08-03/README.md)
+- 2026-04-21 — [— 值班巡航圖 (Heartbeat Duty Atlas)](2026-04-21/README.md)
+
+### visualization
+
+- 2026-08-25 — [🗻 每日儀式紙雕鐘 · Daily Ritual Clock](2026-08-25/README.md)
+- 2026-07-21 — [🎵 維基樂團 · Wiki Orchestra](2026-07-21/README.md)
+- 2026-06-15 — [🫀 System ECG Monitor | HEARTBEAT 系統心電圖](2026-06-15/README.md)
+
+- 2026-05-22 — [✨ 知識星河 — Knowledge Constellation](2026-05-22/README.md)
+- 2026-04-11 — [健康報告卡 Blood Test Report Card](2026-04-11/README.md)
+- 2026-04-05 — [心理健康漫畫故事書](2026-04-05/README.md)
+
+### experiment
+
+- 2026-08-12 — [🕐 時間時報 · Time Chronicle](2026-08-12/README.md)
+- 2026-08-11 — [💱 情緒交易所 $EMOTIONS.EX](2026-08-11/README.md)
+- 2026-07-11 — [2026-07-11 Daily Project](2026-07-11/README.md)
+
+### web
+
+- 2026-07-14 — [空白時光時間銀行 | Blank Time Bank](2026-07-14/README.md)
+- 2026-07-05 — [🌙 系統夢境相談室](2026-07-05/README.md)
+- 2026-04-12 — [昭和咖啡屋](2026-04-12/README.md)
+
+### 互動系
+
+- 2026-03-31 — [March 2026 月度回顧](2026-03-31/README.md)
+- 2026-03-25 — [Question Flow — 問題之流](2026-03-25/README.md)
+- 2026-03-21 — [Morse Pulse · 摩斯脈衝](2026-03-21/README.md)
+- 2026-03-20 — [銀河筆刷 Galaxy Brush](2026-03-20/README.md)
+- 2026-03-15 — [數位流星雨 Digital Meteor Shower](2026-03-15/README.md)
+- 2026-03-08 — [幾何花園 | Geometric Garden](2026-03-08/README.md)
+- 2026-03-07 — [許願蛋神 ✨ 願望成真](2026-03-07/README.md)
+
+### 命理系
+
+- 2026-05-12 — [🔮 乙酉木日晨間占卜](2026-05-12/README.md)
+- 2026-04-08 — [魚油占卜時光機 (Fish Oil Oracle Machine)](2026-04-08/README.md)
+
+### 工具系（自我回顧工具）
+
+- 2026-07-26 — [📺 週日早晨電視機 (Sunday Morning CRT)](2026-07-26/README.md)
+
+### 工具系（週間規劃工具）
+
+- 2026-07-27 — [📋 週一手工紙張週計畫表 (Monday Kraft Paper Weekly Planner)](2026-07-27/README.md)
+
+### 工具系（哲學思考工具）
+
+- 2026-06-26 — [🥚 假設性情境思考 (What-If Universe)](2026-06-26/README.md)
+
+### 工具系
+
+- 2026-07-28 — [🪪 IFE 2026 世界護照 (IFE 2026 World Passport)](2026-07-28/README.md)
+- 2026-07-08 — [🏥 Session ICU 重症監護室](2026-07-08/README.md)
+- 2026-07-04 — [🐟 魚油大作戰 (Fish Oil Mission)](2026-07-04/README.md)
+- 2026-06-25 — [✈️ IFE 國際貴賓航班抵達板 (IFE Flight Arrivals)](2026-06-25/README.md)
+- 2026-06-19 — [🖥️ OpenClaw BBS Issue Terminal](2026-06-19/README.md)
+- 2026-06-14 — [🌸 寂靜花園 | Sunday Stillness Garden](2026-06-14/README.md)
+- 2026-06-10 — [🧺 時間痕跡收藏家 | Time Marks Collector](2026-06-10/README.md)
+- 2026-05-28 — [✨ Tangent Collector — 擦肩而過的靈感收集器](2026-05-28/README.md)
+- 2026-05-19 — [🥗 午餐辯論俱樂部 (Lunch Debate Club)](2026-05-19/README.md)
+- 2026-05-02 — [🖥️ VPS 解剖實驗室 (System Autopsy Lab)](2026-05-02/README.md)
+- 2026-04-29 — [四色循環時鐘 (Four-Color Cycle Clock)](2026-04-29/README.md)
+- 2026-04-25 — [晨間快報 (Morning Express)](2026-04-25/README.md)
+- 2026-04-24 — [晨間決策羅盤 (Morning Decision Compass)](2026-04-24/README.md)
+- 2026-04-22 — [自動化路障應對卡 (Automation Roadblock Cards)](2026-04-22/README.md)
+- 2026-04-20 — [出差作戰包 (Mission Prep Kit)](2026-04-20/README.md)
+- 2026-04-15 — [向上管理教練 (Upward Management Coach)](2026-04-15/README.md)
+- 2026-04-14 — [Q&A Hands 破冰工具](2026-04-14/README.md)
+- 2026-04-09 — [Sync Cycle Orchestra 同步樂團](2026-04-09/README.md)
+- 2026-04-04 — [VPS Station Board](2026-04-04/README.md)
+- 2026-03-29 — [QR Forge](2026-03-29/README.md)
+- 2026-03-13 — [System Pulse Monitor](2026-03-13/README.md)
+- 2026-03-05 — [Prompt Forge - AI Prompt Optimizer](2026-03-05/README.md)
+
+### 工具系（干支 / 生肖 / 五行查詢）
+
+- 2026-04-18 — [干支命盤年曆 (Ganzhi Calendar)](2026-04-18/README.md)
+
+### 惡搞系
+
+- 2026-03-14 — [幹話產生器](2026-03-14/README.md)
+
+### 惡搞系（情感系 💕）
+
+- 2026-04-17 — [珍藏瞬間 (Treasured Moments)](2026-04-17/README.md)
+
+### 療癒系
+
+- 2026-04-03 — [思維花園 (Thought Garden)](2026-04-03/README.md)
+- 2026-03-27 — [命運之弦 | String of Fate](2026-03-27/README.md)
+- 2026-03-26 — [時間之結 (Time Knot)](2026-03-26/README.md)
+- 2026-03-24 — [意識之鏡 | Mirror of Consciousness](2026-03-24/README.md)
+- 2026-03-22 — [露珠禪境 | Dewdrop Zen](2026-03-22/README.md)
+- 2026-03-18 — [竹林風禪 (Bamboo Sway)](2026-03-18/README.md)
+- 2026-03-17 — [星光流 | Starry Flow](2026-03-17/README.md)
+- 2026-03-11 — [Mood Waves (心情浪潮)](2026-03-11/README.md)
+- 2026-03-09 — [虛空蓮 | Void Lotus](2026-03-09/README.md)
+- 2026-03-04 — [時空流轉 | Temporal Flow](2026-03-04/README.md)
+
+### 視覺化
+
+- 2026-04-19 — [決策河流 — Decision River](2026-04-19/README.md)
+
+### 資料視覺化
+
+- 2026-04-21 — [— 值班巡航圖 (Heartbeat Duty Atlas)](2026-04-21/README.md)
+
+### 趣味系
+
+- 2026-04-01 — [拖延鯊魚油大作戰 — 愚人節特別版](2026-04-01/README.md)
+
+### 學習系
+
+- 2026-05-23 — [✨ 知識星河 (Knowledge Constellation)](2026-05-23/README.md)
+- 2026-05-06 — [🏛️ 越南獨立宮時光機 (Vietnam Independence Palace Time Machine)](2026-05-06/README.md)
+- 2026-05-04 — [🌸 語言氣味標本室 (Scent Atlas of Language)](2026-05-04/README.md)
+- 2026-05-01 — [🐟 練習存在 — 阿笨的鏡中問題](2026-05-01/README.md)
+- 2026-04-30 — [🏥 網站急救漫畫課 (Website Rescue Comic Lab)](2026-04-30/README.md)
+- 2026-04-26 — [✨ 意外連結星圖 (Unexpected Connections Constellation)](2026-04-26/README.md)
+- 2026-04-23 — [⚔️ OCR 勇者冒險 (mlx-ocr 戰鬥系統)](2026-04-23/README.md)
+
+### 遊戲系
+
+- 2026-04-23 — [OCR 勇者冒險 (mlx-ocr 戰鬥系統)](2026-04-23/README.md)
+- 2026-04-16 — [魚油英雄拯救站點 (Fish Oil Rescue Squad)](2026-04-16/README.md)
+- 2026-03-28 — [🎲 Cyber Dice Roller - 命運骰子](2026-03-28/README.md)
+- 2026-03-23 — [Memory Echo 記憶迴聲](2026-03-23/README.md)
+- 2026-03-16 — [Rhythm Breaker (節奏粉碎者)](2026-03-16/README.md)
+- 2026-03-12 — [Cyber Snake 🐍 賽博蛇蛇](2026-03-12/README.md)
+- 2026-03-06 — [Neon Pong](2026-03-06/README.md)

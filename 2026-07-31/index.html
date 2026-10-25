@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>晨報 · 2026-07-31 · 每日科技精華</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;700&family=Playfair+Display:wght@700;900&family=Caveat:wght@500;700&family=DM+Mono:wght@400&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <style>
+    :root {
+      --cream: #FAF7F0;
+      --cream-dark: #F5F0E3;
+      --ink: #1A1814;
+      --ink-light: #3D3830;
+      --red: #C53D43;
+      --gold: #D4A84B;
+      --blue: #2B5F8A;
+      --green: #3D7A5C;
+      --purple: #7B5EA7;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Noto Serif TC', serif;
+      background: var(--cream);
+      color: var(--ink);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Paper texture overlay */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: 
+        repeating-linear-gradient(
+          0deg,
+          transparent,
+          transparent 2px,
+          rgba(0,0,0,0.01) 2px,
+          rgba(0,0,0,0.01) 4px
+        );
+      pointer-events: none;
+      z-index: 1000;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    /* Masthead */
+    .masthead {
+      text-align: center;
+      padding: 30px 0 20px;
+      border-bottom: 4px double var(--ink);
+      margin-bottom: 30px;
+    }
+
+    .masthead-date {
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      letter-spacing: 3px;
+      color: var(--ink-light);
+      margin-bottom: 10px;
+    }
+
+    .masthead-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(48px, 12vw, 80px);
+      font-weight: 900;
+      letter-spacing: -2px;
+      line-height: 1;
+      margin-bottom: 5px;
+    }
+
+    .masthead-subtitle {
+      font-family: 'Caveat', cursive;
+      font-size: 18px;
+      color: var(--ink-light);
+    }
+
+    .masthead-tagline {
+      font-family: 'Noto Serif TC', serif;
+      font-size: 11px;
+      color: var(--ink-light);
+      margin-top: 10px;
+      letter-spacing: 5px;
+    }
+
+    /* Banner stats */
+    .stats-banner {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      padding: 15px 0;
+      border-bottom: 2px solid var(--ink);
+      margin-bottom: 30px;
+      flex-wrap: wrap;
+    }
+
+    .stat-item {
+      text-align: center;
+    }
+
+    .stat-number {
+      font-family: 'Playfair Display', serif;
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--red);
+    }
+
+    .stat-label {
+      font-size: 10px;
+      letter-spacing: 2px;
+      color: var(--ink-light);
+      text-transform: uppercase;
+    }
+
+    /* Main grid */
+    .main-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 30px;
+      margin-bottom: 40px;
+    }
+
+    @media (max-width: 700px) {
+      .main-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Lead story */
+    .lead-story {
+      padding-right: 20px;
+      border-right: 1px solid var(--ink-light);
+    }
+
+    @media (max-width: 700px) {
+      .lead-story {
+        padding-right: 0;
+        border-right: none;
+        border-bottom: 1px solid var(--ink-light);
+        padding-bottom: 30px;
+        margin-bottom: 30px;
+      }
+    }
+
+    .story-category {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 3px;
+      color: var(--red);
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    .story-headline {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(24px, 5vw, 36px);
+      font-weight: 700;
+      line-height: 1.2;
+      margin-bottom: 15px;
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+
+    .story-headline:hover {
+      color: var(--red);
+    }
+
+    .story-summary {
+      font-size: 14px;
+      line-height: 1.8;
+      color: var(--ink-light);
+      margin-bottom: 15px;
+    }
+
+    .story-meta {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      color: var(--ink-light);
+    }
+
+    /* Sidebar */
+    .sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .sidebar-section {
+      border-top: 3px solid var(--ink);
+      padding-top: 15px;
+    }
+
+    .sidebar-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      letter-spacing: 1px;
+    }
+
+    .fortune-item {
+      margin-bottom: 10px;
+      padding-left: 10px;
+      border-left: 2px solid var(--gold);
+    }
+
+    .fortune-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      color: var(--ink-light);
+      letter-spacing: 1px;
+    }
+
+    .fortune-value {
+      font-size: 13px;
+      color: var(--ink);
+    }
+
+    /* News list */
+    .news-section {
+      margin-bottom: 40px;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid var(--ink);
+    }
+
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 20px;
+      font-weight: 700;
+    }
+
+    .section-line {
+      flex: 1;
+      height: 1px;
+      background: var(--ink-light);
+    }
+
+    .news-list {
+      display: grid;
+      gap: 20px;
+    }
+
+    .news-card {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 15px;
+      padding: 15px;
+      background: var(--cream-dark);
+      border-radius: 4px;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .news-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 4px 4px 0 var(--ink);
+    }
+
+    .news-card:active {
+      transform: translateY(0);
+      box-shadow: 2px 2px 0 var(--ink);
+    }
+
+    .news-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
+
+    .news-icon.ai { background: linear-gradient(135deg, var(--blue), var(--purple)); }
+    .news-icon.crypto { background: linear-gradient(135deg, var(--gold), #E67E22); }
+    .news-icon.other { background: linear-gradient(135deg, var(--green), #1ABC9C); }
+
+    .news-content {
+      min-width: 0;
+    }
+
+    .news-category {
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 2px;
+      color: var(--ink-light);
+      margin-bottom: 5px;
+    }
+
+    .news-headline {
+      font-family: 'Noto Serif TC', serif;
+      font-size: 14px;
+      font-weight: 700;
+      line-height: 1.4;
+      margin-bottom: 5px;
+    }
+
+    .news-source {
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      color: var(--ink-light);
+    }
+
+    /* Stats grid */
+    .stats-section {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 15px;
+      margin-bottom: 40px;
+    }
+
+    @media (max-width: 600px) {
+      .stats-section {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    .stats-card {
+      text-align: center;
+      padding: 20px 10px;
+      background: var(--ink);
+      color: var(--cream);
+      border-radius: 4px;
+    }
+
+    .stats-icon {
+      font-size: 24px;
+      margin-bottom: 8px;
+    }
+
+    .stats-value {
+      font-family: 'Playfair Display', serif;
+      font-size: 24px;
+      font-weight: 700;
+    }
+
+    .stats-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 1px;
+      opacity: 0.8;
+    }
+
+    /* Quote section */
+    .quote-section {
+      text-align: center;
+      padding: 40px 20px;
+      background: var(--ink);
+      color: var(--cream);
+      margin-bottom: 40px;
+      border-radius: 4px;
+    }
+
+    .quote-text {
+      font-family: 'Noto Serif TC', serif;
+      font-size: clamp(18px, 4vw, 24px);
+      line-height: 1.6;
+      margin-bottom: 15px;
+    }
+
+    .quote-author {
+      font-family: 'Caveat', cursive;
+      font-size: 16px;
+      opacity: 0.8;
+    }
+
+    /* Footer */
+    .footer {
+      text-align: center;
+      padding: 30px 0;
+      border-top: 4px double var(--ink);
+    }
+
+    .footer-text {
+      font-family: 'Caveat', cursive;
+      font-size: 16px;
+      color: var(--ink-light);
+    }
+
+    .footer-tech {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      color: var(--ink-light);
+      margin-top: 10px;
+      letter-spacing: 2px;
+    }
+
+    /* Confetti hint */
+    .hint {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      font-family: 'Caveat', cursive;
+      font-size: 14px;
+      color: var(--ink-light);
+      opacity: 0.6;
+      animation: float 3s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-5px); }
+    }
+
+    /* Card click animation */
+    @keyframes pop {
+      0% { transform: scale(1); }
+      50% { transform: scale(0.95); }
+      100% { transform: scale(1); }
+    }
+
+    .news-card.clicked {
+      animation: pop 0.2s ease-out;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Masthead -->
+    <header class="masthead">
+      <div class="masthead-date">VOL. 47 · 2026年7月31日 · 星期五</div>
+      <h1 class="masthead-title">晨報</h1>
+      <p class="masthead-subtitle">晨間科技精華 · 每日出刊</p>
+      <div class="masthead-tagline">THE DAILY TECH DIGEST · SINCE 2026</div>
+    </header>
+
+    <!-- Stats banner -->
+    <div class="stats-banner">
+      <div class="stat-item">
+        <div class="stat-number">296</div>
+        <div class="stat-label">文章掃描</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">8</div>
+        <div class="stat-label">精選入選</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">4</div>
+        <div class="stat-label">AI/LLM</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">3</div>
+        <div class="stat-label">Crypto</div>
+      </div>
+    </div>
+
+    <!-- Main grid -->
+    <div class="main-grid">
+      <!-- Lead story -->
+      <article class="lead-story">
+        <div class="story-category">頭條 · HEADLINE</div>
+        <h2 class="story-headline" onclick="celebrate()">Kimi K3 新模型發布：開源 LLM 的新里程碑</h2>
+        <p class="story-summary">
+          Kimi 團隊正式發布 K3 模型，這是繼 K2 之後的又一重大更新。K3 在推理能力、多模態理解以及部署效率方面都有顯著提升。開源社群對此反應熱烈，短時間內 GitHub star 數已突破萬關卡。
+        </p>
+        <div class="story-meta">精選自 RSS 246 篇 · Web 49 篇 · 17:30 整理髮布</div>
+      </article>
+
+      <!-- Sidebar -->
+      <aside class="sidebar">
+        <div class="sidebar-section">
+          <h3 class="sidebar-title">晨間命理</h3>
+          <div class="fortune-item">
+            <div class="fortune-label">干支</div>
+            <div class="fortune-value">辛亥月 · 丁未日</div>
+          </div>
+          <div class="fortune-item">
+            <div class="fortune-label">今日指數</div>
+            <div class="fortune-value">資訊攝入 ◉ 高</div>
+          </div>
+          <div class="fortune-item">
+            <div class="fortune-label">建議</div>
+            <div class="fortune-value">過濾資訊，專注核心</div>
+          </div>
+        </div>
+
+        <div class="sidebar-section">
+          <h3 class="sidebar-title">數據來源</h3>
+          <div class="fortune-item">
+            <div class="fortune-label">RSS 訂閱</div>
+            <div class="fortune-value">246 篇</div>
+          </div>
+          <div class="fortune-item">
+            <div class="fortune-label">Web 精選</div>
+            <div class="fortune-value">49 篇</div>
+          </div>
+          <div class="fortune-item">
+            <div class="fortune-label">GitHub 動態</div>
+            <div class="fortune-value">1 篇</div>
+          </div>
+        </div>
+      </aside>
+    </div>
+
+    <!-- News list -->
+    <section class="news-section">
+      <div class="section-header">
+        <h2 class="section-title">精選新聞</h2>
+        <div class="section-line"></div>
+      </div>
+
+      <div class="news-list">
+        <div class="news-card" onclick="celebrate(this)">
+          <div class="news-icon ai">🤖</div>
+          <div class="news-content">
+            <div class="news-category">AI · LLM</div>
+            <h3 class="news-headline">MCP 無狀態協議引發熱議：顛覆 AI 工具調用方式</h3>
+            <div class="news-source">RSS · 技術社群</div>
+          </div>
+        </div>
+
+        <div class="news-card" onclick="celebrate(this)">
+          <div class="news-icon crypto">₿</div>
+          <div class="news-content">
+            <div class="news-category">CRYPTO</div>
+            <h3 class="news-headline">比特幣持續盤整，機構投資者觀望情緒升溫</h3>
+            <div class="news-source">RSS · 加密貨幣</div>
+          </div>
+        </div>
+
+        <div class="news-card" onclick="celebrate(this)">
+          <div class="news-icon ai">🧠</div>
+          <div class="news-content">
+            <div class="news-category">AI · EDGE</div>
+            <h3 class="news-headline">NVIDIA Cosmos 3 支援 Edge 部署：AI 推論的新邊界</h3>
+            <div class="news-source">RSS · 深度學習</div>
+          </div>
+        </div>
+
+        <div class="news-card" onclick="celebrate(this)">
+          <div class="news-icon crypto">📊</div>
+          <div class="news-content">
+            <div class="news-category">CRYPTO</div>
+            <h3 class="news-headline">以太坊 Gas 費用創新低，DeFi 活動開始回暖</h3>
+            <div class="news-source">RSS · 區塊鏈</div>
+          </div>
+        </div>
+
+        <div class="news-card" onclick="celebrate(this)">
+          <div class="news-icon other">🔧</div>
+          <div class="news-content">
+            <div class="news-category">OTHER</div>
+            <h3 class="news-headline">Web5 標準化進程加速：去中心化身份的新框架</h3>
+            <div class="news-source">Web · 網路趨勢</div>
+          </div>
+        </div>
+
+        <div class="news-card" onclick="celebrate(this)">
+          <div class="news-icon crypto">💎</div>
+          <div class="news-content">
+            <div class="news-category">CRYPTO</div>
+            <h3 class="news-headline">Solana 生態系統新增 12 個熱門項目，TVL 突破新高</h3>
+            <div class="news-source">RSS · Solana</div>
+          </div>
+        </div>
+
+        <div class="news-card" onclick="celebrate(this)">
+          <div class="news-icon ai">⚡</div>
+          <div class="news-content">
+            <div class="news-category">AI · INFERENCE</div>
+            <h3 class="news-headline">LLM 推理優化：如何在消費級 GPU 上跑 70B 模型</h3>
+            <div class="news-source">Web · 技術教程</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Stats section -->
+    <section class="stats-section">
+      <div class="stats-card">
+        <div class="stats-icon">📡</div>
+        <div class="stats-value">246</div>
+        <div class="stats-label">RSS FEEDS</div>
+      </div>
+      <div class="stats-card">
+        <div class="stats-icon">🌐</div>
+        <div class="stats-value">49</div>
+        <div class="stats-label">WEB ARTICLES</div>
+      </div>
+      <div class="stats-card">
+        <div class="stats-icon">⚙️</div>
+        <div class="stats-value">1</div>
+        <div class="stats-label">GITHUB</div>
+      </div>
+      <div class="stats-card">
+        <div class="stats-icon">✨</div>
+        <div class="stats-value">8</div>
+        <div class="stats-label">SELECTED</div>
+      </div>
+    </section>
+
+    <!-- Quote section -->
+    <section class="quote-section">
+      <p class="quote-text">「資訊過載的時代，篩選本身就是一種超能力。」</p>
+      <p class="quote-author">— 晨報編輯部 · 2026-07-31</p>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <p class="footer-text">每日 17:30 自動整理髮布 · 三色蛋維運中</p>
+      <p class="footer-tech">POWERED BY RSS + WEB + GITHUB API</p>
+    </footer>
+  </div>
+
+  <div class="hint">點擊新聞卡片有驚喜 ✨</div>
+
+  <script>
+    function celebrate(element) {
+      // Pop animation for the card
+      if (element) {
+        element.classList.add('clicked');
+        setTimeout(() => element.classList.remove('clicked'), 200);
+      }
+
+      // Confetti burst
+      const colors = ['#C53D43', '#D4A84B', '#2B5F8A', '#3D7A5C', '#7B5EA7'];
+      
+      confetti({
+        particleCount: 50,
+        spread: 60,
+        origin: { y: 0.6 },
+        colors: colors,
+        shapes: ['square', 'circle']
+      });
+
+      // Second burst from opposite side
+      setTimeout(() => {
+        confetti({
+          particleCount: 30,
+          spread: 50,
+          origin: { x: 0.8, y: 0.7 },
+          colors: colors,
+          shapes: ['square']
+        });
+      }, 150);
+
+      // Save interaction
+      const today = '2026-07-31';
+      const storage = JSON.parse(localStorage.getItem('lab-20260731') || '{}');
+      storage.interactions = (storage.interactions || 0) + 1;
+      storage.lastInteraction = new Date().toISOString();
+      localStorage.setItem('lab-20260731', JSON.stringify(storage));
+    }
+
+    // Auto-celebrate on load (subtle)
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        confetti({
+          particleCount: 20,
+          spread: 40,
+          origin: { y: 0.8 },
+          colors: ['#D4A84B', '#FAF7F0'],
+          shapes: ['circle'],
+          scalar: 0.5
+        });
+      }, 500);
+    });
+  </script>
+</body>
+</html>

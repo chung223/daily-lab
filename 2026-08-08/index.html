@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🦈 拖延鯊的哲學時刻 | The Philosopher Shark</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Fredoka:wght@400;600&family=Caveat:wght@400;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg: #FFF9F5;
+      --coral: #E63946;
+      --mint: #81B29A;
+      --lavender: #9B8FD9;
+      --gold: #F4A261;
+      --peach: #FFCDB2;
+      --navy: #1B3A5F;
+      --ink: #2B2B2B;
+    }
+
+    body {
+      font-family: 'Noto Sans TC', sans-serif;
+      background: var(--bg);
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* Halftone Pattern Overlay */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: radial-gradient(circle, rgba(0,0,0,0.03) 1px, transparent 1px);
+      background-size: 8px 8px;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem 1rem;
+      position: relative;
+      z-index: 2;
+    }
+
+    /* Header */
+    header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .comic-title {
+      font-family: 'Bangers', cursive;
+      font-size: clamp(2.5rem, 8vw, 5rem);
+      color: var(--navy);
+      text-shadow: 4px 4px 0 var(--peach), 6px 6px 0 rgba(0,0,0,0.1);
+      letter-spacing: 2px;
+      transform: rotate(-2deg);
+      display: inline-block;
+    }
+
+    .subtitle {
+      font-family: 'Caveat', cursive;
+      font-size: 1.5rem;
+      color: var(--coral);
+      margin-top: 0.5rem;
+    }
+
+    .date-badge {
+      display: inline-block;
+      background: var(--navy);
+      color: white;
+      font-family: 'Fredoka', sans-serif;
+      padding: 0.3rem 1rem;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      margin-top: 1rem;
+    }
+
+    /* Introduction Panel */
+    .intro-panel {
+      background: white;
+      border: 4px solid var(--ink);
+      border-radius: 20px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      position: relative;
+      box-shadow: 8px 8px 0 var(--ink);
+      transform: rotate(0.5deg);
+    }
+
+    .intro-panel::before {
+      content: '📖 背景故事';
+      position: absolute;
+      top: -15px;
+      left: 20px;
+      background: var(--gold);
+      color: var(--ink);
+      font-family: 'Fredoka', sans-serif;
+      font-weight: 600;
+      padding: 0.3rem 1rem;
+      border-radius: 10px;
+      border: 3px solid var(--ink);
+    }
+
+    .intro-text {
+      font-size: 1.1rem;
+      line-height: 1.8;
+      color: var(--ink);
+    }
+
+    .intro-text .character {
+      font-weight: 700;
+    }
+
+    .intro-text .dolphin { color: var(--mint); }
+    .intro-text .shark { color: var(--navy); }
+
+    /* Quote Grid */
+    .quote-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .quote-card {
+      background: white;
+      border: 4px solid var(--ink);
+      border-radius: 16px;
+      padding: 1.5rem;
+      position: relative;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: 6px 6px 0 var(--ink);
+    }
+
+    .quote-card:hover {
+      transform: translate(-3px, -3px);
+      box-shadow: 9px 9px 0 var(--ink);
+    }
+
+    .quote-card.color-coral { border-top: 8px solid var(--coral); }
+    .quote-card.color-mint { border-top: 8px solid var(--mint); }
+    .quote-card.color-lavender { border-top: 8px solid var(--lavender); }
+    .quote-card.color-gold { border-top: 8px solid var(--gold); }
+    .quote-card.color-peach { border-top: 8px solid var(--peach); }
+    .quote-card.color-navy { border-top: 8px solid var(--navy); }
+
+    .quote-card::after {
+      content: '💡';
+      position: absolute;
+      top: 10px;
+      right: 15px;
+      font-size: 1.5rem;
+      opacity: 0.3;
+      transition: opacity 0.2s;
+    }
+
+    .quote-card:hover::after {
+      opacity: 1;
+    }
+
+    .category-tag {
+      font-family: 'Fredoka', sans-serif;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      padding: 0.2rem 0.6rem;
+      border-radius: 8px;
+      display: inline-block;
+      margin-bottom: 0.8rem;
+    }
+
+    .color-coral .category-tag { background: var(--coral); color: white; }
+    .color-mint .category-tag { background: var(--mint); color: white; }
+    .color-lavender .category-tag { background: var(--lavender); color: white; }
+    .color-gold .category-tag { background: var(--gold); color: var(--ink); }
+    .color-peach .category-tag { background: var(--peach); color: var(--ink); }
+    .color-navy .category-tag { background: var(--navy); color: white; }
+
+    .quote-title {
+      font-family: 'Fredoka', sans-serif;
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: var(--ink);
+      margin-bottom: 0.8rem;
+      line-height: 1.4;
+    }
+
+    .quote-text {
+      font-family: 'Caveat', cursive;
+      font-size: 1.4rem;
+      color: var(--ink);
+      line-height: 1.5;
+      margin-bottom: 1rem;
+    }
+
+    .quote-speaker {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.9rem;
+      color: #666;
+    }
+
+    .speaker-emoji {
+      font-size: 1.5rem;
+    }
+
+    /* Speech Bubble Effect */
+    .speech-bubble {
+      position: absolute;
+      top: -20px;
+      right: -10px;
+      background: white;
+      border: 3px solid var(--ink);
+      border-radius: 20px;
+      padding: 0.5rem 1rem;
+      font-family: 'Bangers', cursive;
+      font-size: 1.2rem;
+      color: var(--coral);
+      transform: rotate(10deg);
+      box-shadow: 3px 3px 0 var(--ink);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .quote-card:hover .speech-bubble {
+      opacity: 1;
+    }
+
+    /* Philosophy Section */
+    .philosophy-section {
+      background: linear-gradient(135deg, var(--lavender) 0%, var(--peach) 100%);
+      border: 4px solid var(--ink);
+      border-radius: 20px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+      position: relative;
+      box-shadow: 8px 8px 0 var(--ink);
+    }
+
+    .philosophy-section::before {
+      content: '🎭 荒謬哲學精華';
+      position: absolute;
+      top: -15px;
+      left: 20px;
+      background: var(--coral);
+      color: white;
+      font-family: 'Fredoka', sans-serif;
+      font-weight: 600;
+      padding: 0.3rem 1rem;
+      border-radius: 10px;
+      border: 3px solid var(--ink);
+    }
+
+    .philosophy-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .philosophy-item {
+      background: rgba(255,255,255,0.9);
+      border: 3px solid var(--ink);
+      border-radius: 12px;
+      padding: 1rem;
+      text-align: center;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+
+    .philosophy-item:hover {
+      transform: scale(1.05);
+    }
+
+    .philosophy-item .emoji {
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .philosophy-item .text {
+      font-family: 'Caveat', cursive;
+      font-size: 1.3rem;
+      color: var(--ink);
+    }
+
+    /* Comic Strip */
+    .comic-strip {
+      display: flex;
+      gap: 1rem;
+      overflow-x: auto;
+      padding: 1rem 0;
+      margin-bottom: 2rem;
+      scroll-snap-type: x mandatory;
+    }
+
+    .comic-panel {
+      flex: 0 0 280px;
+      background: white;
+      border: 4px solid var(--ink);
+      border-radius: 12px;
+      padding: 1rem;
+      scroll-snap-align: start;
+      position: relative;
+      cursor: pointer;
+    }
+
+    .comic-panel:hover {
+      transform: rotate(-1deg);
+    }
+
+    .comic-panel .panel-number {
+      position: absolute;
+      top: -12px;
+      left: -12px;
+      width: 30px;
+      height: 30px;
+      background: var(--gold);
+      border: 3px solid var(--ink);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Bangers', cursive;
+      font-size: 1rem;
+      color: var(--ink);
+    }
+
+    .comic-dialogue {
+      font-family: 'Caveat', cursive;
+      font-size: 1.2rem;
+      line-height: 1.5;
+      margin-bottom: 0.8rem;
+      color: var(--ink);
+    }
+
+    .comic-dialogue .speaker {
+      font-family: 'Fredoka', sans-serif;
+      font-weight: 600;
+      font-size: 0.9rem;
+      display: block;
+      margin-bottom: 0.3rem;
+    }
+
+    .comic-dialogue .dolphin-speak .speaker { color: var(--mint); }
+    .comic-dialogue .shark-speak .speaker { color: var(--navy); }
+
+    .comic-emotion {
+      text-align: center;
+      font-size: 2rem;
+      margin-top: 0.5rem;
+    }
+
+    /* Stats Bar */
+    .stats-bar {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      flex-wrap: wrap;
+      margin-bottom: 2rem;
+    }
+
+    .stat-item {
+      background: white;
+      border: 3px solid var(--ink);
+      border-radius: 12px;
+      padding: 1rem 1.5rem;
+      text-align: center;
+      box-shadow: 4px 4px 0 var(--ink);
+    }
+
+    .stat-number {
+      font-family: 'Bangers', cursive;
+      font-size: 2.5rem;
+      color: var(--coral);
+    }
+
+    .stat-label {
+      font-family: 'Fredoka', sans-serif;
+      font-size: 0.9rem;
+      color: #666;
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 2rem;
+      font-family: 'Caveat', cursive;
+      font-size: 1.3rem;
+      color: #666;
+    }
+
+    footer .signature {
+      font-family: 'Bangers', cursive;
+      font-size: 1.5rem;
+      color: var(--lavender);
+    }
+
+    /* Confetti Animation */
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    .floating {
+      animation: float 3s ease-in-out infinite;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .quote-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .stats-bar {
+        gap: 1rem;
+      }
+      
+      .stat-item {
+        padding: 0.8rem 1rem;
+      }
+      
+      .stat-number {
+        font-size: 2rem;
+      }
+    }
+
+    /* Hidden class for filtered items */
+    .quote-card.hidden {
+      display: none;
+    }
+
+    /* Filter buttons */
+    .filter-bar {
+      display: flex;
+      justify-content: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.5rem;
+    }
+
+    .filter-btn {
+      font-family: 'Fredoka', sans-serif;
+      font-size: 0.9rem;
+      padding: 0.5rem 1rem;
+      border: 3px solid var(--ink);
+      border-radius: 20px;
+      background: white;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .filter-btn:hover {
+      background: var(--peach);
+    }
+
+    .filter-btn.active {
+      background: var(--navy);
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <header>
+      <h1 class="comic-title">🦈 拖延鯊的哲學時刻</h1>
+      <p class="subtitle">「深刻哲學思考三部曲」完整解析</p>
+      <span class="date-badge">📅 2026-08-07</span>
+    </header>
+
+    <!-- Stats -->
+    <div class="stats-bar">
+      <div class="stat-item">
+        <div class="stat-number">3</div>
+        <div class="stat-label">哲學問題</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">2</div>
+        <div class="stat-label">經典角色</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">1</div>
+        <div class="stat-label">預言KO</div>
+      </div>
+    </div>
+
+    <!-- Introduction Panel -->
+    <div class="intro-panel">
+      <p class="intro-text">
+        <span class="character dolphin">🐬 海豚督導</span> 正在執行神聖的魚油督察任務，
+        然而 <span class="character shark">🦈 拖延鯊</span> 祭出了
+        <strong>「深刻哲學思考三部曲」</strong>：
+        「<em>早餐的意義</em>」、「<em>鯊魚減肥的可能性</em>」、
+        以及「<em>為什麼魚跳出水面的虛無主義詰問</em>」。
+        正當拖延鯊準備發表第四部曲時，海豚督導亮出了
+        <strong>「海鷗嘲笑預言」</strong>——直接 KO！
+      </p>
+    </div>
+
+    <!-- Quote Grid -->
+    <div class="quote-grid" id="quoteGrid">
+      <div class="quote-card color-coral" data-category="absurd">
+        <span class="speech-bubble">POW!</span>
+        <span class="category-tag">荒謬哲學</span>
+        <h3 class="quote-title">🥐 早餐的意義</h3>
+        <p class="quote-text">「當你問我早餐吃了沒，我正在思考的是——早餐本身是否具有存在的意義，還是只是人類強加給消化系統的社會建構？」</p>
+        <div class="quote-speaker">
+          <span class="speaker-emoji">🦈</span>
+          <span>拖延鯊 · 第一部曲</span>
+        </div>
+      </div>
+
+      <div class="quote-card color-navy" data-category="absurd">
+        <span class="speech-bubble">WHAM!</span>
+        <span class="category-tag">荒謬哲學</span>
+        <h3 class="quote-title">🏊 鯊魚減肥的可能性</h3>
+        <p class="quote-text">「鯊魚不吃東西會死，但吃了東西就要消化。這是個存在主義困境——我的身體在否定我自己。」</p>
+        <div class="quote-speaker">
+          <span class="speaker-emoji">🦈</span>
+          <span>拖延鯊 · 第二部曲</span>
+        </div>
+      </div>
+
+      <div class="quote-card color-lavender" data-category="absurd">
+        <span class="speech-bubble">BOOM!</span>
+        <span class="category-tag">荒謬哲學</span>
+        <h3 class="quote-title">🌊 魚跳出水的虛無主義詰問</h3>
+        <p class="quote-text">「為什麼魚要跳出水面？是想逃離水的束縛？還是發現了水的極限？或者——這一切根本沒有意義？」</p>
+        <div class="quote-speaker">
+          <span class="speaker-emoji">🦈</span>
+          <span>拖延鯊 · 第三部曲</span>
+        </div>
+      </div>
+
+      <div class="quote-card color-gold" data-category="prosecutor">
+        <span class="speech-bubble">KAPOW!</span>
+        <span class="category-tag">海豚反擊</span>
+        <h3 class="quote-title">海鷗嘲笑預言</h3>
+        <p class="quote-text">「你的哲學思考看起來像是海鷗嘲笑——以為自己站在高處，其實只是在等下一個垃圾桶。」</p>
+        <div class="quote-speaker">
+          <span class="speaker-emoji">🐬</span>
+          <span>海豚督導 · 致命一擊</span>
+        </div>
+      </div>
+
+      <div class="quote-card color-mint" data-category="classic">
+        <span class="speech-bubble">DING!</span>
+        <span class="category-tag">經典藉口</span>
+        <h3 class="quote-title">🍽️ 吃太飽等消化</h3>
+        <p class="quote-text">「我現在不能吃魚油，因為我吃太飽了。等消化完再說——這是生理規律，不可違背。」</p>
+        <div class="quote-speaker">
+          <span class="speaker-emoji">🦈</span>
+          <span>拖延鯊 · 經典戰術</span>
+        </div>
+      </div>
+
+      <div class="quote-card color-peach" data-category="prosecutor">
+        <span class="speech-bubble">ZAP!</span>
+        <span class="category-tag">海豚反擊</span>
+        <h3 class="quote-title">💪 油上加油</h3>
+        <p class="quote-text">「油上加油懂不懂！！魚油是健康的催化劑，不是你逃避責任的擋箭牌！」</p>
+        <div class="quote-speaker">
+          <span class="speaker-emoji">🐬</span>
+          <span>海豚督導 · 終極反駁</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Philosophy Section -->
+    <div class="philosophy-section">
+      <div class="philosophy-grid">
+        <div class="philosophy-item floating" onclick="confettiBurst()">
+          <div class="emoji">🦈</div>
+          <div class="text">拖延鯊的哲學堡壘</div>
+        </div>
+        <div class="philosophy-item floating" onclick="confettiBurst()">
+          <div class="emoji">🐬</div>
+          <div class="text">海豚督導的正義執行</div>
+        </div>
+        <div class="philosophy-item floating" onclick="confettiBurst()">
+          <div class="emoji">🎭</div>
+          <div class="text">荒謬與存在主義交織</div>
+        </div>
+        <div class="philosophy-item floating" onclick="confettiBurst()">
+          <div class="emoji">⚡</div>
+          <div class="text">海鷗預言的終極KO</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Comic Strip -->
+    <h2 style="font-family: 'Bangers', cursive; font-size: 2rem; color: var(--navy); text-align: center; margin-bottom: 1rem;">📜 完整對話紀錄</h2>
+    <div class="comic-strip">
+      <div class="comic-panel" onclick="confettiBurst()">
+        <span class="panel-number">1</span>
+        <div class="comic-dialogue dolphin-speak">
+          <span class="speaker">🐬 海豚督導</span>
+          拖延鯊！魚油時間到了！飯後油脂幫助吸收DHA！
+        </div>
+        <div class="comic-emotion">👆</div>
+      </div>
+
+      <div class="comic-panel" onclick="confettiBurst()">
+        <span class="panel-number">2</span>
+        <div class="comic-dialogue shark-speak">
+          <span class="speaker">🦈 拖延鯊</span>
+          等等...我正在思考早餐的意義。
+        </div>
+        <div class="comic-emotion">🤔</div>
+      </div>
+
+      <div class="comic-panel" onclick="confettiBurst()">
+        <span class="panel-number">3</span>
+        <div class="comic-dialogue shark-speak">
+          <span class="speaker">🦈 拖延鯊</span>
+          還有...鯊魚減肥的可能性。
+        </div>
+        <div class="comic-emotion">🧐</div>
+      </div>
+
+      <div class="comic-panel" onclick="confettiBurst()">
+        <span class="panel-number">4</span>
+        <div class="comic-dialogue shark-speak">
+          <span class="speaker">🦈 拖延鯊</span>
+          以及...為什麼魚要跳出水面？
+        </div>
+        <div class="comic-emotion">🌊</div>
+      </div>
+
+      <div class="comic-panel" onclick="confettiBurst()">
+        <span class="panel-number">5</span>
+        <div class="comic-dialogue dolphin-speak">
+          <span class="speaker">🐬 海豚督導</span>
+          你的哲學像是海鷗嘲笑——
+        </div>
+        <div class="comic-emotion">😤</div>
+      </div>
+
+      <div class="comic-panel" onclick="confettiBurst()">
+        <span class="panel-number">6</span>
+        <div class="comic-dialogue dolphin-speak">
+          <span class="speaker">🐬 海豚督導</span>
+          以為自己站在高處，其實只是在等下一個垃圾桶！油上加油懂不懂！！
+        </div>
+        <div class="comic-emotion">💥</div>
+      </div>
+
+      <div class="comic-panel" onclick="confettiBurst()">
+        <span class="panel-number">7</span>
+        <div class="comic-dialogue shark-speak">
+          <span class="speaker">🦈 拖延鯊</span>
+          ...（被KO）
+        </div>
+        <div class="comic-emotion">😵</div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+      <p>每日魚油大作戰 · 荒謬哲學系列</p>
+      <p class="signature">— 魚油督察總署監製 —</p>
+    </footer>
+  </div>
+
+  <script>
+    // Confetti burst function
+    function confettiBurst() {
+      const colors = ['#E63946', '#81B29A', '#9B8FD9', '#F4A261', '#FFCDB2', '#1B3A5F'];
+      
+      confetti({
+        particleCount: 80,
+        spread: 70,
+        origin: { y: 0.6 },
+        colors: colors
+      });
+    }
+
+    // Add click listeners to all cards
+    document.querySelectorAll('.quote-card, .philosophy-item, .comic-panel').forEach(card => {
+      card.addEventListener('click', confettiBurst);
+    });
+
+    // Add localStorage to remember visits
+    const today = new Date().toISOString().split('T')[0];
+    const lastVisit = localStorage.getItem('philosophy-shark-visit');
+    
+    if (lastVisit !== today) {
+      // First visit today - big celebration
+      setTimeout(() => {
+        confetti({
+          particleCount: 150,
+          spread: 100,
+          origin: { y: 0.5 },
+          colors: ['#E63946', '#81B29A', '#9B8FD9', '#F4A261', '#FFCDB2', '#1B3A5F']
+        });
+        localStorage.setItem('philosophy-shark-visit', today);
+      }, 500);
+    }
+  </script>
+</body>
+</html>

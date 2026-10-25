@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sound Bath · 聲音浴</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@300;500&family=DM+Mono:wght@300&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0a0908;
+      --surface: #1a1816;
+      --text: #e8e4df;
+      --text-dim: #6b6560;
+      --accent: #c9a87c;
+      --accent-glow: rgba(201, 168, 124, 0.15);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Noto Serif TC', serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      background-image: 
+        radial-gradient(ellipse at 50% 0%, var(--accent-glow) 0%, transparent 60%),
+        repeating-radial-gradient(circle at 20% 80%, rgba(201,168,124,0.03) 0px, transparent 100px);
+    }
+
+    .container {
+      max-width: 480px;
+      width: 100%;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 1.5rem;
+      font-weight: 300;
+      letter-spacing: 0.3em;
+      margin-bottom: 0.5rem;
+      color: var(--accent);
+    }
+
+    .subtitle {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--text-dim);
+      letter-spacing: 0.15em;
+      margin-bottom: 3rem;
+    }
+
+    .sound-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+      margin-bottom: 3rem;
+    }
+
+    .sound-btn {
+      background: var(--surface);
+      border: 1px solid rgba(201, 168, 124, 0.2);
+      border-radius: 12px;
+      padding: 1.5rem 1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .sound-btn:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+    }
+
+    .sound-btn.active {
+      background: linear-gradient(135deg, var(--surface), #252220);
+      border-color: var(--accent);
+      box-shadow: 0 0 30px var(--accent-glow);
+    }
+
+    .sound-btn .icon {
+      font-size: 1.8rem;
+      filter: grayscale(0.3);
+      transition: filter 0.3s;
+    }
+
+    .sound-btn.active .icon {
+      filter: grayscale(0);
+    }
+
+    .sound-btn .label {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      color: var(--text-dim);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .sound-btn.active .label {
+      color: var(--accent);
+    }
+
+    .master-controls {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .master-btn {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      border: 2px solid var(--accent);
+      background: transparent;
+      color: var(--accent);
+      font-size: 1.5rem;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .master-btn:hover {
+      background: var(--accent);
+      color: var(--bg);
+    }
+
+    .master-btn.playing {
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 0 0 0 var(--accent-glow); }
+      50% { box-shadow: 0 0 20px 5px var(--accent-glow); }
+    }
+
+    .volume-slider {
+      width: 120px;
+      height: 4px;
+      -webkit-appearance: none;
+      background: var(--surface);
+      border-radius: 2px;
+      outline: none;
+    }
+
+    .volume-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: var(--accent);
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+
+    .volume-slider::-webkit-slider-thumb:hover {
+      transform: scale(1.2);
+    }
+
+    .timer-display {
+      font-family: 'DM Mono', monospace;
+      font-size: 2.5rem;
+      color: var(--text);
+      margin-bottom: 1rem;
+      letter-spacing: 0.1em;
+    }
+
+    .timer-presets {
+      display: flex;
+      gap: 0.75rem;
+      justify-content: center;
+    }
+
+    .preset-btn {
+      background: var(--surface);
+      border: 1px solid rgba(201, 168, 124, 0.15);
+      border-radius: 20px;
+      padding: 0.4rem 0.8rem;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      color: var(--text-dim);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .preset-btn:hover, .preset-btn.active {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .status {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.6rem;
+      color: var(--text-dim);
+      margin-top: 2rem;
+      letter-spacing: 0.05em;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>聲音浴</h1>
+    <p class="subtitle">SOUND BATH GENERATOR</p>
+
+    <div class="sound-grid">
+      <button class="sound-btn" data-sound="rain">
+        <span class="icon">🌧</span>
+        <span class="label">雨聲</span>
+      </button>
+      <button class="sound-btn" data-sound="waves">
+        <span class="icon">🌊</span>
+        <span class="label">海浪</span>
+      </button>
+      <button class="sound-btn" data-sound="wind">
+        <span class="icon">🍃</span>
+        <span class="label">風聲</span>
+      </button>
+      <button class="sound-btn" data-sound="fire">
+        <span class="icon">🔥</span>
+        <span class="label">營火</span>
+      </button>
+    </div>
+
+    <div class="master-controls">
+      <input type="range" class="volume-slider" id="volume" min="0" max="100" value="50">
+      <button class="master-btn" id="playBtn">▶</button>
+    </div>
+
+    <div class="timer-display" id="timer">00:00</div>
+    <div class="timer-presets">
+      <button class="preset-btn" data-min="5">5 min</button>
+      <button class="preset-btn" data-min="15">15 min</button>
+      <button class="preset-btn" data-min="30">30 min</button>
+      <button class="preset-btn" data-min="60">60 min</button>
+    </div>
+
+    <p class="status" id="status">點擊聲音開始 · 選擇時長</p>
+  </div>
+
+  <script>
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    let masterGain = ctx.createGain();
+    masterGain.connect(ctx.destination);
+    masterGain.gain.value = 0.5;
+
+    const oscillators = {};
+    const noiseNodes = {};
+    let isPlaying = false;
+    let selectedSounds = new Set();
+    let timerInterval = null;
+    let timerSeconds = 0;
+    let targetSeconds = 0;
+
+    // Noise generator
+    function createNoise() {
+      const bufferSize = ctx.sampleRate * 2;
+      const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+      const output = buffer.getChannelData(0);
+      for (let i = 0; i < bufferSize; i++) {
+        output[i] = Math.random() * 2 - 1;
+      }
+      return buffer;
+    }
+
+    const noiseBuffer = createNoise();
+
+    // Sound configurations
+    const soundConfigs = {
+      rain: () => {
+        const noise = ctx.createBufferSource();
+        noise.buffer = noiseBuffer;
+        noise.loop = true;
+        
+        const filter = ctx.createBiquadFilter();
+        filter.type = 'lowpass';
+        filter.frequency.value = 1000;
+        
+        const gain = ctx.createGain();
+        gain.gain.value = 0.3;
+        
+        noise.connect(filter);
+        filter.connect(gain);
+        gain.connect(masterGain);
+        
+        return { source: noise, gain };
+      },
+      waves: () => {
+        const noise = ctx.createBufferSource();
+        noise.buffer = noiseBuffer;
+        noise.loop = true;
+        
+        const filter = ctx.createBiquadFilter();
+        filter.type = 'lowpass';
+        filter.frequency.value = 400;
+        
+        const lfo = ctx.createOscillator();
+        lfo.frequency.value = 0.1;
+        const lfoGain = ctx.createGain();
+        lfoGain.gain.value = 0.2;
+        lfo.connect(lfoGain);
+        lfoGain.connect(filter.frequency);
+        
+        const gain = ctx.createGain();
+        gain.gain.value = 0.25;
+        
+        noise.connect(filter);
+        filter.connect(gain);
+        gain.connect(masterGain);
+        
+        return { source: noise, gain, lfo };
+      },
+      wind: () => {
+        const noise = ctx.createBufferSource();
+        noise.buffer = noiseBuffer;
+        noise.loop = true;
+        
+        const filter = ctx.createBiquadFilter();
+        filter.type = 'bandpass';
+        filter.frequency.value = 600;
+        filter.Q.value = 0.5;
+        
+        const lfo = ctx.createOscillator();
+        lfo.frequency.value = 0.05;
+        const lfoGain = ctx.createGain();
+        lfoGain.gain.value = 300;
+        lfo.connect(lfoGain);
+        lfoGain.connect(filter.frequency);
+        
+        const gain = ctx.createGain();
+        gain.gain.value = 0.2;
+        
+        noise.connect(filter);
+        filter.connect(gain);
+        gain.connect(masterGain);
+        
+        return { source: noise, gain, lfo };
+      },
+      fire: () => {
+        const noise = ctx.createBufferSource();
+        noise.buffer = noiseBuffer;
+        noise.loop = true;
+        
+        const filter = ctx.createBiquadFilter();
+        filter.type = 'bandpass';
+        filter.frequency.value = 200;
+        filter.Q.value = 1;
+        
+        const crackle = ctx.createOscillator();
+        crackle.frequency.value = 3;
+        const crackleGain = ctx.createGain();
+        crackleGain.gain.value = 0.1;
+        crackle.connect(crackleGain);
+        crackleGain.connect(filter.frequency);
+        
+        const gain = ctx.createGain();
+        gain.gain.value = 0.35;
+        
+        noise.connect(filter);
+        filter.connect(gain);
+        gain.connect(masterGain);
+        
+        return { source: noise, gain, crackle };
+      }
+    };
+
+    // UI Handlers
+    const soundBtns = document.querySelectorAll('.sound-btn');
+    const playBtn = document.getElementById('playBtn');
+    const volumeSlider = document.getElementById('volume');
+    const timerDisplay = document.getElementById('timer');
+    const presetBtns = document.querySelectorAll('.preset-btn');
+    const statusEl = document.getElementById('status');
+
+    soundBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const sound = btn.dataset.sound;
+        if (selectedSounds.has(sound)) {
+          selectedSounds.delete(sound);
+          btn.classList.remove('active');
+        } else {
+          selectedSounds.add(sound);
+          btn.classList.add('active');
+        }
+        if (isPlaying) updatePlayingSounds();
+      });
+    });
+
+    playBtn.addEventListener('click', () => {
+      if (ctx.state === 'suspended') ctx.resume();
+      
+      if (isPlaying) {
+        stopAll();
+        playBtn.textContent = '▶';
+        playBtn.classList.remove('playing');
+        statusEl.textContent = '已停止';
+      } else {
+        if (selectedSounds.size === 0) {
+          statusEl.textContent = '請先選擇一種聲音';
+          return;
+        }
+        startAll();
+        playBtn.textContent = '■';
+        playBtn.classList.add('playing');
+        statusEl.textContent = '播放中...';
+      }
+      isPlaying = !isPlaying;
+    });
+
+    volumeSlider.addEventListener('input', (e) => {
+      masterGain.gain.value = e.target.value / 100;
+    });
+
+    presetBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        presetBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        targetSeconds = parseInt(btn.dataset.min) * 60;
+        timerSeconds = targetSeconds;
+        updateTimerDisplay();
+        if (!isPlaying && targetSeconds > 0) {
+          statusEl.textContent = '選擇聲音後點擊播放';
+        }
+      });
+    });
+
+    function startAll() {
+      selectedSounds.forEach(sound => {
+        const config = soundConfigs[sound]();
+        oscillators[sound] = config.source;
+        if (config.lfo) config.lfo.start();
+        config.source.start();
+      });
+      if (targetSeconds > 0) startTimer();
+    }
+
+    function stopAll() {
+      Object.values(oscillators).forEach(osc => {
+        try { osc.stop(); } catch(e) {}
+      });
+      Object.keys(oscillators).forEach(k => delete oscillators[k]);
+      stopTimer();
+    }
+
+    function updatePlayingSounds() {
+      stopAll();
+      startAll();
+    }
+
+    function startTimer() {
+      stopTimer();
+      timerInterval = setInterval(() => {
+        timerSeconds--;
+        updateTimerDisplay();
+        if (timerSeconds <= 0) {
+          stopAll();
+          isPlaying = false;
+          playBtn.textContent = '▶';
+          playBtn.classList.remove('playing');
+          statusEl.textContent = '時間到 · 結束';
+        }
+      }, 1000);
+    }
+
+    function stopTimer() {
+      if (timerInterval) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+      }
+    }
+
+    function updateTimerDisplay() {
+      const mins = Math.floor(timerSeconds / 60).toString().padStart(2, '0');
+      const secs = (timerSeconds % 60).toString().padStart(2, '0');
+      timerDisplay.textContent = `${mins}:${secs}`;
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>自動化路障應對卡｜Automation Roadblock Cards</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #fbf7ef;
+      --paper: #fffdf8;
+      --ink: #182126;
+      --muted: #5d6a70;
+      --red: #f45b4f;
+      --yellow: #ffcb47;
+      --blue: #65b6ff;
+      --green: #75d67f;
+      --line: #182126;
+      --shadow: 8px 8px 0 #182126;
+      --radius: 24px;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Noto Sans TC', sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at top left, rgba(255,203,71,.35), transparent 18%),
+        radial-gradient(circle at bottom right, rgba(101,182,255,.28), transparent 24%),
+        var(--bg);
+    }
+    .wrap { max-width: 1180px; margin: 0 auto; padding: 24px 18px 80px; }
+    .hero, .card, .note, .steps, .meter { background: var(--paper); border: 3px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); }
+    .hero { padding: 24px; display: grid; gap: 18px; }
+    .eyebrow { display: inline-block; font: 600 13px 'IBM Plex Mono', monospace; background: var(--yellow); border: 2px solid var(--line); border-radius: 999px; padding: 6px 10px; width: fit-content; }
+    h1 { margin: 0; font-size: clamp(2rem, 7vw, 4.6rem); line-height: .95; letter-spacing: -0.05em; }
+    .subtitle { margin: 0; font-size: 1.05rem; color: var(--muted); max-width: 760px; }
+    .hero-grid, .cards, .bottom { display: grid; gap: 18px; }
+    .hero-grid { grid-template-columns: 1.2fr .8fr; }
+    .meter { padding: 18px; }
+    .meter h3, .steps h3, .note h3 { margin-top: 0; }
+    .score { font-size: 4rem; font-weight: 900; line-height: 1; }
+    .score small { font-size: 1rem; }
+    .bars { display: grid; gap: 10px; margin-top: 16px; }
+    .bar { background: #ece6db; border: 2px solid var(--line); border-radius: 999px; overflow: hidden; height: 20px; }
+    .fill { height: 100%; background: repeating-linear-gradient(90deg, var(--blue), var(--blue) 14px, #91ccff 14px, #91ccff 28px); }
+    .cards { grid-template-columns: repeat(3, 1fr); margin-top: 18px; }
+    .card { padding: 18px; position: relative; overflow: hidden; }
+    .tag { display: inline-flex; align-items: center; gap: 8px; font: 600 12px 'IBM Plex Mono', monospace; padding: 5px 10px; border: 2px solid var(--line); border-radius: 999px; }
+    .tag.red { background: #ffd8d3; }
+    .tag.blue { background: #dff0ff; }
+    .tag.yellow { background: #fff2be; }
+    .big { margin: 14px 0 8px; font-size: 1.7rem; font-weight: 900; line-height: 1.05; }
+    .meta { color: var(--muted); font-size: .96rem; min-height: 68px; }
+    .checklist { margin: 14px 0 0; padding: 0; list-style: none; display: grid; gap: 10px; }
+    .checklist label { display: grid; grid-template-columns: 22px 1fr; gap: 10px; align-items: start; background: #fff; border: 2px dashed var(--line); border-radius: 16px; padding: 10px 12px; cursor: pointer; }
+    input[type='checkbox'] { accent-color: var(--ink); margin-top: 3px; }
+    .smallmono { font: 600 12px 'IBM Plex Mono', monospace; color: var(--muted); }
+    .bottom { margin-top: 18px; grid-template-columns: 1fr 1fr; }
+    .steps, .note { padding: 18px; }
+    .step { display: grid; grid-template-columns: 38px 1fr; gap: 12px; align-items: start; margin: 14px 0; }
+    .num { width: 38px; height: 38px; border-radius: 12px; border: 2px solid var(--line); display: grid; place-items: center; font-weight: 900; background: var(--green); }
+    textarea {
+      width: 100%; min-height: 170px; resize: vertical; border: 3px solid var(--line); border-radius: 16px; padding: 14px;
+      font: 500 16px/1.55 'Noto Sans TC', sans-serif; background: #fff;
+    }
+    .toolbar { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
+    button {
+      border: 3px solid var(--line); background: var(--yellow); color: var(--ink); border-radius: 999px; padding: 10px 16px; font-weight: 800; cursor: pointer;
+      box-shadow: 4px 4px 0 var(--line);
+    }
+    button.secondary { background: var(--blue); }
+    .footer { margin-top: 18px; text-align: center; color: var(--muted); font-size: .95rem; }
+    .pill-row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
+    .pill { border: 2px solid var(--line); border-radius: 999px; padding: 7px 10px; background: white; font: 600 12px 'IBM Plex Mono', monospace; }
+    @media (max-width: 900px) {
+      .hero-grid, .cards, .bottom { grid-template-columns: 1fr; }
+      .score { font-size: 3rem; }
+      .wrap { padding: 16px 14px 56px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="hero">
+      <span class="eyebrow">2026-04-22 DAILY LAB / TOOL系</span>
+      <div class="hero-grid">
+        <div>
+          <h1>自動化路障<br>應對卡</h1>
+          <p class="subtitle">把今天真實遇到的三種卡關——辦公雲瀏覽器 policy 阻擋、Threads API key 失效、9 筆待處理簽核——整理成早晨一眼能掃描、能勾選、能留筆記的行動面板。</p>
+          <div class="pill-row">
+            <span class="pill">Memory-derived</span>
+            <span class="pill">Brutalist Paper</span>
+            <span class="pill">Mobile Friendly</span>
+            <span class="pill">localStorage</span>
+          </div>
+        </div>
+        <aside class="meter">
+          <h3>今日路障壓力值</h3>
+          <div class="score" id="score">0<small>/3</small></div>
+          <div class="smallmono">完成越多，早晨越不容易被小 bug 帶著跑。</div>
+          <div class="bars">
+            <div>
+              <div class="smallmono">辦公雲檢查替代路徑</div>
+              <div class="bar"><div class="fill" id="fill-office" style="width:0%"></div></div>
+            </div>
+            <div>
+              <div class="smallmono">Threads / 搜尋資料驗證</div>
+              <div class="bar"><div class="fill" id="fill-threads" style="width:0%"></div></div>
+            </div>
+            <div>
+              <div class="smallmono">簽核清單消化進度</div>
+              <div class="bar"><div class="fill" id="fill-approvals" style="width:0%"></div></div>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="cards">
+      <article class="card">
+        <span class="tag red">🚧 POLICY BLOCK</span>
+        <div class="big">辦公雲被瀏覽器政策擋住</div>
+        <div class="meta">今天 08:23 與 13:00 左右都卡在 navigation policy。與其重試十次，不如先走替代檢查流程。</div>
+        <ul class="checklist">
+          <li><label><input type="checkbox" data-group="office"><span>確認是內建 browser policy，而非帳號/網址本身失效</span></label></li>
+          <li><label><input type="checkbox" data-group="office"><span>列出替代入口：外部瀏覽器、手動 URL、截圖回傳、CLI 檢查</span></label></li>
+          <li><label><input type="checkbox" data-group="office"><span>把「被 policy 擋住」寫進備忘，避免明早再踩一次</span></label></li>
+        </ul>
+      </article>
+
+      <article class="card">
+        <span class="tag blue">🔎 DATA GAP</span>
+        <div class="big">Threads API key 失效</div>
+        <div class="meta">Threads 經營檢查沒有拿到可靠資料。重點不是硬查，而是先確認：資料缺的是哪一層？搜尋、授權、還是來源根本不穩。</div>
+        <ul class="checklist">
+          <li><label><input type="checkbox" data-group="threads"><span>先檢查 API key / provider 是否失效，再決定是否 fallback</span></label></li>
+          <li><label><input type="checkbox" data-group="threads"><span>若外部搜尋不穩，改記錄「今天無法驗證」而非輸出不可靠摘要</span></label></li>
+          <li><label><input type="checkbox" data-group="threads"><span>列一個人工替代方案：手動搜尋、截圖存證、晚點再跑</span></label></li>
+        </ul>
+      </article>
+
+      <article class="card">
+        <span class="tag yellow">📬 ACTION QUEUE</span>
+        <div class="big">9 筆待處理簽核</div>
+        <div class="meta">今天唯一明確可落地的工作量。把「9 筆」從抽象壓力變成可完成的小隊列。</div>
+        <ul class="checklist">
+          <li><label><input type="checkbox" data-group="approvals"><span>先處理最有時效性的項目（例如加班費申請）</span></label></li>
+          <li><label><input type="checkbox" data-group="approvals"><span>把簽核分成：2 分鐘內可結束 / 需要補資訊</span></label></li>
+          <li><label><input type="checkbox" data-group="approvals"><span>處理完回寫今天狀態，避免晚上 recap 又重新判讀</span></label></li>
+        </ul>
+      </article>
+    </section>
+
+    <section class="bottom">
+      <div class="steps">
+        <h3>晨間建議順序</h3>
+        <div class="step"><div class="num">1</div><div><strong>先清掉最具體的：</strong>簽核 9 筆最適合一早處理，會最快降低心理噪音。</div></div>
+        <div class="step"><div class="num">2</div><div><strong>再標記不可解的：</strong>辦公雲 policy block 如果環境沒變，不要無限重試，直接留替代方案。</div></div>
+        <div class="step"><div class="num">3</div><div><strong>最後補資料可信度：</strong>Threads 檢查如果沒有可靠來源，就標示缺口，別讓錯誤資料進 recap。</div></div>
+      </div>
+      <div class="note">
+        <h3>今日備忘</h3>
+        <textarea id="memo" placeholder="例如：辦公雲先改外部 Edge 檢查；Threads 等 API key 修好再補；簽核先掃加班費與急件…"></textarea>
+        <div class="toolbar">
+          <button id="saveBtn">儲存備忘</button>
+          <button class="secondary" id="resetBtn">清空勾選</button>
+        </div>
+        <p class="smallmono" id="saveState">尚未儲存</p>
+      </div>
+    </section>
+
+    <p class="footer">靈感來自 2026-04-21 記憶：辦公雲 navigation policy、Threads API key 失效、9 筆待簽核，加上 2026-04-22 draft 的例行 heartbeat 現實感。</p>
+  </div>
+
+  <script>
+    const key = 'lab-20260422-roadblock-cards';
+    const memo = document.getElementById('memo');
+    const saveState = document.getElementById('saveState');
+    const scoreEl = document.getElementById('score');
+    const groups = ['office', 'threads', 'approvals'];
+    const fillMap = {
+      office: document.getElementById('fill-office'),
+      threads: document.getElementById('fill-threads'),
+      approvals: document.getElementById('fill-approvals')
+    };
+
+    function getState() {
+      return {
+        memo: memo.value,
+        checks: [...document.querySelectorAll('input[type="checkbox"]')].map(c => c.checked)
+      };
+    }
+
+    function renderScore() {
+      let completeGroups = 0;
+      groups.forEach(group => {
+        const items = [...document.querySelectorAll(`input[data-group="${group}"]`)];
+        const checked = items.filter(i => i.checked).length;
+        const pct = (checked / items.length) * 100;
+        fillMap[group].style.width = pct + '%';
+        if (checked === items.length) completeGroups += 1;
+      });
+      scoreEl.innerHTML = `${completeGroups}<small>/3</small>`;
+    }
+
+    function save(showMessage = true) {
+      localStorage.setItem(key, JSON.stringify(getState()));
+      if (showMessage) saveState.textContent = '已儲存到 localStorage';
+      renderScore();
+    }
+
+    function load() {
+      const raw = localStorage.getItem(key);
+      if (!raw) return renderScore();
+      try {
+        const state = JSON.parse(raw);
+        memo.value = state.memo || '';
+        [...document.querySelectorAll('input[type="checkbox"]')].forEach((c, i) => {
+          c.checked = !!(state.checks || [])[i];
+        });
+        saveState.textContent = '已載入上次進度';
+      } catch {
+        saveState.textContent = '讀取失敗，已使用空白狀態';
+      }
+      renderScore();
+    }
+
+    document.querySelectorAll('input[type="checkbox"]').forEach(box => box.addEventListener('change', () => save(false)));
+    document.getElementById('saveBtn').addEventListener('click', () => save(true));
+    document.getElementById('resetBtn').addEventListener('click', () => {
+      document.querySelectorAll('input[type="checkbox"]').forEach(c => c.checked = false);
+      memo.value = '';
+      localStorage.removeItem(key);
+      saveState.textContent = '已清空';
+      renderScore();
+    });
+    load();
+  </script>
+</body>
+</html>

@@ -1,0 +1,5 @@
+{
+  "title": "Morse Pulse · 摩斯脈衝",
+  "type": "互動系",
+  "description": "輸入文字即時轉換為摩斯密碼，Web Audio API 播放滴答聲，大型指示燈泡同步閃爍，速度可調 (5-30 WPM)"
+}

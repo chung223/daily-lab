@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IFYE 2026 世界友誼護照 | World Passport</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Noto+Sans+TC:wght@400;700&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --cream: #FDF8F0;
+      --navy: #1B3A5F;
+      --gold: #D4A84B;
+      --coral: #E07B54;
+      --sage: #7B9E87;
+      --burgundy: #8B3A4C;
+      --stamp-red: #C9483A;
+      --stamp-blue: #2B5C8A;
+      --stamp-green: #3A7D44;
+      --stamp-gold: #B8860B;
+    }
+
+    body {
+      font-family: 'Noto Sans TC', sans-serif;
+      background: linear-gradient(135deg, #F5EFE6 0%, #E8E0D5 100%);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Decorative background pattern */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-image: 
+        radial-gradient(circle at 20% 80%, rgba(212, 168, 75, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(123, 158, 135, 0.1) 0%, transparent 50%);
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+
+    /* Header */
+    .header {
+      text-align: center;
+      margin-bottom: 50px;
+      animation: fadeInDown 0.8s ease-out;
+    }
+
+    @keyframes fadeInDown {
+      from {
+        opacity: 0;
+        transform: translateY(-30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .header-badge {
+      display: inline-block;
+      background: var(--navy);
+      color: white;
+      padding: 8px 24px;
+      border-radius: 30px;
+      font-size: 14px;
+      letter-spacing: 3px;
+      margin-bottom: 20px;
+      text-transform: uppercase;
+    }
+
+    .header h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(36px, 8vw, 64px);
+      font-weight: 900;
+      color: var(--navy);
+      margin-bottom: 15px;
+      line-height: 1.1;
+    }
+
+    .header h1 span {
+      display: block;
+      color: var(--coral);
+    }
+
+    .header-subtitle {
+      font-family: 'Caveat', cursive;
+      font-size: 24px;
+      color: var(--sage);
+      margin-bottom: 20px;
+    }
+
+    .stats-row {
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      flex-wrap: wrap;
+    }
+
+    .stat-item {
+      text-align: center;
+    }
+
+    .stat-number {
+      font-family: 'Playfair Display', serif;
+      font-size: 48px;
+      font-weight: 700;
+      color: var(--burgundy);
+    }
+
+    .stat-label {
+      font-size: 14px;
+      color: #666;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+
+    /* Passport Book */
+    .passport-book {
+      background: var(--cream);
+      border-radius: 8px;
+      box-shadow: 
+        0 4px 6px rgba(0,0,0,0.05),
+        0 10px 40px rgba(0,0,0,0.1),
+        inset 0 0 0 3px var(--navy);
+      max-width: 900px;
+      margin: 0 auto 50px;
+      position: relative;
+      overflow: hidden;
+      animation: fadeInUp 1s ease-out 0.3s both;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(40px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .passport-spine {
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 30px;
+      background: linear-gradient(90deg, #1a1a1a 0%, #333 100%);
+      box-shadow: inset -5px 0 15px rgba(0,0,0,0.5);
+    }
+
+    .passport-content {
+      padding: 50px 40px 50px 60px;
+    }
+
+    /* Cover Section */
+    .cover-section {
+      text-align: center;
+      padding: 40px 0;
+      border-bottom: 2px dashed var(--gold);
+      margin-bottom: 40px;
+    }
+
+    .emblem {
+      width: 120px;
+      height: 120px;
+      margin: 0 auto 25px;
+      position: relative;
+    }
+
+    .emblem-circle {
+      width: 100%;
+      height: 100%;
+      border: 4px solid var(--navy);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 50px;
+      animation: gentleSpin 20s linear infinite;
+    }
+
+    @keyframes gentleSpin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    .emblem-rings {
+      position: absolute;
+      top: -15px;
+      left: -15px;
+      right: -15px;
+      bottom: -15px;
+      border: 2px solid var(--gold);
+      border-radius: 50%;
+      animation: gentleSpin 25s linear infinite reverse;
+    }
+
+    .cover-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 32px;
+      font-weight: 900;
+      color: var(--navy);
+      margin-bottom: 10px;
+    }
+
+    .cover-year {
+      font-family: 'Caveat', cursive;
+      font-size: 28px;
+      color: var(--coral);
+      margin-bottom: 15px;
+    }
+
+    .cover-tagline {
+      font-size: 14px;
+      color: #888;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+    }
+
+    /* Representatives Grid */
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 24px;
+      color: var(--navy);
+      margin-bottom: 25px;
+      padding-bottom: 10px;
+      border-bottom: 3px solid var(--coral);
+      display: inline-block;
+    }
+
+    .reps-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+      margin-bottom: 40px;
+    }
+
+    .rep-card {
+      background: white;
+      border-radius: 12px;
+      padding: 25px;
+      box-shadow: 0 3px 15px rgba(0,0,0,0.08);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .rep-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+    }
+
+    .rep-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 5px;
+      background: var(--coral);
+    }
+
+    .rep-header {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 15px;
+    }
+
+    .rep-flag {
+      font-size: 40px;
+      line-height: 1;
+    }
+
+    .rep-info {
+      flex: 1;
+    }
+
+    .rep-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 3px;
+    }
+
+    .rep-country {
+      font-size: 13px;
+      color: #888;
+    }
+
+    .rep-stats {
+      display: flex;
+      gap: 20px;
+    }
+
+    .rep-stat {
+      text-align: center;
+    }
+
+    .rep-stat-value {
+      font-family: 'Playfair Display', serif;
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--burgundy);
+    }
+
+    .rep-stat-label {
+      font-size: 11px;
+      color: #999;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    /* Stamps Section */
+    .stamps-section {
+      margin-bottom: 40px;
+    }
+
+    .stamps-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      justify-content: center;
+    }
+
+    .stamp {
+      width: 90px;
+      height: 110px;
+      background: white;
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      transition: transform 0.3s ease;
+      cursor: pointer;
+      position: relative;
+      transform: rotate(var(--rotation, 0deg));
+    }
+
+    .stamp:hover {
+      transform: rotate(0deg) scale(1.1) !important;
+      z-index: 10;
+    }
+
+    .stamp-flag {
+      font-size: 36px;
+      margin-bottom: 8px;
+    }
+
+    .stamp-country {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--navy);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      text-align: center;
+    }
+
+    .stamp-stations {
+      font-family: 'Caveat', cursive;
+      font-size: 14px;
+      color: var(--coral);
+    }
+
+    .stamp.ph {
+      --rotation: -5deg;
+      border: 2px solid var(--stamp-blue);
+    }
+    .stamp.kr {
+      --rotation: 3deg;
+      border: 2px solid var(--stamp-red);
+    }
+    .stamp.th {
+      --rotation: -2deg;
+      border: 2px solid var(--stamp-green);
+    }
+    .stamp.ch {
+      --rotation: 4deg;
+      border: 2px solid var(--stamp-gold);
+    }
+    .stamp.gh {
+      --rotation: -3deg;
+      border: 2px solid var(--stamp-blue);
+    }
+
+    /* Timeline Section */
+    .timeline-section {
+      margin-bottom: 40px;
+    }
+
+    .timeline {
+      position: relative;
+      padding-left: 30px;
+    }
+
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 8px;
+      top: 0;
+      bottom: 0;
+      width: 3px;
+      background: linear-gradient(to bottom, var(--coral), var(--gold));
+    }
+
+    .timeline-item {
+      position: relative;
+      padding-bottom: 30px;
+      padding-left: 30px;
+    }
+
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: -26px;
+      top: 5px;
+      width: 16px;
+      height: 16px;
+      background: var(--coral);
+      border-radius: 50%;
+      border: 3px solid var(--cream);
+      box-shadow: 0 0 0 3px var(--coral);
+    }
+
+    .timeline-date {
+      font-family: 'Caveat', cursive;
+      font-size: 18px;
+      color: var(--coral);
+      margin-bottom: 5px;
+    }
+
+    .timeline-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 5px;
+    }
+
+    .timeline-desc {
+      font-size: 14px;
+      color: #666;
+      line-height: 1.6;
+    }
+
+    /* Signature Section */
+    .signature-section {
+      text-align: center;
+      padding: 40px 0;
+      border-top: 2px dashed var(--gold);
+    }
+
+    .signature-label {
+      font-size: 12px;
+      color: #999;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      margin-bottom: 20px;
+    }
+
+    .signature-input {
+      font-family: 'Caveat', cursive;
+      font-size: 32px;
+      color: var(--navy);
+      background: transparent;
+      border: none;
+      border-bottom: 2px solid var(--navy);
+      padding: 10px 30px;
+      text-align: center;
+      width: 300px;
+      max-width: 100%;
+      outline: none;
+    }
+
+    .signature-input::placeholder {
+      color: #bbb;
+    }
+
+    .signature-date {
+      font-family: 'Playfair Display', serif;
+      font-size: 18px;
+      color: var(--burgundy);
+      margin-top: 20px;
+    }
+
+    /* Confetti */
+    .confetti-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1000;
+      overflow: hidden;
+    }
+
+    .confetti {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      opacity: 0;
+    }
+
+    /* Footer */
+    .footer {
+      text-align: center;
+      padding: 30px;
+      color: #999;
+      font-size: 13px;
+    }
+
+    .footer a {
+      color: var(--coral);
+      text-decoration: none;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .container {
+        padding: 20px 15px;
+      }
+
+      .passport-content {
+        padding: 30px 20px 30px 40px;
+      }
+
+      .passport-spine {
+        width: 20px;
+      }
+
+      .stats-row {
+        gap: 20px;
+      }
+
+      .stat-number {
+        font-size: 36px;
+      }
+
+      .reps-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .stamp {
+        width: 70px;
+        height: 90px;
+      }
+
+      .stamp-flag {
+        font-size: 28px;
+      }
+
+      .stamp-country {
+        font-size: 8px;
+      }
+    }
+
+    /* Celebration animation */
+    @keyframes celebrate {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.2); }
+      100% { transform: scale(1); }
+    }
+
+    .celebrating {
+      animation: celebrate 0.5s ease;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <header class="header">
+      <div class="header-badge">🌍 International Friendship</div>
+      <h1>IFYE <span>World Passport</span></h1>
+      <p class="header-subtitle">9 Friends, 5 Nations, 51 Stations of Love</p>
+      <div class="stats-row">
+        <div class="stat-item">
+          <div class="stat-number">9</div>
+          <div class="stat-label">Representatives</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">51</div>
+          <div class="stat-label">Host Stations</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">5</div>
+          <div class="stat-label">Nations</div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Passport Book -->
+    <div class="passport-book">
+      <div class="passport-spine"></div>
+      <div class="passport-content">
+        <!-- Cover Emblem -->
+        <div class="cover-section">
+          <div class="emblem">
+            <div class="emblem-rings"></div>
+            <div class="emblem-circle">🌏</div>
+          </div>
+          <h2 class="cover-title">PASSPORT OF FRIENDSHIP</h2>
+          <p class="cover-year">International Four-H Exchange 2026</p>
+          <p class="cover-tagline">Building Bridges Across Borders</p>
+        </div>
+
+        <!-- Representatives -->
+        <h3 class="section-title">📋 Delegates Registry</h3>
+        <div class="reps-grid" id="repsGrid">
+          <!-- Cards will be generated by JS -->
+        </div>
+
+        <!-- Stamps -->
+        <div class="stamps-section">
+          <h3 class="section-title">🛂 National Stamps</h3>
+          <div class="stamps-grid" id="stampsGrid">
+            <!-- Stamps will be generated by JS -->
+          </div>
+        </div>
+
+        <!-- Timeline -->
+        <div class="timeline-section">
+          <h3 class="section-title">📅 Journey Timeline</h3>
+          <div class="timeline">
+            <div class="timeline-item">
+              <div class="timeline-date">June 27, 2026 — 18:05</div>
+              <div class="timeline-title">Evening VPS Sync Complete</div>
+              <div class="timeline-desc">Full sync successful. All 51 stations verified. Deployment confirmed at index.4-h.me/ifye/2026/</div>
+            </div>
+            <div class="timeline-item">
+              <div class="timeline-date">June 27, 2026 — 13:00</div>
+              <div class="timeline-title">Morning Sync & Deployment</div>
+              <div class="timeline-desc">IFYE 2026 website deployed with 9 visitors, 60 station records from Notion database.</div>
+            </div>
+            <div class="timeline-item">
+              <div class="timeline-date">June 21, 2026</div>
+              <div class="timeline-title">Father's Day</div>
+              <div class="timeline-desc">IFYE program continues across 5 nations. Global friendship in action.</div>
+            </div>
+            <div class="timeline-item">
+              <div class="timeline-date">June 15, 2026</div>
+              <div class="timeline-title">IFYE 2026 Launch</div>
+              <div class="timeline-desc">First session boot. 9 representatives begin their international exchange journey.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Signature -->
+        <div class="signature-section">
+          <p class="signature-label">Bearer Signature</p>
+          <input type="text" class="signature-input" id="signatureInput" placeholder="Sign here..." maxlength="30">
+          <p class="signature-date" id="signatureDate"></p>
+        </div>
+      </div>
+    </div>
+
+    <footer class="footer">
+      <p>IFYE 2026 World Passport | <a href="https://index.4-h.me/ifye/2026/" target="_blank">Visit Official Site ↗</a></p>
+      <p>Created with ❤️ for international friendship</p>
+    </footer>
+  </div>
+
+  <div class="confetti-container" id="confettiContainer"></div>
+
+  <script>
+    // IFYE 2026 Data
+    const ifyeData = {
+      representatives: [
+        { name: 'Ibrahim B. Sansalona', country: 'Philippines', flag: '🇵🇭', stations: 6, code: 'ph' },
+        { name: 'Gary A. Ayuste', country: 'Philippines', flag: '🇵🇭', stations: 6, code: 'ph' },
+        { name: 'Jihyun Jung', country: 'Korea', flag: '🇰🇷', stations: 6, code: 'kr' },
+        { name: 'Yerim An', country: 'Korea', flag: '🇰🇷', stations: 6, code: 'kr' },
+        { name: 'Phoobet Sudsawatt', country: 'Thailand', flag: '🇹🇭', stations: 6, code: 'th' },
+        { name: 'Dararat Surinpornwattana', country: 'Thailand', flag: '🇹🇭', stations: 6, code: 'th' },
+        { name: 'Anna Ruttimann', country: 'Switzerland', flag: '🇨🇭', stations: 7, code: 'ch' },
+        { name: 'Sven', country: 'Austria', flag: '🇦🇹', stations: 7, code: 'ch' },
+        { name: 'Justice Kwasi Etsey', country: 'Ghana', flag: '🇬🇭', stations: 7, code: 'gh' }
+      ],
+      countries: [
+        { name: 'Philippines', flag: '🇵🇭', stations: 12, code: 'ph' },
+        { name: 'Korea', flag: '🇰🇷', stations: 12, code: 'kr' },
+        { name: 'Thailand', flag: '🇹🇭', stations: 12, code: 'th' },
+        { name: 'Switzerland', flag: '🇨🇭', stations: 7, code: 'ch' },
+        { name: 'Ghana', flag: '🇬🇭', stations: 7, code: 'gh' }
+      ]
+    };
+
+    // Generate Representative Cards
+    function generateRepCards() {
+      const grid = document.getElementById('repsGrid');
+      grid.innerHTML = ifyeData.representatives.map((rep, index) => `
+        <div class="rep-card" data-index="${index}">
+          <div class="rep-header">
+            <span class="rep-flag">${rep.flag}</span>
+            <div class="rep-info">
+              <div class="rep-name">${rep.name}</div>
+              <div class="rep-country">${rep.country}</div>
+            </div>
+          </div>
+          <div class="rep-stats">
+            <div class="rep-stat">
+              <div class="rep-stat-value">${rep.stations}</div>
+              <div class="rep-stat-label">Stations</div>
+            </div>
+          </div>
+        </div>
+      `).join('');
+
+      // Add click handlers
+      document.querySelectorAll('.rep-card').forEach(card => {
+        card.addEventListener('click', () => {
+          card.classList.add('celebrating');
+          triggerConfetti();
+          setTimeout(() => card.classList.remove('celebrating'), 500);
+        });
+      });
+    }
+
+    // Generate Country Stamps
+    function generateStamps() {
+      const grid = document.getElementById('stampsGrid');
+      grid.innerHTML = ifyeData.countries.map(country => `
+        <div class="stamp ${country.code}">
+          <span class="stamp-flag">${country.flag}</span>
+          <span class="stamp-country">${country.name}</span>
+          <span class="stamp-stations">${country.stations} stations</span>
+        </div>
+      `).join('');
+
+      // Add click handlers
+      document.querySelectorAll('.stamp').forEach(stamp => {
+        stamp.addEventListener('click', () => {
+          stamp.style.transform = 'scale(1.2)';
+          triggerConfetti();
+          setTimeout(() => {
+            stamp.style.transform = '';
+          }, 500);
+        });
+      });
+    }
+
+    // Confetti Effect
+    function triggerConfetti() {
+      const container = document.getElementById('confettiContainer');
+      const colors = ['#E07B54', '#D4A84B', '#7B9E87', '#8B3A4C', '#1B3A5F', '#2B5C8A'];
+      const shapes = ['■', '●', '▲', '★', '♦'];
+
+      for (let i = 0; i < 50; i++) {
+        const confetti = document.createElement('div');
+        confetti.className = 'confetti';
+        confetti.textContent = shapes[Math.floor(Math.random() * shapes.length)];
+        confetti.style.left = Math.random() * 100 + '%';
+        confetti.style.top = '-20px';
+        confetti.style.color = colors[Math.floor(Math.random() * colors.length)];
+        confetti.style.fontSize = (Math.random() * 15 + 10) + 'px';
+        
+        container.appendChild(confetti);
+
+        // Animate
+        const duration = Math.random() * 2000 + 1500;
+        const xEnd = (Math.random() - 0.5) * 200;
+        
+        confetti.animate([
+          { 
+            opacity: 1, 
+            transform: 'translateY(0) translateX(0) rotate(0deg)' 
+          },
+          { 
+            opacity: 0, 
+            transform: `translateY(${window.innerHeight + 50}px) translateX(${xEnd}px) rotate(${Math.random() * 720}deg)` 
+          }
+        ], {
+          duration: duration,
+          easing: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)'
+        }).onfinish = () => confetti.remove();
+      }
+    }
+
+    // Signature date
+    function updateSignatureDate() {
+      const now = new Date();
+      const options = { year: 'numeric', month: 'long', day: 'numeric' };
+      document.getElementById('signatureDate').textContent = now.toLocaleDateString('en-US', options);
+    }
+
+    // Load saved signature
+    function loadSignature() {
+      const saved = localStorage.getItem('ifye2026_signature');
+      if (saved) {
+        document.getElementById('signatureInput').value = saved;
+      }
+    }
+
+    // Save signature
+    document.getElementById('signatureInput').addEventListener('input', (e) => {
+      localStorage.setItem('ifye2026_signature', e.target.value);
+    });
+
+    // Initialize
+    generateRepCards();
+    generateStamps();
+    updateSignatureDate();
+    loadSignature();
+
+    // First visit confetti
+    if (!localStorage.getItem('ifye2026_visited')) {
+      setTimeout(() => {
+        triggerConfetti();
+        localStorage.setItem('ifye2026_visited', 'true');
+      }, 1000);
+    }
+  </script>
+</body>
+</html>

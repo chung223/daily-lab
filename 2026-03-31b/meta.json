@@ -1,0 +1,6 @@
+{
+  "title": "Process Cards 腳本卡片管理",
+  "type": "工具系",
+  "description": "視覺化腳本/程序管理面板、狀態追蹤、執行次數統計、localStorage 持久化",
+  "inspiration": "系統監控腳本收到 SIGTERM 錯誤，想做一個視覺化的腳本管理工具"
+}

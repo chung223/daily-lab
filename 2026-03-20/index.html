@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>銀河筆刷 Galaxy Brush</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Noto+Sans+TC:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-deep: #050510;
+      --bg-secondary: #0a0a1a;
+      --cyan: #00f5ff;
+      --magenta: #ff00ff;
+      --gold: #ffd700;
+      --purple: #a855f7;
+      --pink: #ff6b9d;
+      --text: #f0e6ff;
+      --text-muted: #8b8ba7;
+      --glass-bg: rgba(255, 255, 255, 0.05);
+      --glass-border: rgba(255, 255, 255, 0.1);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Noto Sans TC', sans-serif;
+      background: var(--bg-deep);
+      color: var(--text);
+      overflow: hidden;
+      width: 100vw;
+      height: 100vh;
+      user-select: none;
+    }
+
+    /* Starfield Background */
+    .starfield {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .star {
+      position: absolute;
+      background: white;
+      border-radius: 50%;
+      animation: twinkle var(--duration) ease-in-out infinite;
+      animation-delay: var(--delay);
+    }
+
+    @keyframes twinkle {
+      0%, 100% { opacity: var(--base-opacity); transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.2); }
+    }
+
+    /* Nebula Background */
+    .nebula {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 1;
+      opacity: 0.3;
+      background: 
+        radial-gradient(ellipse at 20% 80%, rgba(168, 85, 247, 0.3) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 20%, rgba(0, 245, 255, 0.2) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 50%, rgba(255, 0, 255, 0.15) 0%, transparent 60%);
+      animation: nebulaDrift 30s ease-in-out infinite alternate;
+    }
+
+    @keyframes nebulaDrift {
+      0% { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(20px, -20px) scale(1.1); }
+    }
+
+    /* Canvas */
+    #galaxyCanvas {
+      position: fixed;
+      inset: 0;
+      z-index: 10;
+      cursor: crosshair;
+    }
+
+    /* UI Header */
+    .header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 1.5rem;
+      background: linear-gradient(to bottom, rgba(5, 5, 16, 0.9), transparent);
+    }
+
+    .logo {
+      font-family: 'Cinzel Decorative', cursive;
+      font-size: 1.25rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      text-shadow: 0 0 20px var(--cyan), 0 0 40px rgba(0, 245, 255, 0.5);
+    }
+
+    .logo-icon {
+      width: 24px;
+      height: 24px;
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); filter: drop-shadow(0 0 5px var(--cyan)); }
+      50% { transform: scale(1.1); filter: drop-shadow(0 0 15px var(--cyan)); }
+    }
+
+    .controls {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    /* Glassmorphic Buttons */
+    .btn {
+      background: var(--glass-bg);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      padding: 0.5rem 1rem;
+      color: var(--text);
+      font-family: 'Noto Sans TC', sans-serif;
+      font-size: 0.875rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: var(--cyan);
+      box-shadow: 0 0 20px rgba(0, 245, 255, 0.3);
+      transform: translateY(-2px);
+    }
+
+    .btn:active {
+      transform: translateY(0) scale(0.98);
+    }
+
+    .btn svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    /* Color Palette */
+    .color-palette {
+      display: flex;
+      gap: 0.5rem;
+      background: var(--glass-bg);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      padding: 0.5rem;
+    }
+
+    .color-btn {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: 2px solid transparent;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      position: relative;
+    }
+
+    .color-btn:hover {
+      transform: scale(1.2);
+    }
+
+    .color-btn.active {
+      border-color: white;
+      box-shadow: 0 0 15px currentColor;
+    }
+
+    .color-btn::after {
+      content: '';
+      position: absolute;
+      inset: -4px;
+      border-radius: 50%;
+      border: 1px solid transparent;
+      transition: border-color 0.2s;
+    }
+
+    .color-btn.active::after {
+      border-color: currentColor;
+    }
+
+    /* Brush Size */
+    .brush-size {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--glass-bg);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      padding: 0.5rem 0.75rem;
+    }
+
+    .brush-size label {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .brush-size input[type="range"] {
+      width: 80px;
+      height: 4px;
+      -webkit-appearance: none;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 2px;
+      outline: none;
+    }
+
+    .brush-size input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: var(--cyan);
+      cursor: pointer;
+      box-shadow: 0 0 10px var(--cyan);
+    }
+
+    /* Stats */
+    .stats {
+      background: var(--glass-bg);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      padding: 0.5rem 1rem;
+      font-size: 0.875rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .stats-icon {
+      color: var(--gold);
+    }
+
+    .stats-value {
+      color: var(--gold);
+      font-weight: 500;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* Hint */
+    .hint {
+      position: fixed;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 100;
+      background: var(--glass-bg);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--glass-border);
+      border-radius: 20px;
+      padding: 0.75rem 1.5rem;
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      animation: fadeInUp 1s ease-out, fadeOut 0.5s ease-out 4s forwards;
+    }
+
+    .hint svg {
+      color: var(--cyan);
+      animation: wave 1s ease-in-out infinite;
+    }
+
+    @keyframes wave {
+      0%, 100% { transform: translateX(0); }
+      50% { transform: translateX(5px); }
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateX(-50%) translateY(20px); }
+      to { opacity: 1; transform: translateX(-50%) translateY(0); }
+    }
+
+    @keyframes fadeOut {
+      to { opacity: 0; visibility: hidden; }
+    }
+
+    /* Mobile Responsive */
+    @media (max-width: 768px) {
+      .header {
+        padding: 0.75rem 1rem;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+      }
+
+      .logo {
+        font-size: 1rem;
+      }
+
+      .controls {
+        width: 100%;
+        justify-content: space-between;
+        flex-wrap: wrap;
+      }
+
+      .color-palette {
+        order: 3;
+        width: 100%;
+        justify-content: center;
+      }
+
+      .hint {
+        bottom: 1rem;
+        font-size: 0.75rem;
+        padding: 0.5rem 1rem;
+      }
+    }
+
+    /* Grain Overlay */
+    .grain {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 200;
+      opacity: 0.03;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    }
+  </style>
+</head>
+<body>
+  <!-- Starfield Background -->
+  <div class="starfield" id="starfield"></div>
+  
+  <!-- Nebula Overlay -->
+  <div class="nebula"></div>
+  
+  <!-- Main Canvas -->
+  <canvas id="galaxyCanvas"></canvas>
+  
+  <!-- Grain Overlay -->
+  <div class="grain"></div>
+  
+  <!-- UI Header -->
+  <header class="header">
+    <div class="logo">
+      <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="10" stroke="url(#logoGrad)"/>
+        <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10" stroke="url(#logoGrad)" stroke-linecap="round"/>
+        <circle cx="12" cy="12" r="4" fill="url(#logoGrad)"/>
+        <defs>
+          <linearGradient id="logoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#00f5ff"/>
+            <stop offset="100%" stop-color="#ff00ff"/>
+          </linearGradient>
+        </defs>
+      </svg>
+      <span>銀河筆刷</span>
+    </div>
+    
+    <div class="controls">
+      <div class="color-palette">
+        <button class="color-btn active" data-color="#00f5ff" style="background: #00f5ff;" title="電光青"></button>
+        <button class="color-btn" data-color="#ff00ff" style="background: #ff00ff;" title="霓虹粉"></button>
+        <button class="color-btn" data-color="#ffd700" style="background: #ffd700;" title="金色"></button>
+        <button class="color-btn" data-color="#a855f7" style="background: #a855f7;" title="紫色"></button>
+        <button class="color-btn" data-color="#ff6b9d" style="background: #ff6b9d;" title="粉紅"></button>
+        <button class="color-btn" data-color="#ffffff" style="background: #ffffff;" title="白色"></button>
+      </div>
+      
+      <div class="brush-size">
+        <label>筆觸</label>
+        <input type="range" id="brushSize" min="2" max="30" value="12">
+      </div>
+      
+      <button class="btn" id="clearBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/>
+        </svg>
+        清除
+      </button>
+      
+      <div class="stats">
+        <svg class="stats-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+        </svg>
+        <span class="stats-value" id="strokeCount">0</span>
+      </div>
+    </div>
+  </header>
+  
+  <!-- Hint -->
+  <div class="hint">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+      <path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/>
+    </svg>
+    在畫布上拖曳來繪製銀河軌跡
+  </div>
+
+  <script>
+    // ===== Configuration =====
+    const CONFIG = {
+      particleLife: 150,
+      particleFade: 0.985,
+      particleSpeed: 2,
+      starCount: 150,
+      trailLength: 8
+    };
+
+    // ===== State =====
+    let canvas, ctx;
+    let particles = [];
+    let stars = [];
+    let isDrawing = false;
+    let lastX = 0, lastY = 0;
+    let currentColor = '#00f5ff';
+    let brushSize = 12;
+    let strokeCount = parseInt(localStorage.getItem('galaxyBrush_strokes') || '0');
+
+    // ===== Initialization =====
+    function init() {
+      canvas = document.getElementById('galaxyCanvas');
+      ctx = canvas.getContext('2d');
+      
+      resizeCanvas();
+      createStarfield();
+      updateStats();
+      
+      // Event Listeners
+      window.addEventListener('resize', resizeCanvas);
+      
+      // Drawing Events
+      canvas.addEventListener('mousedown', startDrawing);
+      canvas.addEventListener('mousemove', draw);
+      canvas.addEventListener('mouseup', stopDrawing);
+      canvas.addEventListener('mouseleave', stopDrawing);
+      
+      // Touch Events
+      canvas.addEventListener('touchstart', handleTouch);
+      canvas.addEventListener('touchmove', handleTouch);
+      canvas.addEventListener('touchend', stopDrawing);
+      
+      // Controls
+      document.querySelectorAll('.color-btn').forEach(btn => {
+        btn.addEventListener('click', () => selectColor(btn));
+      });
+      
+      document.getElementById('brushSize').addEventListener('input', (e) => {
+        brushSize = parseInt(e.target.value);
+      });
+      
+      document.getElementById('clearBtn').addEventListener('click', clearCanvas);
+      
+      // Animation Loop
+      animate();
+    }
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+
+    // ===== Starfield =====
+    function createStarfield() {
+      const starfield = document.getElementById('starfield');
+      starfield.innerHTML = '';
+      stars = [];
+      
+      for (let i = 0; i < CONFIG.starCount; i++) {
+        const star = document.createElement('div');
+        star.className = 'star';
+        const size = Math.random() * 3 + 1;
+        const x = Math.random() * 100;
+        const y = Math.random() * 100;
+        const duration = Math.random() * 3 + 2;
+        const delay = Math.random() * 5;
+        const baseOpacity = Math.random() * 0.5 + 0.3;
+        
+        star.style.cssText = `
+          width: ${size}px;
+          height: ${size}px;
+          left: ${x}%;
+          top: ${y}%;
+          --duration: ${duration}s;
+          --delay: ${delay}s;
+          --base-opacity: ${baseOpacity};
+        `;
+        
+        starfield.appendChild(star);
+        stars.push({ x: canvas.width * x / 100, y: canvas.height * y / 100, size, opacity: baseOpacity });
+      }
+    }
+
+    // ===== Drawing =====
+    function startDrawing(e) {
+      isDrawing = true;
+      [lastX, lastY] = getCoords(e);
+    }
+
+    function draw(e) {
+      if (!isDrawing) return;
+      
+      const [x, y] = getCoords(e);
+      const dx = x - lastX;
+      const dy = y - lastY;
+      const distance = Math.sqrt(dx * dx + dy * dy);
+      
+      // Create particles along the path
+      const steps = Math.max(1, Math.floor(distance / 5));
+      for (let i = 0; i < steps; i++) {
+        const t = i / steps;
+        const px = lastX + dx * t;
+        const py = lastY + dy * t;
+        
+        createParticle(px, py, dx, dy);
+      }
+      
+      // Increment stroke count
+      if (distance > 10) {
+        strokeCount++;
+        localStorage.setItem('galaxyBrush_strokes', strokeCount);
+        updateStats();
+      }
+      
+      [lastX, lastY] = [x, y];
+    }
+
+    function stopDrawing() {
+      isDrawing = false;
+    }
+
+    function getCoords(e) {
+      if (e.touches) {
+        return [e.touches[0].clientX, e.touches[0].clientY];
+      }
+      return [e.clientX, e.clientY];
+    }
+
+    function handleTouch(e) {
+      e.preventDefault();
+      if (e.type === 'touchstart') {
+        startDrawing(e);
+      } else {
+        draw(e);
+      }
+    }
+
+    // ===== Particles =====
+    function createParticle(x, y, vx, vy) {
+      const angle = Math.atan2(vy, vx) + (Math.random() - 0.5) * 0.5;
+      const speed = Math.sqrt(vx * vx + vy * vy) * 0.5 + Math.random() * CONFIG.particleSpeed;
+      
+      for (let i = 0; i < 3; i++) {
+        particles.push({
+          x: x + (Math.random() - 0.5) * brushSize,
+          y: y + (Math.random() - 0.5) * brushSize,
+          vx: Math.cos(angle) * speed * (0.5 + Math.random()),
+          vy: Math.sin(angle) * speed * (0.5 + Math.random()),
+          size: Math.random() * brushSize * 0.5 + 2,
+          life: CONFIG.particleLife,
+          maxLife: CONFIG.particleLife,
+          color: currentColor,
+          hue: Math.random() * 30 - 15 // Color variation
+        });
+      }
+      
+      // Add occasional sparkle
+      if (Math.random() > 0.7) {
+        particles.push({
+          x, y,
+          vx: (Math.random() - 0.5) * 3,
+          vy: (Math.random() - 0.5) * 3,
+          size: Math.random() * 4 + 2,
+          life: CONFIG.particleLife * 1.5,
+          maxLife: CONFIG.particleLife * 1.5,
+          color: '#ffffff',
+          sparkle: true
+        });
+      }
+    }
+
+    function updateParticles() {
+      for (let i = particles.length - 1; i >= 0; i--) {
+        const p = particles[i];
+        
+        // Update position
+        p.x += p.vx;
+        p.y += p.vy;
+        
+        // Apply friction
+        p.vx *= 0.98;
+        p.vy *= 0.98;
+        
+        // Add slight gravity
+        p.vy += 0.02;
+        
+        // Decrease life
+        p.life--;
+        
+        // Remove dead particles
+        if (p.life <= 0) {
+          particles.splice(i, 1);
+        }
+      }
+    }
+
+    function drawParticles() {
+      particles.forEach(p => {
+        const alpha = p.life / p.maxLife;
+        const size = p.size * alpha;
+        
+        ctx.save();
+        
+        if (p.sparkle) {
+          // Sparkle effect
+          const gradient = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, size * 2);
+          gradient.addColorStop(0, `rgba(255, 255, 255, ${alpha})`);
+          gradient.addColorStop(0.5, `rgba(255, 255, 255, ${alpha * 0.5})`);
+          gradient.addColorStop(1, 'transparent');
+          
+          ctx.fillStyle = gradient;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, size * 2, 0, Math.PI * 2);
+          ctx.fill();
+          
+          // Star cross
+          ctx.strokeStyle = `rgba(255, 255, 255, ${alpha})`;
+          ctx.lineWidth = 1;
+          ctx.beginPath();
+          ctx.moveTo(p.x - size * 1.5, p.y);
+          ctx.lineTo(p.x + size * 1.5, p.y);
+          ctx.moveTo(p.x, p.y - size * 1.5);
+          ctx.lineTo(p.x, p.y + size * 1.5);
+          ctx.stroke();
+        } else {
+          // Regular particle with glow
+          const gradient = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, size);
+          const color = p.color;
+          gradient.addColorStop(0, hexToRgba(color, alpha));
+          gradient.addColorStop(0.4, hexToRgba(color, alpha * 0.6));
+          gradient.addColorStop(1, 'transparent');
+          
+          ctx.fillStyle = gradient;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, size, 0, Math.PI * 2);
+          ctx.fill();
+        }
+        
+        ctx.restore();
+      });
+    }
+
+    // ===== Animation Loop =====
+    function animate() {
+      // Clear with fade effect
+      ctx.fillStyle = 'rgba(5, 5, 16, 0.1)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      
+      // Update and draw particles
+      updateParticles();
+      drawParticles();
+      
+      requestAnimationFrame(animate);
+    }
+
+    // ===== Controls =====
+    function selectColor(btn) {
+      document.querySelectorAll('.color-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentColor = btn.dataset.color;
+    }
+
+    function clearCanvas() {
+      particles = [];
+      ctx.fillStyle = '#050510';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+    }
+
+    function updateStats() {
+      document.getElementById('strokeCount').textContent = strokeCount;
+    }
+
+    // ===== Utilities =====
+    function hexToRgba(hex, alpha) {
+      const r = parseInt(hex.slice(1, 3), 16);
+      const g = parseInt(hex.slice(3, 5), 16);
+      const b = parseInt(hex.slice(5, 7), 16);
+      return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+    }
+
+    // Start
+    document.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>

@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>干支命盤 — 年份生肖查詢</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@300;400;600&family=Noto+Sans+TC:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --celadon:     #a8c5bc;
+    --celadon-deep:#6fa098;
+    --celadon-pale:#e8f3f0;
+    --ink:         #2c3e35;
+    --ink-light:   #4a5e54;
+    --ivory:       #fafaf7;
+    --gold:        #b8953a;
+    --gold-pale:   #f5edd4;
+    --terra:       #c07a5a;
+    --water:       #4a7a9b;
+    --wood:        #5a8a4a;
+    --fire:        #c04a2a;
+    --earth:       #8a6a3a;
+    --metal:       #7a8a9a;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Noto Serif TC', serif;
+    background: var(--ivory);
+    color: var(--ink);
+    min-height: 100vh;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  /* Flowing water background */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 20% 30%, rgba(168,197,188,0.15) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 80% at 80% 70%, rgba(111,160,152,0.10) 0%, transparent 60%),
+      radial-gradient(ellipse 100% 40% at 50% 50%, rgba(232,243,240,0.40) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .wave-bg {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 200px;
+    z-index: 0;
+    opacity: 0.08;
+  }
+
+  .container {
+    position: relative;
+    z-index: 1;
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 40px 20px 60px;
+  }
+
+  /* Header */
+  .header {
+    text-align: center;
+    margin-bottom: 48px;
+  }
+
+  .header-badge {
+    display: inline-block;
+    background: var(--celadon-pale);
+    border: 1px solid var(--celadon);
+    color: var(--celadon-deep);
+    font-family: 'Noto Sans TC', sans-serif;
+    font-size: 11px;
+    font-weight: 400;
+    letter-spacing: 2px;
+    padding: 4px 14px;
+    border-radius: 20px;
+    margin-bottom: 16px;
+  }
+
+  h1 {
+    font-size: clamp(28px, 5vw, 42px);
+    font-weight: 300;
+    letter-spacing: 4px;
+    color: var(--ink);
+    margin-bottom: 10px;
+  }
+
+  .subtitle {
+    font-size: 13px;
+    color: var(--ink-light);
+    font-family: 'Noto Sans TC', sans-serif;
+    font-weight: 300;
+    letter-spacing: 1px;
+  }
+
+  /* Today Card */
+  .today-card {
+    background: white;
+    border: 1px solid var(--celadon);
+    border-radius: 16px;
+    padding: 28px 32px;
+    margin-bottom: 32px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .today-card::before {
+    content: '今';
+    position: absolute;
+    right: -8px;
+    top: -16px;
+    font-size: 120px;
+    font-weight: 300;
+    color: var(--celadon-pale);
+    line-height: 1;
+    pointer-events: none;
+  }
+
+  .today-label {
+    font-family: 'Noto Sans TC', sans-serif;
+    font-size: 11px;
+    letter-spacing: 3px;
+    color: var(--celadon-deep);
+    margin-bottom: 16px;
+    text-transform: uppercase;
+  }
+
+  .today-year-row {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+
+  .today-ganzhi {
+    font-size: 48px;
+    font-weight: 300;
+    letter-spacing: 8px;
+    color: var(--ink);
+  }
+
+  .today-details {
+    flex: 1;
+  }
+
+  .today-animal {
+    font-size: 28px;
+    margin-bottom: 4px;
+  }
+
+  .today-element {
+    font-size: 13px;
+    color: var(--ink-light);
+    font-family: 'Noto Sans TC', sans-serif;
+  }
+
+  /* Search Section */
+  .search-card {
+    background: white;
+    border: 1px solid rgba(168,197,188,0.5);
+    border-radius: 16px;
+    padding: 28px 32px;
+    margin-bottom: 32px;
+  }
+
+  .search-label {
+    font-family: 'Noto Sans TC', sans-serif;
+    font-size: 12px;
+    letter-spacing: 2px;
+    color: var(--celadon-deep);
+    margin-bottom: 16px;
+  }
+
+  .input-row {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .year-input {
+    font-family: 'Noto Serif TC', serif;
+    font-size: 28px;
+    font-weight: 300;
+    width: 160px;
+    padding: 12px 16px;
+    border: 2px solid var(--celadon);
+    border-radius: 10px;
+    background: var(--celadon-pale);
+    color: var(--ink);
+    outline: none;
+    text-align: center;
+    letter-spacing: 4px;
+    transition: border-color 0.2s, background 0.2s;
+    -moz-appearance: textfield;
+  }
+
+  .year-input::-webkit-inner-spin-button,
+  .year-input::-webkit-outer-spin-button { -webkit-appearance: none; }
+
+  .year-input:focus {
+    border-color: var(--celadon-deep);
+    background: white;
+  }
+
+  .btn-query {
+    font-family: 'Noto Sans TC', sans-serif;
+    font-size: 14px;
+    letter-spacing: 2px;
+    padding: 14px 28px;
+    background: var(--celadon-deep);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+  }
+
+  .btn-query:hover { background: var(--ink); }
+  .btn-query:active { transform: scale(0.97); }
+
+  .quick-years {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 14px;
+  }
+
+  .quick-btn {
+    font-family: 'Noto Sans TC', sans-serif;
+    font-size: 12px;
+    padding: 4px 12px;
+    border: 1px solid var(--celadon);
+    border-radius: 20px;
+    background: var(--celadon-pale);
+    color: var(--celadon-deep);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .quick-btn:hover {
+    background: var(--celadon);
+    color: white;
+  }
+
+  /* Result Card */
+  .result-card {
+    background: white;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 4px 24px rgba(111,160,152,0.12);
+    animation: slideIn 0.4s ease;
+    display: none;
+  }
+
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .result-header {
+    padding: 24px 32px 20px;
+    border-bottom: 1px solid var(--celadon-pale);
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+  }
+
+  .animal-glyph {
+    font-size: 64px;
+    line-height: 1;
+    flex-shrink: 0;
+    filter: drop-shadow(0 2px 6px rgba(0,0,0,0.08));
+  }
+
+  .result-text h2 {
+    font-size: 32px;
+    font-weight: 400;
+    letter-spacing: 4px;
+    margin-bottom: 6px;
+  }
+
+  .result-text .year-label {
+    font-size: 14px;
+    color: var(--ink-light);
+    font-family: 'Noto Sans TC', sans-serif;
+  }
+
+  .result-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+  }
+
+  .result-cell {
+    padding: 20px 28px;
+    border-right: 1px solid var(--celadon-pale);
+    border-bottom: 1px solid var(--celadon-pale);
+  }
+
+  .result-cell:nth-child(even) { border-right: none; }
+  .result-cell:nth-last-child(-n+2) { border-bottom: none; }
+
+  .cell-label {
+    font-family: 'Noto Sans TC', sans-serif;
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--celadon-deep);
+    margin-bottom: 6px;
+    text-transform: uppercase;
+  }
+
+  .cell-value {
+    font-size: 22px;
+    font-weight: 400;
+    letter-spacing: 2px;
+  }
+
+  .cell-sub {
+    font-family: 'Noto Sans TC', sans-serif;
+    font-size: 12px;
+    color: var(--ink-light);
+    margin-top: 3px;
+  }
+
+  .element-fire   { color: var(--fire); }
+  .element-water  { color: var(--water); }
+  .element-wood   { color: var(--wood); }
+  .element-earth  { color: var(--earth); }
+  .element-metal  { color: var(--metal); }
+
+  /* 60 Ganzhi Cycle */
+  .cycle-section {
+    padding: 24px 32px;
+    border-top: 1px solid var(--celadon-pale);
+  }
+
+  .cycle-label {
+    font-family: 'Noto Sans TC', sans-serif;
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--celadon-deep);
+    margin-bottom: 14px;
+    text-transform: uppercase;
+  }
+
+  .ganzhi-row {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  .gz-chip {
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 13px;
+    background: var(--celadon-pale);
+    color: var(--ink-light);
+    transition: all 0.15s;
+    cursor: default;
+  }
+
+  .gz-chip.current {
+    background: var(--celadon-deep);
+    color: white;
+    font-weight: 600;
+    box-shadow: 0 2px 8px rgba(111,160,152,0.3);
+  }
+
+  /* Quote */
+  .quote-section {
+    text-align: center;
+    padding: 40px 20px 20px;
+    color: var(--ink-light);
+  }
+
+  .quote {
+    font-size: 16px;
+    font-weight: 300;
+    letter-spacing: 3px;
+    line-height: 2;
+    margin-bottom: 8px;
+  }
+
+  .quote-source {
+    font-family: 'Noto Sans TC', sans-serif;
+    font-size: 11px;
+    letter-spacing: 1px;
+    color: var(--celadon-deep);
+  }
+
+  /* Responsive */
+  @media (max-width: 480px) {
+    .today-ganzhi { font-size: 36px; }
+    .result-grid { grid-template-columns: 1fr; }
+    .result-cell { border-right: none; border-bottom: 1px solid var(--celadon-pale); }
+    .result-cell:last-child { border-bottom: none; }
+    .input-row { flex-direction: column; align-items: stretch; }
+    .year-input { width: 100%; }
+    .btn-query { width: 100%; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<svg class="wave-bg" viewBox="0 0 1440 200" preserveAspectRatio="none">
+  <path d="M0,80 C240,140 480,20 720,80 C960,140 1200,40 1440,80 L1440,200 L0,200 Z" fill="#6fa098"/>
+  <path d="M0,120 C360,60 720,160 1080,100 C1260,70 1380,140 1440,120 L1440,200 L0,200 Z" fill="#a8c5bc" opacity="0.6"/>
+</svg>
+
+<div class="container">
+
+  <header class="header">
+    <div class="header-badge">干支・生肖・五行</div>
+    <h1>命盤年曆</h1>
+    <p class="subtitle">輸入年份，查詢天干地支與生肖五行</p>
+  </header>
+
+  <!-- Today's info -->
+  <div class="today-card" id="todayCard">
+    <div class="today-label">今年 · TODAY</div>
+    <div class="today-year-row">
+      <div class="today-ganzhi" id="todayGanzhi">—</div>
+      <div class="today-details">
+        <div class="today-animal" id="todayAnimal">—</div>
+        <div class="today-element" id="todayElement">載入中…</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Search -->
+  <div class="search-card">
+    <div class="search-label">查詢年份</div>
+    <div class="input-row">
+      <input
+        type="number"
+        class="year-input"
+        id="yearInput"
+        placeholder="1937"
+        min="1"
+        max="2100"
+      />
+      <button class="btn-query" onclick="doQuery()">查詢</button>
+    </div>
+    <div class="quick-years">
+      <span class="quick-label" style="font-family:'Noto Sans TC',sans-serif;font-size:11px;color:var(--ink-light);align-self:center;letter-spacing:1px;">快速：</span>
+      <button class="quick-btn" onclick="setYear(1937)">1937</button>
+      <button class="quick-btn" onclick="setYear(1949)">1949</button>
+      <button class="quick-btn" onclick="setYear(1966)">1966</button>
+      <button class="quick-btn" onclick="setYear(1984)">1984</button>
+      <button class="quick-btn" onclick="setYear(2000)">2000</button>
+      <button class="quick-btn" onclick="setYear(2026)">2026</button>
+    </div>
+  </div>
+
+  <!-- Result -->
+  <div class="result-card" id="resultCard">
+    <div class="result-header">
+      <div class="animal-glyph" id="rAnimalGlyph">🐮</div>
+      <div class="result-text">
+        <h2 id="rGanzhi">丁丑</h2>
+        <div class="year-label" id="rYearLabel">1937年 · 牛年</div>
+      </div>
+    </div>
+
+    <div class="result-grid">
+      <div class="result-cell">
+        <div class="cell-label">天干</div>
+        <div class="cell-value" id="rTiangan">丁</div>
+        <div class="cell-sub" id="rTianganSub">陰火</div>
+      </div>
+      <div class="result-cell">
+        <div class="cell-label">地支</div>
+        <div class="cell-value" id="rDizhi">丑</div>
+        <div class="cell-sub" id="rDizhiSub">陰土 · 牛</div>
+      </div>
+      <div class="result-cell">
+        <div class="cell-label">五行</div>
+        <div class="cell-value" id="rElement">火土</div>
+        <div class="cell-sub" id="rElementSub">天干火、地支土</div>
+      </div>
+      <div class="result-cell">
+        <div class="cell-label">六十甲子第</div>
+        <div class="cell-value" id="rCycleNum">54</div>
+        <div class="cell-sub">循環中的位置</div>
+      </div>
+    </div>
+
+    <div class="cycle-section">
+      <div class="cycle-label">前後 12 年干支（同地支）</div>
+      <div class="ganzhi-row" id="rNeighbors"></div>
+    </div>
+  </div>
+
+  <div class="quote-section">
+    <p class="quote">河流不問方向</p>
+    <p class="quote">策略是傾向，不是藍圖</p>
+    <p class="quote-source">— 三色蛋夢境日誌 2026.04.18</p>
+  </div>
+
+</div>
+
+<script>
+const TIANGAN = ['甲','乙','丙','丁','戊','己','庚','辛','壬','癸'];
+const DIZHI   = ['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'];
+const ANIMALS = ['鼠','牛','虎','兔','龍','蛇','馬','羊','猴','雞','狗','豬'];
+const EMOJI   = ['🐭','🐮','🐯','🐰','🐲','🐍','🐴','🐑','🐵','🐔','🐶','🐷'];
+const ELEMENTS= ['木','木','火','火','土','土','金','金','水','水'];
+const POLARITY= ['陽','陰','陽','陰','陽','陰','陽','陰','陽','陰'];
+const DI_ELE  = ['水','土','木','木','土','火','火','土','金','金','土','水'];
+const DI_POL  = ['陽','陰','陽','陰','陽','陰','陽','陰','陽','陰','陽','陰'];
+const ELE_COLOR= {木:'element-wood',火:'element-fire',土:'element-earth',金:'element-metal',水:'element-water'};
+
+function getGanzhi(year) {
+  // 甲子年 = 1924 (reference: 甲=0, 子=0)
+  const ref = 1924;
+  const diff = ((year - ref) % 60 + 60) % 60;
+  const tianIdx = diff % 10;
+  const diIdx   = diff % 12;
+  return { tian: TIANGAN[tianIdx], di: DIZHI[diIdx], animal: ANIMALS[diIdx], emoji: EMOJI[diIdx],
+           tianIdx, diIdx, cycleNum: diff + 1,
+           tianEle: ELEMENTS[tianIdx], tianPol: POLARITY[tianIdx],
+           diEle: DI_ELE[diIdx], diPol: DI_POL[diIdx] };
+}
+
+function initToday() {
+  const year = new Date().getFullYear();
+  const g = getGanzhi(year);
+  document.getElementById('todayGanzhi').textContent = g.tian + g.di;
+  document.getElementById('todayAnimal').textContent = g.emoji + ' ' + year + ' 年 · ' + g.animal + '年';
+  const el = document.getElementById('todayElement');
+  el.textContent = g.tianPol + g.tianEle + ' · ' + g.diPol + g.diEle + ' · 第 ' + g.cycleNum + ' 位';
+  el.className = 'today-element ' + ELE_COLOR[g.tianEle];
+}
+
+function setYear(y) {
+  document.getElementById('yearInput').value = y;
+  doQuery();
+}
+
+function doQuery() {
+  const val = parseInt(document.getElementById('yearInput').value);
+  if (!val || val < 1 || val > 2200) {
+    document.getElementById('yearInput').style.borderColor = '#c04a2a';
+    setTimeout(() => document.getElementById('yearInput').style.borderColor = '', 1000);
+    return;
+  }
+  const g = getGanzhi(val);
+  const card = document.getElementById('resultCard');
+
+  document.getElementById('rAnimalGlyph').textContent = g.emoji;
+  document.getElementById('rGanzhi').textContent = g.tian + g.di + '年';
+  document.getElementById('rYearLabel').textContent = val + '年 · ' + g.animal + '年';
+  document.getElementById('rTiangan').textContent = g.tian;
+  document.getElementById('rTiangan').className = 'cell-value ' + ELE_COLOR[g.tianEle];
+  document.getElementById('rTianganSub').textContent = g.tianPol + g.tianEle;
+  document.getElementById('rDizhi').textContent = g.di;
+  document.getElementById('rDizhiSub').textContent = g.diPol + g.diEle + ' · ' + g.animal;
+  document.getElementById('rElement').textContent = g.tianEle + g.diEle;
+  document.getElementById('rElement').className = 'cell-value ' + ELE_COLOR[g.tianEle];
+  document.getElementById('rElementSub').textContent = '天干' + g.tianEle + '、地支' + g.diEle;
+  document.getElementById('rCycleNum').textContent = g.cycleNum;
+
+  // Neighbors: same 地支 (same animal), spans ±60 years
+  const neighbors = document.getElementById('rNeighbors');
+  neighbors.innerHTML = '';
+  for (let offset = -3; offset <= 3; offset++) {
+    const y2 = val + offset * 12;
+    if (y2 < 1) continue;
+    const g2 = getGanzhi(y2);
+    const chip = document.createElement('div');
+    chip.className = 'gz-chip' + (offset === 0 ? ' current' : '');
+    chip.textContent = g2.tian + g2.di + ' (' + y2 + ')';
+    neighbors.appendChild(chip);
+  }
+
+  card.style.display = 'block';
+  card.style.animation = 'none';
+  card.offsetHeight; // reflow
+  card.style.animation = 'slideIn 0.4s ease';
+  card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+// Enter key
+document.getElementById('yearInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') doQuery();
+});
+
+// Init
+initToday();
+// Auto-query 1937 as example (matches today's memory)
+setTimeout(() => { document.getElementById('yearInput').value = 1937; doQuery(); }, 300);
+</script>
+</body>
+</html>

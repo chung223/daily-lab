@@ -1,0 +1,16 @@
+{
+  "name": "IFYE 資料一致性稽核工具",
+  "date": "2026-09-06",
+  "slug": "ifye-data-audit",
+  "category": "系統監控",
+  "description": "檢查 IFYE Notion 同步的資料一致性，發現孤立站記錄與 rsync 部署問題",
+  "tags": ["ifye", "notion", "sync", "audit", "data-quality"],
+  "evidence": [
+    "Notion 回傳 60 筆記錄，JSON 只寫入 51 站，差距 9 筆",
+    "發現 2 次 rsync Permission denied",
+    "IFYE sync 每日執行 4 次但輸出完全相同"
+  ],
+  "verified": true,
+  "test_output": "node ifye-data-audit.js — 發現 3 個問題（9 孤立站、34 組正常重複、2 次 perm denied），exit code 1",
+  "files": ["ifye-data-audit.js", "README.md"]
+}

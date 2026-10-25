@@ -1,0 +1,986 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>夏夜祭典 撈金魚｜Summer Festival Goldfish Scoop</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700&family=Shippori+Mincho:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --night-deep: #07071a;
+  --night-mid: #0f0f3a;
+  --night-soft: #1a1a5e;
+  --lantern-red: #e63946;
+  --lantern-orange: #f77f00;
+  --lantern-gold: #fcbf49;
+  --lantern-cream: #fff3b0;
+  --water-blue: #1d3557;
+  --water-light: #457b9d;
+  --fish-orange: #ff6b35;
+  --fish-white: #f8edeb;
+  --fish-calico: #e76f51;
+  --fish-black: #2b2d42;
+  --paper: #fdf0d5;
+  --ink: #1a1209;
+  --neon-pink: #ff6ec7;
+  --neon-cyan: #00f5ff;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  width: 100%; height: 100%;
+  overflow: hidden;
+  font-family: 'Zen Kaku Gothic New', 'Shippori Mincho', sans-serif;
+  background: var(--night-deep);
+}
+
+body {
+  background: radial-gradient(ellipse at 50% 0%, #1a1a5e 0%, #0f0f3a 40%, #07071a 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: none;
+  position: relative;
+}
+
+/* ── Stars ── */
+#stars {
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  pointer-events: none; z-index: 0;
+}
+.star {
+  position: absolute;
+  width: 2px; height: 2px;
+  background: white;
+  border-radius: 50%;
+  animation: twinkle var(--dur, 3s) ease-in-out infinite var(--delay, 0s);
+}
+@keyframes twinkle {
+  0%, 100% { opacity: 0.2; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.5); }
+}
+
+/* ── Header ── */
+.header {
+  position: relative; z-index: 10;
+  text-align: center;
+  padding: 18px 20px 10px;
+}
+.header h1 {
+  font-family: 'Shippori Mincho', serif;
+  font-size: clamp(22px, 6vw, 36px);
+  color: var(--lantern-gold);
+  text-shadow: 0 0 20px rgba(252,191,73,0.6), 0 0 40px rgba(252,191,73,0.3);
+  letter-spacing: 0.15em;
+  margin-bottom: 6px;
+}
+.subtitle {
+  font-size: clamp(10px, 2.5vw, 13px);
+  color: rgba(255,255,255,0.5);
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+}
+
+/* ── Stats Bar ── */
+.stats-bar {
+  display: flex;
+  justify-content: center;
+  gap: clamp(20px, 8vw, 60px);
+  padding: 10px 20px;
+  position: relative; z-index: 10;
+}
+.stat {
+  text-align: center;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(252,191,73,0.3);
+  border-radius: 12px;
+  padding: 8px 18px;
+  backdrop-filter: blur(8px);
+}
+.stat-label {
+  font-size: 10px;
+  color: rgba(255,255,255,0.4);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  margin-bottom: 2px;
+}
+.stat-value {
+  font-family: 'Shippori Mincho', serif;
+  font-size: clamp(20px, 5vw, 28px);
+  font-weight: 600;
+  color: var(--lantern-gold);
+  text-shadow: 0 0 10px rgba(252,191,73,0.5);
+}
+
+/* ── Pond ── */
+#pond-container {
+  position: relative;
+  flex: 1;
+  width: 100%;
+  max-width: 480px;
+  padding: 0 16px;
+  display: flex;
+  flex-direction: column;
+  z-index: 10;
+}
+#pond {
+  position: relative;
+  flex: 1;
+  background: radial-gradient(ellipse at 50% 30%, #1d4e89 0%, #1d3557 50%, #0d1b2a 100%);
+  border-radius: 50% 50% 45% 45% / 30% 30% 20% 20%;
+  border: 3px solid rgba(69,123,157,0.5);
+  box-shadow: 
+    inset 0 0 40px rgba(69,123,157,0.3),
+    0 0 30px rgba(29,53,87,0.8),
+    0 0 60px rgba(29,53,87,0.4);
+  overflow: hidden;
+  cursor: none;
+  min-height: 300px;
+}
+
+/* water shimmer */
+#pond::before {
+  content: '';
+  position: absolute; top: 5%; left: 10%; right: 10%; height: 30%;
+  background: linear-gradient(180deg, rgba(255,255,255,0.08) 0%, transparent 100%);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+/* ripples */
+#pond::after {
+  content: '';
+  position: absolute; bottom: 10%; left: 20%; right: 20%; height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+  animation: ripple 4s ease-in-out infinite;
+  pointer-events: none;
+}
+@keyframes ripple {
+  0%, 100% { transform: scaleX(0.5); opacity: 0.3; }
+  50% { transform: scaleX(1); opacity: 0.8; }
+}
+
+/* ── Goldfish ── */
+.fish {
+  position: absolute;
+  transition: transform 0.1s linear;
+  pointer-events: none;
+  will-change: transform;
+}
+.fish svg { width: 100%; height: 100%; }
+
+/* ── Net ── */
+#net {
+  position: fixed;
+  width: 80px; height: 80px;
+  pointer-events: none;
+  z-index: 100;
+  transform: translate(-50%, -50%);
+  transition: transform 0.05s ease-out;
+}
+#net svg { width: 100%; height: 100%; }
+#net.scooping {
+  animation: scoop 0.3s ease-out;
+}
+@keyframes scoop {
+  0% { transform: translate(-50%, -50%) scaleY(1); }
+  50% { transform: translate(-50%, -50%) scaleY(0.6) scaleX(1.2); }
+  100% { transform: translate(-50%, -50%) scaleY(1); }
+}
+
+/* ── Caught Popup ── */
+.caught-popup {
+  position: absolute;
+  font-family: 'Shippori Mincho', serif;
+  font-size: 16px;
+  font-weight: 600;
+  color: white;
+  text-shadow: 0 0 8px rgba(255,255,255,0.8);
+  pointer-events: none;
+  animation: floatUp 1s ease-out forwards;
+  z-index: 200;
+  white-space: nowrap;
+}
+@keyframes floatUp {
+  0% { opacity: 1; transform: translateY(0) scale(1); }
+  100% { opacity: 0; transform: translateY(-60px) scale(1.3); }
+}
+
+/* ── Lanterns ── */
+.lanterns {
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  pointer-events: none;
+  z-index: 5;
+  overflow: hidden;
+}
+.lantern {
+  position: absolute;
+  animation: lanternSway var(--dur, 4s) ease-in-out infinite var(--delay, 0s);
+}
+@keyframes lanternSway {
+  0%, 100% { transform: rotate(-4deg) translateX(0); }
+  50% { transform: rotate(4deg) translateX(4px); }
+}
+.lantern-glow {
+  position: absolute;
+  width: 120px; height: 120px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(252,191,73,0.15) 0%, transparent 70%);
+  top: -30px; left: 50%;
+  transform: translateX(-50%);
+  pointer-events: none;
+  animation: glowPulse 3s ease-in-out infinite;
+}
+@keyframes glowPulse {
+  0%, 100% { opacity: 0.6; transform: translateX(-50%) scale(1); }
+  50% { opacity: 1; transform: translateX(-50%) scale(1.1); }
+}
+
+/* ── Start Overlay ── */
+#start-overlay {
+  position: fixed; inset: 0;
+  background: rgba(7,7,26,0.92);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 500;
+  gap: 20px;
+  padding: 20px;
+}
+#start-overlay h2 {
+  font-family: 'Shippori Mincho', serif;
+  font-size: clamp(28px, 8vw, 48px);
+  color: var(--lantern-gold);
+  text-shadow: 0 0 30px rgba(252,191,73,0.6);
+  letter-spacing: 0.1em;
+  text-align: center;
+}
+#start-overlay p {
+  color: rgba(255,255,255,0.6);
+  font-size: clamp(12px, 3vw, 15px);
+  text-align: center;
+  max-width: 320px;
+  line-height: 1.8;
+}
+.start-btn {
+  background: linear-gradient(135deg, var(--lantern-red), var(--lantern-orange));
+  color: white;
+  border: none;
+  padding: 14px 40px;
+  font-size: clamp(14px, 4vw, 18px);
+  font-family: 'Shippori Mincho', serif;
+  font-weight: 600;
+  border-radius: 40px;
+  cursor: pointer;
+  box-shadow: 0 4px 20px rgba(230,57,70,0.5);
+  letter-spacing: 0.2em;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.start-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 30px rgba(230,57,70,0.7);
+}
+.koifish-icon {
+  font-size: 60px;
+  animation: float 3s ease-in-out infinite;
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+/* ── Game Over ── */
+#game-over {
+  position: fixed; inset: 0;
+  background: rgba(7,7,26,0.95);
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 500;
+  gap: 16px;
+  padding: 20px;
+}
+#game-over.show { display: flex; }
+#game-over h2 {
+  font-family: 'Shippori Mincho', serif;
+  font-size: clamp(24px, 7vw, 40px);
+  color: var(--lantern-gold);
+  text-shadow: 0 0 20px rgba(252,191,73,0.5);
+  letter-spacing: 0.15em;
+}
+#game-over .final-score {
+  font-size: clamp(48px, 12vw, 80px);
+  font-family: 'Shippori Mincho', serif;
+  font-weight: 600;
+  color: white;
+  text-shadow: 0 0 20px rgba(255,255,255,0.3);
+}
+#game-over .score-label {
+  font-size: 12px;
+  color: rgba(255,255,255,0.4);
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+}
+#game-over .high-score-badge {
+  background: rgba(252,191,73,0.15);
+  border: 1px solid rgba(252,191,73,0.4);
+  border-radius: 20px;
+  padding: 6px 20px;
+  font-size: 12px;
+  color: var(--lantern-gold);
+  letter-spacing: 0.2em;
+}
+.again-btn {
+  background: linear-gradient(135deg, var(--lantern-orange), var(--lantern-gold));
+  color: var(--night-deep);
+  border: none;
+  padding: 14px 40px;
+  font-size: clamp(14px, 4vw, 18px);
+  font-family: 'Shippori Mincho', serif;
+  font-weight: 600;
+  border-radius: 40px;
+  cursor: pointer;
+  box-shadow: 0 4px 20px rgba(252,191,73,0.4);
+  letter-spacing: 0.2em;
+  margin-top: 8px;
+  transition: transform 0.2s;
+}
+.again-btn:hover { transform: scale(1.05); }
+
+/* ── Fireworks Canvas ── */
+#fireworks {
+  position: fixed; inset: 0;
+  pointer-events: none;
+  z-index: 300;
+}
+
+/* ── Instructions ── */
+.instructions {
+  position: relative; z-index: 10;
+  padding: 8px 20px 14px;
+  text-align: center;
+}
+.instructions span {
+  font-size: clamp(10px, 2.5vw, 12px);
+  color: rgba(255,255,255,0.35);
+  letter-spacing: 0.15em;
+}
+
+/* confetti burst */
+.confetti-piece {
+  position: fixed;
+  width: 8px; height: 8px;
+  pointer-events: none;
+  z-index: 400;
+  border-radius: 2px;
+}
+
+/* ── Responsive ── */
+@media (max-width: 360px) {
+  #pond { min-height: 260px; }
+}
+</style>
+</head>
+<body>
+
+<!-- Stars background -->
+<div id="stars"></div>
+
+<!-- Fireworks canvas -->
+<canvas id="fireworks"></canvas>
+
+<!-- Floating Lanterns -->
+<div class="lanterns" id="lanterns"></div>
+
+<!-- Header -->
+<div class="header">
+  <h1>夏夜祭典</h1>
+  <div class="subtitle">金魚すくい · Goldfish Scoop</div>
+</div>
+
+<!-- Stats -->
+<div class="stats-bar">
+  <div class="stat">
+    <div class="stat-label">時間</div>
+    <div class="stat-value" id="timer">60</div>
+  </div>
+  <div class="stat">
+    <div class="stat-label">得分</div>
+    <div class="stat-value" id="score">0</div>
+  </div>
+  <div class="stat">
+    <div class="stat-label">最高</div>
+    <div class="stat-value" id="highscore">0</div>
+  </div>
+</div>
+
+<!-- Pond -->
+<div id="pond-container">
+  <div id="pond"></div>
+</div>
+
+<!-- Instructions -->
+<div class="instructions">
+  <span>在金魚上點擊 / 長按就能撈 · 點擊 · Hold to scoop</span>
+</div>
+
+<!-- Net cursor -->
+<div id="net">
+  <svg viewBox="0 0 80 80" fill="none">
+    <line x1="40" y1="0" x2="40" y2="30" stroke="#8B4513" stroke-width="4" stroke-linecap="round"/>
+    <ellipse cx="40" cy="42" rx="28" ry="20" fill="rgba(200,220,255,0.2)" stroke="rgba(255,255,255,0.6)" stroke-width="1.5"/>
+    <ellipse cx="40" cy="42" rx="22" ry="15" fill="rgba(180,200,240,0.15)" stroke="rgba(255,255,255,0.3)" stroke-width="1"/>
+    <!-- net grid -->
+    <path d="M14 38 Q40 30 66 38" stroke="rgba(255,255,255,0.4)" stroke-width="0.5" fill="none"/>
+    <path d="M14 44 Q40 36 66 44" stroke="rgba(255,255,255,0.4)" stroke-width="0.5" fill="none"/>
+    <path d="M16 50 Q40 42 64 50" stroke="rgba(255,255,255,0.4)" stroke-width="0.5" fill="none"/>
+    <path d="M22 36 Q22 50 30 55" stroke="rgba(255,255,255,0.3)" stroke-width="0.5" fill="none"/>
+    <path d="M30 34 Q30 50 38 56" stroke="rgba(255,255,255,0.3)" stroke-width="0.5" fill="none"/>
+    <path d="M38 33 Q38 50 46 56" stroke="rgba(255,255,255,0.3)" stroke-width="0.5" fill="none"/>
+    <path d="M46 33 Q46 50 54 56" stroke="rgba(255,255,255,0.3)" stroke-width="0.5" fill="none"/>
+    <path d="M54 34 Q54 50 60 56" stroke="rgba(255,255,255,0.3)" stroke-width="0.5" fill="none"/>
+  </svg>
+</div>
+
+<!-- Start Overlay -->
+<div id="start-overlay">
+  <div class="koifish-icon">🐟</div>
+  <h2>夏夜祭典</h2>
+  <p>在60秒內盡情撈金魚！<br>點擊或長按金魚即可捕捉<br>稀有金魚分數更高！</p>
+  <button class="start-btn" id="start-btn">開始撈魚</button>
+</div>
+
+<!-- Game Over -->
+<div id="game-over">
+  <h2>時間到！</h2>
+  <div class="final-score" id="final-score">0</div>
+  <div class="score-label">分</div>
+  <div class="high-score-badge" id="high-badge" style="display:none">★ 新紀錄 ★</div>
+  <button class="again-btn" id="again-btn">再玩一次</button>
+</div>
+
+<script>
+// ── Fish SVG templates ──
+const FISH_SVGS = {
+  orange: (c='%23ff6b35') => `<svg viewBox="0 0 60 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <ellipse cx="26" cy="20" rx="22" ry="13" fill="${c}"/>
+    <path d="M4 20 Q0 12 8 10 Q14 8 18 14" fill="${c}"/>
+    <path d="M4 20 Q0 28 8 30 Q14 32 18 26" fill="${c}"/>
+    <path d="M48 20 L58 10 L58 30 Z" fill="${c}"/>
+    <ellipse cx="26" cy="20" rx="22" ry="13" fill="rgba(255,200,150,0.3)"/>
+    <circle cx="14" cy="17" r="4" fill="white"/>
+    <circle cx="15" cy="17" r="2.5" fill="#1a1209"/>
+    <path d="M26 8 Q30 4 34 8" stroke="rgba(255,180,100,0.6)" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+  </svg>`,
+  white: (c='%23f8edeb') => `<svg viewBox="0 0 60 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <ellipse cx="26" cy="20" rx="22" ry="13" fill="${c}"/>
+    <ellipse cx="26" cy="20" rx="22" ry="13" fill="rgba(255,200,200,0.3)"/>
+    <path d="M4 20 Q0 12 8 10 Q14 8 18 14" fill="${c}"/>
+    <path d="M4 20 Q0 28 8 30 Q14 32 18 26" fill="${c}"/>
+    <path d="M48 20 L58 10 L58 30 Z" fill="${c}"/>
+    <ellipse cx="20" cy="16" rx="4" ry="3" fill="rgba(255,100,100,0.4)"/>
+    <ellipse cx="32" cy="24" rx="5" ry="3.5" fill="rgba(255,100,100,0.4)"/>
+    <circle cx="14" cy="17" r="4" fill="white"/>
+    <circle cx="15" cy="17" r="2.5" fill="#1a1209"/>
+  </svg>`,
+  calico: (c='%23e76f51', c2='%232b2d42') => `<svg viewBox="0 0 60 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <ellipse cx="26" cy="20" rx="22" ry="13" fill="${c}"/>
+    <ellipse cx="18" cy="15" rx="6" ry="4" fill="${c2}" opacity="0.7"/>
+    <ellipse cx="34" cy="25" rx="5" ry="3" fill="rgba(255,255,255,0.5)"/>
+    <ellipse cx="28" cy="14" rx="3" ry="2" fill="rgba(255,220,100,0.5)"/>
+    <path d="M4 20 Q0 12 8 10 Q14 8 18 14" fill="${c}"/>
+    <path d="M4 20 Q0 28 8 30 Q14 32 18 26" fill="${c}"/>
+    <path d="M48 20 L58 10 L58 30 Z" fill="${c}"/>
+    <circle cx="14" cy="17" r="4" fill="white"/>
+    <circle cx="15" cy="17" r="2.5" fill="#1a1209"/>
+  </svg>`,
+  black: (c='%232b2d42') => `<svg viewBox="0 0 60 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <ellipse cx="26" cy="20" rx="22" ry="13" fill="${c}"/>
+    <ellipse cx="26" cy="20" rx="22" ry="13" fill="rgba(80,80,120,0.3)"/>
+    <path d="M4 20 Q0 12 8 10 Q14 8 18 14" fill="${c}"/>
+    <path d="M4 20 Q0 28 8 30 Q14 32 18 26" fill="${c}"/>
+    <path d="M48 20 L58 10 L58 30 Z" fill="${c}"/>
+    <ellipse cx="20" cy="16" rx="5" ry="3" fill="rgba(255,200,50,0.5)"/>
+    <circle cx="14" cy="17" r="4" fill="rgba(255,220,100,0.8)"/>
+    <circle cx="15" cy="17" r="2.5" fill="#1a1209"/>
+  </svg>`,
+  shark: (c='%236c757d') => `<svg viewBox="0 0 60 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <ellipse cx="26" cy="22" rx="24" ry="11" fill="${c}"/>
+    <path d="M2 22 L14 14 L14 30 Z" fill="${c}"/>
+    <path d="M48 22 L58 14 L58 30 Z" fill="${c}"/>
+    <path d="M26 11 L30 4 L34 11" fill="${c}"/>
+    <ellipse cx="26" cy="22" rx="24" ry="11" fill="rgba(150,170,190,0.2)"/>
+    <circle cx="10" cy="20" r="3" fill="white"/>
+    <circle cx="11" cy="20" r="1.8" fill="#1a1209"/>
+    <path d="M5 24 L15 24" stroke="rgba(255,255,255,0.3)" stroke-width="0.8"/>
+    <path d="M6 26 L14 26" stroke="rgba(255,255,255,0.2)" stroke-width="0.6"/>
+  </svg>`,
+};
+
+const FISH_TYPES = [
+  { name: '普通金魚', type: 'orange', size: 52, speed: 1.2, points: 1, rarity: 0.5 },
+  { name: '和白金魚', type: 'white', size: 48, speed: 1.0, points: 2, rarity: 0.25 },
+  { name: '三色金魚', type: 'calico', size: 56, speed: 1.4, points: 3, rarity: 0.15 },
+  { name: '黑金魚', type: 'black', size: 54, speed: 1.8, points: 4, rarity: 0.07 },
+  { name: '鯊魚', type: 'shark', size: 64, speed: 2.5, points: -3, rarity: 0.03 },
+];
+
+// ── State ──
+let score = 0;
+let timeLeft = 60;
+let gameActive = false;
+let highScore = parseInt(localStorage.getItem('goldfish_highscore') || '0');
+let fishes = [];
+let timerInterval = null;
+let netX = -100, netY = -100;
+let scoopActive = false;
+let scoopTimeout = null;
+let pondRect = null;
+
+// ── DOM ──
+const pond = document.getElementById('pond');
+const netEl = document.getElementById('net');
+const scoreEl = document.getElementById('score');
+const timerEl = document.getElementById('timer');
+const highscoreEl = document.getElementById('highscore');
+const startOverlay = document.getElementById('start-overlay');
+const gameOverEl = document.getElementById('game-over');
+const finalScoreEl = document.getElementById('final-score');
+const highBadgeEl = document.getElementById('high-badge');
+const fireworksCanvas = document.getElementById('fireworks');
+const fwCtx = fireworksCanvas.getContext('2d');
+
+// ── Initialize ──
+highscoreEl.textContent = highScore;
+generateStars();
+generateLanterns();
+resizeFireworks();
+
+function generateStars() {
+  const starsEl = document.getElementById('stars');
+  for (let i = 0; i < 80; i++) {
+    const star = document.createElement('div');
+    star.className = 'star';
+    star.style.left = Math.random() * 100 + '%';
+    star.style.top = Math.random() * 60 + '%';
+    star.style.setProperty('--dur', (2 + Math.random() * 4) + 's');
+    star.style.setProperty('--delay', (Math.random() * 4) + 's');
+    star.style.width = (1 + Math.random() * 2) + 'px';
+    star.style.height = star.style.width;
+    starsEl.appendChild(star);
+  }
+}
+
+function generateLanterns() {
+  const container = document.getElementById('lanterns');
+  const positions = [
+    { x: 8, y: 5, w: 44, h: 60, dur: 4.2, delay: 0 },
+    { x: 78, y: 8, w: 38, h: 52, dur: 3.8, delay: 0.5 },
+    { x: 20, y: 3, w: 30, h: 42, dur: 5.0, delay: 1.0 },
+    { x: 68, y: 2, w: 34, h: 48, dur: 4.5, delay: 1.5 },
+  ];
+  const colors = [
+    { main: '#e63946', light: 'rgba(230,57,70,0.2)' },
+    { main: '#f77f00', light: 'rgba(247,127,0,0.2)' },
+    { main: '#d62828', light: 'rgba(214,40,40,0.2)' },
+    { main: '#fcbf49', light: 'rgba(252,191,73,0.2)' },
+  ];
+  positions.forEach((pos, i) => {
+    const col = colors[i % colors.length];
+    const lantern = document.createElement('div');
+    lantern.className = 'lantern';
+    lantern.style.cssText = `left:${pos.x}%;top:${pos.y}%;animation-duration:${pos.dur}s;animation-delay:${pos.delay}s;`;
+    lantern.innerHTML = `
+      <div style="position:relative;width:${pos.w}px;height:${pos.h}px;">
+        <div style="position:absolute;top:0;left:50%;transform:translateX(-50%);width:60%;height:8px;background:linear-gradient(to bottom,#8B4513,#A0522D);border-radius:3px 3px 0 0;"></div>
+        <div style="position:absolute;top:6px;left:50%;transform:translateX(-50%);width:${pos.w}px;height:${pos.h - 12}px;background:linear-gradient(135deg,${col.main},${col.main}dd);border-radius:50% 50% 45% 45% / 40% 40% 60% 60%;box-shadow:0 0 20px ${col.light},inset 0 -5px 15px rgba(0,0,0,0.3);">
+          <div style="position:absolute;top:15%;left:15%;width:30%;height:20%;background:rgba(255,255,255,0.25);border-radius:50%;"></div>
+          <div style="position:absolute;top:40%;left:50%;transform:translateX(-50%);width:70%;height:2px;background:rgba(0,0,0,0.2);"></div>
+          <div style="position:absolute;top:55%;left:50%;transform:translateX(-50%);width:60%;height:1.5px;background:rgba(0,0,0,0.15);"></div>
+        </div>
+        <div style="position:absolute;bottom:2px;left:50%;transform:translateX(-50%);width:40%;height:4px;background:linear-gradient(to bottom,#6B3E26,#4a2c17);border-radius:0 0 2px 2px;"></div>
+      </div>
+      <div class="lantern-glow" style="background:radial-gradient(circle,${col.light} 0%,transparent 70%);"></div>
+    `;
+    container.appendChild(lantern);
+  });
+}
+
+function resizeFireworks() {
+  fireworksCanvas.width = window.innerWidth;
+  fireworksCanvas.height = window.innerHeight;
+}
+window.addEventListener('resize', resizeFireworks);
+
+// ── Game Logic ──
+function pickFishType() {
+  const r = Math.random();
+  let cum = 0;
+  for (const ft of FISH_TYPES) {
+    cum += ft.rarity;
+    if (r < cum) return ft;
+  }
+  return FISH_TYPES[0];
+}
+
+function createFish() {
+  if (!gameActive) return;
+  const type = pickFishType();
+  const pondW = pond.offsetWidth;
+  const pondH = pond.offsetHeight;
+  const size = type.size;
+  
+  const el = document.createElement('div');
+  el.className = 'fish';
+  el.style.width = size + 'px';
+  el.style.height = Math.round(size * 0.65) + 'px';
+  el.innerHTML = FISH_SVGS[type.type]();
+  
+  const dir = Math.random() > 0.5 ? 1 : -1;
+  const x = dir > 0 ? -size : pondW;
+  const y = 10 + Math.random() * (pondH - size - 20);
+  
+  el.style.left = x + 'px';
+  el.style.top = y + 'px';
+  
+  if (dir < 0) el.style.transform = 'scaleX(-1)';
+  
+  pond.appendChild(el);
+  
+  const fish = {
+    el, type,
+    x, y,
+    vx: type.speed * dir * (0.8 + Math.random() * 0.4),
+    vy: (Math.random() - 0.5) * 1.5,
+    wobble: Math.random() * Math.PI * 2,
+    wobbleSpeed: 0.03 + Math.random() * 0.03,
+    size,
+    pondW, pondH,
+  };
+  
+  fishes.push(fish);
+}
+
+function updateFishes() {
+  const toRemove = [];
+  fishes.forEach((f, idx) => {
+    f.wobble += f.wobbleSpeed;
+    f.x += f.vx;
+    f.y += f.vy + Math.sin(f.wobble) * 0.5;
+    
+    // Bounce off top/bottom
+    if (f.y < 5) { f.y = 5; f.vy = Math.abs(f.vy); }
+    if (f.y > f.pondH - f.size - 5) { f.y = f.pondH - f.size - 5; f.vy = -Math.abs(f.vy); }
+    
+    // Check if off screen
+    if ((f.vx > 0 && f.x > f.pondW + 10) || (f.vx < 0 && f.x < -f.size - 10)) {
+      toRemove.push(idx);
+    }
+    
+    f.el.style.left = f.x + 'px';
+    f.el.style.top = f.y + 'px';
+    
+    // Slight tilt based on direction
+    const tilt = f.vx > 0 ? 0 : 0;
+    const scaleX = f.vx > 0 ? 1 : -1;
+    f.el.style.transform = `scaleX(${scaleX}) rotate(${Math.sin(f.wobble)*3}deg)`;
+  });
+  
+  for (let i = toRemove.length - 1; i >= 0; i--) {
+    fishes[toRemove[i]].el.remove();
+    fishes.splice(toRemove[i], 1);
+  }
+}
+
+function checkCatch(clientX, clientY) {
+  if (!gameActive) return;
+  
+  pondRect = pond.getBoundingClientRect();
+  
+  // Check if click is within pond
+  if (clientX < pondRect.left || clientX > pondRect.right ||
+      clientY < pondRect.top || clientY > pondRect.bottom) return;
+  
+  const localX = clientX - pondRect.left;
+  const localY = clientY - pondRect.top;
+  
+  let caught = null;
+  let caughtIdx = -1;
+  
+  // Find fish at click position
+  for (let i = fishes.length - 1; i >= 0; i--) {
+    const f = fishes[i];
+    const dx = (f.x + f.size/2) - localX;
+    const dy = (f.y + f.size*0.325) - localY;
+    const dist = Math.sqrt(dx*dx + dy*dy);
+    if (dist < f.size * 0.55) {
+      caught = f;
+      caughtIdx = i;
+      break;
+    }
+  }
+  
+  if (caught) {
+    // Scoop animation
+    netEl.classList.remove('scooping');
+    void netEl.offsetWidth;
+    netEl.classList.add('scooping');
+    
+    // Remove fish
+    caught.el.remove();
+    fishes.splice(caughtIdx, 1);
+    
+    // Update score
+    const pts = caught.type.points;
+    score += pts;
+    if (score < 0) score = 0;
+    scoreEl.textContent = score;
+    
+    // Popup
+    const popup = document.createElement('div');
+    popup.className = 'caught-popup';
+    popup.textContent = pts > 0 ? `+${pts} ${caught.type.name}` : `${pts} 鯊魚！`;
+    popup.style.left = (pondRect.left + localX) + 'px';
+    popup.style.top = (pondRect.top + localY) + 'px';
+    popup.style.color = pts > 2 ? '#fcbf49' : pts < 0 ? '#e63946' : 'white';
+    document.body.appendChild(popup);
+    setTimeout(() => popup.remove(), 1000);
+    
+    // Mini fireworks for rare catches
+    if (pts >= 3) {
+      launchMiniFirework(clientX, clientY);
+    }
+    
+    // Confetti
+    spawnConfetti(clientX, clientY, pts >= 3 ? 12 : 5);
+  }
+}
+
+function startGame() {
+  score = 0;
+  timeLeft = 60;
+  gameActive = true;
+  scoreEl.textContent = '0';
+  timerEl.textContent = '60';
+  fishes.forEach(f => f.el.remove());
+  fishes = [];
+  
+  startOverlay.style.display = 'none';
+  gameOverEl.classList.remove('show');
+  
+  // Spawn fishes
+  for (let i = 0; i < 6; i++) {
+    setTimeout(() => createFish(), i * 400);
+  }
+  
+  // Fish spawner loop
+  const spawner = setInterval(() => {
+    if (!gameActive) { clearInterval(spawner); return; }
+    if (fishes.length < 8) createFish();
+  }, 1200);
+  
+  // Update loop
+  const loop = setInterval(() => {
+    if (!gameActive) { clearInterval(loop); return; }
+    updateFishes();
+  }, 30);
+  
+  // Timer
+  timerInterval = setInterval(() => {
+    timeLeft--;
+    timerEl.textContent = timeLeft;
+    if (timeLeft <= 0) {
+      endGame();
+    }
+  }, 1000);
+}
+
+function endGame() {
+  gameActive = false;
+  clearInterval(timerInterval);
+  fishes.forEach(f => f.el.remove());
+  fishes = [];
+  
+  const isHigh = score > highScore;
+  if (isHigh) {
+    highScore = score;
+    localStorage.setItem('goldfish_highscore', highScore);
+    highscoreEl.textContent = highScore;
+  }
+  
+  finalScoreEl.textContent = score;
+  highBadgeEl.style.display = isHigh ? 'block' : 'none';
+  gameOverEl.classList.add('show');
+  
+  if (isHigh && score > 0) {
+    launchBigFirework();
+  }
+}
+
+// ── Confetti ──
+function spawnConfetti(x, y, count) {
+  const colors = ['#e63946','#f77f00','#fcbf49','#4ECDC4','#C9B1FF','#ff6ec7'];
+  for (let i = 0; i < count; i++) {
+    const c = document.createElement('div');
+    c.className = 'confetti-piece';
+    c.style.left = x + 'px';
+    c.style.top = y + 'px';
+    c.style.background = colors[Math.floor(Math.random() * colors.length)];
+    c.style.transform = `rotate(${Math.random()*360}deg)`;
+    document.body.appendChild(c);
+    
+    const vx = (Math.random() - 0.5) * 8;
+    const vy = -Math.random() * 6 - 2;
+    let ox = 0, oy = 0, opacity = 1;
+    const fall = () => {
+      oy += 0.3;
+      ox += vx * 0.05;
+      opacity -= 0.03;
+      c.style.transform = `translate(${ox}px,${oy}px) rotate(${ox*10}deg)`;
+      c.style.opacity = opacity;
+      if (opacity > 0) requestAnimationFrame(fall);
+      else c.remove();
+    };
+    requestAnimationFrame(fall);
+  }
+}
+
+// ── Fireworks ──
+let fireworks = [];
+
+function Firework(x, y, hue) {
+  this.x = x; this.y = y;
+  this.particles = [];
+  const count = 30 + Math.floor(Math.random() * 20);
+  for (let i = 0; i < count; i++) {
+    const angle = (i / count) * Math.PI * 2;
+    const speed = 2 + Math.random() * 4;
+    this.particles.push({
+      x, y,
+      vx: Math.cos(angle) * speed,
+      vy: Math.sin(angle) * speed,
+      alpha: 1,
+      size: 2 + Math.random() * 3,
+      hue: hue + Math.random() * 40,
+    });
+  }
+  this.alive = true;
+}
+
+Firework.prototype.update = function() {
+  let allDead = true;
+  this.particles.forEach(p => {
+    p.x += p.vx;
+    p.y += p.vy;
+    p.vy += 0.06;
+    p.vx *= 0.98;
+    p.alpha -= 0.018;
+    if (p.alpha > 0) allDead = false;
+  });
+  if (allDead) this.alive = false;
+};
+
+Firework.prototype.draw = function(ctx) {
+  this.particles.forEach(p => {
+    ctx.save();
+    ctx.globalAlpha = Math.max(0, p.alpha);
+    ctx.fillStyle = `hsl(${p.hue},100%,70%)`;
+    ctx.shadowBlur = 6;
+    ctx.shadowColor = `hsl(${p.hue},100%,70%)`;
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+  });
+};
+
+function animateFireworks() {
+  if (!gameActive && fireworks.length === 0) {
+    fwCtx.clearRect(0, 0, fireworksCanvas.width, fireworksCanvas.height);
+    return;
+  }
+  requestAnimationFrame(animateFireworks);
+  fwCtx.clearRect(0, 0, fireworksCanvas.width, fireworksCanvas.height);
+  fireworks = fireworks.filter(fw => {
+    fw.update();
+    fw.draw(fwCtx);
+    return fw.alive;
+  });
+}
+
+function launchMiniFirework(x, y) {
+  fireworks.push(new Firework(x, y, 40 + Math.random() * 20));
+  if (fireworks.length === 1) animateFireworks();
+}
+
+function launchBigFirework() {
+  const cx = fireworksCanvas.width / 2;
+  const cy = fireworksCanvas.height * 0.3;
+  const hues = [0, 50, 200, 280, 120];
+  hues.forEach((h, i) => {
+    setTimeout(() => {
+      fireworks.push(new Firework(
+        cx + (Math.random() - 0.5) * 200,
+        cy + (Math.random() - 0.5) * 100,
+        h
+      ));
+      if (fireworks.length === 1) animateFireworks();
+    }, i * 250);
+  });
+}
+
+// ── Net cursor ──
+function moveNet(x, y) {
+  netX = x; netY = y;
+  netEl.style.left = x + 'px';
+  netEl.style.top = y + 'px';
+}
+
+function triggerScoop() {
+  if (scoopTimeout) clearTimeout(scoopTimeout);
+  scoopActive = true;
+  netEl.classList.add('scooping');
+  checkCatch(netX, netY);
+  scoopTimeout = setTimeout(() => {
+    netEl.classList.remove('scooping');
+    scoopActive = false;
+  }, 350);
+}
+
+// ── Event Listeners ──
+document.addEventListener('mousemove', e => moveNet(e.clientX, e.clientY));
+document.addEventListener('touchmove', e => {
+  e.preventDefault();
+  const t = e.touches[0];
+  moveNet(t.clientX, t.clientY);
+}, { passive: false });
+
+document.addEventListener('mousedown', e => {
+  if (!gameActive) return;
+  moveNet(e.clientX, e.clientY);
+  triggerScoop();
+});
+
+document.addEventListener('touchstart', e => {
+  if (!gameActive) return;
+  e.preventDefault();
+  const t = e.touches[0];
+  moveNet(t.clientX, t.clientY);
+  triggerScoop();
+}, { passive: false });
+
+document.getElementById('start-btn').addEventListener('click', startGame);
+document.getElementById('again-btn').addEventListener('click', startGame);
+
+// Initial fireworks on load
+setTimeout(() => launchBigFirework(), 800);
+</script>
+</body>
+</html>

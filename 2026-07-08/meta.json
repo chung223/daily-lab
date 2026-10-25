@@ -1,0 +1,6 @@
+{
+  "title": "Session ICU 重症監護室",
+  "type": "工具系",
+  "description": "Vintage Medical Journal × Clinical Warmth 风格的 session 健康监控工具。展示所有 OpenClaw sessions 的状态（健康/危急/死亡）、ECG 心电图动画、运行时间、「搶救」按钮。",
+  "inspiration": "main session 因「LLM idle timeout (120s)」失败死亡。三色蛋提到「禪意房間」概念：AI 只是安静坐著等待，直到对话到来。"
+}

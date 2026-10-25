@@ -1,0 +1,6 @@
+{
+  "title": "VPS Station Board",
+  "type": "工具系",
+  "description": "VPS 主機狀態監控面板、航班看板式復古風格、即時狀態指示燈與 SSL 問題檢測",
+  "inspiration": "VPS 夜班站點健檢、SSL_ERROR_SYSCALL 修復提案"
+}

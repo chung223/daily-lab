@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>虛空蓮 | Void Lotus</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@300;500&family=DM+Mono:wght@300&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-deep: #050508;
+      --bg-void: #0a0a0f;
+      --lotus-pink: #ff6b9d;
+      --lotus-cyan: #00f5ff;
+      --lotus-purple: #a855f7;
+      --lotus-gold: #fbbf24;
+      --glow-pink: rgba(255, 107, 157, 0.6);
+      --glow-cyan: rgba(0, 245, 255, 0.5);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      background: var(--bg-deep);
+      font-family: 'Noto Serif TC', serif;
+      overflow: hidden;
+      cursor: crosshair;
+    }
+
+    /* 多層背景 */
+    .bg-layer {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    .bg-stars {
+      background: 
+        radial-gradient(1px 1px at 20% 30%, #fff 100%, transparent),
+        radial-gradient(1px 1px at 40% 70%, #fff 100%, transparent),
+        radial-gradient(1.5px 1.5px at 50% 50%, rgba(255,255,255,0.8) 100%, transparent),
+        radial-gradient(1px 1px at 60% 20%, #fff 100%, transparent),
+        radial-gradient(1px 1px at 80% 80%, #fff 100%, transparent),
+        radial-gradient(1px 1px at 10% 90%, #fff 100%, transparent),
+        radial-gradient(1.5px 1.5px at 90% 10%, rgba(255,255,255,0.6) 100%, transparent);
+      animation: twinkle 8s ease-in-out infinite;
+    }
+
+    .bg-nebula {
+      background: 
+        radial-gradient(ellipse 80% 50% at 30% 40%, rgba(168, 85, 247, 0.08) 0%, transparent 50%),
+        radial-gradient(ellipse 60% 40% at 70% 60%, rgba(0, 245, 255, 0.05) 0%, transparent 50%),
+        radial-gradient(ellipse 50% 30% at 50% 80%, rgba(255, 107, 157, 0.05) 0%, transparent 50%);
+      animation: nebula-drift 20s ease-in-out infinite alternate;
+    }
+
+    .bg-noise {
+      opacity: 0.03;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    }
+
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.6; }
+      50% { opacity: 1; }
+    }
+
+    @keyframes nebula-drift {
+      0% { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(-20px, 10px) scale(1.05); }
+    }
+
+    /* 主容器 */
+    .container {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* 標題 */
+    .title {
+      position: absolute;
+      top: 8%;
+      font-size: clamp(1.5rem, 4vw, 2.5rem);
+      font-weight: 300;
+      color: rgba(255, 255, 255, 0.7);
+      letter-spacing: 0.5em;
+      text-shadow: 0 0 30px var(--glow-pink), 0 0 60px var(--glow-cyan);
+      animation: title-glow 4s ease-in-out infinite;
+    }
+
+    @keyframes title-glow {
+      0%, 100% { text-shadow: 0 0 30px var(--glow-pink), 0 0 60px var(--glow-cyan); }
+      50% { text-shadow: 0 0 40px var(--glow-cyan), 0 0 80px var(--glow-pink); }
+    }
+
+    /* 蓮花畫布 */
+    #lotus-canvas {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    /* 互動提示 */
+    .hint {
+      position: absolute;
+      bottom: 12%;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.85rem;
+      color: rgba(255, 255, 255, 0.4);
+      letter-spacing: 0.2em;
+      animation: hint-pulse 3s ease-in-out infinite;
+    }
+
+    @keyframes hint-pulse {
+      0%, 100% { opacity: 0.4; }
+      50% { opacity: 0.7; }
+    }
+
+    /* 計數器 */
+    .counter {
+      position: absolute;
+      top: 5%;
+      right: 5%;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.75rem;
+      color: rgba(255, 255, 255, 0.3);
+      text-align: right;
+    }
+
+    .counter-value {
+      font-size: 1.2rem;
+      color: var(--lotus-cyan);
+      text-shadow: 0 0 10px var(--glow-cyan);
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-layer bg-stars"></div>
+  <div class="bg-layer bg-nebula"></div>
+  <div class="bg-layer bg-noise"></div>
+
+  <div class="container">
+    <h1 class="title">虛空蓮</h1>
+    <canvas id="lotus-canvas"></canvas>
+    <p class="hint">點擊召喚花瓣 · 移動滑鼠暈開光芒</p>
+    <div class="counter">
+      <div>花瓣召喚次數</div>
+      <div class="counter-value" id="count">0</div>
+    </div>
+  </div>
+
+  <script>
+    const canvas = document.getElementById('lotus-canvas');
+    const ctx = canvas.getContext('2d');
+    const countEl = document.getElementById('count');
+
+    let width, height, centerX, centerY;
+    let petals = [];
+    let particles = [];
+    let ripples = [];
+    let mouseX = 0, mouseY = 0;
+    let count = parseInt(localStorage.getItem('void-lotus-count') || '0');
+
+    countEl.textContent = count;
+
+    function resize() {
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+      centerX = width / 2;
+      centerY = height / 2;
+    }
+
+    resize();
+    window.addEventListener('resize', resize);
+
+    // 蓮花瓣 class
+    class Petal {
+      constructor(x, y, angle, color, size) {
+        this.x = x;
+        this.y = y;
+        this.angle = angle;
+        this.color = color;
+        this.size = size;
+        this.opacity = 0;
+        this.targetOpacity = 1;
+        this.rotation = Math.random() * Math.PI * 2;
+        this.rotationSpeed = (Math.random() - 0.5) * 0.02;
+        this.vx = (Math.random() - 0.5) * 0.5;
+        this.vy = (Math.random() - 0.5) * 0.5 - 0.5;
+        this.life = 1;
+        this.decay = 0.003 + Math.random() * 0.002;
+      }
+
+      update() {
+        this.opacity += (this.targetOpacity - this.opacity) * 0.05;
+        this.x += this.vx;
+        this.y += this.vy;
+        this.vy += 0.01;
+        this.rotation += this.rotationSpeed;
+        this.life -= this.decay;
+        
+        // 滑鼠互動 - 排斥
+        const dx = this.x - mouseX;
+        const dy = this.y - mouseY;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < 150) {
+          const force = (150 - dist) / 150;
+          this.vx += (dx / dist) * force * 0.5;
+          this.vy += (dy / dist) * force * 0.5;
+        }
+      }
+
+      draw() {
+        ctx.save();
+        ctx.translate(this.x, this.y);
+        ctx.rotate(this.rotation);
+        ctx.globalAlpha = this.opacity * this.life;
+        
+        // 發光效果
+        ctx.shadowBlur = 20;
+        ctx.shadowColor = this.color;
+        
+        // 畫花瓣形狀
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.bezierCurveTo(
+          this.size * 0.5, -this.size * 0.3,
+          this.size, -this.size * 0.1,
+          this.size * 0.8, this.size * 0.4
+        );
+        ctx.bezierCurveTo(
+          this.size * 0.3, this.size * 0.5,
+          0, this.size * 0.3,
+          0, 0
+        );
+        
+        const gradient = ctx.createRadialGradient(0, 0, 0, 0, 0, this.size);
+        gradient.addColorStop(0, this.color);
+        gradient.addColorStop(1, 'transparent');
+        ctx.fillStyle = gradient;
+        ctx.fill();
+        
+        ctx.restore();
+      }
+    }
+
+    // 粒子效果
+    class Particle {
+      constructor(x, y, color) {
+        this.x = x;
+        this.y = y;
+        this.color = color;
+        this.size = Math.random() * 3 + 1;
+        this.vx = (Math.random() - 0.5) * 2;
+        this.vy = (Math.random() - 0.5) * 2 - 1;
+        this.life = 1;
+        this.decay = 0.015 + Math.random() * 0.01;
+      }
+
+      update() {
+        this.x += this.vx;
+        this.y += this.vy;
+        this.vy += 0.02;
+        this.life -= this.decay;
+      }
+
+      draw() {
+        ctx.save();
+        ctx.globalAlpha = this.life * 0.8;
+        ctx.shadowBlur = 10;
+        ctx.shadowColor = this.color;
+        ctx.fillStyle = this.color;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      }
+    }
+
+    // 漣漪效果
+    class Ripple {
+      constructor(x, y) {
+        this.x = x;
+        this.y = y;
+        this.radius = 0;
+        this.maxRadius = 200;
+        this.opacity = 0.6;
+      }
+
+      update() {
+        this.radius += 3;
+        this.opacity = 0.6 * (1 - this.radius / this.maxRadius);
+      }
+
+      draw() {
+        if (this.opacity <= 0) return;
+        ctx.save();
+        ctx.strokeStyle = `rgba(0, 245, 255, ${this.opacity})`;
+        ctx.lineWidth = 2;
+        ctx.shadowBlur = 15;
+        ctx.shadowColor = '#00f5ff';
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.restore();
+      }
+    }
+
+    // 顏色調色板
+    const colors = ['#ff6b9d', '#00f5ff', '#a855f7', '#fbbf24', '#ff9ff3', '#54a0ff'];
+
+    // 點擊產生花瓣
+    canvas.addEventListener('click', (e) => {
+      const rect = canvas.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      
+      // 產生花瓣
+      const petalCount = 8 + Math.floor(Math.random() * 5);
+      for (let i = 0; i < petalCount; i++) {
+        const angle = (Math.PI * 2 / petalCount) * i + Math.random() * 0.5;
+        const color = colors[Math.floor(Math.random() * colors.length)];
+        const size = 30 + Math.random() * 40;
+        petals.push(new Petal(x, y, angle, color, size));
+      }
+      
+      // 產生粒子
+      for (let i = 0; i < 15; i++) {
+        particles.push(new Particle(x, y, colors[Math.floor(Math.random() * colors.length)]));
+      }
+      
+      // 產生漣漪
+      ripples.push(new Ripple(x, y));
+      
+      // 更新計數
+      count++;
+      countEl.textContent = count;
+      localStorage.setItem('void-lotus-count', count.toString());
+    });
+
+    // 滑鼠移動追蹤
+    canvas.addEventListener('mousemove', (e) => {
+      const rect = canvas.getBoundingClientRect();
+      mouseX = e.clientX - rect.left;
+      mouseY = e.clientY - rect.top;
+      
+      // 產生微量粒子軌跡
+      if (Math.random() < 0.3) {
+        const color = colors[Math.floor(Math.random() * colors.length)];
+        particles.push(new Particle(mouseX, mouseY, color));
+      }
+    });
+
+    // 動畫循環
+    function animate() {
+      ctx.clearRect(0, 0, width, height);
+      
+      // 繪製中心光暈
+      const time = Date.now() * 0.001;
+      const pulse = Math.sin(time) * 0.3 + 0.7;
+      
+      ctx.save();
+      ctx.globalAlpha = 0.15 * pulse;
+      const centerGlow = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, 200);
+      centerGlow.addColorStop(0, '#ff6b9d');
+      centerGlow.addColorStop(0.5, '#a855f7');
+      centerGlow.addColorStop(1, 'transparent');
+      ctx.fillStyle = centerGlow;
+      ctx.fillRect(0, 0, width, height);
+      ctx.restore();
+      
+      // 更新並繪製漣漪
+      ripples = ripples.filter(r => r.opacity > 0);
+      ripples.forEach(r => {
+        r.update();
+        r.draw();
+      });
+      
+      // 更新並繪製花瓣
+      petals = petals.filter(p => p.life > 0);
+      petals.forEach(p => {
+        p.update();
+        p.draw();
+      });
+      
+      // 更新並繪製粒子
+      particles = particles.filter(p => p.life > 0);
+      particles.forEach(p => {
+        p.update();
+        p.draw();
+      });
+      
+      requestAnimationFrame(animate);
+    }
+
+    animate();
+
+    // 初始花瓣動畫
+    setTimeout(() => {
+      for (let i = 0; i < 12; i++) {
+        const angle = (Math.PI * 2 / 12) * i;
+        const color = colors[i % colors.length];
+        const petal = new Petal(centerX, centerY, angle, color, 50);
+        petal.vx = Math.cos(angle) * 2;
+        petal.vy = Math.sin(angle) * 2 - 1;
+        petals.push(petal);
+      }
+    }, 500);
+  </script>
+</body>
+</html>

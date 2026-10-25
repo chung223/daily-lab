@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Process Cards · 腳本管理</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Noto+Sans+TC:wght@300;400;500;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --paper: #faf7f2;
+      --paper-dark: #f0ebe3;
+      --ink: #2c2416;
+      --ink-light: #6b5d4d;
+      --accent-coral: #e07a5f;
+      --accent-teal: #3d7a8c;
+      --accent-gold: #d4a574;
+      --accent-purple: #8b7ec8;
+      --shadow: rgba(44, 36, 22, 0.1);
+      --shadow-strong: rgba(44, 36, 22, 0.2);
+    }
+
+    body {
+      font-family: 'Noto Sans TC', sans-serif;
+      background: var(--paper);
+      min-height: 100vh;
+      padding: 2rem;
+      background-image: 
+        radial-gradient(circle at 20% 80%, rgba(224, 122, 95, 0.05) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(61, 122, 140, 0.05) 0%, transparent 50%);
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    /* Header */
+    header {
+      text-align: center;
+      margin-bottom: 3rem;
+      padding: 2rem;
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 4px 20px var(--shadow);
+      position: relative;
+      overflow: hidden;
+    }
+
+    header::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 6px;
+      background: linear-gradient(90deg, var(--accent-coral), var(--accent-teal), var(--accent-gold), var(--accent-purple));
+    }
+
+    header h1 {
+      font-family: 'Caveat', cursive;
+      font-size: 3.5rem;
+      color: var(--ink);
+      margin-bottom: 0.5rem;
+      letter-spacing: 2px;
+    }
+
+    header p {
+      color: var(--ink-light);
+      font-size: 1.1rem;
+      font-weight: 300;
+    }
+
+    /* Status Bar */
+    .status-bar {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .stat-card {
+      background: white;
+      padding: 1rem 1.5rem;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px var(--shadow);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      flex: 1;
+      min-width: 200px;
+    }
+
+    .stat-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+    }
+
+    .stat-icon.coral { background: rgba(224, 122, 95, 0.15); }
+    .stat-icon.teal { background: rgba(61, 122, 140, 0.15); }
+    .stat-icon.gold { background: rgba(212, 165, 116, 0.15); }
+    .stat-icon.purple { background: rgba(139, 126, 200, 0.15); }
+
+    .stat-info h3 {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: var(--ink);
+      font-family: 'DM Mono', monospace;
+    }
+
+    .stat-info p {
+      font-size: 0.85rem;
+      color: var(--ink-light);
+    }
+
+    /* Add Button */
+    .add-section {
+      margin-bottom: 2rem;
+    }
+
+    .add-btn {
+      background: var(--ink);
+      color: white;
+      border: none;
+      padding: 1rem 2rem;
+      border-radius: 50px;
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px var(--shadow-strong);
+    }
+
+    .add-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px var(--shadow-strong);
+    }
+
+    .add-btn .plus {
+      font-size: 1.5rem;
+      font-weight: 300;
+    }
+
+    /* Cards Grid */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1.5rem;
+    }
+
+    /* Process Card */
+    .process-card {
+      background: white;
+      border-radius: 16px;
+      padding: 1.5rem;
+      box-shadow: 0 4px 20px var(--shadow);
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .process-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 30px var(--shadow-strong);
+    }
+
+    .process-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 4px;
+      height: 100%;
+    }
+
+    .process-card.running::before { background: var(--accent-teal); }
+    .process-card.stopped::before { background: var(--accent-coral); }
+    .process-card.error::before { background: #d64545; }
+    .process-card.idle::before { background: var(--ink-light); }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 1rem;
+    }
+
+    .card-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--ink);
+      margin-bottom: 0.25rem;
+    }
+
+    .card-path {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--ink-light);
+      word-break: break-all;
+    }
+
+    .status-badge {
+      padding: 0.35rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .status-badge.running {
+      background: rgba(61, 122, 140, 0.15);
+      color: var(--accent-teal);
+    }
+
+    .status-badge.stopped {
+      background: rgba(224, 122, 95, 0.15);
+      color: var(--accent-coral);
+    }
+
+    .status-badge.error {
+      background: rgba(214, 69, 69, 0.15);
+      color: #d64545;
+    }
+
+    .status-badge.idle {
+      background: rgba(107, 93, 77, 0.15);
+      color: var(--ink-light);
+    }
+
+    .card-stats {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.75rem;
+      margin: 1rem 0;
+      padding: 1rem;
+      background: var(--paper);
+      border-radius: 10px;
+    }
+
+    .card-stat {
+      text-align: center;
+    }
+
+    .card-stat-value {
+      font-family: 'DM Mono', monospace;
+      font-size: 1.25rem;
+      font-weight: 500;
+      color: var(--ink);
+    }
+
+    .card-stat-label {
+      font-size: 0.7rem;
+      color: var(--ink-light);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .card-actions {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 1rem;
+    }
+
+    .card-btn {
+      flex: 1;
+      padding: 0.6rem;
+      border: 2px solid var(--paper-dark);
+      background: white;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      color: var(--ink);
+    }
+
+    .card-btn:hover {
+      border-color: var(--accent-teal);
+      color: var(--accent-teal);
+    }
+
+    .card-btn.delete:hover {
+      border-color: var(--accent-coral);
+      color: var(--accent-coral);
+    }
+
+    .card-note {
+      margin-top: 1rem;
+      padding: 0.75rem;
+      background: var(--paper);
+      border-radius: 8px;
+      font-size: 0.85rem;
+      color: var(--ink-light);
+      font-style: italic;
+      display: none;
+    }
+
+    .card-note.visible {
+      display: block;
+    }
+
+    /* Modal */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(44, 36, 22, 0.5);
+      backdrop-filter: blur(4px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .modal-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .modal {
+      background: white;
+      border-radius: 20px;
+      padding: 2rem;
+      width: 90%;
+      max-width: 500px;
+      box-shadow: 0 20px 60px rgba(44, 36, 22, 0.3);
+      transform: translateY(20px);
+      transition: transform 0.3s ease;
+    }
+
+    .modal-overlay.active .modal {
+      transform: translateY(0);
+    }
+
+    .modal h2 {
+      font-family: 'Caveat', cursive;
+      font-size: 2rem;
+      color: var(--ink);
+      margin-bottom: 1.5rem;
+    }
+
+    .form-group {
+      margin-bottom: 1.25rem;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--ink);
+      margin-bottom: 0.5rem;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border: 2px solid var(--paper-dark);
+      border-radius: 10px;
+      font-size: 1rem;
+      font-family: inherit;
+      transition: border-color 0.2s ease;
+      background: var(--paper);
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: var(--accent-teal);
+    }
+
+    .form-group textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+
+    .modal-btn {
+      flex: 1;
+      padding: 0.85rem;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .modal-btn.primary {
+      background: var(--ink);
+      color: white;
+      border: none;
+    }
+
+    .modal-btn.primary:hover {
+      background: var(--ink-light);
+    }
+
+    .modal-btn.secondary {
+      background: white;
+      color: var(--ink);
+      border: 2px solid var(--paper-dark);
+    }
+
+    .modal-btn.secondary:hover {
+      border-color: var(--ink-light);
+    }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: var(--ink);
+      color: white;
+      padding: 1rem 2rem;
+      border-radius: 50px;
+      font-size: 0.95rem;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+      z-index: 1001;
+      opacity: 0;
+      transition: all 0.3s ease;
+    }
+
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+
+    /* Empty State */
+    .empty-state {
+      text-align: center;
+      padding: 4rem 2rem;
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 4px 20px var(--shadow);
+    }
+
+    .empty-state-icon {
+      font-size: 4rem;
+      margin-bottom: 1rem;
+    }
+
+    .empty-state h3 {
+      font-size: 1.5rem;
+      color: var(--ink);
+      margin-bottom: 0.5rem;
+    }
+
+    .empty-state p {
+      color: var(--ink-light);
+    }
+
+    /* Color dots */
+    .color-dots {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 1.5rem;
+      justify-content: center;
+    }
+
+    .color-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+
+    .color-dot:nth-child(1) { background: var(--accent-coral); }
+    .color-dot:nth-child(2) { background: var(--accent-teal); }
+    .color-dot:nth-child(3) { background: var(--accent-gold); }
+    .color-dot:nth-child(4) { background: var(--accent-purple); }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      body { padding: 1rem; }
+      header h1 { font-size: 2.5rem; }
+      .cards-grid { grid-template-columns: 1fr; }
+      .status-bar { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>✦ Process Cards</h1>
+      <p>腳本與程序管理 · 視覺化你的系統任務</p>
+      <div class="color-dots">
+        <div class="color-dot"></div>
+        <div class="color-dot"></div>
+        <div class="color-dot"></div>
+        <div class="color-dot"></div>
+      </div>
+    </header>
+
+    <div class="status-bar">
+      <div class="stat-card">
+        <div class="stat-icon coral">📋</div>
+        <div class="stat-info">
+          <h3 id="totalCount">0</h3>
+          <p>總腳本數</p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon teal">✓</div>
+        <div class="stat-info">
+          <h3 id="runningCount">0</h3>
+          <p>運行中</p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon gold">⚡</div>
+        <div class="stat-info">
+          <h3 id="totalRuns">0</h3>
+          <p>總執行次數</p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon purple">⏱</div>
+        <div class="stat-info">
+          <h3 id="lastRun">—</h3>
+          <p>最後執行</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="add-section">
+      <button class="add-btn" onclick="openModal()">
+        <span class="plus">+</span> 新增腳本
+      </button>
+    </div>
+
+    <div class="cards-grid" id="cardsGrid">
+      <!-- Cards will be rendered here -->
+    </div>
+
+    <div class="empty-state" id="emptyState" style="display: none;">
+      <div class="empty-state-icon">📝</div>
+      <h3>還沒有腳本</h3>
+      <p>點擊上方按鈕新增你的第一個腳本</p>
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal-overlay" id="modalOverlay" onclick="closeModalOnOverlay(event)">
+    <div class="modal">
+      <h2>新增 / 編輯腳本</h2>
+      <form id="scriptForm" onsubmit="saveScript(event)">
+        <input type="hidden" id="editId">
+        <div class="form-group">
+          <label>腳本名稱</label>
+          <input type="text" id="scriptName" placeholder="例如：每日同步腳本" required>
+        </div>
+        <div class="form-group">
+          <label>路徑 / Command</label>
+          <input type="text" id="scriptPath" placeholder="例如：/Users/chung/scripts/sync.py">
+        </div>
+        <div class="form-group">
+          <label>狀態</label>
+          <select id="scriptStatus">
+            <option value="idle">閒置</option>
+            <option value="running">運行中</option>
+            <option value="stopped">已停止</option>
+            <option value="error">錯誤</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>備註</label>
+          <textarea id="scriptNote" placeholder="這個腳本做什麼？"></textarea>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="modal-btn secondary" onclick="closeModal()">取消</button>
+          <button type="submit" class="modal-btn primary">儲存</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <script>
+    // Data
+    let scripts = [];
+    let stats = { totalRuns: 0, lastRun: null };
+
+    // Initialize
+    function init() {
+      loadData();
+      render();
+    }
+
+    // LocalStorage
+    function loadData() {
+      const saved = localStorage.getItem('processCards');
+      if (saved) {
+        const data = JSON.parse(saved);
+        scripts = data.scripts || [];
+        stats = data.stats || { totalRuns: 0, lastRun: null };
+      } else {
+        // Demo data
+        scripts = [
+          {
+            id: 'demo1',
+            name: 'sync_aoa_to_gog.py',
+            path: '/Users/chung/openclaw/workspace/scripts/sync_aoa_to_gog.py',
+            status: 'error',
+            runs: 47,
+            lastRun: new Date(Date.now() - 3600000).toISOString(),
+            note: '⚠️ 收到 SIGTERM，可能是超時或被終止'
+          },
+          {
+            id: 'demo2',
+            name: '每日記憶歸檔',
+            path: '/Users/chung/scripts/backup-memory.sh',
+            status: 'running',
+            runs: 156,
+            lastRun: new Date(Date.now() - 7200000).toISOString(),
+            note: '凌晨 4:00 自動執行'
+          },
+          {
+            id: 'demo3',
+            name: 'GitHub 同步',
+            path: '/Users/chung/scripts/github-sync.js',
+            status: 'idle',
+            runs: 89,
+            lastRun: new Date(Date.now() - 86400000).toISOString(),
+            note: '手動觸發'
+          }
+        ];
+        stats = { totalRuns: 292, lastRun: new Date(Date.now() - 3600000).toISOString() };
+      }
+    }
+
+    function saveData() {
+      localStorage.setItem('processCards', JSON.stringify({ scripts, stats }));
+    }
+
+    // Render
+    function render() {
+      const grid = document.getElementById('cardsGrid');
+      const empty = document.getElementById('emptyState');
+
+      // Update stats
+      document.getElementById('totalCount').textContent = scripts.length;
+      document.getElementById('runningCount').textContent = scripts.filter(s => s.status === 'running').length;
+      document.getElementById('totalRuns').textContent = stats.totalRuns;
+      document.getElementById('lastRun').textContent = stats.lastRun ? formatTime(stats.lastRun) : '—';
+
+      if (scripts.length === 0) {
+        grid.style.display = 'none';
+        empty.style.display = 'block';
+        return;
+      }
+
+      grid.style.display = 'grid';
+      empty.style.display = 'none';
+
+      grid.innerHTML = scripts.map(script => `
+        <div class="process-card ${script.status}">
+          <div class="card-header">
+            <div>
+              <div class="card-title">${escapeHtml(script.name)}</div>
+              <div class="card-path">${escapeHtml(script.path || '—')}</div>
+            </div>
+            <span class="status-badge ${script.status}">${getStatusText(script.status)}</span>
+          </div>
+          <div class="card-stats">
+            <div class="card-stat">
+              <div class="card-stat-value">${script.runs}</div>
+              <div class="card-stat-label">執行次數</div>
+            </div>
+            <div class="card-stat">
+              <div class="card-stat-value">${script.lastRun ? formatTime(script.lastRun) : '—'}</div>
+              <div class="card-stat-label">最後執行</div>
+            </div>
+          </div>
+          <div class="card-note ${script.note ? 'visible' : ''}">${escapeHtml(script.note || '')}</div>
+          <div class="card-actions">
+            <button class="card-btn" onclick="runScript('${script.id}')">▶ 執行</button>
+            <button class="card-btn" onclick="editScript('${script.id}')">✎ 編輯</button>
+            <button class="card-btn delete" onclick="deleteScript('${script.id}')">✕ 刪除</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Actions
+    function openModal(editId = null) {
+      const modal = document.getElementById('modalOverlay');
+      const form = document.getElementById('scriptForm');
+      form.reset();
+      document.getElementById('editId').value = '';
+
+      if (editId) {
+        const script = scripts.find(s => s.id === editId);
+        if (script) {
+          document.getElementById('editId').value = script.id;
+          document.getElementById('scriptName').value = script.name;
+          document.getElementById('scriptPath').value = script.path || '';
+          document.getElementById('scriptStatus').value = script.status;
+          document.getElementById('scriptNote').value = script.note || '';
+        }
+      }
+
+      modal.classList.add('active');
+    }
+
+    function closeModal() {
+      document.getElementById('modalOverlay').classList.remove('active');
+    }
+
+    function closeModalOnOverlay(e) {
+      if (e.target === e.currentTarget) closeModal();
+    }
+
+    function saveScript(e) {
+      e.preventDefault();
+      const editId = document.getElementById('editId').value;
+      const scriptData = {
+        id: editId || 'script_' + Date.now(),
+        name: document.getElementById('scriptName').value,
+        path: document.getElementById('scriptPath').value,
+        status: document.getElementById('scriptStatus').value,
+        note: document.getElementById('scriptNote').value,
+        runs: 0,
+        lastRun: null
+      };
+
+      if (editId) {
+        const idx = scripts.findIndex(s => s.id === editId);
+        if (idx !== -1) {
+          scriptData.runs = scripts[idx].runs;
+          scriptData.lastRun = scripts[idx].lastRun;
+          scripts[idx] = scriptData;
+        }
+      } else {
+        scripts.push(scriptData);
+      }
+
+      saveData();
+      render();
+      closeModal();
+      showToast(editId ? '腳本已更新 ✓' : '腳本已新增 ✓');
+    }
+
+    function editScript(id) {
+      openModal(id);
+    }
+
+    function deleteScript(id) {
+      if (confirm('確定要刪除這個腳本嗎？')) {
+        scripts = scripts.filter(s => s.id !== id);
+        saveData();
+        render();
+        showToast('腳本已刪除');
+      }
+    }
+
+    function runScript(id) {
+      const script = scripts.find(s => s.id === id);
+      if (script) {
+        script.runs++;
+        script.lastRun = new Date().toISOString();
+        stats.totalRuns++;
+        stats.lastRun = script.lastRun;
+        
+        // Simulate running
+        script.status = 'running';
+        saveData();
+        render();
+        showToast(`「${script.name}」執行中...`);
+
+        setTimeout(() => {
+          script.status = 'idle';
+          saveData();
+          render();
+        }, 2000);
+      }
+    }
+
+    // Utils
+    function getStatusText(status) {
+      const map = { running: '運行中', stopped: '已停止', error: '錯誤', idle: '閒置' };
+      return map[status] || status;
+    }
+
+    function formatTime(iso) {
+      const d = new Date(iso);
+      const now = new Date();
+      const diff = now - d;
+      
+      if (diff < 60000) return '剛剛';
+      if (diff < 3600000) return Math.floor(diff / 60000) + ' 分前';
+      if (diff < 86400000) return Math.floor(diff / 3600000) + ' 小時前';
+      return d.toLocaleDateString('zh-TW', { month: 'numeric', day: 'numeric' });
+    }
+
+    function escapeHtml(str) {
+      const div = document.createElement('div');
+      div.textContent = str;
+      return div.innerHTML;
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2500);
+    }
+
+    // Init
+    init();
+  </script>
+</body>
+</html>

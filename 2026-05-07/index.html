@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>魚油期限拯救中心 🐟💊</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Caveat:wght@400;700&family=Noto+Sans+TC:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background: linear-gradient(180deg, #FFF9F0 0%, #FFE4D6 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* 頂部 Banner */
+        .banner {
+            background: linear-gradient(135deg, #E85D4C 0%, #D4A84B 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .banner::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 10px,
+                rgba(255,255,255,0.1) 10px,
+                rgba(255,255,255,0.1) 20px
+            );
+            animation: stripeMove 20s linear infinite;
+        }
+
+        @keyframes stripeMove {
+            0% { transform: translateX(-50%) translateY(-50%); }
+            100% { transform: translateX(0%) translateY(0%); }
+        }
+
+        .banner h1 {
+            font-family: 'Bangers', cursive;
+            font-size: 2.5rem;
+            letter-spacing: 3px;
+            text-shadow: 3px 3px 0 rgba(0,0,0,0.2);
+            position: relative;
+            z-index: 1;
+        }
+
+        .banner p {
+            font-family: 'Caveat', cursive;
+            font-size: 1.3rem;
+            margin-top: 5px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* 魚油狀態區 */
+        .fish-oil-status {
+            max-width: 800px;
+            margin: -40px auto 20px;
+            padding: 0 20px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .status-card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            text-align: center;
+            border: 4px solid #1A2B4A;
+        }
+
+        .fish-oil-bottle {
+            font-size: 5rem;
+            margin-bottom: 10px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .countdown {
+            font-family: 'Bangers', cursive;
+            font-size: 3rem;
+            color: #E85D4C;
+            margin: 15px 0;
+        }
+
+        .urgency-bar {
+            height: 20px;
+            background: #eee;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 15px 0;
+            border: 2px solid #1A2B4A;
+        }
+
+        .urgency-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4ade80, #fbbf24, #E85D4C);
+            border-radius: 8px;
+            transition: width 0.5s ease;
+        }
+
+        .urgency-label {
+            font-family: 'Caveat', cursive;
+            font-size: 1.2rem;
+            color: #666;
+        }
+
+        /* 角色區 */
+        .characters-section {
+            max-width: 900px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .section-title {
+            font-family: 'Bangers', cursive;
+            font-size: 2rem;
+            color: #1A2B4A;
+            text-align: center;
+            margin-bottom: 20px;
+            letter-spacing: 2px;
+        }
+
+        .characters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .character-card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            border: 3px solid #1A2B4A;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .character-card:hover {
+            transform: translateY(-5px) rotate(-2deg);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+        }
+
+        .character-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 8px;
+        }
+
+        .character-card.shark::before { background: #60a5fa; }
+        .character-card.dolphin::before { background: #4ade80; }
+        .character-card.fishoil::before { background: #fbbf24; }
+        .character-card.noodles::before { background: #f472b6; }
+
+        .char-emoji {
+            font-size: 4rem;
+            margin-bottom: 10px;
+        }
+
+        .char-name {
+            font-family: 'Bangers', cursive;
+            font-size: 1.5rem;
+            color: #1A2B4A;
+            margin-bottom: 5px;
+        }
+
+        .char-role {
+            font-family: 'Caveat', cursive;
+            font-size: 1.1rem;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .char-quote {
+            font-size: 0.9rem;
+            color: #888;
+            font-style: italic;
+            padding: 10px;
+            background: #f5f5f5;
+            border-radius: 10px;
+        }
+
+        .char-status {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            margin-top: 10px;
+        }
+
+        .status-procrastinating { background: #fee; color: #E85D4C; }
+        .status-ready { background: #efe; color: #4ade80; }
+        .status-waiting { background: #ffe; color: #fbbf24; }
+        .status-tempting { background: #fef; color: #f472b6; }
+
+        /* 荒謬藉口生成器 */
+        .excuse-generator {
+            max-width: 700px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .excuse-card {
+            background: #1A2B4A;
+            border-radius: 20px;
+            padding: 30px;
+            color: white;
+            text-align: center;
+        }
+
+        .excuse-card h3 {
+            font-family: 'Bangers', cursive;
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            letter-spacing: 2px;
+        }
+
+        .excuse-display {
+            font-family: 'Caveat', cursive;
+            font-size: 1.8rem;
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+
+        .generate-btn {
+            font-family: 'Bangers', cursive;
+            font-size: 1.3rem;
+            padding: 15px 40px;
+            background: linear-gradient(135deg, #E85D4C, #D4A84B);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            letter-spacing: 2px;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 5px 20px rgba(232, 93, 76, 0.4);
+        }
+
+        .generate-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 30px rgba(232, 93, 76, 0.5);
+        }
+
+        .generate-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* 拯救行動區 */
+        .rescue-mission {
+            max-width: 800px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .mission-card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            border: 4px solid #1A2B4A;
+        }
+
+        .mission-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .mission-icon {
+            font-size: 3rem;
+        }
+
+        .mission-info h3 {
+            font-family: 'Bangers', cursive;
+            font-size: 1.5rem;
+            color: #1A2B4A;
+        }
+
+        .mission-info p {
+            color: #666;
+            font-family: 'Caveat', cursive;
+            font-size: 1.1rem;
+        }
+
+        .rescue-progress {
+            margin: 20px 0;
+        }
+
+        .progress-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            margin: 10px 0;
+            background: #f5f5f5;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: background 0.3s;
+            border: 2px solid transparent;
+        }
+
+        .progress-item:hover {
+            background: #eee;
+        }
+
+        .progress-item.completed {
+            background: #e8f5e9;
+            border-color: #4ade80;
+        }
+
+        .progress-checkbox {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 3px solid #1A2B4A;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            background: white;
+            transition: all 0.3s;
+        }
+
+        .progress-item.completed .progress-checkbox {
+            background: #4ade80;
+            color: white;
+        }
+
+        .progress-text {
+            flex: 1;
+        }
+
+        .progress-text h4 {
+            font-family: 'Bangers', cursive;
+            color: #1A2B4A;
+            font-size: 1.2rem;
+        }
+
+        .progress-text p {
+            color: #888;
+            font-size: 0.9rem;
+        }
+
+        /* 統計面板 */
+        .stats-panel {
+            max-width: 800px;
+            margin: 30px auto;
+            padding: 0 20px 50px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+        }
+
+        .stat-box {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            border: 3px solid #1A2B4A;
+        }
+
+        .stat-number {
+            font-family: 'Bangers', cursive;
+            font-size: 2.5rem;
+            color: #E85D4C;
+        }
+
+        .stat-label {
+            font-family: 'Caveat', cursive;
+            color: #666;
+            font-size: 1.1rem;
+            margin-top: 5px;
+        }
+
+        /* 底部標語 */
+        .footer-quote {
+            text-align: center;
+            padding: 30px;
+            font-family: 'Caveat', cursive;
+            font-size: 1.3rem;
+            color: #888;
+        }
+
+        .footer-quote::before {
+            content: '"';
+            font-size: 3rem;
+            color: #E85D4C;
+        }
+
+        /* 對話框動畫 */
+        .dialogue-bubble {
+            position: fixed;
+            background: white;
+            padding: 20px 30px;
+            border-radius: 20px;
+            border: 3px solid #1A2B4A;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            font-family: 'Caveat', cursive;
+            font-size: 1.3rem;
+            z-index: 100;
+            animation: popIn 0.5s ease;
+            max-width: 300px;
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0); opacity: 0; }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        /* 彈跳動畫 */
+        .bounce {
+            animation: bounce 0.5s ease;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        /* 進度條動畫 */
+        .fill-animate {
+            animation: fillUp 1s ease forwards;
+        }
+
+        @keyframes fillUp {
+            0% { width: 0; }
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 600px) {
+            .banner h1 { font-size: 1.8rem; }
+            .countdown { font-size: 2rem; }
+            .characters-grid { grid-template-columns: 1fr; }
+            .char-emoji { font-size: 3rem; }
+            .excuse-display { font-size: 1.4rem; }
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+            .stat-number { font-size: 2rem; }
+        }
+
+        /* Confetti */
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            pointer-events: none;
+            animation: confettiFall 3s ease-out forwards;
+        }
+
+        @keyframes confettiFall {
+            0% { transform: translateY(-100vh) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+    <!-- 頂部 Banner -->
+    <div class="banner">
+        <h1>🐟 魚油期限拯救中心 💊</h1>
+        <p>魚油快要過期了！拖延鯊還在沙發上融化嗎？</p>
+    </div>
+
+    <!-- 魚油狀態 -->
+    <div class="fish-oil-status">
+        <div class="status-card">
+            <div class="fish-oil-bottle">💊</div>
+            <div class="countdown" id="countdown">剩余 7 天</div>
+            <div class="urgency-bar">
+                <div class="urgency-fill" id="urgencyFill" style="width: 85%;"></div>
+            </div>
+            <div class="urgency-label">緊急程度：嚴重 ⚠️ 需要立即行動！</div>
+        </div>
+    </div>
+
+    <!-- 角色介紹 -->
+    <div class="characters-section">
+        <h2 class="section-title">🎭 魚油劇場角色</h2>
+        <div class="characters-grid">
+            <div class="character-card shark" onclick="showDialogue('shark')">
+                <div class="char-emoji">🦈</div>
+                <div class="char-name">拖延鯊 Procrastine</div>
+                <div class="char-role">魚油劇場首席拖延專家</div>
+                <div class="char-quote">「明天再說吧...反正還有時間」</div>
+                <span class="char-status status-procrastinating">🛋️ 沙發融化中</span>
+            </div>
+            <div class="character-card dolphin" onclick="showDialogue('dolphin')">
+                <div class="char-emoji">🐬</div>
+                <div class="char-name">海豚督導 Supervisor</div>
+                <div class="char-role">魚油劇場紀律委員</div>
+                <div class="char-quote">「我用聲納定位到了你的偷懶行為！」</div>
+                <span class="char-status status-ready">🔊 聲納就緒</span>
+            </div>
+            <div class="character-card fishoil" onclick="showDialogue('fishoil')">
+                <div class="char-emoji">💊</div>
+                <div class="char-name">魚油本人 Fish Oil</div>
+                <div class="char-role">魚油劇場靈魂人物</div>
+                <div class="char-quote">「我已經在瓶子裡組團失業47天了」</div>
+                <span class="char-status status-waiting">⏳ 等待服用</span>
+            </div>
+            <div class="character-card noodles" onclick="showDialogue('noodles')">
+                <div class="char-emoji">🍜</div>
+                <div class="char-name">泡麵怪 Noodles</div>
+                <div class="char-role">魚油劇場誘惑使者</div>
+                <div class="char-quote">「吃完這碗再說吧～剛好魚油也要配」</div>
+                <span class="char-status status-tempting">🍜 散發香氣</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 荒謬藉口生成器 -->
+    <div class="excuse-generator">
+        <div class="excuse-card">
+            <h3>🎭 拖延鯊經典藉口產生器</h3>
+            <div class="excuse-display" id="excuseDisplay">
+                點擊按鈕生成藉口...
+            </div>
+            <button class="generate-btn" onclick="generateExcuse()">
+                🎲 來個藉口
+            </button>
+        </div>
+    </div>
+
+    <!-- 拯救行動 -->
+    <div class="rescue-mission">
+        <div class="mission-card">
+            <div class="mission-header">
+                <div class="mission-icon">🚨</div>
+                <div class="mission-info">
+                    <h3>緊急拯救行動</h3>
+                    <p>拖延鯊！是時候停止沙發融化了！</p>
+                </div>
+            </div>
+            <div class="rescue-progress" id="rescueProgress">
+                <div class="progress-item" data-task="1" onclick="toggleTask(1)">
+                    <div class="progress-checkbox">☐</div>
+                    <div class="progress-text">
+                        <h4>Step 1: 從沙發上站起來</h4>
+                        <p>拖延鯊需要離開沙發的引力場</p>
+                    </div>
+                </div>
+                <div class="progress-item" data-task="2" onclick="toggleTask(2)">
+                    <div class="progress-checkbox">☐</div>
+                    <div class="progress-text">
+                        <h4>Step 2: 找到魚油瓶子</h4>
+                        <p>通常在冰箱深處（或其他鯊魚找不到的地方）</p>
+                    </div>
+                </div>
+                <div class="progress-item" data-task="3" onclick="toggleTask(3)">
+                    <div class="progress-checkbox">☐</div>
+                    <div class="progress-text">
+                        <h4>Step 3: 抵抗泡麵怪的誘惑</h4>
+                        <p>「配泡麵吃」不是正確的服用方式！</p>
+                    </div>
+                </div>
+                <div class="progress-item" data-task="4" onclick="toggleTask(4)">
+                    <div class="progress-checkbox">☐</div>
+                    <div class="progress-text">
+                        <h4>Step 4: 正式服用魚油</h4>
+                        <p>完成！拖延鯊成功完成任務 🎉</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 統計面板 -->
+    <div class="stats-panel">
+        <div class="stats-grid">
+            <div class="stat-box">
+                <div class="stat-number" id="excuseCount">0</div>
+                <div class="stat-label">藉口生成次數</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number" id="rescueCount">0</div>
+                <div class="stat-label">拯救行動完成</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number" id="dialogueCount">0</div>
+                <div class="stat-label">角色互動次數</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number">47</div>
+                <div class="stat-label">沙發融化分鐘數</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 底部標語 -->
+    <div class="footer-quote">
+        魚油在瓶子裡組團失業，游不動，吃太飽了<br>
+        — 魚油本人的失業宣言
+    </div>
+
+    <script>
+        // 數據
+        const excuses = [
+            "魚油離我太遠了，要走至少三步",
+            "我剛吃太飽，游不動，等消化完再說",
+            "等等，我在思考先吃魚油還是先減肥",
+            "魚油的有效期應該是建議，不是絕對",
+            "我是認真的，所以更要等到最佳時機",
+            "這瓶魚油可能已經產生了抗藥性",
+            "根據量子力學，服用等於不服用",
+            "魚油說它需要更多時間準備被我服用",
+            "我有更重要的任務：觀察沙發的融化進度",
+            "讓我再躺47分鐘，這是我的神聖權利",
+            "魚油在等我主動，這是一種默契",
+            "我想先確認魚油是不是真的想被我吃",
+            "這個姿勢太舒服了，不能中斷",
+            "泡麵怪說魚油配熱水才是正確打開方式",
+            "減肥計畫從明天開始，魚油也是"
+        ];
+
+        const dialogues = {
+            shark: [
+                "「別催我，我的靈感需要時間孵化...」",
+                "「沙發說它離不開我，我也是」",
+                "「你知道嗎？躺著思考效率更高」",
+                "（沙發上傳來微弱的呻吟）「再...再47分鐘...」"
+            ],
+            dolphin: [
+                "🔊 嗶——聲納探測中...檢測到大量沙發依賴症！",
+                "「拖延鯊！我用聲納定位到你了！」",
+                "「是時候結束你的沙發假期了！」",
+                "🐬 嗶嗶嗶——注意！魚油期限正在倒數！"
+            ],
+            fishoil: [
+                "（魚油在瓶子裡嘆氣）「我已經準備好了47天了...」",
+                "「有沒有人記得我還在這裡？」",
+                "「我團隊失業了，組團的那種」",
+                "💊 「我的有效期限不是建議，請重視」
+            ],
+            noodles: [
+                "🍜 「吃完這碗再說～剛好魚油也要配嘛」",
+                "「放心啦，我會讓魚油不會孤單的」",
+                "「配泡麵、珍奶、魚油，這是完美組合！」",
+                "（散發著無法抵抗的香氣）「來嘛～」"
+            ]
+        };
+
+        const rescueQuotes = {
+            1: "🦈 拖延鯊：「什麼？要站起來？這太違反自然定律了！」",
+            2: "🦈 拖延鯊：「找到了...但等等，讓我再確認一次位置」",
+            3: "🍜 「等等！魚油配泡麵其實很不錯的啦～」🐬「不行！」",
+            4: "🎉 拯救成功！拖延鯊終於服用魚油了！"
+        };
+
+        // 統計
+        let stats = JSON.parse(localStorage.getItem('fishOilStats')) || {
+            excuseCount: 0,
+            rescueCount: 0,
+            dialogueCount: 0,
+            completedTasks: []
+        };
+
+        // 更新統計顯示
+        function updateStats() {
+            document.getElementById('excuseCount').textContent = stats.excuseCount;
+            document.getElementById('rescueCount').textContent = stats.rescueCount;
+            document.getElementById('dialogueCount').textContent = stats.dialogueCount;
+            
+            // 恢復已完成任務的狀態
+            stats.completedTasks.forEach(taskId => {
+                const item = document.querySelector(`[data-task="${taskId}"]`);
+                if (item) item.classList.add('completed');
+            });
+        }
+
+        // 生成藉口
+        function generateExcuse() {
+            const excuse = excuses[Math.floor(Math.random() * excuses.length)];
+            const display = document.getElementById('excuseDisplay');
+            
+            // 打字機效果
+            display.innerHTML = '';
+            let i = 0;
+            const typeInterval = setInterval(() => {
+                if (i < excuse.length) {
+                    display.innerHTML += excuse[i];
+                    i++;
+                } else {
+                    clearInterval(typeInterval);
+                }
+            }, 50);
+
+            stats.excuseCount++;
+            saveStats();
+            
+            // 統計數字動畫
+            document.getElementById('excuseCount').classList.add('bounce');
+            setTimeout(() => document.getElementById('excuseCount').classList.remove('bounce'), 500);
+        }
+
+        // 顯示角色對話
+        function showDialogue(character) {
+            const quotes = dialogues[character];
+            const quote = quotes[Math.floor(Math.random() * quotes.length)];
+            
+            // 移除舊對話框
+            document.querySelectorAll('.dialogue-bubble').forEach(b => b.remove());
+            
+            // 創建新對話框
+            const bubble = document.createElement('div');
+            bubble.className = 'dialogue-bubble';
+            bubble.innerHTML = quote;
+            bubble.style.left = Math.random() * 60 + 20 + '%';
+            bubble.style.top = Math.random() * 40 + 30 + '%';
+            document.body.appendChild(bubble);
+
+            stats.dialogueCount++;
+            saveStats();
+            
+            // 自動消失
+            setTimeout(() => {
+                bubble.style.opacity = '0';
+                bubble.style.transform = 'scale(0)';
+                setTimeout(() => bubble.remove(), 300);
+            }, 3000);
+        }
+
+        // 切換任務狀態
+        function toggleTask(taskId) {
+            const item = document.querySelector(`[data-task="${taskId}"]`);
+            
+            if (item.classList.contains('completed')) {
+                item.classList.remove('completed');
+                item.querySelector('.progress-checkbox').textContent = '☐';
+                stats.completedTasks = stats.completedTasks.filter(id => id !== taskId);
+            } else {
+                item.classList.add('completed');
+                item.querySelector('.progress-checkbox').textContent = '☑';
+                stats.completedTasks.push(taskId);
+                
+                // 顯示救援引用
+                if (rescueQuotes[taskId]) {
+                    const bubble = document.createElement('div');
+                    bubble.className = 'dialogue-bubble';
+                    bubble.innerHTML = rescueQuotes[taskId];
+                    bubble.style.left = '50%';
+                    bubble.style.top = '20%';
+                    bubble.style.transform = 'translateX(-50%)';
+                    document.body.appendChild(bubble);
+                    
+                    setTimeout(() => {
+                        bubble.style.opacity = '0';
+                        bubble.style.transform = 'translateX(-50%) scale(0)';
+                        setTimeout(() => bubble.remove(), 300);
+                    }, 2500);
+                }
+                
+                // 檢查是否全部完成
+                if (stats.completedTasks.length === 4) {
+                    triggerConfetti();
+                    stats.rescueCount++;
+                    saveStats();
+                }
+            }
+            
+            saveStats();
+            
+            // 統計動畫
+            document.getElementById('rescueCount').classList.add('bounce');
+            setTimeout(() => document.getElementById('rescueCount').classList.remove('bounce'), 500);
+        }
+
+        // 彩屑效果
+        function triggerConfetti() {
+            const colors = ['#E85D4C', '#D4A84B', '#4ade80', '#60a5fa', '#f472b6'];
+            for (let i = 0; i < 50; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = Math.random() * 100 + 'vw';
+                confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+                confetti.style.animationDelay = Math.random() * 2 + 's';
+                document.body.appendChild(confetti);
+                
+                setTimeout(() => confetti.remove(), 5000);
+            }
+        }
+
+        // 保存統計
+        function saveStats() {
+            localStorage.setItem('fishOilStats', JSON.stringify(stats));
+        }
+
+        // 倒數計時
+        function updateCountdown() {
+            // 模擬剩餘天數（根據實際魚油狀況調整）
+            const days = Math.max(0, Math.ceil(Math.random() * 10));
+            document.getElementById('countdown').textContent = `剩餘 ${days} 天`;
+            document.getElementById('urgencyFill').style.width = (100 - days * 10) + '%';
+        }
+
+        // 初始化
+        updateStats();
+        updateCountdown();
+        
+        // 每日重置倒數（真實場景中應該根據魚油實際到期日計算）
+        setInterval(updateCountdown, 60000);
+    </script>
+</body>
+</html>

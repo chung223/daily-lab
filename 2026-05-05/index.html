@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>靈感便利貼 - Daily Lab</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Noto+Sans+TC:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --yellow: #fff59d;
+      --pink: #f8bbd9;
+      --green: #c8e6c9;
+      --blue: #bbdefb;
+      --shadow: rgba(0,0,0,0.25);
+      --tape: rgba(255,243,224,0.85);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      font-family: 'Noto Sans TC', sans-serif;
+      background-color: #1a1a1a;
+      background-image: 
+        radial-gradient(circle, #2a2a2a 1px, transparent 1px),
+        radial-gradient(circle, #333 1px, transparent 1px);
+      background-size: 20px 20px, 12px 12px;
+      background-position: 0 0, 10px 10px;
+      overflow-x: hidden;
+    }
+
+    header {
+      text-align: center;
+      padding: 30px 20px 20px;
+      position: relative;
+    }
+
+    h1 {
+      font-family: 'Caveat', cursive;
+      font-size: 3rem;
+      color: #f5f5f5;
+      text-shadow: 3px 3px 0 #000;
+      letter-spacing: 2px;
+    }
+
+    .clock {
+      font-family: 'Caveat', cursive;
+      font-size: 1.8rem;
+      color: #888;
+      margin-top: 8px;
+    }
+
+    .stats {
+      color: #aaa;
+      font-size: 0.95rem;
+      margin-top: 10px;
+    }
+
+    .cork-board {
+      min-height: 55vh;
+      padding: 30px;
+      display: flex;
+      flex-wrap: wrap;
+      align-content: flex-start;
+      gap: 15px;
+      position: relative;
+    }
+
+    .note {
+      width: 160px;
+      min-height: 130px;
+      padding: 18px 14px;
+      font-family: 'Caveat', cursive;
+      font-size: 1.25rem;
+      line-height: 1.5;
+      color: #222;
+      position: relative;
+      transform-origin: center;
+      box-shadow: 4px 5px 12px var(--shadow);
+      word-break: break-word;
+      animation: dropIn 0.6s ease-out;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .note:hover {
+      transform: scale(1.08) rotate(0deg) !important;
+      box-shadow: 6px 8px 20px rgba(0,0,0,0.35);
+      z-index: 10;
+    }
+
+    .note.yellow { background: var(--yellow); }
+    .note.pink { background: var(--pink); }
+    .note.green { background: var(--green); }
+    .note.blue { background: var(--blue); }
+
+    .note::before {
+      content: '';
+      position: absolute;
+      top: -8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 50px;
+      height: 20px;
+      background: var(--tape);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+    }
+
+    .note::after {
+      content: '×';
+      position: absolute;
+      bottom: 8px;
+      right: 10px;
+      font-size: 1.4rem;
+      font-family: Arial, sans-serif;
+      color: rgba(0,0,0,0.3);
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    .note:hover::after {
+      opacity: 1;
+    }
+
+    @keyframes dropIn {
+      0% {
+        transform: translateY(-100px) rotate(-20deg) scale(0.5);
+        opacity: 0;
+      }
+      60% {
+        transform: translateY(15px) rotate(3deg) scale(1.05);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(0) rotate(var(--rotate, 0deg)) scale(1);
+        opacity: 1;
+      }
+    }
+
+    .input-area {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: #2d2d2d;
+      padding: 20px;
+      border-top: 4px solid #444;
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .input-area input {
+      flex: 1;
+      max-width: 420px;
+      padding: 14px 18px;
+      font-family: 'Caveat', cursive;
+      font-size: 1.3rem;
+      border: 3px solid #555;
+      border-radius: 8px;
+      background: #fafafa;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .input-area input:focus {
+      border-color: #888;
+    }
+
+    .input-area button {
+      padding: 14px 24px;
+      font-family: 'Noto Sans TC', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #4a4a4a, #333);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.15s;
+      box-shadow: 3px 3px 8px rgba(0,0,0,0.4);
+    }
+
+    .input-area button:hover {
+      transform: translateY(-2px);
+      box-shadow: 5px 6px 12px rgba(0,0,0,0.5);
+    }
+
+    .input-area button:active {
+      transform: translateY(1px);
+    }
+
+    .quotes {
+      text-align: center;
+      padding: 25px 20px 100px;
+      color: #777;
+      font-family: 'Caveat', cursive;
+      font-size: 1.25rem;
+      font-style: italic;
+    }
+
+    .quotes blockquote {
+      max-width: 500px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    /* Confirm modal */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.7);
+      justify-content: center;
+      align-items: center;
+      z-index: 100;
+    }
+    .modal.show { display: flex; }
+    .modal-box {
+      background: #2d2d2d;
+      padding: 28px 32px;
+      border-radius: 12px;
+      text-align: center;
+      border: 3px solid #555;
+    }
+    .modal-box p {
+      color: #eee;
+      font-size: 1.1rem;
+      margin-bottom: 20px;
+    }
+    .modal-box button {
+      padding: 10px 24px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.95rem;
+      margin: 0 6px;
+    }
+    .modal-box .confirm-btn {
+      background: #e74c3c;
+      color: #fff;
+    }
+    .modal-box .cancel-btn {
+      background: #555;
+      color: #ddd;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>💡 靈感便利貼</h1>
+    <div class="clock" id="clock">--:--:--</div>
+    <div class="stats" id="stats">目前共有 0 張便利貼</div>
+  </header>
+
+  <main class="cork-board" id="board"></main>
+
+  <div class="quotes" id="quotes">
+    <blockquote>「靈感是不請自來的訪客，你只能敞開門迎接它。」</blockquote>
+  </div>
+
+  <div class="input-area">
+    <input type="text" id="noteInput" placeholder="在此輸入你的靈感..." maxlength="120" autocomplete="off">
+    <button onclick="addNote()">📌 貼上去</button>
+  </div>
+
+  <!-- Delete confirm modal -->
+  <div class="modal" id="confirmModal">
+    <div class="modal-box">
+      <p>確定要刪除這張便利貼嗎？</p>
+      <button class="confirm-btn" onclick="confirmDelete()">刪除</button>
+      <button class="cancel-btn" onclick="closeModal()">取消</button>
+    </div>
+  </div>
+
+  <script>
+    const STORAGE_KEY = 'sticky-notes-20260505';
+    const colors = ['yellow', 'pink', 'green', 'blue'];
+    let pendingDelete = null;
+
+    const quotes = [
+      '「靈感是不請自來的訪客，你只能敞開門迎接它。」',
+      '「創意是將事物連結在一起。」—— 史帝夫·賈伯斯',
+      '「每一個新想法都是一個老概念的重新組合。」',
+      '「當你停止創造，你便停止了成長。」',
+      '「靈感存在於生活的縫隙裡。」',
+      '「最大的藝術品來自於最瘋狂的念頭。」',
+      '「不要等待靈感，做了自然會有靈感。」',
+      '「想法是免費的，但執行很貴。」',
+      '「世界會為那些敢於想像的人讓路。」',
+      '「你的一個念頭，可能改變一切。」
+    ];
+
+    function randomRotate() {
+      return (Math.random() * 10 - 5).toFixed(1);
+    }
+
+    function randomColor() {
+      return colors[Math.floor(Math.random() * colors.length)];
+    }
+
+    function randomQuote() {
+      const el = document.getElementById('quotes');
+      const idx = Math.floor(Math.random() * quotes.length);
+      el.innerHTML = `<blockquote>${quotes[idx]}</blockquote>`;
+    }
+
+    // Clock
+    function updateClock() {
+      const now = new Date();
+      const h = String(now.getHours()).padStart(2,'0');
+      const m = String(now.getMinutes()).padStart(2,'0');
+      const s = String(now.getSeconds()).padStart(2,'0');
+      document.getElementById('clock').textContent = `🕐 ${h}:${m}:${s}`;
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    // Load notes from localStorage
+    function loadNotes() {
+      try {
+        const stored = localStorage.getItem(STORAGE_KEY);
+        return stored ? JSON.parse(stored) : [];
+      } catch {
+        return [];
+      }
+    }
+
+    function saveNotes(notes) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(notes));
+      updateStats(notes.length);
+    }
+
+    function updateStats(count) {
+      document.getElementById('stats').textContent = `目前共有 ${count} 張便利貼`;
+    }
+
+    function renderNote(note, animate = false) {
+      const div = document.createElement('div');
+      div.className = `note ${note.color}`;
+      div.textContent = note.text;
+      const rot = note.rotate || randomRotate();
+      div.style.setProperty('--rotate', `${rot}deg`);
+      div.style.transform = `rotate(${rot}deg)`;
+      if (animate) {
+        div.style.animation = 'none';
+        setTimeout(() => {
+          div.style.animation = `dropIn 0.6s ease-out`;
+          div.style.setProperty('--rotate', `${rot}deg`);
+        }, 10);
+      }
+      div.addEventListener('click', () => {
+        pendingDelete = { el: div, id: note.id };
+        document.getElementById('confirmModal').classList.add('show');
+      });
+      document.getElementById('board').appendChild(div);
+    }
+
+    function renderAllNotes() {
+      const board = document.getElementById('board');
+      board.innerHTML = '';
+      const notes = loadNotes();
+      notes.forEach(note => renderNote(note));
+      updateStats(notes.length);
+    }
+
+    function addNote() {
+      const input = document.getElementById('noteInput');
+      const text = input.value.trim();
+      if (!text) return;
+
+      const note = {
+        id: Date.now(),
+        text,
+        color: randomColor(),
+        rotate: randomRotate()
+      };
+
+      const notes = loadNotes();
+      notes.push(note);
+      saveNotes(notes);
+      renderNote(note, true);
+      input.value = '';
+      input.focus();
+    }
+
+    function confirmDelete() {
+      if (!pendingDelete) return;
+      const { el, id } = pendingDelete;
+      let notes = loadNotes();
+      notes = notes.filter(n => n.id !== id);
+      saveNotes(notes);
+      el.remove();
+      closeModal();
+    }
+
+    function closeModal() {
+      document.getElementById('confirmModal').classList.remove('show');
+      pendingDelete = null;
+    }
+
+    // Enter key to submit
+    document.getElementById('noteInput').addEventListener('keypress', e => {
+      if (e.key === 'Enter') addNote();
+    });
+
+    // Close modal on backdrop click
+    document.getElementById('confirmModal').addEventListener('click', e => {
+      if (e.target === document.getElementById('confirmModal')) closeModal();
+    });
+
+    // Init
+    renderAllNotes();
+    randomQuote();
+
+    // Auto-rotate quote every 30s
+    setInterval(randomQuote, 30000);
+  </script>
+</body>
+</html>

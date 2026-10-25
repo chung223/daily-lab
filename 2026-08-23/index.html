@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Heartbeat Cosmos · 心跳宇宙</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600&family=Noto+Serif+TC:wght@400;700&family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Quicksand', 'Noto Serif TC', sans-serif;
+      min-height: 100vh;
+      background: linear-gradient(180deg, 
+        #87CEEB 0%,    /* 天藍 */
+        #B0E0E6 30%,   /* 淡藍 */
+        #E0F4FF 60%,   /* 極淡藍 */
+        #FFF8E7 100%   /* 暖白 */
+      );
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* 漂浮雲朵 */
+    .clouds {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .cloud {
+      position: absolute;
+      background: rgba(255, 255, 255, 0.8);
+      border-radius: 50%;
+      filter: blur(2px);
+      animation: float-cloud 60s linear infinite;
+    }
+
+    .cloud::before,
+    .cloud::after {
+      content: '';
+      position: absolute;
+      background: inherit;
+      border-radius: 50%;
+    }
+
+    .cloud-1 {
+      width: 100px;
+      height: 40px;
+      top: 10%;
+      left: -120px;
+      animation-duration: 45s;
+    }
+    .cloud-1::before { width: 50px; height: 50px; top: -25px; left: 15px; }
+    .cloud-1::after { width: 60px; height: 40px; top: -15px; left: 45px; }
+
+    .cloud-2 {
+      width: 120px;
+      height: 50px;
+      top: 20%;
+      left: -140px;
+      animation-duration: 55s;
+      animation-delay: -20s;
+    }
+    .cloud-2::before { width: 60px; height: 60px; top: -30px; left: 20px; }
+    .cloud-2::after { width: 70px; height: 50px; top: -20px; left: 55px; }
+
+    .cloud-3 {
+      width: 80px;
+      height: 35px;
+      top: 35%;
+      left: -100px;
+      animation-duration: 50s;
+      animation-delay: -35s;
+    }
+    .cloud-3::before { width: 45px; height: 45px; top: -22px; left: 10px; }
+    .cloud-3::after { width: 50px; height: 35px; top: -12px; left: 38px; }
+
+    @keyframes float-cloud {
+      from { transform: translateX(0); }
+      to { transform: translateX(calc(100vw + 200px)); }
+    }
+
+    /* 主容器 */
+    .container {
+      position: relative;
+      z-index: 1;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 30px 20px;
+    }
+
+    /* 標題區 */
+    .header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .title {
+      font-family: 'Caveat', 'Noto Serif TC', cursive;
+      font-size: 3.5rem;
+      font-weight: 600;
+      color: #2D3436;
+      text-shadow: 2px 2px 4px rgba(255,255,255,0.8);
+      margin-bottom: 10px;
+    }
+
+    .subtitle {
+      font-family: 'Quicksand', sans-serif;
+      font-size: 1.1rem;
+      color: #636E72;
+      letter-spacing: 2px;
+    }
+
+    /* 統計牆 */
+    .stats-wall {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 15px;
+      margin-bottom: 40px;
+    }
+
+    .stat-card {
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 20px;
+      padding: 20px;
+      text-align: center;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      cursor: pointer;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+    }
+
+    .stat-card.heartbeat {
+      background: linear-gradient(135deg, #E8F5E9 0%, #C8E6C9 100%);
+      border: 3px solid #4CAF50;
+    }
+
+    .stat-card.warning {
+      background: linear-gradient(135deg, #FFEBEE 0%, #FFCDD2 100%);
+      border: 3px solid #E53935;
+    }
+
+    .stat-icon {
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+    }
+
+    .stat-number {
+      font-family: 'Quicksand', sans-serif;
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: #2D3436;
+    }
+
+    .stat-label {
+      font-size: 0.9rem;
+      color: #636E72;
+      margin-top: 5px;
+    }
+
+    /* 守護星座區 */
+    .constellation-section {
+      margin-bottom: 40px;
+    }
+
+    .section-title {
+      font-family: 'Caveat', cursive;
+      font-size: 2rem;
+      color: #2D3436;
+      text-align: center;
+      margin-bottom: 25px;
+    }
+
+    .constellation-area {
+      position: relative;
+      background: rgba(255, 255, 255, 0.7);
+      border-radius: 30px;
+      padding: 40px 30px;
+      min-height: 300px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+    }
+
+    /* 星星/站點 */
+    .star {
+      position: absolute;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+
+    .star:hover {
+      transform: scale(1.3);
+    }
+
+    .star-core {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      animation: pulse 4s ease-in-out infinite;
+    }
+
+    .star.online .star-core {
+      background: linear-gradient(135deg, #4CAF50 0%, #81C784 100%);
+      border: 3px solid #2E7D32;
+    }
+
+    .star.offline .star-core {
+      background: linear-gradient(135deg, #E53935 0%, #EF5350 100%);
+      border: 3px solid #C62828;
+      animation: pulse-warning 1.5s ease-in-out infinite;
+    }
+
+    .star-label {
+      position: absolute;
+      bottom: -25px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-family: 'Quicksand', sans-serif;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: #2D3436;
+      white-space: nowrap;
+      background: rgba(255, 255, 255, 0.9);
+      padding: 3px 8px;
+      border-radius: 10px;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.05); opacity: 0.9; }
+    }
+
+    @keyframes pulse-warning {
+      0%, 100% { transform: scale(1); box-shadow: 0 4px 15px rgba(229, 57, 53, 0.4); }
+      50% { transform: scale(1.1); box-shadow: 0 4px 25px rgba(229, 57, 53, 0.7); }
+    }
+
+    /* Heartbeat 光點 */
+    .heartbeat-orbit {
+      position: absolute;
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
+      border: 2px dashed rgba(76, 175, 80, 0.3);
+      animation: rotate-orbit 20s linear infinite;
+    }
+
+    .heartbeat-orb {
+      position: absolute;
+      width: 12px;
+      height: 12px;
+      background: #4CAF50;
+      border-radius: 50%;
+      box-shadow: 0 0 15px #4CAF50;
+    }
+
+    .heartbeat-orb:nth-child(1) { top: -6px; left: 50%; transform: translateX(-50%); }
+    .heartbeat-orb:nth-child(2) { top: 50%; right: -6px; transform: translateY(-50%); }
+    .heartbeat-orb:nth-child(3) { bottom: -6px; left: 50%; transform: translateX(-50%); }
+    .heartbeat-orb:nth-child(4) { top: 50%; left: -6px; transform: translateY(-50%); }
+
+    @keyframes rotate-orbit {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    /* Heartbeat 波形區 */
+    .heartbeat-section {
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 30px;
+      padding: 30px;
+      margin-bottom: 40px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    }
+
+    .heartbeat-display {
+      display: flex;
+      align-items: center;
+      gap: 30px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .heart-icon {
+      font-size: 4rem;
+      animation: heartbeat 1s ease-in-out infinite;
+    }
+
+    @keyframes heartbeat {
+      0%, 100% { transform: scale(1); }
+      15% { transform: scale(1.15); }
+      30% { transform: scale(1); }
+      45% { transform: scale(1.1); }
+      60% { transform: scale(1); }
+    }
+
+    .heartbeat-info {
+      flex: 1;
+      min-width: 200px;
+    }
+
+    .heartbeat-title {
+      font-family: 'Caveat', cursive;
+      font-size: 1.8rem;
+      color: #2D3436;
+    }
+
+    .heartbeat-time {
+      font-family: 'Quicksand', sans-serif;
+      font-size: 1rem;
+      color: #636E72;
+      margin-top: 5px;
+    }
+
+    .heartbeat-count {
+      font-family: 'Quicksand', sans-serif;
+      font-size: 1.2rem;
+      color: #4CAF50;
+      font-weight: 700;
+      margin-top: 10px;
+    }
+
+    /* 波形視覺化 */
+    .waveform {
+      width: 100%;
+      height: 80px;
+      margin-top: 20px;
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(90deg, transparent, rgba(76, 175, 80, 0.1), transparent);
+      border-radius: 10px;
+    }
+
+    .waveform-canvas {
+      width: 100%;
+      height: 100%;
+    }
+
+    /* 緊急區 */
+    .urgent-section {
+      background: linear-gradient(135deg, #FFEBEE 0%, #FFCDD2 100%);
+      border-radius: 25px;
+      padding: 25px;
+      border: 3px solid #E53935;
+    }
+
+    .urgent-header {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .urgent-icon {
+      font-size: 2.5rem;
+    }
+
+    .urgent-title {
+      font-family: 'Caveat', cursive;
+      font-size: 1.8rem;
+      color: #C62828;
+    }
+
+    .urgent-list {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .urgent-item {
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 15px;
+      padding: 15px 20px;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .urgent-item-icon {
+      font-size: 1.5rem;
+    }
+
+    .urgent-item-content h4 {
+      font-family: 'Quicksand', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      color: #2D3436;
+    }
+
+    .urgent-item-content p {
+      font-size: 0.85rem;
+      color: #636E72;
+      margin-top: 3px;
+    }
+
+    /* 底部裝飾 */
+    .footer {
+      text-align: center;
+      margin-top: 40px;
+      padding: 20px;
+    }
+
+    .footer-text {
+      font-family: 'Caveat', cursive;
+      font-size: 1.3rem;
+      color: #636E72;
+    }
+
+    /* Tooltip */
+    .tooltip {
+      position: fixed;
+      background: rgba(45, 52, 54, 0.95);
+      color: white;
+      padding: 12px 16px;
+      border-radius: 12px;
+      font-family: 'Quicksand', sans-serif;
+      font-size: 0.85rem;
+      pointer-events: none;
+      z-index: 1000;
+      max-width: 250px;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+
+    .tooltip.visible {
+      opacity: 1;
+    }
+
+    .tooltip-title {
+      font-weight: 700;
+      margin-bottom: 5px;
+    }
+
+    .tooltip-status {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 8px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      margin-left: 8px;
+    }
+
+    .tooltip-status.online {
+      background: #4CAF50;
+    }
+
+    .tooltip-status.offline {
+      background: #E53935;
+    }
+
+    /* 點擊慶祝動畫 */
+    .confetti {
+      position: fixed;
+      pointer-events: none;
+      z-index: 100;
+    }
+
+    .confetti-piece {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      animation: confetti-fall 1s ease-out forwards;
+    }
+
+    @keyframes confetti-fall {
+      0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(200px) rotate(720deg);
+        opacity: 0;
+      }
+    }
+
+    /* 響應式 */
+    @media (max-width: 768px) {
+      .title { font-size: 2.5rem; }
+      .stats-wall { grid-template-columns: repeat(2, 1fr); }
+      .stat-number { font-size: 2rem; }
+      .constellation-area { min-height: 250px; padding: 30px 20px; }
+      .star-core { width: 50px; height: 50px; font-size: 1.2rem; }
+      .heartbeat-display { flex-direction: column; text-align: center; }
+    }
+
+    @media (max-width: 480px) {
+      .title { font-size: 2rem; }
+      .stats-wall { grid-template-columns: 1fr 1fr; gap: 10px; }
+      .stat-card { padding: 15px; }
+      .stat-icon { font-size: 2rem; }
+      .stat-number { font-size: 1.8rem; }
+    }
+  </style>
+</head>
+<body>
+  <!-- 漂浮雲朵 -->
+  <div class="clouds">
+    <div class="cloud cloud-1"></div>
+    <div class="cloud cloud-2"></div>
+    <div class="cloud cloud-3"></div>
+  </div>
+
+  <div class="container">
+    <!-- 標題 -->
+    <header class="header">
+      <h1 class="title">✨ Heartbeat Cosmos ✨</h1>
+      <p class="subtitle">系統守護星圖 · 2026-08-22 深夜健檢</p>
+    </header>
+
+    <!-- 統計牆 -->
+    <div class="stats-wall">
+      <div class="stat-card">
+        <div class="stat-icon">🌐</div>
+        <div class="stat-number">13</div>
+        <div class="stat-label">總站點數</div>
+      </div>
+      <div class="stat-card heartbeat">
+        <div class="stat-icon">💓</div>
+        <div class="stat-number">14</div>
+        <div class="stat-label">Heartbeat 輪詢</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">✅</div>
+        <div class="stat-number">12</div>
+        <div class="stat-label">正常運行</div>
+      </div>
+      <div class="stat-card warning">
+        <div class="stat-icon">⚠️</div>
+        <div class="stat-number">1</div>
+        <div class="stat-label">需關注</div>
+      </div>
+    </div>
+
+    <!-- 守護星座區 -->
+    <section class="constellation-section">
+      <h2 class="section-title">🪐 系統守護星座</h2>
+      <div class="constellation-area" id="constellation">
+        <!-- Heartbeat 軌道 -->
+        <div class="heartbeat-orbit">
+          <div class="heartbeat-orb"></div>
+          <div class="heartbeat-orb"></div>
+          <div class="heartbeat-orb"></div>
+          <div class="heartbeat-orb"></div>
+        </div>
+
+        <!-- 站點星星會由 JS 動態生成 -->
+      </div>
+    </section>
+
+    <!-- Heartbeat 波形區 -->
+    <section class="heartbeat-section">
+      <div class="heartbeat-display">
+        <div class="heart-icon">💓</div>
+        <div class="heartbeat-info">
+          <h3 class="heartbeat-title">15:00 - 21:50 待命模式</h3>
+          <p class="heartbeat-time">每 30 分鐘穩定回應「Here.」</p>
+          <p class="heartbeat-count">共 14 次成功輪詢 🌟</p>
+        </div>
+      </div>
+      <div class="waveform">
+        <canvas class="waveform-canvas" id="waveform"></canvas>
+      </div>
+    </section>
+
+    <!-- 緊急區 -->
+    <section class="urgent-section">
+      <div class="urgent-header">
+        <div class="urgent-icon">🚨</div>
+        <h3 class="urgent-title">需關注項目</h3>
+      </div>
+      <div class="urgent-list">
+        <div class="urgent-item">
+          <div class="urgent-item-icon">💾</div>
+          <div class="urgent-item-content">
+            <h4>磁碟空間危急 · 98%</h4>
+            <p>僅剩 11.1GB · 需立即清理</p>
+          </div>
+        </div>
+        <div class="urgent-item">
+          <div class="urgent-item-icon">🌐</div>
+          <div class="urgent-item-content">
+            <h4>memos.chung.men · HTTP 502</h4>
+            <p>服務中斷 · 需 SSH 進 jp1 檢查 memOS</p>
+          </div>
+        </div>
+        <div class="urgent-item">
+          <div class="urgent-item-icon">🔒</div>
+          <div class="urgent-item-content">
+            <h4>JP1/JP2 BLOCKED</h4>
+            <p>已達 25 天 · 需人工處理</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 底部 -->
+    <footer class="footer">
+      <p class="footer-text">每一個綠燈都是一份安心 💚</p>
+    </footer>
+  </div>
+
+  <!-- Tooltip -->
+  <div class="tooltip" id="tooltip">
+    <div class="tooltip-title"></div>
+    <div class="tooltip-desc"></div>
+  </div>
+
+  <script>
+    // 站點數據
+    const stations = [
+      { name: 'JP1', status: 'offline', emoji: '🇯🇵' },
+      { name: 'JP2', status: 'offline', emoji: '🇯🇵' },
+      { name: 'US', status: 'online', emoji: '🇺🇸' },
+      { name: 'US1', status: 'online', emoji: '🇺🇸' },
+      { name: 'USARM', status: 'online', emoji: '🇺🇸' },
+      { name: 'class.fourh.org.tw', status: 'online', emoji: '🇹🇼' },
+      { name: 'memos.chung.men', status: 'offline', emoji: '📝', urgent: true },
+      { name: 'index.4-h.me', status: 'online', emoji: '🌱' },
+      { name: 'IFYE 2026', status: 'online', emoji: '🌐' },
+      { name: 'Lab', status: 'online', emoji: '🔧' },
+      { name: 'OpenClaw', status: 'online', emoji: '🦾' },
+      { name: 'Dream Post', status: 'online', emoji: '🌙' },
+      { name: 'VPS Mirror', status: 'online', emoji: '🪞' },
+    ];
+
+    // 渲染星星
+    const constellation = document.getElementById('constellation');
+    const positions = generatePositions(stations.length);
+
+    stations.forEach((station, i) => {
+      const star = document.createElement('div');
+      star.className = `star ${station.status}`;
+      star.style.left = `${positions[i].x}%`;
+      star.style.top = `${positions[i].y}%`;
+      star.innerHTML = `
+        <div class="star-core">${station.emoji}</div>
+        <span class="star-label">${station.name}</span>
+      `;
+
+      star.addEventListener('mouseenter', (e) => showTooltip(e, station));
+      star.addEventListener('mouseleave', hideTooltip);
+      star.addEventListener('click', () => createConfetti(star));
+
+      constellation.appendChild(star);
+    });
+
+    // 生成不重疊位置
+    function generatePositions(count) {
+      const positions = [];
+      const gridCols = 5;
+      const gridRows = Math.ceil(count / gridCols);
+
+      for (let i = 0; i < count; i++) {
+        const col = i % gridCols;
+        const row = Math.floor(i / gridCols);
+        const x = 10 + col * 18 + (Math.random() - 0.5) * 8;
+        const y = 15 + row * 22 + (Math.random() - 0.5) * 8;
+        positions.push({ x, y });
+      }
+
+      return positions;
+    }
+
+    // Tooltip
+    const tooltip = document.getElementById('tooltip');
+
+    function showTooltip(e, station) {
+      const title = tooltip.querySelector('.tooltip-title');
+      const desc = tooltip.querySelector('.tooltip-desc');
+
+      title.innerHTML = `${station.name} <span class="tooltip-status ${station.status}">${station.status === 'online' ? '✓ 正常' : '✗ ' + (station.urgent ? '緊急' : '離線')}</span>`;
+      desc.textContent = station.status === 'online'
+        ? '系統運行正常，繼續守護 🌟'
+        : (station.urgent ? '需要立即處理！' : '連線異常中...');
+
+      tooltip.style.left = `${e.clientX + 15}px`;
+      tooltip.style.top = `${e.clientY + 15}px`;
+      tooltip.classList.add('visible');
+    }
+
+    function hideTooltip() {
+      tooltip.classList.remove('visible');
+    }
+
+    // 彩屑慶祝
+    function createConfetti(element) {
+      const rect = element.getBoundingClientRect();
+      const centerX = rect.left + rect.width / 2;
+      const centerY = rect.top + rect.height / 2;
+
+      const colors = ['#4CAF50', '#81C784', '#FFE66D', '#FF6B6B', '#4ECDC4', '#9B8FD9'];
+
+      for (let i = 0; i < 15; i++) {
+        const confetti = document.createElement('div');
+        confetti.className = 'confetti-piece';
+        confetti.style.left = `${centerX}px`;
+        confetti.style.top = `${centerY}px`;
+        confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+        confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+        confetti.style.transform = `translate(${(Math.random() - 0.5) * 150}px, ${-Math.random() * 100}px)`;
+
+        document.body.appendChild(confetti);
+
+        setTimeout(() => confetti.remove(), 1000);
+      }
+    }
+
+    // 波形繪製
+    const canvas = document.getElementById('waveform');
+    const ctx = canvas.getContext('2d');
+
+    function drawWaveform() {
+      const rect = canvas.getBoundingClientRect();
+      canvas.width = rect.width * 2;
+      canvas.height = rect.height * 2;
+      ctx.scale(2, 2);
+
+      const width = rect.width;
+      const height = rect.height;
+      const centerY = height / 2;
+
+      ctx.beginPath();
+      ctx.moveTo(0, centerY);
+
+      const points = 14; // 14 次輪詢
+      const segmentWidth = width / points;
+
+      for (let i = 0; i <= width; i += 2) {
+        const t = i / width;
+        const freq = 8;
+        const amp = 20 + Math.sin(t * Math.PI * 4) * 10;
+
+        // 心跳波形 pattern
+        let y = centerY;
+        const cyclePos = (t * points) % 1;
+
+        if (cyclePos < 0.1) {
+          y = centerY - amp * (1 - cyclePos * 10);
+        } else if (cyclePos < 0.15) {
+          y = centerY + amp * 0.3 * ((cyclePos - 0.1) * 20);
+        } else if (cyclePos < 0.25) {
+          y = centerY + amp * 0.3 - amp * 0.8 * ((cyclePos - 0.15) * 10);
+        } else if (cyclePos < 0.35) {
+          y = centerY - amp * 0.5 + amp * 0.5 * ((cyclePos - 0.25) * 10);
+        } else {
+          y = centerY + Math.sin(t * Math.PI * 2 * freq) * 5;
+        }
+
+        ctx.lineTo(i, y);
+      }
+
+      ctx.strokeStyle = '#4CAF50';
+      ctx.lineWidth = 3;
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+      ctx.stroke();
+
+      // 填充
+      ctx.lineTo(width, height);
+      ctx.lineTo(0, height);
+      ctx.closePath();
+
+      const gradient = ctx.createLinearGradient(0, 0, 0, height);
+      gradient.addColorStop(0, 'rgba(76, 175, 80, 0.3)');
+      gradient.addColorStop(1, 'rgba(76, 175, 80, 0)');
+      ctx.fillStyle = gradient;
+      ctx.fill();
+    }
+
+    // 動畫波形
+    let offset = 0;
+    function animateWave() {
+      offset += 0.5;
+      drawWaveform();
+      requestAnimationFrame(animateWave);
+    }
+
+    window.addEventListener('resize', () => {
+      drawWaveform();
+    });
+
+    drawWaveform();
+    animateWave();
+
+    // 漂浮鼠標跟蹤效果
+    document.addEventListener('mousemove', (e) => {
+      const orbs = document.querySelectorAll('.heartbeat-orb');
+      const time = Date.now() * 0.001;
+
+      orbs.forEach((orb, i) => {
+        const angle = (time + i * Math.PI / 2) % (Math.PI * 2);
+        const radius = 90;
+        const x = Math.cos(angle) * radius;
+        const y = Math.sin(angle) * radius;
+
+        orb.style.transform = `translate(${x}px, ${y}px)`;
+      });
+    });
+  </script>
+</body>
+</html>

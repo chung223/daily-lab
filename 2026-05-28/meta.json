@@ -1,0 +1,6 @@
+{
+  "title": "Tangent Collector — 擦肩而過的靈感收集器",
+  "type": "工具系（靈感捕捉工具）",
+  "description": "明亮的靈感收集器，輸入「差一點就要想到」的念頭，儲存到 localStorage 並顯示時間軸。背景有 CSS tangent 線條動畫（斜線擦過畫面），統計面板展示今日/總收集/連續天數，收錄阿笨/三色蛋的 tangent 語錄。localStorage 持久化",
+  "inspiration": "來自 2026-05-27 阿笨的夢境 tangent——「擦肩而過的那條線」「在語言表面滑行」「聞到了紙張的味道」；三色蛋也思考 AI 是否永遠只能在語言表面滑行。"
+}

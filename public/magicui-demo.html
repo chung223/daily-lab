@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MagicUI 效果展示</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #0a0a0a;
+      color: white;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Aurora Text */
+    .aurora-text {
+      background: linear-gradient(-45deg, #ff6b6b, #feca57, #48dbfb, #ff9ff3, #54a0ff);
+      background-size: 400% 400%;
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: aurora 8s ease infinite;
+    }
+    
+    @keyframes aurora {
+      0%, 100% { background-position: 0% 50%; }
+      25% { background-position: 100% 50%; }
+      50% { background-position: 100% 100%; }
+      75% { background-position: 0% 100%; }
+    }
+
+    /* Shiny Button */
+    .shiny-btn {
+      position: relative;
+      padding: 16px 32px;
+      font-size: 16px;
+      font-weight: 600;
+      color: white;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      overflow: hidden;
+      transition: transform 0.3s;
+    }
+    
+    .shiny-btn:hover {
+      transform: scale(1.05);
+    }
+    
+    .shiny-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+      animation: shimmer 2s infinite;
+    }
+    
+    @keyframes shimmer {
+      100% { left: 100%; }
+    }
+
+    /* Magic Card */
+    .magic-card {
+      position: relative;
+      padding: 32px;
+      background: #1a1a2e;
+      border-radius: 16px;
+      overflow: hidden;
+    }
+    
+    .magic-card::before {
+      content: '';
+      position: absolute;
+      top: var(--y, 50%);
+      left: var(--x, 50%);
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, rgba(120, 119, 255, 0.3) 0%, transparent 70%);
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    
+    .magic-card:hover::before {
+      opacity: 1;
+    }
+    
+    .magic-card::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 16px;
+      padding: 1px;
+      background: linear-gradient(135deg, rgba(255,255,255,0.1), transparent, rgba(255,255,255,0.1));
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+    }
+
+    /* Border Beam */
+    .border-beam {
+      position: relative;
+      padding: 32px;
+      background: #1a1a2e;
+      border-radius: 16px;
+    }
+    
+    .border-beam::before {
+      content: '';
+      position: absolute;
+      inset: -2px;
+      border-radius: 18px;
+      background: linear-gradient(90deg, #ff6b6b, #feca57, #48dbfb, #ff9ff3, #ff6b6b);
+      background-size: 400% 100%;
+      animation: beam 3s linear infinite;
+      z-index: -1;
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      padding: 2px;
+    }
+    
+    @keyframes beam {
+      0% { background-position: 0% 50%; }
+      100% { background-position: 400% 50%; }
+    }
+
+    /* Bento Grid */
+    .bento-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+    
+    .bento-item {
+      padding: 24px;
+      background: #1a1a2e;
+      border-radius: 16px;
+      transition: transform 0.3s;
+    }
+    
+    .bento-item:hover {
+      transform: translateY(-4px);
+    }
+    
+    .bento-item.large {
+      grid-column: span 2;
+      grid-row: span 2;
+    }
+
+    /* Particles */
+    .particles {
+      position: relative;
+      height: 200px;
+      background: #1a1a2e;
+      border-radius: 16px;
+      overflow: hidden;
+    }
+    
+    .particle {
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      background: rgba(255,255,255,0.5);
+      border-radius: 50%;
+      animation: float 15s infinite;
+    }
+    
+    @keyframes float {
+      0%, 100% { 
+        transform: translateY(200px) rotate(0deg); 
+        opacity: 0;
+      }
+      10% { opacity: 1; }
+      90% { opacity: 1; }
+      100% { 
+        transform: translateY(-200px) rotate(720deg); 
+        opacity: 0;
+      }
+    }
+
+    /* Marquee */
+    .marquee-container {
+      overflow: hidden;
+      background: #1a1a2e;
+      padding: 20px 0;
+      border-radius: 12px;
+    }
+    
+    .marquee {
+      display: flex;
+      animation: marquee 20s linear infinite;
+    }
+    
+    .marquee-content {
+      display: flex;
+      flex-shrink: 0;
+    }
+    
+    .marquee-item {
+      padding: 0 32px;
+      font-size: 24px;
+      white-space: nowrap;
+    }
+    
+    @keyframes marquee {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    /* Number Ticker */
+    .ticker {
+      font-size: 48px;
+      font-weight: bold;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    /* Confetti */
+    .confetti-btn {
+      padding: 16px 32px;
+      font-size: 16px;
+      background: #667eea;
+      color: white;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+    }
+
+    /* Grid Pattern */
+    .grid-bg {
+      background-image: 
+        linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+      background-size: 50px 50px;
+    }
+
+    /* Section styling */
+    section {
+      padding: 80px 20px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    h2 {
+      font-size: 32px;
+      margin-bottom: 40px;
+      text-align: center;
+    }
+    
+    .demo-row {
+      display: flex;
+      gap: 24px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-bottom: 60px;
+    }
+    
+    .demo-item {
+      flex: 1;
+      min-width: 280px;
+      max-width: 400px;
+    }
+
+    .hero {
+      text-align: center;
+      padding: 120px 20px;
+    }
+    
+    .hero h1 {
+      font-size: 64px;
+      margin-bottom: 24px;
+    }
+    
+    .hero p {
+      font-size: 24px;
+      color: #888;
+      margin-bottom: 40px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Hero Section -->
+  <section class="hero">
+    <h1 class="aurora-text">✨ Magic UI Demo</h1>
+    <p>華麗動畫元件的效果展示</p>
+    <button class="shiny-btn">Shimmer Button</button>
+  </section>
+
+  <!-- Magic Card -->
+  <section>
+    <h2>🎴 Magic Card</h2>
+    <div class="demo-row">
+      <div class="demo-item">
+        <div class="magic-card" id="magicCard">
+          <h3 style="margin-bottom: 12px;"> Hover 我看看 🔦</h3>
+          <p style="color: #888;">移動滑鼠看看焦點效果</p>
+        </div>
+      </div>
+      <div class="demo-item">
+        <div class="border-beam">
+          <h3 style="margin-bottom: 12px;">Border Beam</h3>
+          <p style="color: #888;">邊框光束動畫</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Bento Grid -->
+  <section>
+    <h2>📦 Bento Grid</h2>
+    <div class="bento-grid">
+      <div class="bento-item large">
+        <h3>大卡片</h3>
+        <p style="color: #888; margin-top: 8px;">可放置主要內容</p>
+      </div>
+      <div class="bento-item">
+        <h3>卡片 1</h3>
+      </div>
+      <div class="bento-item">
+        <h3>卡片 2</h3>
+      </div>
+      <div class="bento-item">
+        <h3>卡片 3</h3>
+      </div>
+      <div class="bento-item">
+        <h3>卡片 4</h3>
+      </div>
+    </div>
+  </section>
+
+  <!-- Particles -->
+  <section>
+    <h2>✨ Particles</h2>
+    <div class="particles" id="particles">
+      <!-- JS 會動態生成粒子 -->
+    </div>
+  </section>
+
+  <!-- Marquee -->
+  <section>
+    <h2>🔄 Marquee</h2>
+    <div class="marquee-container">
+      <div class="marquee">
+        <div class="marquee-content">
+          <span class="marquee-item">🚀 Magic UI</span>
+          <span class="marquee-item">⚡ Lightning Fast</span>
+          <span class="marquee-item">🎨 Beautiful</span>
+          <span class="marquee-item">📱 Responsive</span>
+          <span class="marotee-item">✨ Animated</span>
+        </div>
+        <div class="marquee-content">
+          <span class="marquee-item">🚀 Magic UI</span>
+          <span class="marquee-item">⚡ Lightning Fast</span>
+          <span class="marquee-item">🎨 Beautiful</span>
+          <span class="marquee-item">📱 Responsive</span>
+          <span class="marotee-item">✨ Animated</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Number Ticker -->
+  <section>
+    <h2>🔢 Number Ticker</h2>
+    <div style="text-align: center;">
+      <div class="ticker" id="ticker">0</div>
+    </div>
+  </section>
+
+  <!-- Grid Pattern -->
+  <section>
+    <h2>🔲 Grid Pattern</h2>
+    <div class="grid-bg" style="padding: 60px; border-radius: 16px; text-align: center;">
+      <h3>網格背景圖案</h3>
+      <p style="color: #888; margin-top: 8px;">可自訂顏色、間距、大小</p>
+    </div>
+  </section>
+
+  <script>
+    // Magic Card - 滑鼠追蹤
+    const magicCard = document.getElementById('magicCard');
+    magicCard.addEventListener('mousemove', (e) => {
+      const rect = magicCard.getBoundingClientRect();
+      const x = ((e.clientX - rect.left) / rect.width) * 100;
+      const y = ((e.clientY - rect.top) / rect.height) * 100;
+      magicCard.style.setProperty('--x', x + '%');
+      magicCard.style.setProperty('--y', y + '%');
+    });
+
+    // Particles - 動態生成
+    const particlesContainer = document.getElementById('particles');
+    for (let i = 0; i < 30; i++) {
+      const particle = document.createElement('div');
+      particle.className = 'particle';
+      particle.style.left = Math.random() * 100 + '%';
+      particle.style.animationDelay = Math.random() * 15 + 's';
+      particle.style.animationDuration = (10 + Math.random() * 10) + 's';
+      particlesContainer.appendChild(particle);
+    }
+
+    // Number Ticker - 數字滾動
+    let tickCount = 0;
+    const tickerEl = document.getElementById('ticker');
+    const targetNum = 12345;
+    
+    function updateTicker() {
+      if (tickCount < targetNum) {
+        tickCount += Math.ceil((targetNum - tickCount) / 50);
+        tickerEl.textContent = tickCount.toLocaleString();
+        requestAnimationFrame(updateTicker);
+      } else {
+        tickerEl.textContent = targetNum.toLocaleString();
+      }
+    }
+    
+    // 頁面載入後啟動
+    setTimeout(updateTicker, 500);
+  </script>
+</body>
+</html>

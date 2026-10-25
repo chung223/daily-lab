@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🐬 海洋健康合規督察總署 — Fish Oil Compliance Bureau</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;700;900&family=IBM+Plex+Mono:wght@400;600&family=Noto+Sans+TC:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #F5F0E8;
+    --cream-dark: #EDE5D0;
+    --navy: #1B2A4A;
+    --navy-light: #2C4A7C;
+    --red: #C41E3A;
+    --red-light: #E63950;
+    --gold: #C8A96E;
+    --gold-light: #E8C88A;
+    --green: #2D6A4F;
+    --green-light: #52B788;
+    --ink: #1A1814;
+    --paper: #FAF7F0;
+    --paper-shadow: #E8E0D0;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Noto Sans TC', sans-serif;
+    background: var(--cream);
+    background-image:
+      repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 31px,
+        rgba(200,169,110,0.06) 31px,
+        rgba(200,169,110,0.06) 32px
+      );
+    min-height: 100vh;
+    color: var(--ink);
+  }
+
+  /* HEADER / LETTERHEAD */
+  .letterhead {
+    background: var(--navy);
+    color: white;
+    padding: 24px 20px 20px;
+    text-align: center;
+    border-bottom: 4px solid var(--gold);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .letterhead::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    background: var(--gold);
+  }
+
+  .letterhead-seal {
+    position: absolute;
+    right: 16px; top: 16px;
+    width: 56px; height: 56px;
+    border: 3px solid var(--gold);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 26px;
+    animation: sealPulse 3s ease-in-out infinite;
+    background: rgba(0,0,0,0.2);
+  }
+
+  @keyframes sealPulse {
+    0%, 100% { transform: scale(1); opacity: 0.8; }
+    50% { transform: scale(1.05); opacity: 1; }
+  }
+
+  .letterhead-subtitle {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 3px;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  .letterhead-title {
+    font-family: 'Noto Serif TC', serif;
+    font-weight: 900;
+    font-size: clamp(20px, 5vw, 32px);
+    letter-spacing: 4px;
+    line-height: 1.2;
+  }
+
+  .letterhead-title .emoji { font-size: 0.8em; }
+
+  .letterhead-division {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: rgba(255,255,255,0.7);
+    margin-top: 6px;
+    letter-spacing: 1px;
+  }
+
+  /* MEMO BANNER */
+  .memo-banner {
+    background: var(--red);
+    color: white;
+    text-align: center;
+    padding: 8px 12px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .memo-banner .urgent {
+    background: white;
+    color: var(--red);
+    padding: 1px 6px;
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 1px;
+  }
+
+  /* MAIN CONTAINER */
+  .container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 16px;
+  }
+
+  /* MEMO CARD */
+  .memo {
+    background: var(--paper);
+    border: 1px solid var(--cream-dark);
+    margin: 16px 0;
+    position: relative;
+    box-shadow: 3px 3px 0 var(--paper-shadow);
+  }
+
+  .memo-header {
+    background: var(--navy);
+    color: white;
+    padding: 10px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .memo-header-title {
+    font-family: 'Noto Serif TC', serif;
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: 1px;
+  }
+
+  .memo-header-ref {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    color: var(--gold);
+    white-space: nowrap;
+  }
+
+  .memo-body { padding: 16px; }
+
+  .memo-field {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 10px;
+    font-size: 13px;
+    line-height: 1.6;
+  }
+
+  .memo-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-weight: 600;
+    color: var(--navy);
+    min-width: 60px;
+    font-size: 11px;
+    padding-top: 2px;
+  }
+
+  .memo-value { flex: 1; }
+
+  .memo-stamp {
+    position: absolute;
+    right: 12px; bottom: 12px;
+    width: 64px; height: 64px;
+    border: 3px solid var(--red);
+    border-radius: 4px;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    font-weight: 600;
+    color: var(--red);
+    transform: rotate(-12deg);
+    opacity: 0.85;
+    background: rgba(255,255,255,0.6);
+    line-height: 1.3;
+    text-align: center;
+    pointer-events: none;
+  }
+
+  .memo-stamp .stamp-icon { font-size: 22px; line-height: 1; }
+  .memo-stamp .stamp-text { font-size: 8px; margin-top: 2px; letter-spacing: 0.5px; }
+
+  /* CHARACTER CARDS */
+  .character-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin: 16px 0;
+  }
+
+  .character-card {
+    background: var(--paper);
+    border: 2px solid var(--cream-dark);
+    padding: 16px;
+    text-align: center;
+    position: relative;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+
+  .character-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  }
+
+  .character-card.supervisor { border-top: 4px solid var(--navy); }
+  .character-card.shark { border-top: 4px solid var(--red); }
+
+  .character-avatar {
+    font-size: 52px;
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+
+  .character-name {
+    font-family: 'Noto Serif TC', serif;
+    font-weight: 700;
+    font-size: 14px;
+    margin-bottom: 4px;
+  }
+
+  .character-title {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    color: #666;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .character-status {
+    font-size: 11px;
+    padding: 4px 8px;
+    border-radius: 3px;
+    display: inline-block;
+  }
+
+  .status-active {
+    background: #D4EDDA;
+    color: var(--green);
+    font-weight: 600;
+  }
+
+  .status-pending {
+    background: #FFF3CD;
+    color: #856404;
+    font-weight: 600;
+  }
+
+  .character-bubble {
+    background: var(--cream);
+    border-radius: 8px;
+    padding: 8px 10px;
+    font-size: 11px;
+    margin-top: 8px;
+    font-style: italic;
+    color: #444;
+    line-height: 1.4;
+  }
+
+  /* COMPLIANCE CHECK BUTTON */
+  .compliance-section {
+    background: var(--paper);
+    border: 2px solid var(--navy);
+    padding: 20px;
+    text-align: center;
+    margin: 16px 0;
+    position: relative;
+  }
+
+  .compliance-title {
+    font-family: 'Noto Serif TC', serif;
+    font-weight: 900;
+    font-size: 16px;
+    color: var(--navy);
+    margin-bottom: 4px;
+  }
+
+  .compliance-subtitle {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    color: #666;
+    letter-spacing: 1px;
+    margin-bottom: 16px;
+  }
+
+  .compliance-btn {
+    background: var(--red);
+    color: white;
+    border: none;
+    padding: 14px 32px;
+    font-family: 'Noto Serif TC', serif;
+    font-weight: 700;
+    font-size: 16px;
+    letter-spacing: 2px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: background 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .compliance-btn:hover { background: var(--red-light); }
+  .compliance-btn:active { transform: scale(0.97); }
+
+  .compliance-btn::after {
+    content: '';
+    position: absolute;
+    top: 0; left: -100%;
+    width: 100%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: left 0.5s;
+  }
+
+  .compliance-btn:hover::after { left: 100%; }
+
+  /* RESULT ANIMATION OVERLAY */
+  .result-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .result-overlay.show { display: flex; }
+
+  .result-card {
+    background: var(--paper);
+    border: 3px solid var(--gold);
+    width: 90%;
+    max-width: 420px;
+    padding: 32px 24px;
+    text-align: center;
+    position: relative;
+    animation: resultPop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  @keyframes resultPop {
+    from { transform: scale(0.5) rotate(-5deg); opacity: 0; }
+    to { transform: scale(1) rotate(0deg); opacity: 1; }
+  }
+
+  .result-emoji { font-size: 72px; margin-bottom: 16px; line-height: 1; }
+
+  .result-title {
+    font-family: 'Noto Serif TC', serif;
+    font-weight: 900;
+    font-size: 22px;
+    color: var(--navy);
+    margin-bottom: 8px;
+  }
+
+  .result-message {
+    font-size: 13px;
+    color: #555;
+    line-height: 1.6;
+    margin-bottom: 16px;
+  }
+
+  .result-ref {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    color: #999;
+    letter-spacing: 1px;
+    border-top: 1px solid var(--cream-dark);
+    padding-top: 12px;
+    margin-top: 12px;
+  }
+
+  .result-close {
+    background: var(--navy);
+    color: white;
+    border: none;
+    padding: 10px 28px;
+    font-family: 'Noto Sans TC', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    cursor: pointer;
+    margin-top: 16px;
+    letter-spacing: 1px;
+  }
+
+  .result-close:hover { background: var(--navy-light); }
+
+  /* BIG SEAL STAMP ANIMATION */
+  .big-seal {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%) scale(0) rotate(-20deg);
+    width: 120px; height: 120px;
+    border: 5px solid var(--red);
+    border-radius: 50%;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    font-family: 'IBM Plex Mono', monospace;
+    font-weight: 600;
+    color: var(--red);
+    background: rgba(255,255,255,0.9);
+    opacity: 0;
+    pointer-events: none;
+    z-index: 10;
+  }
+
+  .big-seal.animate {
+    animation: stampDown 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  }
+
+  @keyframes stampDown {
+    0% { transform: translate(-50%, -50%) scale(2) rotate(-20deg); opacity: 0; }
+    60% { transform: translate(-50%, -50%) scale(0.9) rotate(-3deg); opacity: 1; }
+    100% { transform: translate(-50%, -50%) scale(1) rotate(-12deg); opacity: 0.9; }
+  }
+
+  .big-seal-icon { font-size: 40px; }
+  .big-seal-text { font-size: 10px; letter-spacing: 1px; text-align: center; }
+
+  /* STATS ROW */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin: 16px 0;
+  }
+
+  .stat-box {
+    background: var(--navy);
+    color: white;
+    padding: 14px 8px;
+    text-align: center;
+    border-bottom: 3px solid var(--gold);
+  }
+
+  .stat-number {
+    font-family: 'Noto Serif TC', serif;
+    font-weight: 900;
+    font-size: 28px;
+    color: var(--gold);
+    line-height: 1;
+  }
+
+  .stat-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    color: rgba(255,255,255,0.7);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-top: 4px;
+  }
+
+  /* DAILY LOG TABLE */
+  .log-section {
+    background: var(--paper);
+    border: 1px solid var(--cream-dark);
+    margin: 16px 0;
+  }
+
+  .log-header {
+    background: var(--cream-dark);
+    padding: 8px 16px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: var(--navy);
+    font-weight: 600;
+    text-transform: uppercase;
+    border-bottom: 1px solid var(--cream-dark);
+  }
+
+  .log-entry {
+    display: flex;
+    gap: 10px;
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--cream);
+    font-size: 12px;
+    align-items: flex-start;
+  }
+
+  .log-entry:last-child { border-bottom: none; }
+
+  .log-time {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    color: var(--navy);
+    font-weight: 600;
+    min-width: 36px;
+    padding-top: 2px;
+  }
+
+  .log-text { flex: 1; line-height: 1.5; }
+
+  .log-verified {
+    color: var(--green);
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+
+  /* EVIDENCE FOOTER */
+  .evidence-footer {
+    background: var(--navy);
+    color: rgba(255,255,255,0.6);
+    padding: 12px 16px;
+    text-align: center;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 1px;
+    margin-top: 8px;
+  }
+
+  .evidence-footer span { color: var(--gold); }
+
+  /* CONFETTI */
+  .confetti-piece {
+    position: fixed;
+    width: 8px;
+    height: 8px;
+    top: -10px;
+    z-index: 200;
+    pointer-events: none;
+    animation: confettiFall linear forwards;
+  }
+
+  @keyframes confettiFall {
+    to {
+      transform: translateY(110vh) rotate(720deg);
+      opacity: 0;
+    }
+  }
+
+  /* MOBILE */
+  @media (max-width: 400px) {
+    .character-grid { grid-template-columns: 1fr; }
+    .stats-row { grid-template-columns: repeat(3, 1fr); }
+    .stat-number { font-size: 22px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- LETTERHEAD -->
+<div class="letterhead">
+  <div class="letterhead-seal">🐬</div>
+  <div class="letterhead-subtitle">Ministry of Marine Health Affairs</div>
+  <div class="letterhead-title">
+    <span class="emoji">🐬</span> 海洋健康合規督察總署 <span class="emoji">🦈</span>
+  </div>
+  <div class="letterhead-division">魚油合規執行部門 — Fish Oil Compliance Division</div>
+</div>
+
+<!-- MEMO BANNER -->
+<div class="memo-banner">
+  <span class="urgent">公文</span>
+  本署每日督察行動代號：OPERATION-GOLDEN-FIN
+  <span class="urgent">即時監控</span>
+</div>
+
+<div class="container">
+
+  <!-- STATS -->
+  <div class="stats-row">
+    <div class="stat-box">
+      <div class="stat-number" id="stat-days">29</div>
+      <div class="stat-label">督察天數</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-number" id="stat-compliance">100%</div>
+      <div class="stat-label">合規率</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-number" id="stat-doses">29</div>
+      <div class="stat-label">累計劑量</div>
+    </div>
+  </div>
+
+  <!-- MEMO CARD -->
+  <div class="memo">
+    <div class="memo-header">
+      <span class="memo-header-title">📋 督察備忘錄 MEMO</span>
+      <span class="memo-header-ref">REF: OGF-2026-0730</span>
+    </div>
+    <div class="memo-body">
+      <div class="memo-field">
+        <span class="memo-label">日期</span>
+        <span class="memo-value">中華民國一百十五年七月三十日（甲辰日）</span>
+      </div>
+      <div class="memo-field">
+        <span class="memo-label">主旨</span>
+        <span class="memo-value">敦促「拖延鯊」依《鯨類營養學法》第217條按時服用魚油，勿再拖延</span>
+      </div>
+      <div class="memo-field">
+        <span class="memo-label">依據</span>
+        <span class="memo-value">鯨類營養學手冊第217頁：「飯後油脂幫助吸收DHA，魚油吸收率提升300%」</span>
+      </div>
+      <div class="memo-field">
+        <span class="memo-label">辦法</span>
+        <span class="memo-value">海豚督導🐬將親自進場督察，拖延鯊🦈不得以任何理由拒絕</span>
+      </div>
+      <div class="memo-stamp">
+        <div class="stamp-icon">🐬</div>
+        <div class="stamp-text">海豚<br>核準</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CHARACTER CARDS -->
+  <div class="character-grid">
+    <div class="character-card supervisor" onclick="triggerDolphinCheer()">
+      <div class="character-avatar">🐬</div>
+      <div class="character-name">海豚督導</div>
+      <div class="character-title">Chief Supervisor</div>
+      <div class="character-status status-active">⚡ 任務中</div>
+      <div class="character-bubble">「魚油的黃金時段！！！飯後油脂幫助吸收DHA！」</div>
+    </div>
+    <div class="character-card shark" id="shark-card" onclick="triggerCompliance()">
+      <div class="character-avatar">🦈</div>
+      <div class="character-name">拖延鯊</div>
+      <div class="character-title">Procrastination Shark</div>
+      <div class="character-status status-pending" id="shark-status">⏳ 待服藥</div>
+      <div class="character-bubble" id="shark-bubble">（沙發上翻白眼）等什麼？等魚油自己游進嘴裡？</div>
+    </div>
+  </div>
+
+  <!-- COMPLIANCE CHECK -->
+  <div class="compliance-section">
+    <div class="big-seal" id="big-seal">
+      <div class="big-seal-icon">✓</div>
+      <div class="big-seal-text">合規<br>已認證</div>
+    </div>
+    <div class="compliance-title">🦈 執行督察行動</div>
+    <div class="compliance-subtitle">按住按鈕以完成今日魚油攝入 — HOLD TO COMPLY</div>
+    <button class="compliance-btn" id="compliance-btn" onmousedown="startHold()" onmouseup="endHold()" onmouseleave="endHold()" ontouchstart="startHold()" ontouchend="endHold()">
+      🐬🐟 督察完成並認證
+    </button>
+  </div>
+
+  <!-- DAILY LOG -->
+  <div class="log-section">
+    <div class="log-header">📜 督察執行日誌 — COMPLIANCE LOG</div>
+    <div id="compliance-log">
+      <div class="log-entry">
+        <span class="log-time">13:00</span>
+        <span class="log-text">督察行動啟動，海豚督導🐬抵達現場</span>
+        <span class="log-verified">✓</span>
+      </div>
+      <div class="log-entry">
+        <span class="log-time">13:02</span>
+        <span class="log-text">拖延鯊🦈於沙發就位，翻白眼錶示配合</span>
+        <span class="log-verified">✓</span>
+      </div>
+      <div class="log-entry">
+        <span class="log-time">13:04</span>
+        <span class="log-text">依《鯨類營養學法》第217條，飯後魚油1顆確認服用完畢</span>
+        <span class="log-verified">✓</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- EVIDENCE -->
+  <div class="evidence-footer">
+    依據：鯨類營養學手冊第217頁 | DHA吸收率提升300% | <span>OPERATION-GOLDEN-FIN</span>
+  </div>
+
+</div>
+
+<!-- RESULT OVERLAY -->
+<div class="result-overlay" id="result-overlay">
+  <div class="result-card">
+    <div class="result-emoji" id="result-emoji">🐬🦈</div>
+    <div class="result-title" id="result-title">督察完成！</div>
+    <div class="result-message" id="result-message">
+      拖延鯊已乖乖服用魚油1顆。<br>DHA攝入量：1000mg<br>飯後油脂輔助吸收，任務達成！
+    </div>
+    <div class="result-ref" id="result-ref">REF: OGF-2026-0730 | 13:04 CST | VERIFIED</div>
+    <button class="result-close" onclick="closeResult()">關閉此公文</button>
+  </div>
+</div>
+
+<script>
+  // LocalStorage
+  let state = JSON.parse(localStorage.getItem('fishOilBureau') || '{"days":29,"compliance":100,"doses":29,"lastDate":""}');
+  const today = '2026-07-30';
+
+  if (state.lastDate !== today) {
+    state.days = state.days + 1;
+    state.doses = state.doses + 1;
+    state.lastDate = today;
+    localStorage.setItem('fishOilBureau', JSON.stringify(state));
+  }
+
+  document.getElementById('stat-days').textContent = state.days;
+  document.getElementById('stat-compliance').textContent = state.compliance + '%';
+  document.getElementById('stat-doses').textContent = state.doses;
+
+  // Hold to comply
+  let holdTimer = null;
+  let holdProgress = 0;
+  const HOLD_DURATION = 2000;
+
+  function startHold() {
+    const btn = document.getElementById('compliance-btn');
+    btn.textContent = '🐬🐟 督察認證中...';
+    holdProgress = 0;
+    const startTime = Date.now();
+
+    function update() {
+      const elapsed = Date.now() - startTime;
+      holdProgress = Math.min(elapsed / HOLD_DURATION, 1);
+      if (holdProgress >= 1) {
+        completeCompliance();
+      } else {
+        holdTimer = requestAnimationFrame(update);
+      }
+    }
+    holdTimer = requestAnimationFrame(update);
+  }
+
+  function endHold() {
+    if (holdTimer) {
+      cancelAnimationFrame(holdTimer);
+      holdTimer = null;
+    }
+    const btn = document.getElementById('compliance-btn');
+    btn.textContent = '🐬🐟 督察完成並認證';
+    holdProgress = 0;
+  }
+
+  function triggerCompliance() {
+    const btn = document.getElementById('compliance-btn');
+    btn.style.background = 'var(--red-light)';
+    setTimeout(() => { btn.style.background = ''; }, 200);
+  }
+
+  function triggerDolphinCheer() {
+    spawnConfetti(8, '#FFE66D');
+  }
+
+  function completeCompliance() {
+    // Animate seal
+    const seal = document.getElementById('big-seal');
+    seal.classList.add('animate');
+    setTimeout(() => seal.classList.remove('animate'), 700);
+
+    // Update shark status
+    document.getElementById('shark-status').textContent = '✅ 已服藥';
+    document.getElementById('shark-status').className = 'character-status status-active';
+    document.getElementById('shark-bubble').textContent = '（鯊魚鰭乖乖合十）好吃...謝謝督導...';
+
+    // Confetti burst
+    spawnConfetti(30, '#C41E3A');
+    spawnConfetti(20, '#C8A96E');
+    spawnConfetti(15, '#2D6A4F');
+
+    // Update log
+    const log = document.getElementById('compliance-log');
+    const entry = document.createElement('div');
+    entry.className = 'log-entry';
+    entry.innerHTML = `
+      <span class="log-time">${new Date().toLocaleTimeString('zh-TW', {hour:'2-digit', minute:'2-digit'})}</span>
+      <span class="log-text">督察完成，拖延鯊🦈已服藥並認證合規</span>
+      <span class="log-verified">✓</span>
+    `;
+    log.appendChild(entry);
+
+    // Show result overlay
+    setTimeout(() => {
+      document.getElementById('result-overlay').classList.add('show');
+    }, 400);
+  }
+
+  function closeResult() {
+    document.getElementById('result-overlay').classList.remove('show');
+  }
+
+  // Close overlay on backdrop click
+  document.getElementById('result-overlay').addEventListener('click', function(e) {
+    if (e.target === this) closeResult();
+  });
+
+  // Confetti
+  function spawnConfetti(count, color) {
+    const colors = ['#C41E3A', '#C8A96E', '#2D6A4F', '#1B2A4A', '#FFD700', '#FF6B6B'];
+    for (let i = 0; i < count; i++) {
+      setTimeout(() => {
+        const piece = document.createElement('div');
+        piece.className = 'confetti-piece';
+        piece.style.left = Math.random() * 100 + 'vw';
+        piece.style.background = color || colors[Math.floor(Math.random() * colors.length)];
+        piece.style.animationDuration = (1.5 + Math.random() * 2) + 's';
+        piece.style.transform = `rotate(${Math.random() * 360}deg)`;
+        if (Math.random() > 0.5) {
+          piece.style.borderRadius = '50%';
+        }
+        document.body.appendChild(piece);
+        setTimeout(() => piece.remove(), 4000);
+      }, i * 40);
+    }
+  }
+
+  // Add a log entry with animation
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.style.opacity = '1';
+        entry.target.style.transform = 'translateX(0)';
+      }
+    });
+  });
+
+  document.querySelectorAll('.log-entry').forEach((el, i) => {
+    el.style.opacity = '0';
+    el.style.transform = 'translateX(-10px)';
+    el.style.transition = `opacity 0.3s ease ${i * 0.1}s, transform 0.3s ease ${i * 0.1}s`;
+    observer.observe(el);
+  });
+
+  // Ambient floating badge
+  function addAmbientBadge() {
+    const badge = document.createElement('div');
+    badge.style.cssText = `
+      position: fixed; bottom: 20px; right: 20px;
+      background: var(--navy); color: white;
+      padding: 8px 12px; border-radius: 20px;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 10px; letter-spacing: 1px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+      z-index: 50; cursor: pointer;
+      transition: transform 0.2s;
+    `;
+    badge.innerHTML = '🐬 督察部線上';
+    badge.onclick = () => spawnConfetti(15, '#FFE66D');
+    document.body.appendChild(badge);
+  }
+  addAmbientBadge();
+</script>
+</body>
+</html>

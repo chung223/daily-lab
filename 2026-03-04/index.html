@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>時空流轉 | Temporal Flow</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@300;400;500&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-deep: #050510;
+            --bg-mid: #0a0a1a;
+            --sand-gold: #d4af37;
+            --sand-light: #f5f0e6;
+            --sand-dark: #8b7355;
+            --accent-amber: #c9a227;
+            --twilight-purple: #2d1b4e;
+            --twilight-pink: #4a2c5a;
+            --star-white: rgba(255, 255, 255, 0.8);
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Serif TC', serif;
+            background: var(--bg-deep);
+            min-height: 100vh;
+            overflow: hidden;
+            color: var(--sand-light);
+            transition: background 8s ease;
+        }
+
+        /* Dynamic Background Layers */
+        .bg-layer {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            transition: opacity 8s ease;
+        }
+
+        .bg-gradient {
+            background: linear-gradient(180deg, 
+                var(--bg-deep) 0%, 
+                var(--twilight-purple) 50%, 
+                var(--bg-mid) 100%);
+            opacity: 1;
+        }
+
+        .bg-stars {
+            background-image: 
+                radial-gradient(2px 2px at 20px 30px, var(--star-white), transparent),
+                radial-gradient(2px 2px at 40px 70px, rgba(255,255,255,0.6), transparent),
+                radial-gradient(1px 1px at 90px 40px, var(--star-white), transparent),
+                radial-gradient(2px 2px at 130px 80px, rgba(255,255,255,0.5), transparent),
+                radial-gradient(1px 1px at 160px 120px, var(--star-white), transparent),
+                radial-gradient(2px 2px at 200px 50px, rgba(255,255,255,0.7), transparent),
+                radial-gradient(1px 1px at 250px 160px, var(--star-white), transparent),
+                radial-gradient(2px 2px at 300px 90px, rgba(255,255,255,0.4), transparent);
+            background-size: 350px 200px;
+            animation: twinkle 4s ease-in-out infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.8; }
+            50% { opacity: 1; }
+        }
+
+        .bg-ambient {
+            background: radial-gradient(ellipse at 50% 120%, 
+                rgba(212, 175, 55, 0.08) 0%, 
+                transparent 60%);
+        }
+
+        /* Main Container */
+        .container {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+        }
+
+        /* Title */
+        .title {
+            position: absolute;
+            top: 8vh;
+            font-size: clamp(1.5rem, 4vw, 2.5rem);
+            font-weight: 300;
+            letter-spacing: 0.3em;
+            text-shadow: 0 0 40px rgba(212, 175, 55, 0.3);
+            opacity: 0;
+            animation: fadeIn 3s ease forwards;
+            animation-delay: 0.5s;
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+
+        /* Hourglass Container */
+        .hourglass-wrapper {
+            position: relative;
+            width: clamp(200px, 40vw, 320px);
+            height: clamp(320px, 55vh, 500px);
+            opacity: 0;
+            animation: scaleIn 2s ease forwards;
+            animation-delay: 1s;
+        }
+
+        @keyframes scaleIn {
+            from { 
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            to { 
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        /* Hourglass Frame */
+        .hourglass {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .glass-top, .glass-bottom {
+            width: 100%;
+            height: 45%;
+            position: relative;
+            background: linear-gradient(180deg,
+                rgba(255, 255, 255, 0.02) 0%,
+                rgba(255, 255, 255, 0.05) 50%,
+                rgba(255, 255, 255, 0.02) 100%);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            overflow: hidden;
+            backdrop-filter: blur(2px);
+        }
+
+        .glass-top {
+            border-bottom: none;
+            border-radius: 20px 20px 0 0;
+            mask-image: linear-gradient(180deg, black 80%, transparent 100%);
+            -webkit-mask-image: linear-gradient(180deg, black 80%, transparent 100%);
+        }
+
+        .glass-bottom {
+            border-top: none;
+            border-radius: 0 0 20px 20px;
+            mask-image: linear-gradient(0deg, black 20%, transparent 100%);
+            -webkit-mask-image: linear-gradient(0deg, black 20%, transparent 100%);
+        }
+
+        /* Sand Container */
+        .sand-container {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 80%;
+            pointer-events: none;
+        }
+
+        .sand-top {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 100%;
+            clip-path: polygon(0 0, 100% 0, 50% 100%);
+        }
+
+        .sand-bottom {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 0%;
+            clip-path: polygon(0 0, 100% 0, 50% 100%);
+            transform: rotate(180deg);
+            transition: height 0.5s ease;
+        }
+
+        /* Sand Particles */
+        .sand-particle {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: var(--sand-gold);
+            border-radius: 50%;
+            pointer-events: none;
+            opacity: 0;
+            animation: sandFall 2s ease-in forwards;
+        }
+
+        @keyframes sandFall {
+            0% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+            100% {
+                opacity: 0.6;
+                transform: translateY(200px) scale(0.5);
+            }
+        }
+
+        /* Sand Pile in Bottom */
+        .sand-pile {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60%;
+            height: 0;
+            background: linear-gradient(180deg, var(--sand-gold) 0%, var(--sand-dark) 100%);
+            clip-path: polygon(20% 100%, 80% 100%, 100% 0, 0 0);
+            transition: height 0.8s ease;
+            opacity: 0.9;
+        }
+
+        /* Neck (where sand flows) */
+        .neck {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 8px;
+            height: 20px;
+            background: linear-gradient(180deg, 
+                var(--sand-gold) 0%, 
+                var(--sand-dark) 50%,
+                var(--sand-gold) 100%);
+            border-radius: 4px;
+            opacity: 0;
+            animation: neckAppear 1s ease forwards;
+            animation-delay: 1.5s;
+        }
+
+        @keyframes neckAppear {
+            to { opacity: 0.8; }
+        }
+
+        /* Top Cap */
+        .cap {
+            position: absolute;
+            width: 30%;
+            height: 12px;
+            background: linear-gradient(180deg, var(--sand-gold), var(--accent-amber));
+            border-radius: 6px;
+            z-index: 5;
+        }
+
+        .cap-top {
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .cap-bottom {
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        /* Frame Posts */
+        .post {
+            position: absolute;
+            width: 8px;
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-amber), var(--sand-gold), var(--accent-amber));
+            border-radius: 4px;
+        }
+
+        .post-left { left: 5%; }
+        .post-right { right: 5%; }
+
+        /* Ripple Effect on Click */
+        .ripple {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(212, 175, 55, 0.4) 0%, transparent 70%);
+            pointer-events: none;
+            animation: rippleExpand 1.5s ease-out forwards;
+        }
+
+        @keyframes rippleExpand {
+            0% {
+                width: 0;
+                height: 0;
+                opacity: 1;
+            }
+            100% {
+                width: 200px;
+                height: 200px;
+                opacity: 0;
+            }
+        }
+
+        /* Info Panel */
+        .info-panel {
+            position: absolute;
+            bottom: 8vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            opacity: 0;
+            animation: fadeIn 2s ease forwards;
+            animation-delay: 2s;
+        }
+
+        .session-count {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.9rem;
+            color: rgba(245, 240, 230, 0.6);
+            letter-spacing: 0.1em;
+        }
+
+        .hint {
+            font-size: 0.8rem;
+            color: rgba(245, 240, 230, 0.4);
+            letter-spacing: 0.2em;
+        }
+
+        /* Time Display */
+        .time-display {
+            position: absolute;
+            top: 15vh;
+            font-family: 'DM Mono', monospace;
+            font-size: clamp(0.8rem, 2vw, 1rem);
+            color: rgba(245, 240, 230, 0.5);
+            letter-spacing: 0.15em;
+            opacity: 0;
+            animation: fadeIn 2s ease forwards;
+            animation-delay: 1.5s;
+        }
+
+        /* Floating Particles Background */
+        .floating-sand {
+            position: fixed;
+            width: 2px;
+            height: 2px;
+            background: var(--sand-gold);
+            border-radius: 50%;
+            pointer-events: none;
+            opacity: 0.3;
+            animation: floatUp 15s linear infinite;
+        }
+
+        @keyframes floatUp {
+            0% {
+                transform: translateY(100vh) scale(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.4;
+            }
+            90% {
+                opacity: 0.4;
+            }
+            100% {
+                transform: translateY(-10vh) scale(1);
+                opacity: 0;
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .title {
+                letter-spacing: 0.15em;
+                top: 6vh;
+            }
+            
+            .hourglass-wrapper {
+                transform: scale(0.85);
+            }
+            
+            .info-panel {
+                bottom: 5vh;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-layer bg-gradient"></div>
+    <div class="bg-layer bg-stars"></div>
+    <div class="bg-layer bg-ambient"></div>
+
+    <div class="container">
+        <h1 class="title">時空流轉</h1>
+        
+        <div class="time-display" id="timeDisplay"></div>
+
+        <div class="hourglass-wrapper" id="hourglassWrapper">
+            <div class="hourglass">
+                <div class="cap cap-top"></div>
+                <div class="post post-left"></div>
+                <div class="post post-right"></div>
+                
+                <div class="glass-top">
+                    <div class="sand-container">
+                        <div class="sand-top" id="sandTop"></div>
+                    </div>
+                </div>
+                
+                <div class="neck" id="neck"></div>
+                
+                <div class="glass-bottom">
+                    <div class="sand-container">
+                        <div class="sand-pile" id="sandPile"></div>
+                    </div>
+                </div>
+                
+                <div class="cap cap-bottom"></div>
+            </div>
+        </div>
+
+        <div class="info-panel">
+            <div class="session-count" id="sessionCount">流轉次數：0</div>
+            <div class="hint">點擊沙漏，喚起回憶</div>
+        </div>
+    </div>
+
+    <script>
+        // State
+        let sessionCount = parseInt(localStorage.getItem('temporalFlow_sessions') || '0');
+        let sandLevel = 100;
+        let isFlowing = false;
+        let flowInterval = null;
+
+        // DOM Elements
+        const hourglassWrapper = document.getElementById('hourglassWrapper');
+        const sandTop = document.getElementById('sandTop');
+        const sandPile = document.getElementById('sandPile');
+        const sessionCountEl = document.getElementById('sessionCount');
+        const timeDisplay = document.getElementById('timeDisplay');
+
+        // Initialize
+        function init() {
+            updateSessionCount();
+            startSandFlow();
+            createFloatingParticles();
+            updateTimeDisplay();
+            setInterval(updateTimeDisplay, 60000);
+        }
+
+        // Update session count display
+        function updateSessionCount() {
+            sessionCountEl.textContent = `流轉次數：${sessionCount}`;
+        }
+
+        // Create floating background particles
+        function createFloatingParticles() {
+            for (let i = 0; i < 15; i++) {
+                setTimeout(() => {
+                    const particle = document.createElement('div');
+                    particle.className = 'floating-sand';
+                    particle.style.left = Math.random() * 100 + 'vw';
+                    particle.style.animationDelay = Math.random() * 15 + 's';
+                    particle.style.animationDuration = (12 + Math.random() * 8) + 's';
+                    document.body.appendChild(particle);
+                }, i * 200);
+            }
+        }
+
+        // Time display
+        function updateTimeDisplay() {
+            const now = new Date();
+            const hours = now.getHours();
+            const minutes = now.getMinutes().toString().padStart(2, '0');
+            
+            let timeOfDay = '';
+            if (hours >= 5 && hours < 8) timeOfDay = '黎明';
+            else if (hours >= 8 && hours < 12) timeOfDay = '晨光';
+            else if (hours >= 12 && hours < 14) timeOfDay = '正午';
+            else if (hours >= 14 && hours < 18) timeOfDay = '午後';
+            else if (hours >= 18 && hours < 20) timeOfDay = '黃昏';
+            else if (hours >= 20 && hours < 23) timeOfDay = '夜幕';
+            else timeOfDay = '深夜';
+            
+            timeDisplay.textContent = `${timeOfDay} · ${hours}:${minutes}`;
+        }
+
+        // Sand flow animation
+        function startSandFlow() {
+            if (flowInterval) clearInterval(flowInterval);
+            
+            flowInterval = setInterval(() => {
+                if (sandLevel > 0) {
+                    // Create falling sand particles from neck
+                    createFallingSand();
+                    
+                    // Decrease top sand
+                    sandLevel -= 0.5;
+                    
+                    // Increase bottom pile
+                    const pileHeight = (100 - sandLevel) * 0.8;
+                    sandPile.style.height = Math.min(pileHeight, 80) + '%';
+                    
+                    // Update top sand visual
+                    sandTop.style.opacity = sandLevel / 100;
+                } else {
+                    // Reset after complete
+                    setTimeout(resetHourglass, 2000);
+                    clearInterval(flowInterval);
+                }
+            }, 100);
+        }
+
+        // Create individual falling sand particles
+        function createFallingSand() {
+            const particle = document.createElement('div');
+            particle.className = 'sand-particle';
+            
+            // Random position near neck center
+            const offsetX = (Math.random() - 0.5) * 20;
+            particle.style.left = `calc(50% + ${offsetX}px)`;
+            particle.style.top = '50%';
+            
+            // Random color variation
+            const colors = ['#d4af37', '#c9a227', '#f5f0e6', '#8b7355'];
+            particle.style.background = colors[Math.floor(Math.random() * colors.length)];
+            
+            // Random animation duration
+            particle.style.animationDuration = (1.5 + Math.random() * 1) + 's';
+            
+            sandTop.appendChild(particle);
+            
+            // Remove after animation
+            setTimeout(() => {
+                particle.remove();
+            }, 2500);
+        }
+
+        // Reset hourglass
+        function resetHourglass() {
+            sandLevel = 100;
+            sandTop.style.opacity = 1;
+            sandPile.style.height = '0%';
+            
+            // Increment session
+            sessionCount++;
+            localStorage.setItem('temporalFlow_sessions', sessionCount.toString());
+            updateSessionCount();
+            
+            // Restart flow after delay
+            setTimeout(startSandFlow, 1000);
+        }
+
+        // Click handler for interaction
+        hourglassWrapper.addEventListener('click', (e) => {
+            // Create ripple effect
+            const rect = hourglassWrapper.getBoundingClientRect();
+            const ripple = document.createElement('div');
+            ripple.className = 'ripple';
+            ripple.style.left = (e.clientX - rect.left - 100) + 'px';
+            ripple.style.top = (e.clientY - rect.top - 100) + 'px';
+            hourglassWrapper.appendChild(ripple);
+            
+            // Remove ripple after animation
+            setTimeout(() => ripple.remove(), 1500);
+            
+            // Add extra sand particles on click
+            for (let i = 0; i < 5; i++) {
+                setTimeout(() => createFallingSand(), i * 100);
+            }
+            
+            // Increment session on click too
+            sessionCount++;
+            localStorage.setItem('temporalFlow_sessions', sessionCount.toString());
+            updateSessionCount();
+        });
+
+        // Touch support
+        hourglassWrapper.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            const touch = e.touches[0];
+            hourglassWrapper.dispatchEvent(new MouseEvent('click', {
+                clientX: touch.clientX,
+                clientY: touch.clientY
+            }));
+        });
+
+        // Start
+        init();
+    </script>
+</body>
+</html>

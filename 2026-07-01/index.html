@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>月份牌工廠 — July 2026</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600;700&family=Ma+Shan+Zheng&family=Noto+Serif+TC:wght@400;600;700&family=ZCOOL+XiaoWei&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --cream: #FDF8F0;
+      --ink: #2C2416;
+      --red-seal: #C53D43;
+      --gold: #D4A84B;
+      --jade: #5B8A72;
+      --lotus-pink: #E8B4C7;
+      --rain-blue: #6B8FA3;
+      --paper-texture: #F5EDE0;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Noto Serif TC', serif;
+      background: linear-gradient(135deg, var(--cream) 0%, var(--paper-texture) 100%);
+      min-height: 100vh;
+      color: var(--ink);
+      overflow-x: hidden;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    /* Header */
+    .header {
+      text-align: center;
+      padding: 40px 20px;
+      position: relative;
+    }
+
+    .header::before {
+      content: '❋';
+      position: absolute;
+      top: 10px;
+      left: 20px;
+      font-size: 24px;
+      color: var(--gold);
+      animation: float 3s ease-in-out infinite;
+    }
+
+    .header::after {
+      content: '❋';
+      position: absolute;
+      top: 10px;
+      right: 20px;
+      font-size: 24px;
+      color: var(--gold);
+      animation: float 3s ease-in-out infinite 1.5s;
+    }
+
+    .title {
+      font-family: 'Ma Shan Zheng', cursive;
+      font-size: clamp(48px, 10vw, 72px);
+      color: var(--ink);
+      letter-spacing: 8px;
+      margin-bottom: 10px;
+      text-shadow: 2px 2px 0 var(--gold);
+    }
+
+    .subtitle {
+      font-family: 'Caveat', cursive;
+      font-size: 20px;
+      color: var(--jade);
+      letter-spacing: 2px;
+    }
+
+    .date-badge {
+      display: inline-block;
+      margin-top: 20px;
+      padding: 8px 24px;
+      background: var(--ink);
+      color: var(--cream);
+      font-family: 'Caveat', cursive;
+      font-size: 18px;
+      border-radius: 2px;
+    }
+
+    /* Main Card */
+    .month-card {
+      background: var(--cream);
+      border: 3px solid var(--ink);
+      padding: 40px;
+      margin: 30px 0;
+      position: relative;
+      box-shadow: 8px 8px 0 var(--ink);
+    }
+
+    .month-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: 
+        radial-gradient(circle at 20% 80%, rgba(232, 180, 199, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(91, 138, 114, 0.1) 0%, transparent 50%);
+      pointer-events: none;
+    }
+
+    /* Top decorative bar */
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid var(--ink);
+      padding-bottom: 20px;
+      margin-bottom: 30px;
+    }
+
+    .season-text {
+      font-family: 'ZCOOL XiaoWei', serif;
+      font-size: 14px;
+      color: var(--jade);
+      letter-spacing: 4px;
+    }
+
+    .lunar-date {
+      font-family: 'Caveat', cursive;
+      font-size: 16px;
+      color: var(--rain-blue);
+    }
+
+    /* Month display */
+    .month-display {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .month-number {
+      font-family: 'Ma Shan Zheng', cursive;
+      font-size: 120px;
+      line-height: 1;
+      color: var(--ink);
+      position: relative;
+      display: inline-block;
+    }
+
+    .month-number::after {
+      content: '月';
+      position: absolute;
+      bottom: 10px;
+      right: -50px;
+      font-size: 36px;
+      color: var(--red-seal);
+    }
+
+    .month-name {
+      font-family: 'ZCOOL XiaoWei', serif;
+      font-size: 28px;
+      color: var(--jade);
+      margin-top: 10px;
+      letter-spacing: 8px;
+    }
+
+    /* Zodiac section */
+    .zodiac-section {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin: 30px 0;
+    }
+
+    .zodiac-card {
+      background: var(--paper-texture);
+      border: 1px solid var(--ink);
+      padding: 20px;
+      text-align: center;
+      position: relative;
+    }
+
+    .zodiac-card::before {
+      content: '';
+      position: absolute;
+      top: -8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 40px;
+      height: 16px;
+      background: var(--ink);
+      clip-path: polygon(10% 100%, 0% 0%, 100% 0%, 90% 100%);
+    }
+
+    .zodiac-icon {
+      font-size: 48px;
+      margin-bottom: 10px;
+    }
+
+    .zodiac-label {
+      font-family: 'Caveat', cursive;
+      font-size: 14px;
+      color: var(--rain-blue);
+      margin-bottom: 5px;
+    }
+
+    .zodiac-name {
+      font-family: 'ZCOOL XiaoWei', serif;
+      font-size: 20px;
+      color: var(--ink);
+    }
+
+    /* Seal stamps */
+    .seal-stamps {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin: 30px 0;
+      flex-wrap: wrap;
+    }
+
+    .seal {
+      width: 60px;
+      height: 60px;
+      border: 3px solid var(--red-seal);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Ma Shan Zheng', cursive;
+      font-size: 28px;
+      color: var(--red-seal);
+      transform: rotate(-5deg);
+      background: rgba(197, 61, 67, 0.05);
+    }
+
+    .seal:nth-child(2) { transform: rotate(3deg); }
+    .seal:nth-child(3) { transform: rotate(-3deg); }
+    .seal:nth-child(4) { transform: rotate(5deg); }
+
+    /* Poetry section */
+    .poetry-section {
+      background: linear-gradient(to bottom, transparent, rgba(91, 138, 114, 0.05));
+      padding: 30px;
+      margin: 30px 0;
+      border-left: 4px solid var(--jade);
+      position: relative;
+    }
+
+    .poetry-title {
+      font-family: 'Caveat', cursive;
+      font-size: 14px;
+      color: var(--jade);
+      margin-bottom: 15px;
+      letter-spacing: 2px;
+    }
+
+    .poetry-text {
+      font-family: 'Noto Serif TC', serif;
+      font-size: 18px;
+      line-height: 2;
+      color: var(--ink);
+    }
+
+    .poetry-author {
+      font-family: 'Caveat', cursive;
+      font-size: 14px;
+      color: var(--rain-blue);
+      text-align: right;
+      margin-top: 15px;
+    }
+
+    /* Half-year reflection */
+    .reflection-section {
+      margin: 40px 0;
+      padding: 30px;
+      background: var(--cream);
+      border: 2px dashed var(--ink);
+      position: relative;
+    }
+
+    .reflection-title {
+      font-family: 'ZCOOL XiaoWei', serif;
+      font-size: 20px;
+      color: var(--ink);
+      text-align: center;
+      margin-bottom: 20px;
+      letter-spacing: 4px;
+    }
+
+    .reflection-input {
+      width: 100%;
+      min-height: 100px;
+      padding: 15px;
+      font-family: 'Noto Serif TC', serif;
+      font-size: 16px;
+      border: 1px solid var(--ink);
+      background: var(--paper-texture);
+      color: var(--ink);
+      resize: vertical;
+      margin-bottom: 15px;
+    }
+
+    .reflection-input:focus {
+      outline: none;
+      border-width: 2px;
+      border-color: var(--jade);
+    }
+
+    .reflection-input::placeholder {
+      color: var(--rain-blue);
+      opacity: 0.7;
+    }
+
+    /* Stats grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 15px;
+      margin: 30px 0;
+    }
+
+    .stat-item {
+      background: var(--paper-texture);
+      border: 1px solid var(--ink);
+      padding: 15px;
+      text-align: center;
+    }
+
+    .stat-number {
+      font-family: 'Ma Shan Zheng', cursive;
+      font-size: 36px;
+      color: var(--jade);
+    }
+
+    .stat-label {
+      font-family: 'Caveat', cursive;
+      font-size: 12px;
+      color: var(--rain-blue);
+      margin-top: 5px;
+    }
+
+    /* Action buttons */
+    .actions {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      flex-wrap: wrap;
+      margin: 30px 0;
+    }
+
+    .btn {
+      padding: 12px 30px;
+      font-family: 'ZCOOL XiaoWei', serif;
+      font-size: 16px;
+      border: 2px solid var(--ink);
+      background: var(--cream);
+      color: var(--ink);
+      cursor: pointer;
+      transition: all 0.2s;
+      letter-spacing: 2px;
+    }
+
+    .btn:hover {
+      background: var(--ink);
+      color: var(--cream);
+    }
+
+    .btn-primary {
+      background: var(--red-seal);
+      color: var(--cream);
+      border-color: var(--red-seal);
+    }
+
+    .btn-primary:hover {
+      background: var(--ink);
+      border-color: var(--ink);
+    }
+
+    /* Confetti container */
+    #confetti-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1000;
+    }
+
+    /* History section */
+    .history-section {
+      margin: 40px 0;
+    }
+
+    .history-title {
+      font-family: 'ZCOOL XiaoWei', serif;
+      font-size: 18px;
+      color: var(--ink);
+      text-align: center;
+      margin-bottom: 20px;
+      letter-spacing: 4px;
+    }
+
+    .history-list {
+      list-style: none;
+    }
+
+    .history-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 15px;
+      padding: 15px;
+      border-bottom: 1px dashed var(--ink);
+    }
+
+    .history-date {
+      font-family: 'Caveat', cursive;
+      font-size: 14px;
+      color: var(--rain-blue);
+      min-width: 60px;
+    }
+
+    .history-text {
+      font-family: 'Noto Serif TC', serif;
+      font-size: 14px;
+      line-height: 1.6;
+      color: var(--ink);
+    }
+
+    /* Footer */
+    .footer {
+      text-align: center;
+      padding: 40px 20px;
+      border-top: 1px solid var(--ink);
+      margin-top: 40px;
+    }
+
+    .footer-text {
+      font-family: 'Caveat', cursive;
+      font-size: 14px;
+      color: var(--rain-blue);
+    }
+
+    /* Animations */
+    @keyframes float {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-10px) rotate(5deg); }
+    }
+
+    @keyframes seal-drop {
+      0% { transform: scale(1.5) rotate(0deg); opacity: 0; }
+      50% { transform: scale(0.9) rotate(-5deg); opacity: 1; }
+      100% { transform: scale(1) rotate(-5deg); opacity: 1; }
+    }
+
+    .seal-animate {
+      animation: seal-drop 0.5s ease-out forwards;
+    }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      .container { padding: 10px; }
+      .month-card { padding: 20px; }
+      .month-number { font-size: 80px; }
+      .month-number::after { font-size: 24px; right: -30px; }
+      .zodiac-section { grid-template-columns: 1fr; }
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+</head>
+<body>
+  <div id="confetti-container"></div>
+  
+  <div class="container">
+    <!-- Header -->
+    <header class="header">
+      <h1 class="title">月份牌工廠</h1>
+      <p class="subtitle">July Card Maker · 2026 H2 Opening</p>
+      <div class="date-badge">2026.07.01 · 丙午月 · 半年之約</div>
+    </header>
+
+    <!-- Main Month Card -->
+    <div class="month-card">
+      <div class="top-bar">
+        <span class="season-text">節氣：小暑、大暑</span>
+        <span class="lunar-date">農曆：丙午年五月廿八</span>
+      </div>
+
+      <div class="month-display">
+        <div class="month-number">七</div>
+        <div class="month-name">July · 柒月</div>
+      </div>
+
+      <div class="zodiac-section">
+        <div class="zodiac-card">
+          <div class="zodiac-icon">🐴</div>
+          <div class="zodiac-label">本月生肖</div>
+          <div class="zodiac-name">馬 · 赤午</div>
+        </div>
+        <div class="zodiac-card">
+          <div class="zodiac-icon">🔴</div>
+          <div class="zodiac-label">幸運色彩</div>
+          <div class="zodiac-name">蓮花紅</div>
+        </div>
+      </div>
+
+      <div class="seal-stamps">
+        <div class="seal">吉</div>
+        <div class="seal">祥</div>
+        <div class="seal">福</div>
+        <div class="seal">荷</div>
+      </div>
+
+      <div class="poetry-section">
+        <div class="poetry-title">❋ 七月詩語</div>
+        <p class="poetry-text">
+          畢竟西湖六月中，風光不與四時同。<br>
+          接天蓮葉無窮碧，映日荷花別樣紅。<br>
+          <span style="font-size: 14px; color: var(--rain-blue);">— 楊萬里 · 曉出淨慈寺送林子方</span>
+        </p>
+        <p class="poetry-text" style="margin-top: 15px; font-style: italic;">
+          🌸 荷花盛開，半年已過<br>
+          下半年，繼續前行
+        </p>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-item">
+          <div class="stat-number">182</div>
+          <div class="stat-label">上半年天數</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">184</div>
+          <div class="stat-label">下半年天數</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">51</div>
+          <div class="stat-label">IFYE 站點</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">9</div>
+          <div class="stat-label">代表國家</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Half-Year Reflection -->
+    <div class="reflection-section">
+      <div class="reflection-title">❋ 半年回顧 · 2026 H1 總結</div>
+      <textarea class="reflection-input" id="reflection-input" placeholder="在這半年裡，你完成了什麼？遇到了什麼？學到了什麼？"></textarea>
+      <div class="actions">
+        <button class="btn btn-primary" onclick="saveReflection()">保存記錄 ✨</button>
+        <button class="btn" onclick="clearReflection()">清除</button>
+      </div>
+    </div>
+
+    <!-- H2 Intentions -->
+    <div class="reflection-section">
+      <div class="reflection-title">❋ 下半年意圖 · 2026 H2 願望</div>
+      <textarea class="reflection-input" id="intention-input" placeholder="下半年你想達成什麼？想要什麼樣的改變？"></textarea>
+      <div class="actions">
+        <button class="btn btn-primary" onclick="saveIntention()">許下願望 🎋</button>
+        <button class="btn" onclick="clearIntention()">清除</button>
+      </div>
+    </div>
+
+    <!-- History -->
+    <div class="history-section" id="history-section" style="display: none;">
+      <div class="history-title">❋ 記錄歷史</div>
+      <ul class="history-list" id="history-list"></ul>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <p class="footer-text">月份牌工廠 · 2026 July</p>
+      <p class="footer-text" style="margin-top: 10px; font-size: 12px;">
+        每日一卡，每月一詩<br>
+        用手作溫度，記錄時間的形狀
+      </p>
+    </footer>
+  </div>
+
+  <script>
+    // Storage key
+    const STORAGE_KEY = 'monthCardFactory2026';
+
+    // Load saved data
+    function loadData() {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      return saved ? JSON.parse(saved) : { reflections: [], intentions: [] };
+    }
+
+    // Save data
+    function saveData(data) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    }
+
+    // Format date
+    function formatDate(dateStr) {
+      const date = new Date(dateStr);
+      return `${date.getMonth() + 1}/${date.getDate()}`;
+    }
+
+    // Save reflection
+    function saveReflection() {
+      const input = document.getElementById('reflection-input');
+      const text = input.value.trim();
+      
+      if (!text) {
+        alert('請輸入內容');
+        return;
+      }
+
+      const data = loadData();
+      data.reflections.unshift({
+        date: new Date().toISOString(),
+        text: text
+      });
+      saveData(data);
+      
+      input.value = '';
+      updateHistory();
+      triggerConfetti();
+    }
+
+    // Save intention
+    function saveIntention() {
+      const input = document.getElementById('intention-input');
+      const text = input.value.trim();
+      
+      if (!text) {
+        alert('請輸入願望');
+        return;
+      }
+
+      const data = loadData();
+      data.intentions.unshift({
+        date: new Date().toISOString(),
+        text: text
+      });
+      saveData(data);
+      
+      input.value = '';
+      updateHistory();
+      triggerConfetti();
+    }
+
+    // Clear reflection
+    function clearReflection() {
+      document.getElementById('reflection-input').value = '';
+    }
+
+    // Clear intention
+    function clearIntention() {
+      document.getElementById('intention-input').value = '';
+    }
+
+    // Update history display
+    function updateHistory() {
+      const data = loadData();
+      const section = document.getElementById('history-section');
+      const list = document.getElementById('history-list');
+      
+      if (data.reflections.length === 0 && data.intentions.length === 0) {
+        section.style.display = 'none';
+        return;
+      }
+
+      section.style.display = 'block';
+      list.innerHTML = '';
+
+      // Add reflections
+      data.reflections.slice(0, 5).forEach(item => {
+        const li = document.createElement('li');
+        li.className = 'history-item';
+        li.innerHTML = `
+          <span class="history-date">${formatDate(item.date)}</span>
+          <span class="history-text">📝 ${item.text.substring(0, 50)}${item.text.length > 50 ? '...' : ''}</span>
+        `;
+        list.appendChild(li);
+      });
+
+      // Add intentions
+      data.intentions.slice(0, 5).forEach(item => {
+        const li = document.createElement('li');
+        li.className = 'history-item';
+        li.innerHTML = `
+          <span class="history-date">${formatDate(item.date)}</span>
+          <span class="history-text">🎋 ${item.text.substring(0, 50)}${item.text.length > 50 ? '...' : ''}</span>
+        `;
+        list.appendChild(li);
+      });
+    }
+
+    // Simple confetti
+    function triggerConfetti() {
+      const container = document.getElementById('confetti-container');
+      const colors = ['#C53D43', '#D4A84B', '#5B8A72', '#E8B4C7', '#6B8FA3'];
+      
+      for (let i = 0; i < 50; i++) {
+        const confetti = document.createElement('div');
+        confetti.style.cssText = `
+          position: absolute;
+          width: 10px;
+          height: 10px;
+          background: ${colors[Math.floor(Math.random() * colors.length)]};
+          left: ${Math.random() * 100}%;
+          top: -10px;
+          opacity: ${Math.random() * 0.7 + 0.3};
+          transform: rotate(${Math.random() * 360}deg);
+        `;
+        container.appendChild(confetti);
+
+        const animation = confetti.animate([
+          { transform: `translateY(0) rotate(0deg)`, opacity: 1 },
+          { transform: `translateY(${window.innerHeight + 100}px) rotate(${Math.random() * 720}deg)`, opacity: 0 }
+        ], {
+          duration: Math.random() * 2000 + 2000,
+          easing: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)'
+        });
+
+        animation.onfinish = () => confetti.remove();
+      }
+    }
+
+    // Animate seals on load
+    function animateSeals() {
+      const seals = document.querySelectorAll('.seal');
+      seals.forEach((seal, index) => {
+        seal.style.opacity = '0';
+        setTimeout(() => {
+          seal.style.opacity = '1';
+          seal.classList.add('seal-animate');
+        }, 200 + index * 150);
+      });
+    }
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', () => {
+      updateHistory();
+      animateSeals();
+    });
+  </script>
+</body>
+</html>

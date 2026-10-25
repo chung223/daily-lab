@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>記憶膠囊收集器 | Memory Capsule Collector</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Noto+Sans+TC:wght@400;500;700&family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #F8F9FA;
+            --surface: #FFFFFF;
+            --text: #1A1A2E;
+            --text-muted: #6B7280;
+            --accent-coral: #FF6B6B;
+            --accent-mint: #4ECDC4;
+            --accent-gold: #FFD93D;
+            --accent-blue: #6C63FF;
+            --accent-pink: #FF85A1;
+            --shadow: rgba(0, 0, 0, 0.08);
+        }
+
+        body {
+            font-family: 'Space Grotesk', 'Noto Sans TC', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Geometric Background */
+        .geo-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .geo-shape {
+            position: absolute;
+            opacity: 0.15;
+        }
+
+        .geo-circle {
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            border: 8px solid var(--accent-coral);
+            top: -100px;
+            right: -80px;
+            animation: float 8s ease-in-out infinite;
+        }
+
+        .geo-triangle {
+            width: 0;
+            height: 0;
+            border-left: 80px solid transparent;
+            border-right: 80px solid transparent;
+            border-bottom: 140px solid var(--accent-mint);
+            bottom: 15%;
+            left: -40px;
+            animation: float 10s ease-in-out infinite reverse;
+        }
+
+        .geo-square {
+            width: 120px;
+            height: 120px;
+            border: 6px solid var(--accent-gold);
+            transform: rotate(45deg);
+            bottom: 40%;
+            right: 5%;
+            animation: float 7s ease-in-out infinite 1s;
+        }
+
+        .geo-lines {
+            width: 200px;
+            height: 200px;
+            top: 50%;
+            left: 50%;
+        }
+
+        .geo-lines::before,
+        .geo-lines::after {
+            content: '';
+            position: absolute;
+            background: var(--accent-blue);
+        }
+
+        .geo-lines::before {
+            width: 100%;
+            height: 4px;
+            top: 50%;
+            transform: rotate(30deg);
+        }
+
+        .geo-lines::after {
+            width: 100%;
+            height: 4px;
+            top: 50%;
+            transform: rotate(-30deg);
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(5deg); }
+        }
+
+        /* Header */
+        header {
+            position: relative;
+            z-index: 10;
+            padding: 40px 20px 20px;
+            text-align: center;
+        }
+
+        .capsule-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 16px;
+            position: relative;
+        }
+
+        .capsule-icon svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        /* Stats Bar */
+        .stats-bar {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            padding: 16px 20px;
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: 'DM Mono', monospace;
+            font-size: 0.85rem;
+        }
+
+        .stat-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .stat-dot.coral { background: var(--accent-coral); }
+        .stat-dot.mint { background: var(--accent-mint); }
+        .stat-dot.gold { background: var(--accent-gold); }
+        .stat-dot.blue { background: var(--accent-blue); }
+
+        .stat-num {
+            font-weight: 600;
+        }
+
+        /* Main Container */
+        main {
+            position: relative;
+            z-index: 10;
+            max-width: 640px;
+            margin: 0 auto;
+            padding: 0 20px 40px;
+        }
+
+        /* Input Form */
+        .input-form {
+            background: var(--surface);
+            border-radius: 20px;
+            padding: 24px;
+            box-shadow: 0 4px 24px var(--shadow);
+            margin-bottom: 24px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #E5E7EB;
+            border-radius: 12px;
+            font-family: inherit;
+            font-size: 1rem;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            background: var(--bg);
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--accent-mint);
+            box-shadow: 0 0 0 4px rgba(78, 205, 196, 0.15);
+        }
+
+        .form-group textarea {
+            resize: none;
+            min-height: 100px;
+        }
+
+        .category-pills {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .category-pill {
+            padding: 8px 16px;
+            border-radius: 20px;
+            border: 2px solid #E5E7EB;
+            background: var(--surface);
+            font-family: inherit;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .category-pill:hover {
+            transform: translateY(-2px);
+        }
+
+        .category-pill.active {
+            border-color: transparent;
+            color: white;
+        }
+
+        .category-pill[data-cat="inspiration"] { --pill-color: var(--accent-coral); }
+        .category-pill[data-cat="problem"] { --pill-color: var(--accent-mint); }
+        .category-pill[data-cat="dream"] { --pill-color: var(--accent-blue); }
+        .category-pill[data-cat="todo"] { --pill-color: var(--accent-gold); }
+        .category-pill[data-cat="memory"] { --pill-color: var(--accent-pink); }
+
+        .category-pill.active {
+            background: var(--pill-color);
+            border-color: var(--pill-color);
+        }
+
+        .date-row {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .date-row input[type="date"] {
+            flex: 1;
+            padding: 12px 14px;
+            border: 2px solid #E5E7EB;
+            border-radius: 12px;
+            font-family: 'DM Mono', monospace;
+            font-size: 0.9rem;
+            background: var(--bg);
+        }
+
+        .date-row input:focus {
+            outline: none;
+            border-color: var(--accent-mint);
+        }
+
+        .today-btn {
+            padding: 12px 16px;
+            border-radius: 12px;
+            border: 2px solid var(--accent-coral);
+            background: var(--surface);
+            color: var(--accent-coral);
+            font-family: inherit;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .today-btn:hover {
+            background: var(--accent-coral);
+            color: white;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 14px;
+            background: linear-gradient(135deg, var(--accent-coral), var(--accent-pink));
+            color: white;
+            font-family: inherit;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(255, 107, 107, 0.3);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        /* Capsules List */
+        .capsules-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .capsules-header h2 {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .filter-btn {
+            padding: 8px 14px;
+            border-radius: 20px;
+            border: 2px solid #E5E7EB;
+            background: var(--surface);
+            font-family: inherit;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .filter-btn:hover {
+            border-color: var(--accent-mint);
+        }
+
+        .filter-btn.active {
+            background: var(--accent-mint);
+            border-color: var(--accent-mint);
+            color: white;
+        }
+
+        .capsules-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .capsule-card {
+            background: var(--surface);
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 2px 16px var(--shadow);
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .capsule-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 32px var(--shadow);
+        }
+
+        .capsule-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 6px;
+            height: 100%;
+        }
+
+        .capsule-card[data-cat="inspiration"]::before { background: var(--accent-coral); }
+        .capsule-card[data-cat="problem"]::before { background: var(--accent-mint); }
+        .capsule-card[data-cat="dream"]::before { background: var(--accent-blue); }
+        .capsule-card[data-cat="todo"]::before { background: var(--accent-gold); }
+        .capsule-card[data-cat="memory"]::before { background: var(--accent-pink); }
+
+        .capsule-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .capsule-category {
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .capsule-card[data-cat="inspiration"] .capsule-category { background: rgba(255, 107, 107, 0.15); color: var(--accent-coral); }
+        .capsule-card[data-cat="problem"] .capsule-category { background: rgba(78, 205, 196, 0.15); color: var(--accent-mint); }
+        .capsule-card[data-cat="dream"] .capsule-category { background: rgba(108, 99, 255, 0.15); color: var(--accent-blue); }
+        .capsule-card[data-cat="todo"] .capsule-category { background: rgba(255, 217, 61, 0.15); color: #B8860B; }
+        .capsule-card[data-cat="memory"] .capsule-category { background: rgba(255, 133, 161, 0.15); color: var(--accent-pink); }
+
+        .capsule-date {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .capsule-content {
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 12px;
+        }
+
+        .capsule-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 12px;
+            border-top: 1px dashed #E5E7EB;
+        }
+
+        .open-date {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .delete-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            border: none;
+            background: rgba(239, 68, 68, 0.1);
+            color: #EF4444;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            opacity: 0;
+        }
+
+        .capsule-card:hover .delete-btn {
+            opacity: 1;
+        }
+
+        .delete-btn:hover {
+            background: #EF4444;
+            color: white;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-muted);
+        }
+
+        .empty-icon {
+            font-size: 4rem;
+            margin-bottom: 16px;
+        }
+
+        .empty-state p {
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+        }
+
+        .empty-state small {
+            font-size: 0.9rem;
+        }
+
+        /* Confetti */
+        .confetti {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1000;
+            overflow: hidden;
+        }
+
+        .confetti-piece {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            animation: confetti-fall 3s ease-out forwards;
+        }
+
+        @keyframes confetti-fall {
+            0% {
+                transform: translateY(-100px) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            h1 { font-size: 1.6rem; }
+            .stats-bar { gap: 16px; }
+            .stat-item { font-size: 0.8rem; }
+            .input-form { padding: 20px; }
+            .capsule-card { padding: 16px; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Geometric Background -->
+    <div class="geo-bg">
+        <div class="geo-shape geo-circle"></div>
+        <div class="geo-shape geo-triangle"></div>
+        <div class="geo-shape geo-square"></div>
+    </div>
+
+    <header>
+        <div class="capsule-icon">
+            <svg viewBox="0 0 80 80" fill="none">
+                <rect x="8" y="20" width="64" height="40" rx="20" fill="#4ECDC4" opacity="0.2"/>
+                <rect x="8" y="20" width="64" height="40" rx="20" stroke="#4ECDC4" stroke-width="4"/>
+                <line x1="8" y1="40" x2="72" y2="40" stroke="#4ECDC4" stroke-width="4"/>
+                <circle cx="20" cy="32" r="4" fill="#FF6B6B"/>
+                <circle cx="40" cy="32" r="4" fill="#FFD93D"/>
+                <circle cx="60" cy="32" r="4" fill="#6C63FF"/>
+                <circle cx="20" cy="48" r="4" fill="#FF85A1"/>
+                <circle cx="40" cy="48" r="4" fill="#4ECDC4"/>
+                <circle cx="60" cy="48" r="4" fill="#6C63FF"/>
+            </svg>
+        </div>
+        <h1>記憶膠囊收集器</h1>
+        <p class="subtitle">封存每一個閃過的念頭，等待時光為你開啟</p>
+    </header>
+
+    <div class="stats-bar">
+        <div class="stat-item">
+            <div class="stat-dot coral"></div>
+            <span>靈感</span>
+            <span class="stat-num" id="stat-inspiration">0</span>
+        </div>
+        <div class="stat-item">
+            <div class="stat-dot mint"></div>
+            <span>問題</span>
+            <span class="stat-num" id="stat-problem">0</span>
+        </div>
+        <div class="stat-item">
+            <div class="stat-dot blue"></div>
+            <span>夢境</span>
+            <span class="stat-num" id="stat-dream">0</span>
+        </div>
+        <div class="stat-item">
+            <div class="stat-dot gold"></div>
+            <span>待辦</span>
+            <span class="stat-num" id="stat-todo">0</span>
+        </div>
+        <div class="stat-item">
+            <div class="stat-dot pink"></div>
+            <span>記憶</span>
+            <span class="stat-num" id="stat-memory">0</span>
+        </div>
+    </div>
+
+    <main>
+        <form class="input-form" id="capsuleForm">
+            <div class="form-group">
+                <label>膠囊內容</label>
+                <textarea id="content" placeholder="寫下此刻的念頭、靈感、問題或夢境片段..." required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>分類</label>
+                <div class="category-pills">
+                    <button type="button" class="category-pill active" data-cat="inspiration">💡 靈感</button>
+                    <button type="button" class="category-pill" data-cat="problem">🔧 問題</button>
+                    <button type="button" class="category-pill" data-cat="dream">🌙 夢境</button>
+                    <button type="button" class="category-pill" data-cat="todo">📋 待辦</button>
+                    <button type="button" class="category-pill" data-cat="memory">💭 記憶</button>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>開啟日期</label>
+                <div class="date-row">
+                    <input type="date" id="openDate">
+                    <button type="button" class="today-btn" id="todayBtn">今天</button>
+                </div>
+            </div>
+
+            <button type="submit" class="submit-btn">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 5v14M5 12h14"/>
+                </svg>
+                封存膠囊
+            </button>
+        </form>
+
+        <div class="capsules-header">
+            <h2>已封存膠囊</h2>
+            <div class="filter-pills">
+                <button class="filter-btn active" data-filter="all">全部</button>
+                <button class="filter-btn" data-filter="upcoming">未來</button>
+                <button class="filter-btn" data-filter="ready">可開啟</button>
+            </div>
+        </div>
+
+        <div class="capsules-list" id="capsulesList"></div>
+    </main>
+
+    <div class="confetti" id="confetti"></div>
+
+    <script>
+        // State
+        let capsules = JSON.parse(localStorage.getItem('memoryCapsules') || '[]');
+        let currentCategory = 'inspiration';
+        let currentFilter = 'all';
+
+        // DOM Elements
+        const form = document.getElementById('capsuleForm');
+        const contentInput = document.getElementById('content');
+        const dateInput = document.getElementById('openDate');
+        const todayBtn = document.getElementById('todayBtn');
+        const categoryPills = document.querySelectorAll('.category-pill');
+        const filterBtns = document.querySelectorAll('.filter-btn');
+        const capsulesList = document.getElementById('capsulesList');
+        const confettiContainer = document.getElementById('confetti');
+
+        // Category Labels
+        const categoryLabels = {
+            inspiration: '💡 靈感',
+            problem: '🔧 問題',
+            dream: '🌙 夢境',
+            todo: '📋 待辦',
+            memory: '💭 記憶'
+        };
+
+        // Initialize
+        function init() {
+            // Set default date to today
+            const today = new Date();
+            dateInput.value = today.toISOString().split('T')[0];
+
+            // Set category click handlers
+            categoryPills.forEach(pill => {
+                pill.addEventListener('click', () => {
+                    categoryPills.forEach(p => p.classList.remove('active'));
+                    pill.classList.add('active');
+                    currentCategory = pill.dataset.cat;
+                });
+            });
+
+            // Set filter click handlers
+            filterBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    filterBtns.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    currentFilter = btn.dataset.filter;
+                    renderCapsules();
+                });
+            });
+
+            // Today button
+            todayBtn.addEventListener('click', () => {
+                const today = new Date();
+                dateInput.value = today.toISOString().split('T')[0];
+            });
+
+            // Form submit
+            form.addEventListener('submit', handleSubmit);
+
+            // Initial render
+            renderCapsules();
+            updateStats();
+        }
+
+        // Handle form submit
+        function handleSubmit(e) {
+            e.preventDefault();
+            const content = contentInput.value.trim();
+            if (!content) return;
+
+            const capsule = {
+                id: Date.now().toString(),
+                content,
+                category: currentCategory,
+                createdAt: new Date().toISOString(),
+                openDate: dateInput.value,
+                opened: false
+            };
+
+            capsules.unshift(capsule);
+            saveCapsules();
+            contentInput.value = '';
+            renderCapsules();
+            updateStats();
+            launchConfetti();
+        }
+
+        // Render capsules
+        function renderCapsules() {
+            const now = new Date();
+            now.setHours(0, 0, 0, 0);
+
+            let filtered = capsules.filter(c => {
+                if (currentFilter === 'all') return true;
+                if (currentFilter === 'upcoming') {
+                    const openDate = new Date(c.openDate);
+                    return openDate > now;
+                }
+                if (currentFilter === 'ready') {
+                    const openDate = new Date(c.openDate);
+                    return openDate <= now && !c.opened;
+                }
+                return true;
+            });
+
+            if (filtered.length === 0) {
+                capsulesList.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">💾</div>
+                        <p>還沒有封存任何膠囊</p>
+                        <small>寫下第一個念頭，等待時光為你開啟</small>
+                    </div>
+                `;
+                return;
+            }
+
+            capsulesList.innerHTML = filtered.map(capsule => {
+                const openDate = new Date(capsule.openDate);
+                const canOpen = openDate <= now && !capsule.opened;
+                const openDateStr = formatDate(openDate);
+
+                return `
+                    <div class="capsule-card" data-cat="${capsule.category}" data-id="${capsule.id}">
+                        <div class="capsule-meta">
+                            <span class="capsule-category">${categoryLabels[capsule.category]}</span>
+                            <span class="capsule-date">${formatDate(new Date(capsule.createdAt))}</span>
+                        </div>
+                        <div class="capsule-content">${escapeHtml(capsule.content)}</div>
+                        <div class="capsule-footer">
+                            <span class="open-date">
+                                ${canOpen ? '🎉 可開啟' : '⏳ ' + openDateStr + ' 開啟'}
+                            </span>
+                            <button class="delete-btn" onclick="deleteCapsule('${capsule.id}')">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Update stats
+        function updateStats() {
+            const counts = {
+                inspiration: 0,
+                problem: 0,
+                dream: 0,
+                todo: 0,
+                memory: 0
+            };
+
+            capsules.forEach(c => {
+                if (counts[c.category] !== undefined) {
+                    counts[c.category]++;
+                }
+            });
+
+            document.getElementById('stat-inspiration').textContent = counts.inspiration;
+            document.getElementById('stat-problem').textContent = counts.problem;
+            document.getElementById('stat-dream').textContent = counts.dream;
+            document.getElementById('stat-todo').textContent = counts.todo;
+            document.getElementById('stat-memory').textContent = counts.memory;
+        }
+
+        // Delete capsule
+        function deleteCapsule(id) {
+            if (confirm('確定要刪除這個膠囊嗎？')) {
+                capsules = capsules.filter(c => c.id !== id);
+                saveCapsules();
+                renderCapsules();
+                updateStats();
+            }
+        }
+
+        // Save to localStorage
+        function saveCapsules() {
+            localStorage.setItem('memoryCapsules', JSON.stringify(capsules));
+        }
+
+        // Format date
+        function formatDate(date) {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            return `${year}/${month}/${day}`;
+        }
+
+        // Escape HTML
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML.replace(/\n/g, '<br>');
+        }
+
+        // Launch confetti
+        function launchConfetti() {
+            const colors = ['#FF6B6B', '#4ECDC4', '#FFD93D', '#6C63FF', '#FF85A1'];
+            for (let i = 0; i < 50; i++) {
+                const piece = document.createElement('div');
+                piece.className = 'confetti-piece';
+                piece.style.left = Math.random() * 100 + '%';
+                piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+                piece.style.animationDelay = Math.random() * 0.5 + 's';
+                piece.style.transform = `rotate(${Math.random() * 360}deg)`;
+                confettiContainer.appendChild(piece);
+            }
+            setTimeout(() => {
+                confettiContainer.innerHTML = '';
+            }, 3500);
+        }
+
+        // Start
+        init();
+    </script>
+</body>
+</html>

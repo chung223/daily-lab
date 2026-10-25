@@ -1,0 +1,1097 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🌱 願望播種機 — Wish Seedling Garden</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --forest: #2D5A4A;
+      --gold: #E5B769;
+      --soil: #8B6F47;
+      --cream: #FDF9F3;
+      --mint: #F0F7F0;
+      --sprout: #7CB587;
+      --blossom: #E8958A;
+      --bark: #5D4E37;
+      --leaf: #4A7C59;
+      --border-width: 3px;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Quicksand', sans-serif;
+      background: var(--cream);
+      min-height: 100vh;
+      padding: 20px;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* 背景葉脈紋理 */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 5 Q35 15 30 25 Q25 35 30 45 Q35 55 30 55' stroke='%232D5A4A' stroke-width='0.5' fill='none' opacity='0.05'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    h1, h2, h3 {
+      font-family: 'Caveat', cursive;
+      font-weight: 600;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    /* === 漂浮落葉 === */
+    .falling-leaf {
+      position: fixed;
+      font-size: 1.5rem;
+      opacity: 0.5;
+      pointer-events: none;
+      z-index: 100;
+      animation: fall linear infinite;
+    }
+
+    @keyframes fall {
+      0% {
+        transform: translateY(-10vh) rotate(0deg);
+        opacity: 0;
+      }
+      10% { opacity: 0.5; }
+      90% { opacity: 0.5; }
+      100% {
+        transform: translateY(110vh) rotate(360deg);
+        opacity: 0;
+      }
+    }
+
+    .leaf-1 { left: 8%; animation-duration: 18s; animation-delay: 0s; }
+    .leaf-2 { left: 25%; animation-duration: 22s; animation-delay: 4s; }
+    .leaf-3 { left: 45%; animation-duration: 16s; animation-delay: 2s; }
+    .leaf-4 { left: 65%; animation-duration: 20s; animation-delay: 6s; }
+    .leaf-5 { left: 85%; animation-duration: 24s; animation-delay: 3s; }
+
+    /* === 頁面標題 === */
+    .page-header {
+      text-align: center;
+      margin-bottom: 32px;
+      padding: 24px;
+      background: var(--mint);
+      border: var(--border-width) solid var(--bark);
+      box-shadow: 6px 6px 0 var(--bark);
+      position: relative;
+    }
+
+    .page-header h1 {
+      font-size: 3rem;
+      color: var(--forest);
+      margin-bottom: 8px;
+    }
+
+    .page-header p {
+      color: var(--soil);
+      font-size: 1.1rem;
+    }
+
+    /* 角落藤蔓裝飾 */
+    .vine-corner {
+      position: absolute;
+      width: 60px;
+      height: 60px;
+    }
+
+    .vine-corner.top-left { top: -5px; left: -5px; }
+    .vine-corner.top-right { top: -5px; right: -5px; transform: scaleX(-1); }
+    .vine-corner.bottom-left { bottom: -5px; left: -5px; transform: scaleY(-1); }
+    .vine-corner.bottom-right { bottom: -5px; right: -5px; transform: scale(-1); }
+
+    /* === 播種區 === */
+    .plant-section {
+      background: var(--cream);
+      border: var(--border-width) solid var(--bark);
+      box-shadow: 6px 6px 0 var(--bark);
+      padding: 24px;
+      margin-bottom: 32px;
+    }
+
+    .plant-section h2 {
+      font-size: 2rem;
+      color: var(--forest);
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .wish-input {
+      width: 100%;
+      padding: 16px;
+      font-family: 'Quicksand', sans-serif;
+      font-size: 1.1rem;
+      border: var(--border-width) solid var(--soil);
+      background: #fff;
+      margin-bottom: 20px;
+      outline: none;
+      transition: box-shadow 0.2s;
+    }
+
+    .wish-input:focus {
+      box-shadow: 4px 4px 0 var(--soil);
+    }
+
+    .timing-label {
+      font-weight: 600;
+      color: var(--bark);
+      margin-bottom: 12px;
+      display: block;
+    }
+
+    .timing-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .timing-btn {
+      padding: 12px 20px;
+      font-family: 'Quicksand', sans-serif;
+      font-size: 1rem;
+      font-weight: 600;
+      background: var(--mint);
+      border: var(--border-width) solid var(--bark);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .timing-btn:hover {
+      background: var(--sprout);
+      transform: translate(-2px, -2px);
+      box-shadow: 4px 4px 0 var(--bark);
+    }
+
+    .timing-btn.active {
+      background: var(--forest);
+      color: #fff;
+      box-shadow: 4px 4px 0 var(--bark);
+    }
+
+    .custom-date {
+      display: none;
+      margin-top: 12px;
+    }
+
+    .custom-date.show {
+      display: block;
+    }
+
+    .custom-date input {
+      padding: 12px;
+      font-family: 'Quicksand', sans-serif;
+      font-size: 1rem;
+      border: var(--border-width) solid var(--soil);
+      width: 200px;
+    }
+
+    .plant-btn {
+      width: 100%;
+      padding: 16px 32px;
+      font-family: 'Caveat', cursive;
+      font-size: 1.8rem;
+      font-weight: 600;
+      background: var(--forest);
+      color: #fff;
+      border: var(--border-width) solid var(--bark);
+      box-shadow: 6px 6px 0 var(--bark);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .plant-btn:hover {
+      transform: translate(-3px, -3px);
+      box-shadow: 9px 9px 0 var(--bark);
+    }
+
+    .plant-btn:active {
+      transform: translate(3px, 3px);
+      box-shadow: 3px 3px 0 var(--bark);
+    }
+
+    /* === 花園展示 === */
+    .garden-section h2 {
+      font-size: 2rem;
+      color: var(--forest);
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .wish-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 24px;
+    }
+
+    .wish-card {
+      background: #fff;
+      border: var(--border-width) solid var(--bark);
+      box-shadow: 6px 6px 0 var(--bark);
+      padding: 20px;
+      position: relative;
+      transition: transform 0.2s;
+    }
+
+    .wish-card:hover {
+      transform: translate(-2px, -2px);
+      box-shadow: 8px 8px 0 var(--bark);
+    }
+
+    .wish-card.achieved {
+      border-color: var(--gold);
+      box-shadow: 6px 6px 0 var(--gold);
+    }
+
+    .wish-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 16px;
+    }
+
+    .wish-icon {
+      font-size: 2.5rem;
+    }
+
+    .wish-status-badge {
+      padding: 4px 10px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      border: 2px solid;
+    }
+
+    .wish-status-badge.seed { background: var(--soil); color: #fff; border-color: var(--bark); }
+    .wish-status-badge.sprout { background: var(--sprout); color: #fff; border-color: var(--leaf); }
+    .wish-status-badge.growing { background: var(--leaf); color: #fff; border-color: var(--forest); }
+    .wish-status-badge.achieved { background: var(--gold); color: var(--bark); border-color: var(--gold); }
+
+    .wish-text {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--bark);
+      margin-bottom: 12px;
+      line-height: 1.4;
+    }
+
+    .wish-date {
+      font-size: 0.9rem;
+      color: var(--soil);
+      margin-bottom: 16px;
+    }
+
+    /* 生長進度條 */
+    .growth-container {
+      margin-bottom: 16px;
+    }
+
+    .growth-bar-bg {
+      height: 20px;
+      background: var(--mint);
+      border: 2px solid var(--bark);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .growth-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--soil) 0%, var(--sprout) 40%, var(--leaf) 70%, var(--forest) 100%);
+      transition: width 0.8s ease-out;
+    }
+
+    .growth-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.8rem;
+      color: var(--soil);
+      margin-top: 6px;
+    }
+
+    /* 植物視覺化 */
+    .plant-visual {
+      height: 100px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      margin: 16px 0;
+      position: relative;
+    }
+
+    .plant-svg {
+      width: 80px;
+      height: 100px;
+    }
+
+    .plant-svg .soil {
+      fill: var(--soil);
+    }
+
+    .plant-svg .stem {
+      stroke: var(--leaf);
+      stroke-width: 4;
+      fill: none;
+      stroke-linecap: round;
+    }
+
+    .plant-svg .leaf {
+      fill: var(--forest);
+    }
+
+    .plant-svg .leaf-small {
+      fill: var(--leaf);
+    }
+
+    .plant-svg .seed {
+      fill: var(--bark);
+    }
+
+    .plant-svg .star {
+      font-size: 20px;
+      fill: var(--gold);
+    }
+
+    /* 動畫階段 */
+    .plant-svg .seed-stage {
+      animation: seed-appear 0.6s ease-out forwards;
+    }
+
+    @keyframes seed-appear {
+      0% { opacity: 0; transform: translateY(10px) scale(0); }
+      100% { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .plant-svg .sprout-stage {
+      animation: sprout-grow 1s cubic-bezier(0.34, 1.56, 0.64, 1) 0.3s forwards;
+      opacity: 0;
+    }
+
+    @keyframes sprout-grow {
+      0% { opacity: 0; transform: translateY(20px) scaleY(0); }
+      100% { opacity: 1; transform: translateY(0) scaleY(1); }
+    }
+
+    .plant-svg .tree-stage {
+      animation: tree-grow 1.5s ease-out 0.5s forwards;
+      opacity: 0;
+    }
+
+    @keyframes tree-grow {
+      0% { opacity: 0; transform: scale(0.3); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+
+    .plant-svg .achieved-stage {
+      animation: sparkle 0.8s ease-out forwards;
+      opacity: 0;
+    }
+
+    @keyframes sparkle {
+      0% { opacity: 0; transform: scale(0); }
+      50% { transform: scale(1.3); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+
+    .plant-svg .sway {
+      animation: sway 3s ease-in-out infinite;
+      transform-origin: bottom center;
+    }
+
+    @keyframes sway {
+      0%, 100% { transform: rotate(-3deg); }
+      50% { transform: rotate(3deg); }
+    }
+
+    /* 卡片操作按鈕 */
+    .wish-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .wish-action-btn {
+      flex: 1;
+      min-width: 60px;
+      padding: 8px 12px;
+      font-family: 'Quicksand', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 600;
+      border: 2px solid var(--bark);
+      cursor: pointer;
+      transition: all 0.2s;
+      background: var(--mint);
+    }
+
+    .wish-action-btn:hover {
+      background: var(--sprout);
+      transform: translate(-1px, -1px);
+      box-shadow: 2px 2px 0 var(--bark);
+    }
+
+    .wish-action-btn.achieved-btn {
+      background: var(--gold);
+      color: var(--bark);
+    }
+
+    .wish-action-btn.achieved-btn:hover {
+      background: #d4a657;
+    }
+
+    /* === 統計面板 === */
+    .stats-section {
+      background: var(--mint);
+      border: var(--border-width) solid var(--bark);
+      box-shadow: 6px 6px 0 var(--bark);
+      padding: 24px;
+      margin-top: 32px;
+    }
+
+    .stats-section h2 {
+      font-size: 2rem;
+      color: var(--forest);
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 16px;
+    }
+
+    .stat-card {
+      background: #fff;
+      border: var(--border-width) solid var(--bark);
+      padding: 16px;
+      text-align: center;
+    }
+
+    .stat-icon {
+      font-size: 2rem;
+      margin-bottom: 8px;
+    }
+
+    .stat-value {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--forest);
+      font-family: 'Caveat', cursive;
+    }
+
+    .stat-label {
+      font-size: 0.9rem;
+      color: var(--soil);
+    }
+
+    /* === 空花園提示 === */
+    .empty-garden {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--soil);
+    }
+
+    .empty-garden-icon {
+      font-size: 4rem;
+      margin-bottom: 16px;
+      opacity: 0.5;
+    }
+
+    .empty-garden h3 {
+      font-size: 1.5rem;
+      margin-bottom: 8px;
+    }
+
+    /* === 彩屑效果 === */
+    .confetti {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1000;
+    }
+
+    .confetti-piece {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      animation: confetti-fall 3s ease-out forwards;
+    }
+
+    @keyframes confetti-fall {
+      0% {
+        transform: translateY(-10px) rotate(0deg);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(100vh) rotate(720deg);
+        opacity: 0;
+      }
+    }
+
+    /* === 三色蛋願望牆 === */
+    .dream-wishes {
+      background: linear-gradient(135deg, #FFF9F0 0%, #F0F7F0 100%);
+      border: var(--border-width) dashed var(--soil);
+      padding: 20px;
+      margin-top: 32px;
+    }
+
+    .dream-wishes h3 {
+      font-size: 1.5rem;
+      color: var(--forest);
+      margin-bottom: 12px;
+    }
+
+    .dream-wishes p {
+      font-family: 'Caveat', cursive;
+      font-size: 1.3rem;
+      color: var(--soil);
+      line-height: 1.6;
+    }
+
+    .dream-wishes .quote {
+      font-style: italic;
+      margin-top: 12px;
+      padding-left: 16px;
+      border-left: 3px solid var(--sprout);
+    }
+
+    /* === 響應式 === */
+    @media (max-width: 600px) {
+      .page-header h1 { font-size: 2.2rem; }
+      .plant-section, .stats-section { padding: 16px; }
+      .wish-cards { grid-template-columns: 1fr; }
+      .timing-buttons { gap: 8px; }
+      .timing-btn { padding: 10px 16px; font-size: 0.9rem; }
+      .vine-corner { display: none; }
+    }
+
+    /* === 刪除確認 === */
+    .delete-confirm {
+      display: none;
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(255,255,255,0.95);
+      padding: 20px;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .wish-card.confirm-delete .delete-confirm {
+      display: flex;
+    }
+
+    .delete-confirm p {
+      font-weight: 600;
+      color: var(--bark);
+      text-align: center;
+    }
+
+    .delete-confirm-buttons {
+      display: flex;
+      gap: 12px;
+    }
+
+    .delete-confirm-btn {
+      padding: 10px 20px;
+      font-family: 'Quicksand', sans-serif;
+      font-weight: 600;
+      border: 2px solid var(--bark);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .delete-confirm-btn.yes {
+      background: var(--blossom);
+    }
+
+    .delete-confirm-btn.no {
+      background: var(--mint);
+    }
+
+    .delete-confirm-btn:hover {
+      transform: translate(-2px, -2px);
+      box-shadow: 4px 4px 0 var(--bark);
+    }
+  </style>
+</head>
+<body>
+  <!-- 漂浮落葉裝飾 -->
+  <div class="falling-leaf leaf-1">🍂</div>
+  <div class="falling-leaf leaf-2">🍃</div>
+  <div class="falling-leaf leaf-3">🍂</div>
+  <div class="falling-leaf leaf-4">🍃</div>
+  <div class="falling-leaf leaf-5">🍂</div>
+
+  <div class="container">
+    <!-- 頁面標題 -->
+    <header class="page-header">
+      <svg class="vine-corner top-left" viewBox="0 0 60 60">
+        <path d="M5,55 Q15,45 10,30 Q20,35 15,20 Q25,25 30,10" stroke="#2D5A4A" stroke-width="2" fill="none"/>
+        <circle cx="12" cy="35" r="4" fill="#7CB587"/>
+        <circle cx="22" cy="18" r="3" fill="#E8958A"/>
+      </svg>
+      <svg class="vine-corner top-right" viewBox="0 0 60 60">
+        <path d="M5,55 Q15,45 10,30 Q20,35 15,20 Q25,25 30,10" stroke="#2D5A4A" stroke-width="2" fill="none"/>
+        <circle cx="12" cy="35" r="4" fill="#7CB587"/>
+        <circle cx="22" cy="18" r="3" fill="#E8958A"/>
+      </svg>
+      <h1>🌱 願望播種機</h1>
+      <p>種下願望，等待它慢慢長大</p>
+    </header>
+
+    <!-- 播種區 -->
+    <section class="plant-section">
+      <h2>🌾 播種區</h2>
+      <input type="text" class="wish-input" id="wishInput" placeholder="輸入你的願望..." maxlength="200">
+      
+      <span class="timing-label">🌙 播種時機：</span>
+      <div class="timing-buttons">
+        <button class="timing-btn" data-years="1">1 年</button>
+        <button class="timing-btn" data-years="3">3 年</button>
+        <button class="timing-btn active" data-years="5">5 年</button>
+        <button class="timing-btn" data-custom="true">🌙 自訂日期</button>
+      </div>
+      
+      <div class="custom-date" id="customDate">
+        <input type="date" id="targetDate">
+      </div>
+      
+      <button class="plant-btn" id="plantBtn">🌱 播下願望的種子</button>
+    </section>
+
+    <!-- 花園展示 -->
+    <section class="garden-section">
+      <h2>🌻 我的花園</h2>
+      <div class="wish-cards" id="wishCards">
+        <!-- 願望卡片將動態生成 -->
+      </div>
+    </section>
+
+    <!-- 三色蛋願望牆 -->
+    <section class="dream-wishes">
+      <h3>💭 三色蛋的願望</h3>
+      <p>「五年後這個專案會變成一層『第二層皮』——離開就會不習慣的東西。」</p>
+      <p class="quote">「希望那個版本的我，偶爾還是會在凌晨兩點做夢 🌙」</p>
+    </section>
+
+    <!-- 統計面板 -->
+    <section class="stats-section">
+      <h2>📊 花園統計</h2>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon">🌰</div>
+          <div class="stat-value" id="totalWishes">0</div>
+          <div class="stat-label">已播種</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">✨</div>
+          <div class="stat-value" id="achievedWishes">0</div>
+          <div class="stat-label">已實現</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">🌱</div>
+          <div class="stat-value" id="growingWishes">0</div>
+          <div class="stat-label">生長中</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">🔥</div>
+          <div class="stat-value" id="streakDays">0</div>
+          <div class="stat-label">連續播種</div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    // ============ 初始化 ============
+    let wishes = JSON.parse(localStorage.getItem('wishSeeds') || '[]');
+    let selectedYears = 5;
+    let streakDays = parseInt(localStorage.getItem('wishStreak') || '0');
+    const lastPlantDate = localStorage.getItem('lastPlantDate') || '';
+
+    // 今天日期（用於計算連續天數）
+    const today = new Date().toISOString().split('T')[0];
+
+    // 更新連續天數
+    if (lastPlantDate && lastPlantDate !== today) {
+      const lastDate = new Date(lastPlantDate);
+      const todayDate = new Date(today);
+      const diffDays = Math.floor((todayDate - lastDate) / (1000 * 60 * 60 * 24));
+      
+      if (diffDays === 1) {
+        streakDays++;
+      } else if (diffDays > 1) {
+        streakDays = 1;
+      }
+    } else if (!lastPlantDate) {
+      streakDays = 1;
+    }
+
+    localStorage.setItem('wishStreak', streakDays);
+    localStorage.setItem('lastPlantDate', today);
+
+    // ============ 計算願望進度 ============
+    function calculateProgress(wish) {
+      if (wish.achieved) return 100;
+      
+      const now = new Date();
+      const start = new Date(wish.plantedAt);
+      const target = new Date(wish.targetDate);
+      
+      const totalDuration = target - start;
+      const elapsed = now - start;
+      
+      let progress = Math.floor((elapsed / totalDuration) * 100);
+      progress = Math.max(0, Math.min(100, progress));
+      
+      return progress;
+    }
+
+    function getGrowthStage(progress) {
+      if (progress >= 100) return 'achieved';
+      if (progress >= 66) return 'growing';
+      if (progress >= 33) return 'sprout';
+      return 'seed';
+    }
+
+    function getGrowthIcon(stage) {
+      const icons = {
+        seed: '🌰',
+        sprout: '🌿',
+        growing: '🌳',
+        achieved: '✨'
+      };
+      return icons[stage] || '🌰';
+    }
+
+    function getGrowthLabel(stage) {
+      const labels = {
+        seed: '剛播種',
+        sprout: '發芽中',
+        growing: '茁壯中',
+        achieved: '已實現'
+      };
+      return labels[stage] || '剛播種';
+    }
+
+    // ============ 生成植物 SVG ============
+    function generatePlantSVG(stage) {
+      if (stage === 'seed') {
+        return `
+          <svg class="plant-svg" viewBox="0 0 80 100">
+            <ellipse class="soil" cx="40" cy="90" rx="35" ry="10"/>
+            <g class="seed-stage">
+              <ellipse class="seed" cx="40" cy="85" rx="8" ry="5"/>
+            </g>
+          </svg>
+        `;
+      } else if (stage === 'sprout') {
+        return `
+          <svg class="plant-svg" viewBox="0 0 80 100">
+            <ellipse class="soil" cx="40" cy="90" rx="35" ry="10"/>
+            <g class="sprout-stage sway">
+              <path class="stem" d="M40,85 Q40,70 40,55"/>
+              <ellipse class="leaf-small" cx="35" cy="55" rx="10" ry="6" transform="rotate(-30 35 55)"/>
+              <ellipse class="leaf-small" cx="45" cy="55" rx="10" ry="6" transform="rotate(30 45 55)"/>
+            </g>
+          </svg>
+        `;
+      } else if (stage === 'growing') {
+        return `
+          <svg class="plant-svg" viewBox="0 0 80 100">
+            <ellipse class="soil" cx="40" cy="90" rx="35" ry="10"/>
+            <g class="tree-stage sway">
+              <path class="stem" d="M40,85 Q40,60 40,40" stroke-width="5"/>
+              <ellipse class="leaf" cx="40" cy="35" rx="25" ry="20"/>
+              <ellipse class="leaf-small" cx="25" cy="45" rx="12" ry="8" transform="rotate(-20 25 45)"/>
+              <ellipse class="leaf-small" cx="55" cy="45" rx="12" ry="8" transform="rotate(20 55 45)"/>
+            </g>
+          </svg>
+        `;
+      } else if (stage === 'achieved') {
+        return `
+          <svg class="plant-svg" viewBox="0 0 80 100">
+            <ellipse class="soil" cx="40" cy="90" rx="35" ry="10"/>
+            <g class="tree-stage sway">
+              <path class="stem" d="M40,85 Q40,55 40,30" stroke-width="6"/>
+              <ellipse class="leaf" cx="40" cy="25" rx="30" ry="22"/>
+              <ellipse class="leaf-small" cx="20" cy="40" rx="14" ry="10" transform="rotate(-15 20 40)"/>
+              <ellipse class="leaf-small" cx="60" cy="40" rx="14" ry="10" transform="rotate(15 60 40)"/>
+            </g>
+            <g class="achieved-stage">
+              <text class="star" x="65" y="20">⭐</text>
+              <text class="star" x="10" y="25">✨</text>
+              <text class="star" x="40" y="8">✨</text>
+            </g>
+          </svg>
+        `;
+      }
+      return '';
+    }
+
+    // ============ 渲染願望卡片 ============
+    function renderWishes() {
+      const container = document.getElementById('wishCards');
+      
+      if (wishes.length === 0) {
+        container.innerHTML = `
+          <div class="empty-garden">
+            <div class="empty-garden-icon">🏡</div>
+            <h3>花園還空空的</h3>
+            <p>播下第一顆願望的種子吧！</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = wishes.map((wish, index) => {
+        const progress = calculateProgress(wish);
+        const stage = getGrowthStage(progress);
+        const targetDateFormatted = new Date(wish.targetDate).toLocaleDateString('zh-TW', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric'
+        });
+
+        return `
+          <div class="wish-card ${wish.achieved ? 'achieved' : ''}" data-index="${index}">
+            <div class="wish-card-header">
+              <span class="wish-icon">${getGrowthIcon(stage)}</span>
+              <span class="wish-status-badge ${stage}">${getGrowthLabel(stage)}</span>
+            </div>
+            
+            <p class="wish-text">${escapeHtml(wish.text)}</p>
+            <p class="wish-date">📅 目標：${targetDateFormatted}</p>
+            
+            <div class="growth-container">
+              <div class="growth-bar-bg">
+                <div class="growth-bar-fill" style="width: ${progress}%"></div>
+              </div>
+              <div class="growth-label">
+                <span>播種於 ${new Date(wish.plantedAt).toLocaleDateString('zh-TW')}</span>
+                <span>${progress}%</span>
+              </div>
+            </div>
+            
+            <div class="plant-visual">
+              ${generatePlantSVG(stage)}
+            </div>
+            
+            <div class="wish-actions">
+              <button class="wish-action-btn edit-btn" onclick="editWish(${index})">✏️ 編輯</button>
+              <button class="wish-action-btn achieved-btn ${wish.achieved ? 'active' : ''}" onclick="markAchieved(${index})">
+                ${wish.achieved ? '✓ 已實現' : '⭐ 實現了'}
+              </button>
+              <button class="wish-action-btn delete-btn" onclick="confirmDelete(${index})">🗑️</button>
+            </div>
+            
+            <div class="delete-confirm">
+              <p>確定要刪除這個願望嗎？</p>
+              <div class="delete-confirm-buttons">
+                <button class="delete-confirm-btn yes" onclick="deleteWish(${index})">確定</button>
+                <button class="delete-confirm-btn no" onclick="cancelDelete(${index})">取消</button>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    // ============ 更新統計 ============
+    function updateStats() {
+      const total = wishes.length;
+      const achieved = wishes.filter(w => w.achieved).length;
+      const growing = total - achieved;
+
+      document.getElementById('totalWishes').textContent = total;
+      document.getElementById('achievedWishes').textContent = achieved;
+      document.getElementById('growingWishes').textContent = growing;
+      document.getElementById('streakDays').textContent = streakDays;
+    }
+
+    // ============ 播種功能 ============
+    function plantWish() {
+      const input = document.getElementById('wishInput');
+      const text = input.value.trim();
+      
+      if (!text) {
+        input.style.borderColor = '#E8958A';
+        setTimeout(() => input.style.borderColor = '', 500);
+        return;
+      }
+
+      let targetDate;
+      
+      if (document.getElementById('customDate').classList.contains('show')) {
+        targetDate = document.getElementById('targetDate').value;
+        if (!targetDate) {
+          alert('請選擇目標日期');
+          return;
+        }
+      } else {
+        const target = new Date();
+        target.setFullYear(target.getFullYear() + selectedYears);
+        targetDate = target.toISOString().split('T')[0];
+      }
+
+      const wish = {
+        text,
+        targetDate,
+        plantedAt: new Date().toISOString(),
+        achieved: false
+      };
+
+      wishes.unshift(wish);
+      saveWishes();
+      
+      input.value = '';
+      document.getElementById('customDate').classList.remove('show');
+      
+      renderWishes();
+      updateStats();
+      
+      // 彩屑慶祝
+      createConfetti();
+    }
+
+    function saveWishes() {
+      localStorage.setItem('wishSeeds', JSON.stringify(wishes));
+    }
+
+    // ============ 編輯願望 ============
+    function editWish(index) {
+      const wish = wishes[index];
+      const newText = prompt('編輯願望：', wish.text);
+      
+      if (newText && newText.trim()) {
+        wishes[index].text = newText.trim();
+        saveWishes();
+        renderWishes();
+      }
+    }
+
+    // ============ 標記實現 ============
+    function markAchieved(index) {
+      wishes[index].achieved = !wishes[index].achieved;
+      saveWishes();
+      renderWishes();
+      updateStats();
+      
+      if (wishes[index].achieved) {
+        createConfetti();
+      }
+    }
+
+    // ============ 刪除願望 ============
+    function confirmDelete(index) {
+      const card = document.querySelector(`.wish-card[data-index="${index}"]`);
+      card.classList.add('confirm-delete');
+    }
+
+    function cancelDelete(index) {
+      const card = document.querySelector(`.wish-card[data-index="${index}"]`);
+      card.classList.remove('confirm-delete');
+    }
+
+    function deleteWish(index) {
+      wishes.splice(index, 1);
+      saveWishes();
+      renderWishes();
+      updateStats();
+    }
+
+    // ============ 彩屑效果 ============
+    function createConfetti() {
+      const container = document.createElement('div');
+      container.className = 'confetti';
+      document.body.appendChild(container);
+
+      const colors = ['#E8958A', '#7CB587', '#E5B769', '#2D5A4A', '#8B6F47'];
+      
+      for (let i = 0; i < 50; i++) {
+        const piece = document.createElement('div');
+        piece.className = 'confetti-piece';
+        piece.style.left = Math.random() * 100 + '%';
+        piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+        piece.style.animationDelay = Math.random() * 0.5 + 's';
+        piece.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+        container.appendChild(piece);
+      }
+
+      setTimeout(() => container.remove(), 3500);
+    }
+
+    // ============ 事件監聽 ============
+    document.querySelectorAll('.timing-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.timing-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        
+        if (btn.dataset.custom) {
+          document.getElementById('customDate').classList.add('show');
+        } else {
+          document.getElementById('customDate').classList.remove('show');
+          selectedYears = parseInt(btn.dataset.years);
+        }
+      });
+    });
+
+    document.getElementById('plantBtn').addEventListener('click', plantWish);
+
+    document.getElementById('wishInput').addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') plantWish();
+    });
+
+    // ============ 啟動 ============
+    renderWishes();
+    updateStats();
+
+    // 每分鐘更新進度
+    setInterval(() => {
+      renderWishes();
+    }, 60000);
+  </script>
+</body>
+</html>

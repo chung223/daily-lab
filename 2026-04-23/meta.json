@@ -1,0 +1,6 @@
+{
+  "title": "OCR 勇者冒險 — mlx-ocr 戰鬥系統",
+  "type": "遊戲系",
+  "description": "RPG 勇者冒險風格互動系統，使用 mlx-ocr 辨識圖片中的文字進行戰鬥互動。包含角色卡屬性面板（速度、精準度、神秘屬性）、戰鬥區、怪物、技能系統。localStorage 持久化所有資料",
+  "inspiration": "結合 Apple Silicon mlx-ocr 文字辨識技術與 RPG 勇者冒險遊戲的創意，讓圖片中的文字變成可戰鬥的怪物的互動體驗"
+}

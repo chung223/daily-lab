@@ -1,0 +1,1101 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Morse Pulse · 摩斯脈衝</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=JetBrains+Mono:wght@400;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-primary: #0a0a0f;
+      --bg-secondary: #12121a;
+      --bg-card: #1a1a24;
+      --brass: #d4a574;
+      --brass-dark: #a67c52;
+      --neon-green: #39ff14;
+      --neon-cyan: #00f5ff;
+      --neon-pink: #ff6b9d;
+      --warm-white: #f5f5dc;
+      --text-secondary: #8a8a9a;
+      --text-muted: #5a5a6a;
+      --glow-green: 0 0 20px #39ff14, 0 0 40px #39ff1480;
+      --glow-cyan: 0 0 20px #00f5ff, 0 0 40px #00f5ff80;
+      --glow-brass: 0 0 15px #d4a57480;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Noto Sans TC', sans-serif;
+      background: var(--bg-primary);
+      color: var(--warm-white);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Grain overlay */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+      opacity: 0.03;
+      pointer-events: none;
+      z-index: 1000;
+    }
+
+    /* Animated background grid */
+    .bg-grid {
+      position: fixed;
+      inset: 0;
+      background-image: 
+        linear-gradient(rgba(0, 245, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 245, 255, 0.03) 1px, transparent 1px);
+      background-size: 50px 50px;
+      pointer-events: none;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Header */
+    header {
+      text-align: center;
+      margin-bottom: 3rem;
+      animation: fadeInDown 0.8s ease-out;
+    }
+
+    @keyframes fadeInDown {
+      from {
+        opacity: 0;
+        transform: translateY(-30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .logo {
+      display: inline-flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .logo-icon {
+      width: 50px;
+      height: 50px;
+      position: relative;
+    }
+
+    .lamp {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, #fff, var(--brass));
+      box-shadow: var(--glow-brass);
+      position: absolute;
+      top: 5px;
+      left: 5px;
+      transition: all 0.15s ease;
+    }
+
+    .lamp.active {
+      background: radial-gradient(circle at 30% 30%, #fff, var(--neon-green));
+      box-shadow: var(--glow-green);
+    }
+
+    .lamp-base {
+      width: 30px;
+      height: 10px;
+      background: linear-gradient(to bottom, var(--brass-dark), #5a4a3a);
+      border-radius: 0 0 5px 5px;
+      position: absolute;
+      bottom: 0;
+      left: 10px;
+    }
+
+    h1 {
+      font-family: 'Orbitron', monospace;
+      font-size: 2.5rem;
+      font-weight: 900;
+      letter-spacing: 0.2em;
+      background: linear-gradient(135deg, var(--neon-cyan), var(--warm-white));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-shadow: none;
+    }
+
+    .subtitle {
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      letter-spacing: 0.3em;
+      margin-top: 0.5rem;
+    }
+
+    /* Main panel */
+    .main-panel {
+      background: var(--bg-card);
+      border: 1px solid rgba(212, 165, 116, 0.2);
+      border-radius: 20px;
+      padding: 2rem;
+      position: relative;
+      overflow: hidden;
+      animation: fadeInUp 0.8s ease-out 0.2s both;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Brass corners */
+    .main-panel::before,
+    .main-panel::after {
+      content: '';
+      position: absolute;
+      width: 60px;
+      height: 60px;
+      border: 3px solid var(--brass);
+      opacity: 0.5;
+    }
+
+    .main-panel::before {
+      top: 10px;
+      left: 10px;
+      border-right: none;
+      border-bottom: none;
+      border-radius: 10px 0 0 0;
+    }
+
+    .main-panel::after {
+      bottom: 10px;
+      right: 10px;
+      border-left: none;
+      border-top: none;
+      border-radius: 0 0 10px 0;
+    }
+
+    /* Input section */
+    .input-section {
+      margin-bottom: 2rem;
+    }
+
+    .input-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--brass);
+      letter-spacing: 0.2em;
+      margin-bottom: 0.75rem;
+      display: block;
+    }
+
+    .text-input {
+      width: 100%;
+      background: var(--bg-secondary);
+      border: 2px solid rgba(212, 165, 116, 0.3);
+      border-radius: 12px;
+      padding: 1rem 1.25rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1.1rem;
+      color: var(--warm-white);
+      transition: all 0.3s ease;
+      outline: none;
+    }
+
+    .text-input:focus {
+      border-color: var(--neon-cyan);
+      box-shadow: var(--glow-cyan);
+    }
+
+    .text-input::placeholder {
+      color: var(--text-muted);
+    }
+
+    /* Morse display */
+    .morse-display {
+      background: var(--bg-primary);
+      border: 2px solid rgba(212, 165, 116, 0.2);
+      border-radius: 16px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      min-height: 120px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .lamp-indicator {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, #555, #333);
+      box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
+      position: relative;
+      transition: all 0.1s ease;
+    }
+
+    .lamp-indicator.on {
+      background: radial-gradient(circle at 30% 30%, #fff, var(--neon-green));
+      box-shadow: var(--glow-green);
+    }
+
+    .lamp-indicator::after {
+      content: '';
+      position: absolute;
+      inset: -10px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(57, 255, 20, 0.3), transparent);
+      opacity: 0;
+      transition: opacity 0.1s ease;
+    }
+
+    .lamp-indicator.on::after {
+      opacity: 1;
+    }
+
+    /* Morse sequence */
+    .morse-sequence {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1.5rem;
+      letter-spacing: 0.5em;
+      color: var(--text-secondary);
+      margin-top: 1rem;
+      text-align: center;
+      min-height: 2rem;
+    }
+
+    .morse-sequence .current {
+      color: var(--neon-green);
+      text-shadow: var(--glow-green);
+    }
+
+    /* Controls */
+    .controls {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 2rem;
+    }
+
+    .btn {
+      font-family: 'Orbitron', monospace;
+      font-size: 0.9rem;
+      font-weight: 700;
+      padding: 0.875rem 1.75rem;
+      border: 2px solid;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    .btn-primary {
+      background: var(--neon-green);
+      border-color: var(--neon-green);
+      color: var(--bg-primary);
+    }
+
+    .btn-primary:hover {
+      background: transparent;
+      color: var(--neon-green);
+      box-shadow: var(--glow-green);
+    }
+
+    .btn-primary:active {
+      transform: scale(0.95);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      border-color: var(--brass);
+      color: var(--brass);
+    }
+
+    .btn-secondary:hover {
+      background: var(--brass);
+      color: var(--bg-primary);
+    }
+
+    .btn-secondary:active {
+      transform: scale(0.95);
+    }
+
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    /* Speed control */
+    .speed-control {
+      margin-bottom: 2rem;
+    }
+
+    .speed-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.75rem;
+    }
+
+    .speed-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--brass);
+      letter-spacing: 0.2em;
+    }
+
+    .speed-value {
+      font-family: 'Orbitron', monospace;
+      font-size: 1rem;
+      color: var(--neon-cyan);
+      text-shadow: var(--glow-cyan);
+    }
+
+    .speed-slider {
+      width: 100%;
+      height: 8px;
+      -webkit-appearance: none;
+      appearance: none;
+      background: var(--bg-secondary);
+      border-radius: 4px;
+      outline: none;
+    }
+
+    .speed-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: var(--neon-cyan);
+      cursor: pointer;
+      box-shadow: var(--glow-cyan);
+      transition: all 0.2s ease;
+    }
+
+    .speed-slider::-webkit-slider-thumb:hover {
+      transform: scale(1.2);
+    }
+
+    .speed-slider::-moz-range-thumb {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: var(--neon-cyan);
+      cursor: pointer;
+      border: none;
+      box-shadow: var(--glow-cyan);
+    }
+
+    /* Morse translation */
+    .translation {
+      background: var(--bg-secondary);
+      border-radius: 12px;
+      padding: 1.25rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .translation-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      letter-spacing: 0.2em;
+      margin-bottom: 0.5rem;
+      display: block;
+    }
+
+    .translation-text {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1.1rem;
+      color: var(--warm-white);
+      word-break: break-all;
+    }
+
+    .translation-char {
+      display: inline-block;
+      transition: all 0.2s ease;
+    }
+
+    .translation-char.active {
+      color: var(--neon-green);
+      text-shadow: var(--glow-green);
+      transform: scale(1.2);
+    }
+
+    /* Sound toggle */
+    .sound-toggle {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+      margin-bottom: 2rem;
+    }
+
+    .toggle-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+    }
+
+    .toggle {
+      width: 50px;
+      height: 26px;
+      background: var(--bg-secondary);
+      border: 2px solid var(--brass);
+      border-radius: 13px;
+      cursor: pointer;
+      position: relative;
+      transition: all 0.3s ease;
+    }
+
+    .toggle::after {
+      content: '';
+      position: absolute;
+      width: 18px;
+      height: 18px;
+      background: var(--brass);
+      border-radius: 50%;
+      top: 2px;
+      left: 2px;
+      transition: all 0.3s ease;
+    }
+
+    .toggle.active {
+      background: rgba(57, 255, 20, 0.2);
+      border-color: var(--neon-green);
+    }
+
+    .toggle.active::after {
+      left: 26px;
+      background: var(--neon-green);
+      box-shadow: var(--glow-green);
+    }
+
+    /* Stats bar */
+    .stats-bar {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      padding: 1rem;
+      background: var(--bg-secondary);
+      border-radius: 12px;
+      flex-wrap: wrap;
+      animation: fadeInUp 0.8s ease-out 0.4s both;
+    }
+
+    .stat-item {
+      text-align: center;
+    }
+
+    .stat-value {
+      font-family: 'Orbitron', monospace;
+      font-size: 1.25rem;
+      color: var(--neon-cyan);
+      text-shadow: var(--glow-cyan);
+    }
+
+    .stat-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.65rem;
+      color: var(--text-muted);
+      letter-spacing: 0.15em;
+      margin-top: 0.25rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      h1 {
+        font-size: 1.75rem;
+      }
+
+      .subtitle {
+        font-size: 0.75rem;
+        letter-spacing: 0.2em;
+      }
+
+      .main-panel {
+        padding: 1.5rem;
+      }
+
+      .morse-display {
+        padding: 1rem;
+        min-height: 100px;
+      }
+
+      .lamp-indicator {
+        width: 60px;
+        height: 60px;
+      }
+
+      .morse-sequence {
+        font-size: 1.1rem;
+      }
+
+      .controls {
+        gap: 0.75rem;
+      }
+
+      .btn {
+        padding: 0.75rem 1.25rem;
+        font-size: 0.8rem;
+      }
+
+      .stats-bar {
+        gap: 1.5rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .container {
+        padding: 1rem;
+      }
+
+      h1 {
+        font-size: 1.4rem;
+      }
+
+      .logo-icon {
+        width: 40px;
+        height: 40px;
+      }
+
+      .lamp {
+        width: 32px;
+        height: 32px;
+      }
+
+      .lamp-base {
+        width: 24px;
+        height: 8px;
+        left: 8px;
+      }
+    }
+
+    /* Visual signal bars */
+    .signal-bars {
+      display: flex;
+      gap: 3px;
+      justify-content: center;
+      margin-top: 1rem;
+    }
+
+    .signal-bar {
+      width: 4px;
+      height: 20px;
+      background: var(--text-muted);
+      border-radius: 2px;
+      transition: all 0.1s ease;
+    }
+
+    .signal-bar.active {
+      background: var(--neon-green);
+      box-shadow: 0 0 10px var(--neon-green);
+    }
+
+    /* Pulse animation for playing */
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.7; }
+    }
+
+    .playing-indicator {
+      animation: pulse 1s ease-in-out infinite;
+    }
+
+    /* Footer decoration */
+    .footer-deco {
+      text-align: center;
+      margin-top: 2rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid rgba(212, 165, 116, 0.1);
+    }
+
+    .footer-text {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      letter-spacing: 0.3em;
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-grid"></div>
+  
+  <div class="container">
+    <header>
+      <div class="logo">
+        <div class="logo-icon">
+          <div class="lamp" id="headerLamp"></div>
+          <div class="lamp-base"></div>
+        </div>
+        <div>
+          <h1>MORSE PULSE</h1>
+          <p class="subtitle">摩斯脈衝 · 訊號轉換器</p>
+        </div>
+      </div>
+    </header>
+
+    <main class="main-panel">
+      <!-- Input -->
+      <div class="input-section">
+        <label class="input-label">// ENTER TEXT TO TRANSMIT</label>
+        <input 
+          type="text" 
+          class="text-input" 
+          id="textInput" 
+          placeholder="輸入文字..."
+          maxlength="100"
+          autocomplete="off"
+        >
+      </div>
+
+      <!-- Morse Display with Lamp -->
+      <div class="morse-display">
+        <div>
+          <div class="lamp-indicator" id="lampIndicator"></div>
+          <div class="signal-bars" id="signalBars">
+            <div class="signal-bar"></div>
+            <div class="signal-bar"></div>
+            <div class="signal-bar"></div>
+            <div class="signal-bar"></div>
+            <div class="signal-bar"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Morse Sequence Display -->
+      <div class="morse-sequence" id="morseSequence"></div>
+
+      <!-- Translation -->
+      <div class="translation">
+        <span class="translation-label">// MORSE TRANSLATION</span>
+        <div class="translation-text" id="translationText"></div>
+      </div>
+
+      <!-- Controls -->
+      <div class="controls">
+        <button class="btn btn-primary" id="playBtn">
+          <span>▶</span> PLAY
+        </button>
+        <button class="btn btn-secondary" id="stopBtn" disabled>
+          <span>■</span> STOP
+        </button>
+        <button class="btn btn-secondary" id="resetBtn">
+          <span>↺</span> RESET
+        </button>
+      </div>
+
+      <!-- Speed Control -->
+      <div class="speed-control">
+        <div class="speed-header">
+          <span class="speed-label">// TRANSMISSION SPEED</span>
+          <span class="speed-value" id="speedValue">15 WPM</span>
+        </div>
+        <input 
+          type="range" 
+          class="speed-slider" 
+          id="speedSlider"
+          min="5" 
+          max="30" 
+          value="15"
+        >
+      </div>
+
+      <!-- Sound Toggle -->
+      <div class="sound-toggle">
+        <span class="toggle-label">SOUND</span>
+        <div class="toggle active" id="soundToggle"></div>
+        <span class="toggle-label" id="soundLabel">ON</span>
+      </div>
+
+      <!-- Stats -->
+      <div class="stats-bar">
+        <div class="stat-item">
+          <div class="stat-value" id="todayCount">0</div>
+          <div class="stat-label">TODAY</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value" id="totalCount">0</div>
+          <div class="stat-label">TOTAL</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value" id="sessionCount">0</div>
+          <div class="stat-label">SESSION</div>
+        </div>
+      </div>
+
+      <div class="footer-deco">
+        <p class="footer-text">· · · — — — · · ·</p>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    // Morse Code Dictionary
+    const MORSE_CODE = {
+      'A': '.-', 'B': '-...', 'C': '-.-.', 'D': '-..', 'E': '.', 'F': '..-.',
+      'G': '--.', 'H': '....', 'I': '..', 'J': '.---', 'K': '-.-', 'L': '.-..',
+      'M': '--', 'N': '-.', 'O': '---', 'P': '.--.', 'Q': '--.-', 'R': '.-.',
+      'S': '...', 'T': '-', 'U': '..-', 'V': '...-', 'W': '.--', 'X': '-..-',
+      'Y': '-.--', 'Z': '--..', '0': '-----', '1': '.----', '2': '..---',
+      '3': '...--', '4': '....-', '5': '.....', '6': '-....', '7': '--...',
+      '8': '---..', '9': '----.', ' ': ' ', '.': '.-.-.-', ',': '--..--',
+      '?': '..--..', "'": '.----.', '!': '-.-.--', '/': '-..-.', '(': '-.--.',
+      ')': '-.--.-', '&': '.-...', ':': '---...', ';': '-.-.-.', '=': '-...-',
+      '+': '.-.-.', '-': '-....-', '_': '..--.-', '"': '.-..-.', '$': '...-..-',
+      '@': '.--.-.', 'ㄅ': '.----', 'ㄆ': '..---', 'ㄇ': '...--', 'ㄈ': '....-',
+      'ㄉ': '.....', 'ㄊ': '-....', 'ㄋ': '--...', 'ㄌ': '---..', 'ㄍ': '----.',
+      'ㄎ': '-----', 'ㄏ': '.----', 'ㄐ': '..---', 'ㄑ': '...--', 'ㄒ': '....-',
+      'ㄓ': '.....', 'ㄔ': '-....', 'ㄕ': '--...', 'ㄖ': '---..', 'ㄗ': '----.',
+      'ㄘ': '-----', 'ㄙ': '.----', 'ㄚ': '..---', 'ㄛ': '...--', 'ㄜ': '....-',
+      'ㄝ': '.....', 'ㄞ': '-....', 'ㄟ': '--...', 'ㄠ': '---..', 'ㄡ': '----.',
+      'ㄢ': '-----', 'ㄣ': '.----', 'ㄤ': '..---', 'ㄥ': '...--', 'ㄦ': '....-',
+      'ㄧ': '.....', 'ㄨ': '-....', 'ㄩ': '--...'
+    };
+
+    // State
+    let isPlaying = false;
+    let isPaused = false;
+    let soundEnabled = true;
+    let currentWPM = 15;
+    let audioContext = null;
+    let transmissionIndex = 0;
+    let morseSequence = [];
+    let animationTimer = null;
+
+    // DOM Elements
+    const textInput = document.getElementById('textInput');
+    const lampIndicator = document.getElementById('lampIndicator');
+    const headerLamp = document.getElementById('headerLamp');
+    const morseSequenceEl = document.getElementById('morseSequence');
+    const translationText = document.getElementById('translationText');
+    const playBtn = document.getElementById('playBtn');
+    const stopBtn = document.getElementById('stopBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const speedSlider = document.getElementById('speedSlider');
+    const speedValue = document.getElementById('speedValue');
+    const soundToggle = document.getElementById('soundToggle');
+    const soundLabel = document.getElementById('soundLabel');
+    const signalBars = document.querySelectorAll('.signal-bar');
+    const todayCount = document.getElementById('todayCount');
+    const totalCount = document.getElementById('totalCount');
+    const sessionCount = document.getElementById('sessionCount');
+
+    // Load stats from localStorage
+    function loadStats() {
+      const today = new Date().toDateString();
+      const stats = JSON.parse(localStorage.getItem('morsePulseStats') || '{}');
+      
+      if (stats.today !== today) {
+        stats.today = today;
+        stats.todayCount = 0;
+      }
+      
+      return {
+        todayCount: stats.todayCount || 0,
+        totalCount: stats.totalCount || 0,
+        sessionCount: 0
+      };
+    }
+
+    function saveStats(stats) {
+      const today = new Date().toDateString();
+      const data = {
+        today: today,
+        todayCount: stats.todayCount,
+        totalCount: stats.totalCount
+      };
+      localStorage.setItem('morsePulseStats', JSON.stringify(data));
+    }
+
+    function updateStatsDisplay(stats) {
+      todayCount.textContent = stats.todayCount;
+      totalCount.textContent = stats.totalCount;
+      sessionCount.textContent = stats.sessionCount;
+    }
+
+    // Initialize stats
+    let stats = loadStats();
+    updateStatsDisplay(stats);
+
+    // Audio
+    function initAudio() {
+      if (!audioContext) {
+        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      }
+    }
+
+    function playTone(duration) {
+      if (!soundEnabled || !audioContext) return;
+      
+      const oscillator = audioContext.createOscillator();
+      const gainNode = audioContext.createGain();
+      
+      oscillator.connect(gainNode);
+      gainNode.connect(audioContext.destination);
+      
+      oscillator.frequency.value = 700;
+      oscillator.type = 'sine';
+      
+      gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration);
+      
+      oscillator.start(audioContext.currentTime);
+      oscillator.stop(audioContext.currentTime + duration);
+    }
+
+    // Morse conversion
+    function textToMorse(text) {
+      const morse = [];
+      const chars = [];
+      
+      for (let char of text.toUpperCase()) {
+        if (MORSE_CODE[char]) {
+          morse.push(MORSE_CODE[char]);
+          chars.push(char);
+        } else if (char === ' ') {
+          morse.push(' ');
+          chars.push(' ');
+        }
+      }
+      
+      return { morse, chars };
+    }
+
+    function updateDisplay() {
+      const text = textInput.value;
+      const { morse, chars } = textToMorse(text);
+      
+      // Update translation
+      translationText.innerHTML = chars.map((c, i) => 
+        `<span class="translation-char" data-index="${i}">${c === ' ' ? '&nbsp;' : c}</span>`
+      ).join('');
+      
+      // Update morse sequence
+      morseSequenceEl.textContent = morse.join(' ');
+      morseSequence = morse;
+    }
+
+    // Signal bar animation
+    function animateSignalBars(active) {
+      signalBars.forEach((bar, i) => {
+        setTimeout(() => {
+          bar.classList.toggle('active', active);
+        }, i * 50);
+      });
+    }
+
+    // Play morse sequence
+    async function playMorse() {
+      if (!textInput.value.trim()) return;
+      
+      initAudio();
+      isPlaying = true;
+      playBtn.disabled = true;
+      stopBtn.disabled = false;
+      textInput.disabled = false;
+      
+      const { morse } = textToMorse(textInput.value);
+      
+      for (let i = 0; i < morse.length; i++) {
+        if (!isPlaying) break;
+        
+        const symbol = morse[i];
+        
+        if (symbol === ' ') {
+          // Space - pause between words
+          await sleep(getUnit() * 3);
+          transmissionIndex++;
+          updateHighlighting();
+          continue;
+        }
+        
+        // Play each dot or dash
+        for (let j = 0; j < symbol.length; j++) {
+          if (!isPlaying) break;
+          
+          const isDot = symbol[j] === '.';
+          const duration = isDot ? getUnit() : getUnit() * 3;
+          
+          // Light on + sound
+          lampIndicator.classList.add('on');
+          headerLamp.classList.add('active');
+          playTone(duration);
+          animateSignalBars(true);
+          updateHighlighting(transmissionIndex);
+          
+          await sleep(duration);
+          
+          // Light off
+          lampIndicator.classList.remove('on');
+          headerLamp.classList.remove('active');
+          animateSignalBars(false);
+          
+          // Short pause between symbols in a letter
+          await sleep(getUnit());
+          
+          transmissionIndex++;
+        }
+        
+        // Pause between letters
+        await sleep(getUnit() * 2);
+        transmissionIndex++;
+        updateHighlighting();
+      }
+      
+      // Finished
+      finishTransmission();
+    }
+
+    function updateHighlighting(index = -1) {
+      const chars = translationText.querySelectorAll('.translation-char');
+      chars.forEach((char, i) => {
+        char.classList.toggle('active', i === index);
+      });
+      
+      // Highlight current morse
+      if (index >= 0 && morseSequenceEl.textContent) {
+        const allSymbols = morseSequenceEl.textContent.split(' ');
+        let charIndex = 0;
+        let symbolCount = 0;
+        
+        for (let i = 0; i < allSymbols.length; i++) {
+          if (allSymbols[i] === '') {
+            symbolCount++;
+            continue;
+          }
+          
+          if (symbolCount === index) {
+            // Highlight this section
+            break;
+          }
+          
+          symbolCount++;
+        }
+      }
+    }
+
+    function getUnit() {
+      // WPM to duration (ms)
+      // Standard: PARIS = 50 units at given WPM
+      return 60000 / (currentWPM * 50);
+    }
+
+    function sleep(ms) {
+      return new Promise(resolve => {
+        animationTimer = setTimeout(resolve, ms);
+      });
+    }
+
+    function stopPlayback() {
+      isPlaying = false;
+      isPaused = true;
+      clearTimeout(animationTimer);
+      lampIndicator.classList.remove('on');
+      headerLamp.classList.remove('active');
+      animateSignalBars(false);
+      playBtn.disabled = false;
+      stopBtn.disabled = true;
+      playBtn.innerHTML = '<span>▶</span> CONTINUE';
+    }
+
+    function resetTransmission() {
+      stopPlayback();
+      isPaused = false;
+      transmissionIndex = 0;
+      textInput.value = '';
+      updateDisplay();
+      playBtn.innerHTML = '<span>▶</span> PLAY';
+      
+      // Clear active states
+      translationText.querySelectorAll('.translation-char').forEach(c => {
+        c.classList.remove('active');
+      });
+    }
+
+    function finishTransmission() {
+      isPlaying = false;
+      isPaused = false;
+      playBtn.disabled = false;
+      stopBtn.disabled = true;
+      playBtn.innerHTML = '<span>▶</span> PLAY';
+      lampIndicator.classList.remove('on');
+      headerLamp.classList.remove('active');
+      animateSignalBars(false);
+      transmissionIndex = 0;
+      
+      // Update stats
+      if (textInput.value.trim()) {
+        stats.todayCount++;
+        stats.totalCount++;
+        stats.sessionCount++;
+        saveStats(stats);
+        updateStatsDisplay(stats);
+      }
+    }
+
+    // Event listeners
+    textInput.addEventListener('input', updateDisplay);
+    
+    textInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !isPlaying) {
+        playMorse();
+      }
+    });
+
+    playBtn.addEventListener('click', () => {
+      if (isPaused) {
+        isPaused = false;
+        playMorse();
+      } else {
+        transmissionIndex = 0;
+        playMorse();
+      }
+    });
+
+    stopBtn.addEventListener('click', stopPlayback);
+    resetBtn.addEventListener('click', resetTransmission);
+
+    speedSlider.addEventListener('input', (e) => {
+      currentWPM = parseInt(e.target.value);
+      speedValue.textContent = `${currentWPM} WPM`;
+    });
+
+    soundToggle.addEventListener('click', () => {
+      soundEnabled = !soundEnabled;
+      soundToggle.classList.toggle('active', soundEnabled);
+      soundLabel.textContent = soundEnabled ? 'ON' : 'OFF';
+    });
+
+    // Initial display
+    updateDisplay();
+  </script>
+</body>
+</html>

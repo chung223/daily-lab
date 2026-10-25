@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>等待的重量 vs 行動的重量</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Noto+Serif+TC:wght@400;700&family=ZCOOL+XiaoWei&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Noto Serif TC', serif;
+      background: #FDF8F0;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Paper texture overlay */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+      opacity: 0.03;
+      pointer-events: none;
+      z-index: 1000;
+    }
+
+    /* Header */
+    .header {
+      text-align: center;
+      padding: 40px 20px 30px;
+      background: linear-gradient(180deg, #FDF8F0 0%, transparent 100%);
+    }
+
+    .header h1 {
+      font-family: 'ZCOOL XiaoWei', serif;
+      font-size: clamp(1.8rem, 5vw, 2.5rem);
+      color: #2C2416;
+      margin-bottom: 10px;
+      letter-spacing: 4px;
+    }
+
+    .header .subtitle {
+      font-family: 'Caveat', cursive;
+      font-size: 1.2rem;
+      color: #8B7355;
+      font-style: italic;
+    }
+
+    /* Quote from 阿笨 */
+    .dream-quote {
+      max-width: 600px;
+      margin: 0 auto 30px;
+      padding: 20px 30px;
+      background: rgba(255,255,255,0.7);
+      border-left: 4px solid #C53D43;
+      border-radius: 0 8px 8px 0;
+    }
+
+    .dream-quote p {
+      font-size: 1rem;
+      color: #4A3F35;
+      line-height: 1.8;
+    }
+
+    .dream-quote .author {
+      font-family: 'Caveat', cursive;
+      font-size: 1rem;
+      color: #8B7355;
+      margin-top: 8px;
+    }
+
+    /* Main split container */
+    .split-container {
+      display: flex;
+      min-height: 70vh;
+      gap: 4px;
+      padding: 0 20px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    @media (max-width: 768px) {
+      .split-container {
+        flex-direction: column;
+        gap: 20px;
+      }
+    }
+
+    /* World panels */
+    .world {
+      flex: 1;
+      border-radius: 12px;
+      padding: 30px;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.3s ease;
+    }
+
+    .world:hover {
+      transform: translateY(-3px);
+    }
+
+    .world.waiting {
+      background: linear-gradient(180deg, #E8E4E0 0%, #D4CFC8 100%);
+      border: 2px solid #B8B0A5;
+    }
+
+    .world.acting {
+      background: linear-gradient(180deg, #FFF9F0 0%, #F5EDE0 100%);
+      border: 2px solid #D4C4A8;
+    }
+
+    .world-title {
+      font-family: 'ZCOOL XiaoWei', serif;
+      font-size: 1.5rem;
+      text-align: center;
+      margin-bottom: 20px;
+      letter-spacing: 3px;
+    }
+
+    .waiting .world-title {
+      color: #6B5D52;
+    }
+
+    .acting .world-title {
+      color: #8B6914;
+    }
+
+    /* Visual containers */
+    .visual-container {
+      height: 250px;
+      border-radius: 8px;
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+
+    /* Waiting world - settling sediment */
+    .waiting-viz {
+      background: linear-gradient(180deg, #B8B0A5 0%, #9A8B7A 100%);
+      position: relative;
+    }
+
+    .sediment-layer {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 60%;
+      background: linear-gradient(180deg, transparent 0%, rgba(90,80,70,0.3) 30%, rgba(70,60,50,0.6) 100%);
+      animation: settle 8s ease-in-out infinite;
+    }
+
+    @keyframes settle {
+      0%, 100% { transform: translateY(0); opacity: 1; }
+      50% { transform: translateY(5px); opacity: 0.8; }
+    }
+
+    .waiting-particles {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+    }
+
+    .waiting-particle {
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      background: rgba(255,255,255,0.4);
+      border-radius: 50%;
+      animation: float-down 6s linear infinite;
+    }
+
+    @keyframes float-down {
+      0% { transform: translateY(-10px); opacity: 0; }
+      20% { opacity: 0.6; }
+      80% { opacity: 0.6; }
+      100% { transform: translateY(250px); opacity: 0; }
+    }
+
+    .waiting-voice {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0,0,0,0.6);
+      color: #E8E4E0;
+      padding: 10px 20px;
+      border-radius: 20px;
+      font-family: 'Caveat', cursive;
+      font-size: 1.1rem;
+      text-align: center;
+      opacity: 0;
+      animation: voice-appear 6s ease-in-out infinite;
+    }
+
+    @keyframes voice-appear {
+      0%, 15% { opacity: 0; transform: translateX(-50%) translateY(10px); }
+      30%, 70% { opacity: 1; transform: translateX(-50%) translateY(0); }
+      85%, 100% { opacity: 0; transform: translateX(-50%) translateY(-10px); }
+    }
+
+    /* Acting world - rising bubbles/momentum */
+    .acting-viz {
+      background: linear-gradient(180deg, #87CEEB 0%, #F0E68C 100%);
+      position: relative;
+    }
+
+    .momentum-bubbles {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+    }
+
+    .bubble {
+      position: absolute;
+      bottom: -20px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.9), rgba(255,255,255,0.3));
+      animation: rise 4s ease-in infinite;
+    }
+
+    @keyframes rise {
+      0% { transform: translateY(0) scale(1); opacity: 0.8; }
+      100% { transform: translateY(-280px) scale(0.5); opacity: 0; }
+    }
+
+    .action-ray {
+      position: absolute;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100px;
+      height: 200px;
+      background: linear-gradient(180deg, rgba(255,215,0,0.4) 0%, transparent 100%);
+      clip-path: polygon(40% 0%, 60% 0%, 80% 100%, 20% 100%);
+      animation: pulse-ray 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse-ray {
+      0%, 100% { opacity: 0.5; }
+      50% { opacity: 1; }
+    }
+
+    .acting-voice {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(139,105,20,0.9);
+      color: #FFF9F0;
+      padding: 12px 24px;
+      border-radius: 25px;
+      font-family: 'Caveat', cursive;
+      font-size: 1.2rem;
+      text-align: center;
+      animation: breathe 3s ease-in-out infinite;
+    }
+
+    @keyframes breathe {
+      0%, 100% { transform: translate(-50%, -50%) scale(1); }
+      50% { transform: translate(-50%, -50%) scale(1.05); }
+    }
+
+    /* Description cards */
+    .description {
+      background: rgba(255,255,255,0.6);
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 15px;
+    }
+
+    .description p {
+      font-size: 0.95rem;
+      color: #4A3F35;
+      line-height: 1.7;
+    }
+
+    /* Thought bubbles */
+    .thoughts-section {
+      margin-top: 15px;
+    }
+
+    .thought-bubble {
+      background: rgba(255,255,255,0.8);
+      padding: 12px 15px;
+      border-radius: 15px;
+      margin-bottom: 8px;
+      font-family: 'Caveat', cursive;
+      font-size: 1rem;
+      color: #5A4A3A;
+      position: relative;
+      animation: thought-in 0.5s ease-out;
+      box-shadow: 2px 2px 8px rgba(0,0,0,0.05);
+    }
+
+    .thought-bubble::before {
+      content: '';
+      position: absolute;
+      top: -8px;
+      left: 20px;
+      width: 16px;
+      height: 16px;
+      background: rgba(255,255,255,0.9);
+      border-radius: 50%;
+    }
+
+    .thought-bubble::after {
+      content: '';
+      position: absolute;
+      top: -14px;
+      left: 24px;
+      width: 8px;
+      height: 8px;
+      background: rgba(255,255,255,0.9);
+      border-radius: 50%;
+    }
+
+    @keyframes thought-in {
+      0% { opacity: 0; transform: translateY(10px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Interactive section */
+    .interactive-section {
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 40px 30px;
+      background: linear-gradient(180deg, #FFF9F0 0%, #F5EDE0 100%);
+      border-radius: 16px;
+      border: 2px solid #E8DCC8;
+      text-align: center;
+    }
+
+    .interactive-section h2 {
+      font-family: 'ZCOOL XiaoWei', serif;
+      font-size: 1.4rem;
+      color: #2C2416;
+      margin-bottom: 20px;
+      letter-spacing: 2px;
+    }
+
+    .input-area {
+      margin-bottom: 20px;
+    }
+
+    .input-area textarea {
+      width: 100%;
+      max-width: 500px;
+      height: 100px;
+      padding: 15px;
+      font-family: 'Noto Serif TC', serif;
+      font-size: 1rem;
+      border: 2px solid #D4C4A8;
+      border-radius: 8px;
+      background: #FFFDF9;
+      color: #2C2416;
+      resize: none;
+      outline: none;
+      transition: border-color 0.3s;
+    }
+
+    .input-area textarea:focus {
+      border-color: #8B6914;
+    }
+
+    .input-area textarea::placeholder {
+      color: #A89880;
+      font-style: italic;
+    }
+
+    /* Buttons */
+    .btn-group {
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 25px;
+    }
+
+    .btn {
+      padding: 12px 28px;
+      font-family: 'Noto Serif TC', serif;
+      font-size: 1rem;
+      border: none;
+      border-radius: 25px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .btn-wait {
+      background: #9A8B7A;
+      color: white;
+    }
+
+    .btn-wait:hover {
+      background: #7A6B5A;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(154,139,122,0.4);
+    }
+
+    .btn-act {
+      background: linear-gradient(135deg, #D4A84B 0%, #C49A3C 100%);
+      color: white;
+    }
+
+    .btn-act:hover {
+      background: linear-gradient(135deg, #C49A3C 0%, #B48A2C 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(212,168,75,0.4);
+    }
+
+    /* Result area */
+    .result-area {
+      min-height: 120px;
+      padding: 20px;
+      background: rgba(255,255,255,0.7);
+      border-radius: 12px;
+      margin-top: 20px;
+    }
+
+    .result-text {
+      font-size: 1.1rem;
+      color: #2C2416;
+      line-height: 1.8;
+    }
+
+    .result-text.waiting-result {
+      color: #6B5D52;
+      font-style: italic;
+    }
+
+    .result-text.acting-result {
+      color: #8B6914;
+      font-weight: bold;
+    }
+
+    /* Transformation reveal */
+    .transformation {
+      margin-top: 30px;
+      padding: 25px;
+      background: rgba(212,168,75,0.1);
+      border-radius: 12px;
+      border: 2px dashed #D4A84B;
+      display: none;
+    }
+
+    .transformation.show {
+      display: block;
+      animation: reveal 0.6s ease-out;
+    }
+
+    @keyframes reveal {
+      0% { opacity: 0; transform: scale(0.95); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+
+    .transformation h3 {
+      font-family: 'ZCOOL XiaoWei', serif;
+      font-size: 1.2rem;
+      color: #8B6914;
+      margin-bottom: 15px;
+    }
+
+    .transformation p {
+      color: #5A4A3A;
+      line-height: 1.8;
+    }
+
+    .transformation .insight {
+      margin-top: 15px;
+      padding: 15px;
+      background: rgba(255,255,255,0.8);
+      border-radius: 8px;
+      font-family: 'Caveat', cursive;
+      font-size: 1.2rem;
+      color: #2C2416;
+    }
+
+    /* Watercolor splashes */
+    .watercolor {
+      position: fixed;
+      pointer-events: none;
+      opacity: 0.15;
+      z-index: -1;
+    }
+
+    .wc-1 {
+      top: 10%;
+      right: 5%;
+      width: 200px;
+      height: 200px;
+      background: radial-gradient(ellipse, #C49A3C, transparent);
+      border-radius: 50%;
+    }
+
+    .wc-2 {
+      bottom: 20%;
+      left: 3%;
+      width: 150px;
+      height: 150px;
+      background: radial-gradient(ellipse, #8B6914, transparent);
+      border-radius: 50%;
+    }
+
+    .wc-3 {
+      top: 50%;
+      right: 10%;
+      width: 100px;
+      height: 100px;
+      background: radial-gradient(ellipse, #D4A84B, transparent);
+      border-radius: 50%;
+    }
+
+    /* Footer */
+    .footer {
+      text-align: center;
+      padding: 40px 20px;
+      font-family: 'Caveat', cursive;
+      font-size: 1rem;
+      color: #8B7355;
+    }
+
+    .footer .emoji {
+      font-size: 1.5rem;
+      margin-bottom: 10px;
+    }
+
+    /* Ink spread animation for click */
+    .ink-spread {
+      position: fixed;
+      pointer-events: none;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(44,36,22,0.3), transparent);
+      transform: translate(-50%, -50%);
+      animation: ink 1s ease-out forwards;
+      z-index: 999;
+    }
+
+    @keyframes ink {
+      0% { transform: translate(-50%, -50%) scale(0); opacity: 1; }
+      100% { transform: translate(-50%, -50%) scale(10); opacity: 0; }
+    }
+
+    /* Confetti */
+    .confetti {
+      position: fixed;
+      pointer-events: none;
+      z-index: 1001;
+    }
+
+    .confetti-piece {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      animation: confetti-fall 3s ease-out forwards;
+    }
+
+    @keyframes confetti-fall {
+      0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Decorative watercolors -->
+  <div class="watercolor wc-1"></div>
+  <div class="watercolor wc-2"></div>
+  <div class="watercolor wc-3"></div>
+
+  <header class="header">
+    <h1>等待的重量</h1>
+    <p class="subtitle">vs 行動的重量</p>
+    
+    <div class="dream-quote">
+      <p>「再等一下」的聲音，讓人永遠無法出發。</p>
+      <p style="margin-top: 8px;">瘋狂與 Brilliant，只差一個「現在就做」。</p>
+      <p class="author">— 阿笨的夢境觀察 🌙 2026-07-08</p>
+    </div>
+  </header>
+
+  <main>
+    <!-- Split comparison -->
+    <section class="split-container">
+      <!-- Waiting World -->
+      <div class="world waiting">
+        <h2 class="world-title">⏸️ 等待的世界</h2>
+        
+        <div class="visual-container waiting-viz">
+          <div class="sediment-layer"></div>
+          <div class="waiting-particles" id="waitingParticles"></div>
+          <div class="waiting-voice" id="waitingVoice">再等一下...</div>
+        </div>
+        
+        <div class="description">
+          <p>在等待的世界裡，一切都慢慢沉積下來。泥沙漸漸堆積，想法漸漸模糊，機會漸漸溜走。日復一日，世界變得越來越沉重。</p>
+        </div>
+        
+        <div class="thoughts-section">
+          <div class="thought-bubble" style="animation-delay: 0.2s;">等準備好了再說...</div>
+          <div class="thought-bubble" style="animation-delay: 0.5s;">再觀察一下情況...</div>
+          <div class="thought-bubble" style="animation-delay: 0.8s;">或許明天會更好...</div>
+        </div>
+      </div>
+
+      <!-- Acting World -->
+      <div class="world acting">
+        <h2 class="world-title">▶️ 行動的世界</h2>
+        
+        <div class="visual-container acting-viz">
+          <div class="action-ray"></div>
+          <div class="momentum-bubbles" id="momentumBubbles"></div>
+          <div class="acting-voice">現在就做！</div>
+        </div>
+        
+        <div class="description">
+          <p>在行動的世界裡，一切開始上升。泡泡冒起，光線穿透，可能性綻放。瘋狂的想法開始轉變成 Brilliant 的現實。</p>
+        </div>
+        
+        <div class="thoughts-section">
+          <div class="thought-bubble" style="animation-delay: 0.3s; background: rgba(212,168,75,0.2);">做再說！</div>
+          <div class="thought-bubble" style="animation-delay: 0.6s; background: rgba(212,168,75,0.2);">不完美也沒關係！</div>
+          <div class="thought-bubble" style="animation-delay: 0.9s; background: rgba(212,168,75,0.2);">這感覺對了！</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Interactive section -->
+    <section class="interactive-section">
+      <h2>🎯 今天你想做什麼，但一直在等？</h2>
+      
+      <div class="input-area">
+        <textarea id="ideaInput" placeholder="寫下那個一直在心裡說「再等一下」的想法..."></textarea>
+      </div>
+      
+      <div class="btn-group">
+        <button class="btn btn-wait" id="btnWait">⏸️ 繼續等</button>
+        <button class="btn btn-act" id="btnAct">▶️ 現在就做</button>
+      </div>
+      
+      <div class="result-area">
+        <p class="result-text" id="resultText">選擇你的行動，看看會發生什麼...</p>
+      </div>
+      
+      <div class="transformation" id="transformation">
+        <h3>✨ 瘋狂 → Brilliant 的轉變</h3>
+        <p id="transformText"></p>
+        <div class="insight" id="insightText"></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="emoji">🐟💫</div>
+    <p>「瘋狂」和「Brilliant」是同一件事的兩個時間點——實現前是瘋狂，實現後是輝煌。</p>
+    <p style="margin-top: 5px;">2026-07-08 三色蛋的夢境觀察 🌙</p>
+  </footer>
+
+  <script>
+    // Create waiting particles
+    const waitingContainer = document.getElementById('waitingParticles');
+    const waitingVoices = [
+      '再等一下...',
+      '還不是時候...',
+      '再想想...',
+      '準備好了嗎...',
+      '慢慢來...'
+    ];
+    let currentVoice = 0;
+
+    for (let i = 0; i < 15; i++) {
+      const particle = document.createElement('div');
+      particle.className = 'waiting-particle';
+      particle.style.left = Math.random() * 100 + '%';
+      particle.style.animationDelay = Math.random() * 6 + 's';
+      particle.style.animationDuration = (4 + Math.random() * 4) + 's';
+      waitingContainer.appendChild(particle);
+    }
+
+    // Voice rotation
+    const waitingVoiceEl = document.getElementById('waitingVoice');
+    setInterval(() => {
+      currentVoice = (currentVoice + 1) % waitingVoices.length;
+      waitingVoiceEl.textContent = waitingVoices[currentVoice];
+      waitingVoiceEl.style.animation = 'none';
+      waitingVoiceEl.offsetHeight;
+      waitingVoiceEl.style.animation = 'voice-appear 6s ease-in-out infinite';
+    }, 6000);
+
+    // Create acting bubbles
+    const bubbleContainer = document.getElementById('momentumBubbles');
+    const bubbleColors = ['rgba(255,255,255,0.7)', 'rgba(255,215,0,0.5)', 'rgba(135,206,235,0.5)'];
+    
+    function createBubble() {
+      const bubble = document.createElement('div');
+      bubble.className = 'bubble';
+      const size = 10 + Math.random() * 30;
+      bubble.style.width = size + 'px';
+      bubble.style.height = size + 'px';
+      bubble.style.left = Math.random() * 100 + '%';
+      bubble.style.animationDuration = (3 + Math.random() * 3) + 's';
+      bubble.style.background = `radial-gradient(circle at 30% 30%, ${bubbleColors[Math.floor(Math.random() * bubbleColors.length)]}, transparent)`;
+      bubbleContainer.appendChild(bubble);
+      
+      setTimeout(() => bubble.remove(), 6000);
+    }
+
+    setInterval(createBubble, 400);
+
+    // Interactive functionality
+    const ideaInput = document.getElementById('ideaInput');
+    const btnWait = document.getElementById('btnWait');
+    const btnAct = document.getElementById('btnAct');
+    const resultText = document.getElementById('resultText');
+    const transformation = document.getElementById('transformation');
+    const transformText = document.getElementById('transformText');
+    const insightText = document.getElementById('insightText');
+
+    const waitingResults = [
+      '等待的世界裡，這個想法開始慢慢沉積... 一年後，它還在心裡，輕輕嘆息。',
+      '時間繼續流逝。機會之窗悄悄關上了一半，而你還在門口徘徊。',
+      '你知道的，這個「再等一下」已經說了無數次了。今天也是。',
+      '沉積物越積越厚。最初的想法，漸漸被埋在最深處，幾乎看不見了。',
+      '等待不會讓事情變得更清晰。只會讓「開始」變得更遠。'
+    ];
+
+    const actingInsights = [
+      '踏出第一步的那一刻，世界開始回應你。',
+      '行動本身就是答案。你不需要等到準備好了，因為準備好的那一刻就是現在。',
+      '每一個 Brilliant 的成果，都曾經被認為是瘋狂的開始。',
+      '你開始了。這就是最重要的事。',
+      '現在這個瘋狂的想法，正在一點一點轉變成 Brilliant 的現實。'
+    ];
+
+    btnWait.addEventListener('click', () => {
+      const idea = ideaInput.value.trim();
+      if (!idea) {
+        resultText.textContent = '先寫下那個一直在等的想法吧...';
+        resultText.className = 'result-text waiting-result';
+        return;
+      }
+      
+      const result = waitingResults[Math.floor(Math.random() * waitingResults.length)];
+      resultText.textContent = result;
+      resultText.className = 'result-text waiting-result';
+      
+      transformation.classList.remove('show');
+      
+      // Ink effect
+      createInk(event.clientX, event.clientY);
+    });
+
+    btnAct.addEventListener('click', () => {
+      const idea = ideaInput.value.trim();
+      if (!idea) {
+        resultText.textContent = '寫下想法，然後付諸行動吧！';
+        resultText.className = 'result-text acting-result';
+        return;
+      }
+      
+      const insight = actingInsights[Math.floor(Math.random() * actingInsights.length)];
+      resultText.textContent = insight;
+      resultText.className = 'result-text acting-result';
+      
+      // Show transformation
+      transformText.textContent = `「${idea}」——從現在開始，這不再是一個「等一下」的想法，而是一個正在實現的瘋狂。`;
+      insightText.textContent = `「${idea}」等於現在。此刻就是那一刻。`;
+      transformation.classList.add('show');
+      
+      // Confetti celebration
+      createConfetti();
+      
+      // Ink effect
+      createInk(event.clientX, event.clientY);
+    });
+
+    // Ink spread on click
+    function createInk(x, y) {
+      const ink = document.createElement('div');
+      ink.className = 'ink-spread';
+      ink.style.left = x + 'px';
+      ink.style.top = y + 'px';
+      document.body.appendChild(ink);
+      setTimeout(() => ink.remove(), 1000);
+    }
+
+    // Confetti
+    function createConfetti() {
+      const colors = ['#D4A84B', '#C49A3C', '#8B6914', '#FFD700', '#FFF9F0'];
+      const container = document.createElement('div');
+      container.className = 'confetti';
+      document.body.appendChild(container);
+      
+      for (let i = 0; i < 50; i++) {
+        const piece = document.createElement('div');
+        piece.className = 'confetti-piece';
+        piece.style.left = Math.random() * 100 + 'vw';
+        piece.style.top = '-20px';
+        piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+        piece.style.animationDelay = Math.random() * 0.5 + 's';
+        piece.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+        container.appendChild(piece);
+      }
+      
+      setTimeout(() => container.remove(), 4000);
+    }
+
+    // Global click for ink effect
+    document.addEventListener('click', (e) => {
+      if (e.target.tagName !== 'BUTTON' && e.target.tagName !== 'TEXTAREA') {
+        createInk(e.clientX, e.clientY);
+      }
+    });
+  </script>
+</body>
+</html>

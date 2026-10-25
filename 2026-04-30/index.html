@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>網站急救漫畫課 Website Rescue Comic Lab</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&family=Space+Grotesk:wght@400;500;700&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #fffaf2;
+      --paper: #fffefb;
+      --ink: #1b1b1b;
+      --muted: #5e5a55;
+      --red: #ff5f57;
+      --orange: #ff9f1c;
+      --yellow: #ffd166;
+      --green: #31c48d;
+      --blue: #4d96ff;
+      --purple: #8b5cf6;
+      --pink: #ff70a6;
+      --line: #1f1f1f;
+      --shadow: 8px 8px 0 #1f1f1f;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+    body {
+      font-family: 'Noto Sans TC', sans-serif;
+      background:
+        radial-gradient(circle at top left, #ffe7cf 0, transparent 26%),
+        radial-gradient(circle at bottom right, #d8ecff 0, transparent 24%),
+        var(--bg);
+      color: var(--ink);
+      line-height: 1.6;
+    }
+
+    .wrap {
+      width: min(1120px, calc(100% - 28px));
+      margin: 0 auto;
+      padding: 24px 0 56px;
+    }
+
+    .hero {
+      background: linear-gradient(135deg, #fff 0%, #fff7dd 100%);
+      border: 4px solid var(--line);
+      border-radius: 28px;
+      padding: 24px;
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero:before, .hero:after {
+      content: "";
+      position: absolute;
+      border-radius: 50%;
+      opacity: .18;
+    }
+    .hero:before {
+      width: 220px; height: 220px; right: -40px; top: -40px; background: var(--yellow);
+    }
+    .hero:after {
+      width: 180px; height: 180px; left: -40px; bottom: -40px; background: var(--blue);
+    }
+
+    .eyebrow {
+      display: inline-block;
+      padding: 6px 12px;
+      background: var(--red);
+      color: #fff;
+      font-weight: 900;
+      border: 3px solid var(--line);
+      border-radius: 999px;
+      transform: rotate(-2deg);
+      margin-bottom: 12px;
+    }
+
+    h1 {
+      margin: 0;
+      font-family: 'Permanent Marker', cursive;
+      font-size: clamp(2rem, 5vw, 4rem);
+      line-height: 1.05;
+      letter-spacing: 1px;
+    }
+
+    .subtitle {
+      margin: 12px 0 0;
+      max-width: 760px;
+      font-size: 1.02rem;
+      color: var(--muted);
+      font-weight: 500;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 24px;
+    }
+
+    .stat {
+      background: var(--paper);
+      border: 3px solid var(--line);
+      border-radius: 20px;
+      padding: 14px;
+      box-shadow: 5px 5px 0 #1f1f1f;
+    }
+
+    .stat b {
+      display: block;
+      font-size: 1.6rem;
+      font-family: 'Space Grotesk', sans-serif;
+    }
+
+    .section-title {
+      display: inline-block;
+      margin: 28px 0 16px;
+      background: #fff;
+      border: 3px solid var(--line);
+      border-radius: 16px;
+      padding: 8px 14px;
+      font-weight: 900;
+      box-shadow: 4px 4px 0 #1f1f1f;
+    }
+
+    .comic-grid {
+      display: grid;
+      grid-template-columns: 1.15fr .85fr;
+      gap: 18px;
+    }
+
+    .panel {
+      background: var(--paper);
+      border: 4px solid var(--line);
+      border-radius: 24px;
+      padding: 18px;
+      box-shadow: var(--shadow);
+    }
+
+    .timeline {
+      display: grid;
+      gap: 14px;
+    }
+
+    .event {
+      border: 3px dashed var(--line);
+      border-radius: 18px;
+      padding: 14px;
+      background: #fff;
+      position: relative;
+    }
+
+    .event .time {
+      display: inline-block;
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+      font-size: .9rem;
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 2px solid var(--line);
+      background: var(--yellow);
+      margin-bottom: 8px;
+    }
+
+    .speech {
+      background: #fff;
+      border: 3px solid var(--line);
+      border-radius: 24px;
+      padding: 14px 16px;
+      position: relative;
+      margin-bottom: 14px;
+      font-weight: 700;
+    }
+    .speech:after {
+      content: "";
+      position: absolute;
+      left: 22px;
+      bottom: -14px;
+      width: 22px;
+      height: 22px;
+      background: #fff;
+      border-right: 3px solid var(--line);
+      border-bottom: 3px solid var(--line);
+      transform: rotate(45deg);
+    }
+
+    .mini-board {
+      display: grid;
+      gap: 12px;
+    }
+
+    .mini-card {
+      border: 3px solid var(--line);
+      border-radius: 18px;
+      padding: 14px;
+      background: #fff;
+    }
+
+    .bugs {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .bug-card {
+      perspective: 1000px;
+      min-height: 240px;
+      cursor: pointer;
+    }
+
+    .bug-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      min-height: 240px;
+      transition: transform .7s;
+      transform-style: preserve-3d;
+    }
+
+    .bug-card.flipped .bug-inner { transform: rotateY(180deg); }
+
+    .bug-face {
+      position: absolute;
+      inset: 0;
+      backface-visibility: hidden;
+      border: 4px solid var(--line);
+      border-radius: 24px;
+      padding: 18px;
+      background: #fff;
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .bug-back {
+      transform: rotateY(180deg);
+      background: #fffdf4;
+    }
+
+    .bug-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border: 2px solid var(--line);
+      border-radius: 999px;
+      padding: 4px 10px;
+      font-size: .84rem;
+      font-weight: 800;
+      background: #fff;
+    }
+
+    .severity-red { background: #ffe2df; }
+    .severity-yellow { background: #fff2cf; }
+    .severity-green { background: #dcfce7; }
+
+    .bug-title {
+      font-size: 1.1rem;
+      font-weight: 900;
+      line-height: 1.3;
+      margin: 10px 0;
+    }
+
+    .bug-desc, .bug-back p, .bug-back li {
+      color: var(--muted);
+      font-size: .95rem;
+    }
+
+    .bug-back ul {
+      padding-left: 18px;
+      margin: 10px 0 0;
+    }
+
+    .lab-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+      margin-top: 8px;
+    }
+
+    .code-box {
+      background: #1e1e1e;
+      color: #f8f8f2;
+      border-radius: 18px;
+      padding: 16px;
+      border: 4px solid var(--line);
+      box-shadow: var(--shadow);
+      font-family: 'Space Grotesk', sans-serif;
+      overflow: auto;
+    }
+
+    .code-box .bad { color: #ff7b72; }
+    .code-box .good { color: #7ee787; }
+    .code-box .accent { color: #79c0ff; }
+
+    .fixer {
+      display: grid;
+      gap: 12px;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 160px;
+      border: 4px solid var(--line);
+      border-radius: 18px;
+      padding: 14px;
+      resize: vertical;
+      font: 500 15px/1.5 'Space Grotesk', monospace;
+      background: #fff;
+    }
+
+    button {
+      appearance: none;
+      border: 3px solid var(--line);
+      border-radius: 16px;
+      background: var(--blue);
+      color: #fff;
+      padding: 12px 16px;
+      font: 800 1rem 'Noto Sans TC', sans-serif;
+      box-shadow: 4px 4px 0 #1f1f1f;
+      cursor: pointer;
+    }
+    button:hover { transform: translate(-1px, -1px); }
+
+    .result {
+      border: 3px solid var(--line);
+      border-radius: 18px;
+      padding: 14px;
+      background: #fff;
+      font-weight: 700;
+    }
+
+    .i18n-grid {
+      display: grid;
+      gap: 12px;
+    }
+
+    .lang-row {
+      display: grid;
+      grid-template-columns: 130px 1fr;
+      gap: 12px;
+      align-items: start;
+      border: 3px solid var(--line);
+      border-radius: 18px;
+      padding: 12px;
+      background: #fff;
+    }
+
+    .lang-label {
+      font-weight: 900;
+      text-align: center;
+      padding: 10px;
+      border: 3px solid var(--line);
+      border-radius: 14px;
+      background: #fff7dd;
+    }
+
+    .footer-note {
+      margin-top: 24px;
+      text-align: center;
+      color: var(--muted);
+      font-size: .95rem;
+    }
+
+    .stamp {
+      display: inline-block;
+      margin-top: 10px;
+      padding: 8px 14px;
+      border: 3px solid var(--line);
+      border-radius: 999px;
+      background: var(--green);
+      font-weight: 900;
+      transform: rotate(-5deg);
+    }
+
+    @media (max-width: 920px) {
+      .stats, .bugs, .comic-grid, .lab-grid { grid-template-columns: 1fr 1fr; }
+      .comic-grid { grid-template-columns: 1fr; }
+      .bugs { grid-template-columns: 1fr 1fr; }
+    }
+
+    @media (max-width: 680px) {
+      .stats, .bugs, .lab-grid { grid-template-columns: 1fr; }
+      .lang-row { grid-template-columns: 1fr; }
+      .hero { padding: 20px; }
+      h1 { font-size: 2.2rem; }
+      .section-title { margin-top: 22px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="hero">
+      <div class="eyebrow">04 / 30 DAILY LAB</div>
+      <h1>網站急救漫畫課</h1>
+      <p class="subtitle">
+        昨天 Chung 真的在救 summit.fourh.org.tw：FAQ ID 重複、Skip Link 重複、OG URL 指錯、韓文機翻、ARIA 提示、還有那個超經典的 <code>&lt;script&gt;</code> 沒關好。
+        這一頁把真實除錯現場做成亮色漫畫式學習板，早上打開可以一邊複習、一邊笑。
+      </p>
+      <div class="stats">
+        <div class="stat"><b>6</b><span>真實修復項目</span></div>
+        <div class="stat"><b>13+</b><span>Heartbeat 巡航回合</span></div>
+        <div class="stat"><b>8,110,716</b><span>驗算總額</span></div>
+        <div class="stat"><b>1</b><span>超兇 script tag 漏洞</span></div>
+      </div>
+    </section>
+
+    <div class="section-title">第一幕：昨天到底發生了什麼？</div>
+    <section class="comic-grid">
+      <div class="panel">
+        <div class="timeline">
+          <div class="event">
+            <div class="time">07:43</div>
+            <strong>網站修復大爆發</strong>
+            <div>FAQ accordion ID 重複、Skip Link 重複、OG URL 全指向首頁、韓文翻譯潤稿、ARIA 提示補齊、Schedule 文字優化。</div>
+          </div>
+          <div class="event">
+            <div class="time">11:40</div>
+            <strong>數字驗算完畢</strong>
+            <div>總計 <b>8,110,716</b>，差額來自 <code>int(round())</code> 四捨五入，不是靈異事件。</div>
+          </div>
+          <div class="event">
+            <div class="time">18:30–19:30</div>
+            <strong>i18n 玄學時段</strong>
+            <div>Registration 頁翻譯正常，首頁按鈕有反應但文字沒變。看起來像有鬼，其實是 HTML script tag 沒有正確關閉。</div>
+          </div>
+          <div class="event">
+            <div class="time">全日</div>
+            <strong>辦公雲登入卡關</strong>
+            <div>Playwright 不可用、Edge CDP 有連線但無憑證。這種不是你不會，是工具沒給你上場。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="speech">「Registration 正常，首頁卻壞掉？」—— 這就是前端除錯最容易讓人懷疑宇宙的瞬間。</div>
+        <div class="mini-board">
+          <div class="mini-card">
+            <strong>今日學到 1</strong>
+            <div>不是所有翻譯問題都是翻譯檔的錯，有時是 JS 根本沒載進來。</div>
+          </div>
+          <div class="mini-card">
+            <strong>今日學到 2</strong>
+            <div>看似小 bug 的 HTML 關標籤，會把整站互動一起拖下水。</div>
+          </div>
+          <div class="mini-card">
+            <strong>今日學到 3</strong>
+            <div>WCAG、OG、i18n、內容潤稿、數字驗算，網站維運其實很像打多線 Boss。</div>
+          </div>
+          <div class="stamp">BUGS RESCUED</div>
+        </div>
+      </div>
+    </section>
+
+    <div class="section-title">第二幕：6 張真實 bug 卡（點一下翻面）</div>
+    <section class="bugs" id="bugGrid">
+      <article class="bug-card">
+        <div class="bug-inner">
+          <div class="bug-face">
+            <div>
+              <div class="bug-top">
+                <span class="badge severity-red">🔴 緊急</span>
+                <span class="badge">WCAG</span>
+              </div>
+              <div class="bug-title">FAQ Accordion ID 重複</div>
+              <div class="bug-desc">同一頁上多個 FAQ 共用重複 ID，會讓 aria-controls 對應混亂。</div>
+            </div>
+            <small>點擊翻面看修法</small>
+          </div>
+          <div class="bug-face bug-back">
+            <div>
+              <strong>修法</strong>
+              <ul>
+                <li>把 FAQ 區塊改成 <code>faq-answer-1 ~ faq-answer-10</code></li>
+                <li>同步修正 <code>aria-controls</code> 對應</li>
+                <li>讓螢幕閱讀器不再迷路</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <article class="bug-card">
+        <div class="bug-inner">
+          <div class="bug-face">
+            <div>
+              <div class="bug-top">
+                <span class="badge severity-red">🔴 緊急</span>
+                <span class="badge">A11y</span>
+              </div>
+              <div class="bug-title">子頁面 Skip Link 重複</div>
+              <div class="bug-desc">6 個子頁面各自帶了重複的 skip link，結構不乾淨又容易重複朗讀。</div>
+            </div>
+            <small>點擊翻面看修法</small>
+          </div>
+          <div class="bug-face bug-back">
+            <div>
+              <strong>修法</strong>
+              <ul>
+                <li>刪除重複項，保留清楚的單一入口</li>
+                <li>讓鍵盤使用者更順</li>
+                <li>少一點「我到底跳去哪了」的混亂</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <article class="bug-card">
+        <div class="bug-inner">
+          <div class="bug-face">
+            <div>
+              <div class="bug-top">
+                <span class="badge severity-yellow">🟡 重要</span>
+                <span class="badge">SEO</span>
+              </div>
+              <div class="bug-title">OG URL 全指向首頁</div>
+              <div class="bug-desc">分享 schedule / speakers 等頁面時，社群卡片都像首頁分身。</div>
+            </div>
+            <small>點擊翻面看修法</small>
+          </div>
+          <div class="bug-face bug-back">
+            <div>
+              <strong>修法</strong>
+              <ul>
+                <li>每頁設定自己的 OG URL</li>
+                <li>像 <code>/schedule.html</code>、<code>/speakers.html</code></li>
+                <li>分享出去才不會人格分裂</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <article class="bug-card">
+        <div class="bug-inner">
+          <div class="bug-face">
+            <div>
+              <div class="bug-top">
+                <span class="badge severity-yellow">🟡 重要</span>
+                <span class="badge">i18n</span>
+              </div>
+              <div class="bug-title">韓文機翻痕跡</div>
+              <div class="bug-desc">機翻不只不自然，有時還會讓整體質感掉到地上。</div>
+            </div>
+            <small>點擊翻面看修法</small>
+          </div>
+          <div class="bug-face bug-back">
+            <div>
+              <strong>修法</strong>
+              <ul>
+                <li>修正 <code>venue_desc</code>、<code>about_vision_text</code></li>
+                <li>士林夜市音譯調整為 <code>Shihlin</code></li>
+                <li>內容正確也是 UX</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <article class="bug-card">
+        <div class="bug-inner">
+          <div class="bug-face">
+            <div>
+              <div class="bug-top">
+                <span class="badge severity-green">🟢 改善</span>
+                <span class="badge">ARIA</span>
+              </div>
+              <div class="bug-title">語言切換鈕缺 aria-pressed</div>
+              <div class="bug-desc">按鈕看似可用，但輔助科技不知道現在到底選了哪個語言。</div>
+            </div>
+            <small>點擊翻面看修法</small>
+          </div>
+          <div class="bug-face bug-back">
+            <div>
+              <strong>修法</strong>
+              <ul>
+                <li>所有 <code>lang-btn</code> 補上 <code>aria-pressed</code></li>
+                <li>互動狀態更清楚</li>
+                <li>這是細節，但很重要</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <article class="bug-card">
+        <div class="bug-inner">
+          <div class="bug-face">
+            <div>
+              <div class="bug-top">
+                <span class="badge severity-red">🔴 致命</span>
+                <span class="badge">JS</span>
+              </div>
+              <div class="bug-title">script tag 未關閉</div>
+              <div class="bug-desc">看起來只有一行小錯，實際上會讓 JavaScript 整段失效，首頁翻譯一起陪葬。</div>
+            </div>
+            <small>點擊翻面看修法</small>
+          </div>
+          <div class="bug-face bug-back">
+            <div>
+              <strong>修法</strong>
+              <ul>
+                <li>補上 <code>&gt;&lt;/script&gt;</code></li>
+                <li>改成 <code>&lt;script src="js/main.js?v=4" defer&gt;&lt;/script&gt;</code></li>
+                <li>Node <code>--check</code> 驗證通過</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <div class="section-title">第三幕：自己救一次 script tag</div>
+    <section class="lab-grid">
+      <div class="fixer">
+        <textarea id="codeInput"><script src="js/main.js?v=4"
+<div class="hero-title">Beyond Ready</div></textarea>
+        <button id="fixBtn">檢查這段 HTML</button>
+        <div class="result" id="fixResult">提示：這裡故意少了很關鍵的東西。</div>
+      </div>
+
+      <div class="code-box">
+<pre><span class="bad">&lt;script src="js/main.js?v=4"</span>
+&lt;div class="hero-title"&gt;Beyond Ready&lt;/div&gt;
+
+<span class="good">正確寫法：</span>
+<span class="accent">&lt;script src="js/main.js?v=4" defer&gt;&lt;/script&gt;</span>
+&lt;div class="hero-title"&gt;Beyond Ready&lt;/div&gt;</pre>
+      </div>
+    </section>
+
+    <div class="section-title">第四幕：i18n 為什麼會看起來像玄學？</div>
+    <section class="panel i18n-grid">
+      <div class="lang-row">
+        <div class="lang-label">Registration ✅</div>
+        <div>翻譯正常，代表翻譯資料本身不一定有錯；某些頁面可以跑，某些頁面不行，通常該懷疑「載入流程不一致」。</div>
+      </div>
+      <div class="lang-row">
+        <div class="lang-label">Home ❌</div>
+        <div>按鈕看似有反應，但文字沒有替換。這種時候最煩，因為 UI 會演出一種「我有做事喔」的假象。</div>
+      </div>
+      <div class="lang-row">
+        <div class="lang-label">真相</div>
+        <div>不是 JSON 壞掉，也不是語言 key 一定漏掉，而是 script tag 沒正確關閉，導致主 JS 沒完整載入。前端世界很多 bug 都是這樣：症狀在 A，病灶在 B。</div>
+      </div>
+    </section>
+
+    <p class="footer-note">
+      Based on Chung 真實的 2026-04-29 維運現場：summit.fourh.org.tw 修復、i18n 除錯、Cloudflare 快取觀察、辦公雲登入受阻。<br>
+      做成一張早晨可快速掃描的漫畫式 debug lesson。
+    </p>
+  </div>
+
+  <script>
+    document.querySelectorAll('.bug-card').forEach(card => {
+      card.addEventListener('click', () => card.classList.toggle('flipped'));
+    });
+
+    const btn = document.getElementById('fixBtn');
+    const input = document.getElementById('codeInput');
+    const result = document.getElementById('fixResult');
+
+    btn.addEventListener('click', () => {
+      const value = input.value;
+      const hasClose = /<\/script>/i.test(value);
+      const hasDefer = /defer/i.test(value);
+      const hasScript = /<script/i.test(value);
+
+      if (!hasScript) {
+        result.textContent = '這段甚至沒有 script tag，今天的 boss 不是這個。';
+        result.style.background = '#fff7dd';
+        return;
+      }
+
+      if (!hasClose) {
+        result.textContent = '抓到了：少了 </script>。這會讓後面的 HTML/JS 載入流程整個歪掉。';
+        result.style.background = '#ffe2df';
+        return;
+      }
+
+      if (hasClose && !hasDefer) {
+        result.textContent = '已經補上 closing tag，主因解掉了；再加上 defer 會更穩。';
+        result.style.background = '#fff2cf';
+        return;
+      }
+
+      result.textContent = '漂亮！這段已接近昨天修好的狀態：script 有正常關閉，也有 defer。';
+      result.style.background = '#dcfce7';
+    });
+  </script>
+</body>
+</html>

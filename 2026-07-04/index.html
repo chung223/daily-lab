@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🐬 魚油大作戰 | Fish Oil Mission</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --ocean-deep: #0077B6;
+            --ocean-mid: #00B4D8;
+            --ocean-light: #90E0EF;
+            --ocean-foam: #CAF0F8;
+            --sand: #FFE8D6;
+            --coral: #FF6B6B;
+            --golden: #FFD93D;
+            --seaweed: #2D6A4F;
+        }
+
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background: linear-gradient(180deg, var(--ocean-light) 0%, var(--ocean-mid) 30%, var(--ocean-deep) 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Underwater bubbles */
+        .bubbles {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 0;
+        }
+
+        .bubble {
+            position: absolute;
+            bottom: -100px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            animation: rise linear infinite;
+        }
+
+        @keyframes rise {
+            0% { transform: translateY(0) scale(1); opacity: 0.6; }
+            100% { transform: translateY(-110vh) scale(0.5); opacity: 0; }
+        }
+
+        /* Main container */
+        .container {
+            max-width: 480px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            padding: 30px 20px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50px;
+            right: -50px;
+            width: 150px;
+            height: 150px;
+            background: var(--golden);
+            border-radius: 50%;
+            opacity: 0.2;
+        }
+
+        .header h1 {
+            font-family: 'Fredoka', sans-serif;
+            font-size: 2rem;
+            color: var(--ocean-deep);
+            margin-bottom: 5px;
+        }
+
+        .header .subtitle {
+            font-size: 1rem;
+            color: var(--seaweed);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        /* Fish animation */
+        .fish-container {
+            width: 100%;
+            height: 120px;
+            position: relative;
+            margin: 20px 0;
+        }
+
+        .fish {
+            position: absolute;
+            font-size: 50px;
+            animation: swim 4s ease-in-out infinite;
+        }
+
+        .dolphin {
+            left: 20%;
+            top: 20px;
+            animation-delay: 0s;
+        }
+
+        .shark {
+            right: 20%;
+            top: 50px;
+            animation-delay: -2s;
+        }
+
+        @keyframes swim {
+            0%, 100% { transform: translateX(0) rotate(0deg); }
+            25% { transform: translateX(10px) rotate(5deg); }
+            75% { transform: translateX(-10px) rotate(-5deg); }
+        }
+
+        .vs-badge {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--coral);
+            color: white;
+            font-family: 'Fredoka', sans-serif;
+            font-weight: 700;
+            font-size: 0.9rem;
+            padding: 8px 15px;
+            border-radius: 20px;
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
+        }
+
+        /* Status card */
+        .status-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 25px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .status-title {
+            font-family: 'Fredoka', sans-serif;
+            font-size: 1.2rem;
+            color: var(--ocean-deep);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .status-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .status-btn {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 15px;
+            font-family: 'Fredoka', sans-serif;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .status-btn.taken {
+            background: linear-gradient(135deg, var(--seaweed), #40916C);
+            color: white;
+        }
+
+        .status-btn.skip {
+            background: linear-gradient(135deg, var(--coral), #E85D5D);
+            color: white;
+        }
+
+        .status-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .status-btn:active {
+            transform: translateY(0);
+        }
+
+        /* Timer section */
+        .timer-section {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 25px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+            text-align: center;
+        }
+
+        .timer-title {
+            font-family: 'Fredoka', sans-serif;
+            font-size: 1.1rem;
+            color: var(--ocean-deep);
+            margin-bottom: 15px;
+        }
+
+        .countdown {
+            font-family: 'Fredoka', sans-serif;
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: var(--ocean-deep);
+            margin: 20px 0;
+        }
+
+        .countdown-label {
+            font-size: 0.9rem;
+            color: var(--seaweed);
+            margin-top: -10px;
+        }
+
+        .reminder-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .reminder-btn {
+            padding: 12px 20px;
+            border: 2px solid var(--ocean-mid);
+            background: white;
+            border-radius: 25px;
+            font-family: 'Fredoka', sans-serif;
+            font-size: 0.9rem;
+            color: var(--ocean-deep);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .reminder-btn:hover {
+            background: var(--ocean-mid);
+            color: white;
+        }
+
+        .reminder-btn.active {
+            background: var(--ocean-mid);
+            color: white;
+        }
+
+        /* Stats */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .stat-item {
+            background: linear-gradient(135deg, var(--ocean-foam), white);
+            border-radius: 15px;
+            padding: 15px 10px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-family: 'Fredoka', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--ocean-deep);
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            color: var(--seaweed);
+            margin-top: 3px;
+        }
+
+        /* Message box */
+        .message-box {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 25px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .message-title {
+            font-family: 'Fredoka', sans-serif;
+            font-size: 1rem;
+            color: var(--ocean-deep);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .message-content {
+            background: var(--ocean-foam);
+            border-radius: 15px;
+            padding: 15px;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: var(--ocean-deep);
+            border-left: 4px solid var(--ocean-mid);
+        }
+
+        .message-speaker {
+            font-weight: 700;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        /* Confetti */
+        .confetti-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1000;
+            overflow: hidden;
+        }
+
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            top: -10px;
+            animation: confetti-fall 3s ease-out forwards;
+        }
+
+        @keyframes confetti-fall {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+        }
+
+        /* Seaweed decoration */
+        .seaweed {
+            position: fixed;
+            bottom: 0;
+            font-size: 40px;
+            opacity: 0.3;
+            animation: sway 3s ease-in-out infinite;
+        }
+
+        .seaweed-left { left: 5%; }
+        .seaweed-right { right: 5%; animation-delay: -1.5s; }
+
+        @keyframes sway {
+            0%, 100% { transform: rotate(-5deg); }
+            50% { transform: rotate(5deg); }
+        }
+
+        /* Streak celebration */
+        .streak-celebration {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            border-radius: 30px;
+            padding: 40px;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            z-index: 1001;
+            animation: pop-in 0.5s ease;
+        }
+
+        .streak-celebration.show {
+            display: block;
+        }
+
+        @keyframes pop-in {
+            0% { transform: translate(-50%, -50%) scale(0); }
+            50% { transform: translate(-50%, -50%) scale(1.1); }
+            100% { transform: translate(-50%, -50%) scale(1); }
+        }
+
+        .streak-emoji {
+            font-size: 60px;
+            margin-bottom: 15px;
+        }
+
+        .streak-title {
+            font-family: 'Fredoka', sans-serif;
+            font-size: 1.5rem;
+            color: var(--ocean-deep);
+            margin-bottom: 10px;
+        }
+
+        .streak-text {
+            color: var(--seaweed);
+            margin-bottom: 20px;
+        }
+
+        .streak-close {
+            background: var(--ocean-mid);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-family: 'Fredoka', sans-serif;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .container { padding: 15px; }
+            .header h1 { font-size: 1.6rem; }
+            .countdown { font-size: 2.8rem; }
+            .stats-grid { gap: 10px; }
+            .stat-value { font-size: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="bubbles" id="bubbles"></div>
+    
+    <div class="seaweed seaweed-left">🌿</div>
+    <div class="seaweed seaweed-right">🌿</div>
+
+    <div class="container">
+        <div class="header">
+            <h1>🐬 魚油大作戰</h1>
+            <div class="subtitle">
+                <span>🦈</span>
+                <span>海豚督導 vs 拖延鯊魚</span>
+                <span>🐟</span>
+            </div>
+            <div class="fish-container">
+                <span class="fish dolphin">🐬</span>
+                <span class="vs-badge">VS</span>
+                <span class="fish shark">🦈</span>
+            </div>
+        </div>
+
+        <div class="status-card">
+            <div class="status-title">
+                <span>📋</span>
+                <span>今日魚油狀態</span>
+            </div>
+            <div class="status-buttons">
+                <button class="status-btn taken" onclick="markTaken()">
+                    <span>💊</span>
+                    <span>已服用</span>
+                </button>
+                <button class="status-btn skip" onclick="markSkip()">
+                    <span>⏰</span>
+                    <span>稍後再說</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="timer-section">
+            <div class="timer-title">⏰ 下次提醒倒計時</div>
+            <div class="countdown" id="countdown">--:--:--</div>
+            <div class="countdown-label">下次提醒時間</div>
+            <div class="reminder-buttons">
+                <button class="reminder-btn" onclick="setReminder(30)">30分鐘</button>
+                <button class="reminder-btn active" onclick="setReminder(60)">1小時</button>
+                <button class="reminder-btn" onclick="setReminder(120)">2小時</button>
+                <button class="reminder-btn" onclick="setReminder(180)">3小時</button>
+            </div>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-item">
+                <div class="stat-value" id="todayCount">0</div>
+                <div class="stat-label">今日服用</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="streak">0</div>
+                <div class="stat-label">連續天數</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="total">0</div>
+                <div class="stat-label">總服用次數</div>
+            </div>
+        </div>
+
+        <div class="message-box" id="messageBox">
+            <div class="message-title">
+                <span>💬</span>
+                <span>督導時間</span>
+            </div>
+            <div class="message-content" id="messageContent">
+                <span class="message-speaker" id="speaker">🐬 海豚督導：</span>
+                <span id="message">嘿！是時候照顧一下你的身體了～魚油對大腦和心臟都很好喔！</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="confetti-container" id="confettiContainer"></div>
+
+    <div class="streak-celebration" id="streakCelebration">
+        <div class="streak-emoji">🎉</div>
+        <div class="streak-title" id="streakTitle">太棒了！</div>
+        <div class="streak-text" id="streakText">你已經連續服用 3 天了！</div>
+        <button class="streak-close" onclick="closeCelebration()">繼續保持！</button>
+    </div>
+
+    <script>
+        // Data
+        let state = {
+            todayTaken: false,
+            todayCount: parseInt(localStorage.getItem('fishOil_todayCount') || '0'),
+            lastTakenDate: localStorage.getItem('fishOil_lastTakenDate') || '',
+            total: parseInt(localStorage.getItem('fishOil_total') || '0'),
+            streak: parseInt(localStorage.getItem('fishOil_streak') || '0'),
+            reminderMinutes: parseInt(localStorage.getItem('fishOil_reminderMinutes') || '60'),
+            reminderTime: localStorage.getItem('fishOil_reminderTime') || null
+        };
+
+        const today = new Date().toDateString();
+        if (state.lastTakenDate !== today) {
+            state.todayTaken = false;
+            state.todayCount = 0;
+        }
+
+        // Dolphin vs Shark dialogue
+        const dolphinMessages = [
+            { speaker: '🐬 海豚督導：', message: '嘿！是時候照顧一下你的身體了～魚油對大腦和心臟都很好喔！' },
+            { speaker: '🐬 海豚督導：', message: '我看你今天還沒吃魚油呢！身體是革命的本錢，快去拿！' },
+            { speaker: '🐬 海豚督導：', message: '研究說魚油對注意力有好處...你確定不要來一顆？' },
+            { speaker: '🐬 海豚督導：', message: '拖延鯊魚又在你耳邊說「等一下再吃」嗎？別聽它的！' }
+        ];
+
+        const sharkMessages = [
+            { speaker: '🦈 拖延鯊魚：', message: '嗯...現在好忙喔，等一下再吃也不遲...' },
+            { speaker: '🦈 拖延鯊魚：', message: '一顆而已嘛，明天再吃也一樣啦～' },
+            { speaker: '🦈 拖延鯊魚：', message: '你看起來這麼累，先休息再說吧...' },
+            { speaker: '🦈 拖延鯊魚：', message: '魚油又不會跑掉，對吧？' }
+        ];
+
+        // Initialize
+        function init() {
+            createBubbles();
+            updateStats();
+            updateCountdown();
+            showRandomMessage();
+            loadReminderState();
+
+            setInterval(updateCountdown, 1000);
+            setInterval(() => {
+                if (Math.random() > 0.7) showRandomMessage();
+            }, 15000);
+        }
+
+        function createBubbles() {
+            const container = document.getElementById('bubbles');
+            for (let i = 0; i < 15; i++) {
+                const bubble = document.createElement('div');
+                bubble.className = 'bubble';
+                bubble.style.left = Math.random() * 100 + '%';
+                bubble.style.width = bubble.style.height = (Math.random() * 20 + 10) + 'px';
+                bubble.style.animationDuration = (Math.random() * 5 + 8) + 's';
+                bubble.style.animationDelay = (Math.random() * 5) + 's';
+                container.appendChild(bubble);
+            }
+        }
+
+        function showRandomMessage() {
+            const isDolphin = Math.random() > 0.4;
+            const messages = isDolphin ? dolphinMessages : sharkMessages;
+            const msg = messages[Math.floor(Math.random() * messages.length)];
+            
+            document.getElementById('speaker').textContent = msg.speaker;
+            document.getElementById('message').textContent = msg.message;
+        }
+
+        function updateStats() {
+            document.getElementById('todayCount').textContent = state.todayCount;
+            document.getElementById('streak').textContent = state.streak;
+            document.getElementById('total').textContent = state.total;
+        }
+
+        function updateCountdown() {
+            if (!state.reminderTime) {
+                document.getElementById('countdown').textContent = '設定提醒';
+                return;
+            }
+
+            const now = new Date();
+            const target = new Date(state.reminderTime);
+            const diff = target - now;
+
+            if (diff <= 0) {
+                document.getElementById('countdown').textContent = '時間到！';
+                triggerReminder();
+                return;
+            }
+
+            const hours = Math.floor(diff / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+            
+            document.getElementById('countdown').textContent = 
+                `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        function triggerReminder() {
+            state.reminderTime = null;
+            localStorage.removeItem('fishOil_reminderTime');
+            showRandomMessage();
+        }
+
+        function setReminder(minutes) {
+            state.reminderMinutes = minutes;
+            const target = new Date(Date.now() + minutes * 60 * 1000);
+            state.reminderTime = target.toISOString();
+            
+            localStorage.setItem('fishOil_reminderMinutes', minutes);
+            localStorage.setItem('fishOil_reminderTime', state.reminderTime);
+
+            document.querySelectorAll('.reminder-btn').forEach((btn, i) => {
+                const values = [30, 60, 120, 180];
+                btn.classList.toggle('active', values[i] === minutes);
+            }));
+        }
+
+        function loadReminderState() {
+            if (state.reminderTime) {
+                const target = new Date(state.reminderTime);
+                if (target <= new Date()) {
+                    state.reminderTime = null;
+                    localStorage.removeItem('fishOil_reminderTime');
+                } else {
+                    const values = [30, 60, 120, 180];
+                    const idx = values.indexOf(state.reminderMinutes);
+                    if (idx >= 0) {
+                        document.querySelectorAll('.reminder-btn').forEach((btn, i) => {
+                            btn.classList.toggle('active', i === idx);
+                        });
+                    }
+                }
+            }
+        }
+
+        function markTaken() {
+            state.todayTaken = true;
+            state.todayCount++;
+            state.total++;
+            
+            const today = new Date().toDateString();
+            const lastDate = state.lastTakenDate;
+            
+            if (lastDate) {
+                const last = new Date(lastDate);
+                const diff = (new Date(today) - last) / (1000 * 60 * 60 * 24);
+                if (diff === 1) {
+                    state.streak++;
+                } else if (diff > 1) {
+                    state.streak = 1;
+                }
+            } else {
+                state.streak = 1;
+            }
+            
+            state.lastTakenDate = today;
+            state.reminderTime = null;
+            
+            localStorage.setItem('fishOil_todayCount', state.todayCount);
+            localStorage.setItem('fishOil_total', state.total);
+            localStorage.setItem('fishOil_streak', state.streak);
+            localStorage.setItem('fishOil_lastTakenDate', today);
+            localStorage.removeItem('fishOil_reminderTime');
+
+            updateStats();
+            triggerCelebration();
+            showConfetti();
+            
+            // Update message to success
+            document.getElementById('speaker').textContent = '🐬 海豚督導：';
+            document.getElementById('message').textContent = '太棒了！你做了正確的選擇！繼續保持這個好習慣～';
+        }
+
+        function markSkip() {
+            showRandomMessage();
+        }
+
+        function triggerCelebration() {
+            if (state.streak > 1 && state.streak % 3 === 0) {
+                const celeb = document.getElementById('streakCelebration');
+                document.getElementById('streakTitle').textContent = '🔥 ' + state.streak + ' 天連勝！';
+                document.getElementById('streakText').textContent = getStreakMessage(state.streak);
+                celeb.classList.add('show');
+            }
+        }
+
+        function getStreakMessage(streak) {
+            if (streak >= 30) return '一個月的堅持！你簡直是魚油冠軍！';
+            if (streak >= 14) return '兩週了！你已經超越了大多數人！';
+            if (streak >= 7) return '一週連勝！拖延鯊魚已經被你打敗了！';
+            if (streak >= 3) return '繼續保持！你在建立好習慣！';
+            return '好的開始！';
+        }
+
+        function closeCelebration() {
+            document.getElementById('streakCelebration').classList.remove('show');
+        }
+
+        function showConfetti() {
+            const container = document.getElementById('confettiContainer');
+            const colors = ['#FFD93D', '#FF6B6B', '#00B4D8', '#2D6A4F', '#90E0EF'];
+            
+            for (let i = 0; i < 50; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = Math.random() * 100 + '%';
+                confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.animationDelay = (Math.random() * 0.5) + 's';
+                confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+                container.appendChild(confetti);
+                
+                setTimeout(() => confetti.remove(), 3500);
+            }
+        }
+
+        init();
+    </script>
+</body>
+</html>

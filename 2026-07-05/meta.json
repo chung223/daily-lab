@@ -1,0 +1,6 @@
+{
+  "title": "🌙 系統夢境相談室",
+  "type": "web",
+  "description": "將夢境以報紙與日式手帳風格記錄的單頁 HTML 工具，支援分類、在地化與 LocalStorage 持久化。",
+  "inspiration": "類比報紙排版美學 × 夢境記錄需求"
+}

@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VPS 深夜健檢 · 鐵路路線圖</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Nunito:wght@400;600;700;800&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --coral: #FF6B6B;
+      --mint: #4ECDC4;
+      --lavender: #9B8FD9;
+      --yellow: #FFE66D;
+      --peach: #FFAB91;
+      --navy: #2B3A5F;
+      --cream: #FFF9F2;
+      --cream-dark: #F5EDE3;
+      --text: #2D2A26;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Nunito', 'Noto Sans TC', sans-serif;
+      background: linear-gradient(135deg, var(--cream) 0%, var(--cream-dark) 100%);
+      min-height: 100vh;
+      padding: 20px;
+      overflow-x: hidden;
+    }
+    .memphis-bg {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+    .shape {
+      position: absolute;
+      opacity: 0.15;
+    }
+    .shape.triangle {
+      width: 0; height: 0;
+      border-left: 30px solid transparent;
+      border-right: 30px solid transparent;
+      border-bottom: 50px solid var(--coral);
+    }
+    .shape.circle { border-radius: 50%; }
+    .shape.zigzag {
+      width: 60px; height: 20px;
+      background: repeating-linear-gradient(
+        90deg, var(--mint) 0px, var(--mint) 10px, transparent 10px, transparent 20px
+      );
+    }
+    .shape.dots {
+      width: 80px; height: 80px;
+      background: radial-gradient(circle, var(--yellow) 3px, transparent 3px);
+      background-size: 15px 15px;
+    }
+    .shape.cross {
+      font-size: 40px;
+      color: var(--lavender);
+      font-weight: bold;
+    }
+    .shape.semicircle {
+      border-radius: 100px 100px 0 0;
+    }
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    }
+    header {
+      text-align: center;
+      margin-bottom: 30px;
+      position: relative;
+    }
+    h1 {
+      font-family: 'Bangers', cursive;
+      font-size: clamp(2.5rem, 8vw, 4rem);
+      color: var(--navy);
+      letter-spacing: 3px;
+      text-shadow: 3px 3px 0 var(--yellow), 6px 6px 0 rgba(0,0,0,0.1);
+      margin-bottom: 10px;
+    }
+    .subtitle {
+      font-size: 1.1rem;
+      color: var(--text);
+      opacity: 0.8;
+    }
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 15px;
+      margin-bottom: 30px;
+    }
+    .stat-card {
+      background: white;
+      border-radius: 20px;
+      padding: 20px;
+      text-align: center;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+      border: 3px solid transparent;
+      transition: transform 0.3s, border-color 0.3s;
+    }
+    .stat-card:nth-child(1) { border-color: var(--coral); }
+    .stat-card:nth-child(2) { border-color: var(--mint); }
+    .stat-card:nth-child(3) { border-color: var(--lavender); }
+    .stat-card:nth-child(4) { border-color: var(--yellow); }
+    .stat-card:hover { transform: translateY(-5px) rotate(-2deg); }
+    .stat-number {
+      font-family: 'Bangers', cursive;
+      font-size: 2.5rem;
+      color: var(--navy);
+    }
+    .stat-label {
+      font-size: 0.85rem;
+      color: var(--text);
+      opacity: 0.7;
+    }
+    .map-container {
+      background: white;
+      border-radius: 25px;
+      padding: 30px;
+      box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+      margin-bottom: 30px;
+      position: relative;
+      overflow: hidden;
+    }
+    .map-title {
+      font-family: 'Bangers', cursive;
+      font-size: 1.5rem;
+      color: var(--navy);
+      margin-bottom: 25px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .railway-map {
+      position: relative;
+      padding: 20px 0;
+    }
+    .railway-line {
+      position: absolute;
+      left: 30px;
+      top: 0;
+      bottom: 0;
+      width: 6px;
+      background: repeating-linear-gradient(
+        to bottom,
+        var(--navy) 0px, var(--navy) 20px,
+        transparent 20px, transparent 30px
+      );
+    }
+    .station {
+      display: flex;
+      align-items: center;
+      margin-bottom: 25px;
+      position: relative;
+      padding-left: 60px;
+      cursor: pointer;
+      transition: transform 0.3s;
+    }
+    .station:hover { transform: translateX(10px); }
+    .station-node {
+      position: absolute;
+      left: 18px;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      border: 4px solid white;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+      color: white;
+      font-weight: bold;
+    }
+    .station-node.healthy { background: var(--mint); }
+    .station-node.warning { background: var(--yellow); color: var(--navy); }
+    .station-node.danger { background: var(--coral); }
+    .station-info {
+      flex: 1;
+      background: var(--cream);
+      border-radius: 15px;
+      padding: 15px 20px;
+      border: 2px solid;
+    }
+    .station:nth-child(1) .station-info { border-color: var(--mint); }
+    .station:nth-child(2) .station-info { border-color: var(--mint); }
+    .station:nth-child(3) .station-info { border-color: var(--coral); }
+    .station:nth-child(4) .station-info { border-color: var(--mint); }
+    .station:nth-child(5) .station-info { border-color: var(--mint); }
+    .station-name {
+      font-weight: 800;
+      font-size: 1.1rem;
+      color: var(--navy);
+      margin-bottom: 5px;
+    }
+    .station-status {
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .status-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+    .status-dot.ok { background: var(--mint); }
+    .status-dot.warn { background: var(--yellow); }
+    .status-dot.error { background: var(--coral); }
+    .emergency-section {
+      background: linear-gradient(135deg, #FFF5F5 0%, #FFF0F0 100%);
+      border: 3px dashed var(--coral);
+      border-radius: 25px;
+      padding: 25px;
+      margin-bottom: 30px;
+    }
+    .emergency-title {
+      font-family: 'Bangers', cursive;
+      font-size: 1.5rem;
+      color: var(--coral);
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .emergency-card {
+      background: white;
+      border-radius: 15px;
+      padding: 20px;
+      margin-bottom: 15px;
+      border-left: 5px solid var(--coral);
+      box-shadow: 0 5px 20px rgba(255,107,107,0.15);
+      transition: transform 0.3s;
+    }
+    .emergency-card:hover { transform: scale(1.02); }
+    .emergency-card h4 {
+      color: var(--navy);
+      margin-bottom: 8px;
+      font-size: 1.05rem;
+    }
+    .emergency-card p {
+      color: var(--text);
+      opacity: 0.8;
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+    .proposals {
+      background: linear-gradient(135deg, #F0F5FF 0%, #E8F0FF 100%);
+      border-radius: 25px;
+      padding: 25px;
+      margin-bottom: 30px;
+    }
+    .proposals-title {
+      font-family: 'Bangers', cursive;
+      font-size: 1.5rem;
+      color: var(--navy);
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .proposal-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 15px;
+    }
+    .proposal-card {
+      background: white;
+      border-radius: 15px;
+      padding: 18px;
+      border: 2px solid var(--lavender);
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .proposal-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 30px rgba(155,143,217,0.2);
+    }
+    .proposal-id {
+      font-family: 'Bangers', cursive;
+      font-size: 0.9rem;
+      color: var(--lavender);
+      margin-bottom: 8px;
+    }
+    .proposal-text {
+      font-size: 0.95rem;
+      color: var(--text);
+      line-height: 1.4;
+    }
+    .fish-oil-section {
+      background: linear-gradient(135deg, #FFF9E6 0%, #FFF5D6 100%);
+      border-radius: 25px;
+      padding: 25px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .fish-oil-title {
+      font-family: 'Bangers', cursive;
+      font-size: 1.8rem;
+      color: var(--navy);
+      margin-bottom: 15px;
+    }
+    .fish-oil-quote {
+      font-size: 1.1rem;
+      color: var(--text);
+      font-style: italic;
+      margin-bottom: 20px;
+      line-height: 1.6;
+    }
+    .fish-oil-actors {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      margin-bottom: 20px;
+    }
+    .actor {
+      font-size: 3rem;
+      animation: bounce 2s ease-in-out infinite;
+    }
+    .actor:nth-child(2) { animation-delay: 0.3s; }
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-15px); }
+    }
+    .fish-oil-tag {
+      display: inline-block;
+      background: var(--yellow);
+      color: var(--navy);
+      padding: 8px 20px;
+      border-radius: 30px;
+      font-weight: 700;
+      font-size: 0.9rem;
+    }
+    .click-hint {
+      text-align: center;
+      margin-top: 25px;
+      font-size: 0.9rem;
+      color: var(--text);
+      opacity: 0.6;
+    }
+    .confetti {
+      position: fixed;
+      width: 15px;
+      height: 15px;
+      pointer-events: none;
+      z-index: 1000;
+      animation: confetti-fall 3s ease-out forwards;
+    }
+    @keyframes confetti-fall {
+      0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+    }
+    @media (max-width: 600px) {
+      .railway-line { left: 15px; }
+      .station { padding-left: 45px; }
+      .station-node { left: 3px; width: 25px; height: 25px; font-size: 0.6rem; }
+      .stats-row { grid-template-columns: repeat(2, 1fr); }
+      .stat-number { font-size: 2rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="memphis-bg" id="memphisBg"></div>
+  <div class="container">
+    <header>
+      <h1>VPS 深夜健檢</h1>
+      <p class="subtitle">🦉 凌晨 3:30 的巫師巡邏時間 · 6 站鐵路路線圖</p>
+    </header>
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-number">6</div>
+        <div class="stat-label">檢查站點</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">2</div>
+        <div class="stat-label">緊急問題</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">3</div>
+        <div class="stat-label">提案編號</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">1116</div>
+        <div class="stat-label">運行小時</div>
+      </div>
+    </div>
+    <div class="map-container">
+      <div class="map-title">🚂 健檢路線圖</div>
+      <div class="railway-map">
+        <div class="railway-line"></div>
+        <div class="station">
+          <div class="station-node healthy">JP1</div>
+          <div class="station-info">
+            <div class="station-name">JP1 日本 🇯🇵</div>
+            <div class="station-status">
+              <span class="status-dot warn"></span>
+              SSH 障礙 · 寶塔目錄讀取被拒
+            </div>
+          </div>
+        </div>
+        <div class="station">
+          <div class="station-node warning">JP2</div>
+          <div class="station-info">
+            <div class="station-name">JP2 日本 🇯🇵</div>
+            <div class="station-status">
+              <span class="status-dot warn"></span>
+              SSH 限制變更 · 需設定 NOPASSWD
+            </div>
+          </div>
+        </div>
+        <div class="station">
+          <div class="station-node danger">4H</div>
+          <div class="station-info">
+            <div class="station-name">class.fourh.org.tw</div>
+            <div class="station-status">
+              <span class="status-dot error"></span>
+              🔴 config.php.bak 可下載（內含帳密）
+            </div>
+          </div>
+        </div>
+        <div class="station">
+          <div class="station-node danger">MEM</div>
+          <div class="station-info">
+            <div class="station-name">memos.chung.men</div>
+            <div class="station-status">
+              <span class="status-dot error"></span>
+              502 Bad Gateway
+            </div>
+          </div>
+        </div>
+        <div class="station">
+          <div class="station-node healthy">US</div>
+          <div class="station-info">
+            <div class="station-name">US 美國 🇺🇸</div>
+            <div class="station-status">
+              <span class="status-dot ok"></span>
+              正常運行
+            </div>
+          </div>
+        </div>
+        <div class="station">
+          <div class="station-node healthy">ARM</div>
+          <div class="station-info">
+            <div class="station-name">USARM 美國 🇺🇸</div>
+            <div class="station-status">
+              <span class="status-dot ok"></span>
+              正常運行
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="emergency-section">
+      <div class="emergency-title">🚨 緊急問題</div>
+      <div class="emergency-card">
+        <h4>P-20260819-1 · class.fourh.org.tw</h4>
+        <p>config.php.bak 檔案可被下載，內含資料庫帳密。需要立即人工移除。</p>
+      </div>
+      <div class="emergency-card">
+        <h4>P-20260819-2 · memos.chung.men</h4>
+        <p>服務回傳 502 Bad Gateway，需要確認服務狀態並重啟。</p>
+      </div>
+    </div>
+    <div class="proposals">
+      <div class="proposals-title">📋 待處理提案</div>
+      <div class="proposal-grid">
+        <div class="proposal-card">
+          <div class="proposal-id">P-20260819-1</div>
+          <div class="proposal-text">L2 緊急處理 · 移除 class.fourh.org.tw 的 config.php.bak</div>
+        </div>
+        <div class="proposal-card">
+          <div class="proposal-id">P-20260819-2</div>
+          <div class="proposal-text">L1 優先處理 · 修復 memos.chung.men 502 問題</div>
+        </div>
+        <div class="proposal-card">
+          <div class="proposal-id">P-20260819-3</div>
+          <div class="proposal-text">L1 優先處理 · 設定 JP1/JP2 SSH NOPASSWD 權限</div>
+        </div>
+      </div>
+    </div>
+    <div class="fish-oil-section" id="fishOilSection">
+      <div class="fish-oil-title">🐬 魚油督導劇場 · 液體黃金 🐟</div>
+      <div class="fish-oil-quote">「魚油是 Omega-3，是液體黃金！吃魚跟吃魚油是不一樣的！」</div>
+      <div class="fish-oil-actors">
+        <span class="actor">🐬</span>
+        <span class="actor">🦈</span>
+      </div>
+      <div class="fish-oil-tag">液體黃金 · 每日督促</div>
+    </div>
+    <p class="click-hint">✨ 點擊任意處觸發彩屑慶祝動畫</p>
+  </div>
+  <script>
+    // Memphis background shapes
+    const bg = document.getElementById('memphisBg');
+    const shapes = [
+      { class: 'triangle', top: '10%', left: '5%', color: 'var(--coral)' },
+      { class: 'triangle', top: '60%', right: '8%', color: 'var(--mint)', transform: 'rotate(180deg)' },
+      { class: 'circle', top: '25%', right: '15%', width: '80px', height: '80px', background: 'var(--lavender)' },
+      { class: 'circle', bottom: '20%', left: '10%', width: '50px', height: '50px', background: 'var(--yellow)' },
+      { class: 'zigzag', top: '40%', left: '85%', color: 'var(--coral)' },
+      { class: 'dots', bottom: '30%', right: '20%', color: 'var(--mint)' },
+      { class: 'cross', top: '70%', left: '75%', color: 'var(--lavender)' },
+      { class: 'semicircle', bottom: '10%', left: '50%', width: '100px', height: '50px', background: 'var(--peach)' }
+    ];
+    shapes.forEach(s => {
+      const el = document.createElement('div');
+      el.className = 'shape ' + s.class;
+      const style = { position: 'absolute' };
+      if (s.top) style.top = s.top;
+      if (s.bottom) style.bottom = s.bottom;
+      if (s.left) style.left = s.left;
+      if (s.right) style.right = s.right;
+      if (s.width) style.width = s.width;
+      if (s.height) style.height = s.height;
+      if (s.background) el.style.background = s.background;
+      if (s.color) el.style.borderBottomColor = s.color;
+      if (s.transform) el.style.transform = s.transform;
+      Object.assign(el.style, style);
+      bg.appendChild(el);
+    });
+    // Confetti on click
+    document.addEventListener('click', () => {
+      const colors = ['var(--coral)', 'var(--mint)', 'var(--lavender)', 'var(--yellow)', 'var(--peach)'];
+      for (let i = 0; i < 30; i++) {
+        const conf = document.createElement('div');
+        conf.className = 'confetti';
+        conf.style.left = Math.random() * 100 + 'vw';
+        conf.style.top = '-20px';
+        conf.style.background = colors[Math.floor(Math.random() * colors.length)];
+        conf.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+        conf.style.animationDuration = (2 + Math.random() * 2) + 's';
+        document.body.appendChild(conf);
+        setTimeout(() => conf.remove(), 4000);
+      }
+    });
+    // Bounce animation for fish oil actors
+    document.getElementById('fishOilSection').addEventListener('click', () => {
+      const actors = document.querySelectorAll('.actor');
+      actors.forEach(a => {
+        a.style.animation = 'none';
+        a.offsetHeight;
+        a.style.animation = 'bounce 0.5s ease-in-out 3';
+      });
+    });
+  </script>
+</body>
+</html>

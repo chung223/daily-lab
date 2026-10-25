@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mood Aurora | 情緒極光</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-primary: #0a0f14;
+      --bg-secondary: #0f1419;
+      --text-primary: #e8f4f8;
+      --text-secondary: #7a9bb3;
+      --accent-cyan: #00ffc8;
+      --accent-green: #00d4aa;
+      --accent-purple: #7b68ee;
+      --surface: rgba(255, 255, 255, 0.03);
+      --border: rgba(255, 255, 255, 0.08);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Noto Serif TC', serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* Aurora Background */
+    .aurora {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .aurora-band {
+      position: absolute;
+      width: 200%;
+      height: 60%;
+      left: -50%;
+      filter: blur(60px);
+      opacity: 0.4;
+      animation: aurora-drift 20s ease-in-out infinite;
+    }
+
+    .aurora-band:nth-child(1) {
+      top: 10%;
+      background: linear-gradient(90deg, 
+        transparent 0%, 
+        var(--accent-cyan) 30%, 
+        var(--accent-green) 50%, 
+        var(--accent-purple) 70%, 
+        transparent 100%
+      );
+      animation-delay: 0s;
+    }
+
+    .aurora-band:nth-child(2) {
+      top: 25%;
+      background: linear-gradient(90deg, 
+        transparent 0%, 
+        var(--accent-green) 20%, 
+        var(--accent-cyan) 50%, 
+        var(--accent-purple) 80%, 
+        transparent 100%
+      );
+      animation-delay: -7s;
+      opacity: 0.3;
+    }
+
+    .aurora-band:nth-child(3) {
+      top: 40%;
+      background: linear-gradient(90deg, 
+        transparent 0%, 
+        var(--accent-purple) 40%, 
+        var(--accent-green) 60%, 
+        transparent 100%
+      );
+      animation-delay: -14s;
+      opacity: 0.25;
+    }
+
+    @keyframes aurora-drift {
+      0%, 100% { transform: translateX(-10%) skewX(-5deg); }
+      50% { transform: translateX(10%) skewX(5deg); }
+    }
+
+    /* Grain overlay */
+    .grain {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+      opacity: 0.04;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    }
+
+    /* Main content */
+    .container {
+      position: relative;
+      z-index: 10;
+      max-width: 480px;
+      margin: 0 auto;
+      padding: 60px 24px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 48px;
+    }
+
+    h1 {
+      font-size: 28px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      margin-bottom: 8px;
+      background: linear-gradient(135deg, var(--accent-cyan), var(--accent-green));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .subtitle {
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      color: var(--text-secondary);
+      letter-spacing: 1px;
+    }
+
+    /* Mood selector */
+    .mood-section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 32px 24px;
+      margin-bottom: 24px;
+      backdrop-filter: blur(10px);
+    }
+
+    .mood-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    .mood-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 12px;
+    }
+
+    .mood-btn {
+      aspect-ratio: 1;
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      background: transparent;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .mood-btn::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at center, var(--accent-cyan), transparent);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .mood-btn:hover {
+      border-color: var(--accent-cyan);
+      transform: translateY(-2px);
+    }
+
+    .mood-btn:hover::before {
+      opacity: 0.1;
+    }
+
+    .mood-btn.active {
+      border-color: var(--accent-cyan);
+      background: rgba(0, 255, 200, 0.1);
+      box-shadow: 0 0 30px rgba(0, 255, 200, 0.2);
+    }
+
+    .mood-btn.active::before {
+      opacity: 0.15;
+    }
+
+    .mood-emoji {
+      font-size: 28px;
+      line-height: 1;
+    }
+
+    .mood-name {
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+    }
+
+    /* Note input */
+    .note-section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 24px;
+      backdrop-filter: blur(10px);
+    }
+
+    .note-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-bottom: 16px;
+      display: block;
+    }
+
+    .note-input {
+      width: 100%;
+      min-height: 100px;
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      color: var(--text-primary);
+      font-family: 'Noto Serif TC', serif;
+      font-size: 15px;
+      resize: none;
+      transition: border-color 0.3s;
+    }
+
+    .note-input:focus {
+      outline: none;
+      border-color: var(--accent-cyan);
+    }
+
+    .note-input::placeholder {
+      color: var(--text-secondary);
+      opacity: 0.6;
+    }
+
+    /* Save button */
+    .save-btn {
+      width: 100%;
+      padding: 16px;
+      background: linear-gradient(135deg, var(--accent-cyan), var(--accent-green));
+      border: none;
+      border-radius: 12px;
+      color: var(--bg-primary);
+      font-family: 'Noto Serif TC', serif;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      letter-spacing: 2px;
+    }
+
+    .save-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 40px rgba(0, 255, 200, 0.3);
+    }
+
+    .save-btn:active {
+      transform: translateY(0);
+    }
+
+    /* History */
+    .history-section {
+      flex: 1;
+    }
+
+    .history-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .history-title {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+
+    .clear-btn {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      color: var(--text-secondary);
+      background: none;
+      border: none;
+      cursor: pointer;
+      opacity: 0.6;
+      transition: opacity 0.3s;
+    }
+
+    .clear-btn:hover {
+      opacity: 1;
+    }
+
+    .history-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .history-item {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      backdrop-filter: blur(10px);
+      animation: fadeIn 0.4s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .history-date {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      color: var(--accent-cyan);
+      margin-bottom: 8px;
+      letter-spacing: 1px;
+    }
+
+    .history-mood {
+      font-size: 20px;
+      margin-bottom: 8px;
+    }
+
+    .history-note {
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    /* Success message */
+    .success-msg {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0.8);
+      background: rgba(0, 255, 200, 0.1);
+      border: 1px solid var(--accent-cyan);
+      border-radius: 16px;
+      padding: 32px 48px;
+      text-align: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.4s ease;
+      z-index: 100;
+      backdrop-filter: blur(20px);
+    }
+
+    .success-msg.show {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1);
+    }
+
+    .success-msg span {
+      font-size: 48px;
+      display: block;
+      margin-bottom: 12px;
+    }
+
+    .success-msg p {
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      color: var(--accent-cyan);
+      letter-spacing: 2px;
+    }
+
+    @media (max-width: 480px) {
+      .container {
+        padding: 40px 16px;
+      }
+      
+      h1 {
+        font-size: 24px;
+      }
+
+      .mood-emoji {
+        font-size: 24px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="aurora">
+    <div class="aurora-band"></div>
+    <div class="aurora-band"></div>
+    <div class="aurora-band"></div>
+  </div>
+  <div class="grain"></div>
+
+  <div class="container">
+    <header>
+      <h1>情緒極光</h1>
+      <p class="subtitle">MOOD AURORA</p>
+    </header>
+
+    <div class="mood-section">
+      <label class="mood-label">今天的心情？</label>
+      <div class="mood-grid">
+        <button class="mood-btn" data-mood="amazing" data-emoji="✨">
+          <span class="mood-emoji">✨</span>
+          <span class="mood-name">超棒</span>
+        </button>
+        <button class="mood-btn" data-mood="good" data-emoji="🙂">
+          <span class="mood-emoji">🙂</span>
+          <span class="mood-name">不錯</span>
+        </button>
+        <button class="mood-btn" data-mood="okay" data-emoji="😐">
+          <span class="mood-emoji">😐</span>
+          <span class="mood-name">普通</span>
+        </button>
+        <button class="mood-btn" data-mood="down" data-emoji="😔">
+          <span class="mood-emoji">😔</span>
+          <span class="mood-name">低落</span>
+        </button>
+        <button class="mood-btn" data-mood="awful" data-emoji="💔">
+          <span class="mood-emoji">💔</span>
+          <span class="mood-name">糟糕</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="note-section">
+      <label class="note-label">記錄一下（可選）</label>
+      <textarea class="note-input" placeholder="今天發生了什麼？"></textarea>
+    </div>
+
+    <button class="save-btn">儲存今日心情</button>
+
+    <div class="history-section">
+      <div class="history-header">
+        <span class="history-title">過往記錄</span>
+        <button class="clear-btn" onclick="clearHistory()">清除</button>
+      </div>
+      <div class="history-list" id="historyList"></div>
+    </div>
+  </div>
+
+  <div class="success-msg" id="successMsg">
+    <span>🌟</span>
+    <p>已儲存</p>
+  </div>
+
+  <script>
+    const MOOD_DATA = {
+      amazing: { emoji: '✨', label: '超棒' },
+      good: { emoji: '🙂', label: '不錯' },
+      okay: { emoji: '😐', label: '普通' },
+      down: { emoji: '😔', label: '低落' },
+      awful: { emoji: '💔', label: '糟糕' }
+    };
+
+    let selectedMood = null;
+    const moodBtns = document.querySelectorAll('.mood-btn');
+    const noteInput = document.querySelector('.note-input');
+    const saveBtn = document.querySelector('.save-btn');
+    const successMsg = document.getElementById('successMsg');
+    const historyList = document.getElementById('historyList');
+
+    // Load history on init
+    loadHistory();
+
+    // Mood selection
+    moodBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        moodBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        selectedMood = btn.dataset.mood;
+      });
+    });
+
+    // Save entry
+    saveBtn.addEventListener('click', () => {
+      if (!selectedMood) {
+        alert('請選擇今天的心情');
+        return;
+      }
+
+      const entry = {
+        mood: selectedMood,
+        note: noteInput.value.trim(),
+        timestamp: new Date().toISOString()
+      };
+
+      const history = JSON.parse(localStorage.getItem('mood-aurora') || '[]');
+      history.unshift(entry);
+      localStorage.setItem('mood-aurora', JSON.stringify(history));
+
+      // Show success
+      successMsg.classList.add('show');
+      setTimeout(() => {
+        successMsg.classList.remove('show');
+      }, 1500);
+
+      // Reset form
+      moodBtns.forEach(b => b.classList.remove('active'));
+      noteInput.value = '';
+      selectedMood = null;
+
+      // Reload history
+      loadHistory();
+    });
+
+    function loadHistory() {
+      const history = JSON.parse(localStorage.getItem('mood-aurora') || '[]');
+      
+      if (history.length === 0) {
+        historyList.innerHTML = '<p style="color: var(--text-secondary); text-align: center; font-size: 13px; padding: 20px;">還沒有記錄</p>';
+        return;
+      }
+
+      historyList.innerHTML = history.map(entry => {
+        const date = new Date(entry.timestamp);
+        const dateStr = `${date.getMonth() + 1}/${date.getDate()} ${date.getHours()}:${String(date.getMinutes()).padStart(2, '0')}`;
+        const moodInfo = MOOD_DATA[entry.mood];
+        
+        return `
+          <div class="history-item">
+            <div class="history-date">${dateStr}</div>
+            <div class="history-mood">${moodInfo.emoji}</div>
+            ${entry.note ? `<div class="history-note">${entry.note}</div>` : ''}
+          </div>
+        `;
+      }).join('');
+    }
+
+    function clearHistory() {
+      if (confirm('確定要清除所有記錄嗎？')) {
+        localStorage.removeItem('mood-aurora');
+        loadHistory();
+      }
+    }
+  </script>
+</body>
+</html>

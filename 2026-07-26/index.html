@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>📺 週日早晨電視機 — Sunday Morning CRT</title>
+  <link href="https://fonts.googleapis.com/css2?family=VT323&family=Noto+Sans+TC:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    :root {
+      --amber: #FFB347;
+      --orange: #FF8C00;
+      --warm-cream: #FFF0D4;
+      --dark-brown: #2D1810;
+      --bezel: #4A3728;
+      --static-dark: #1A0F0A;
+      --glow: #FFCC66;
+      --screen-bg: #2D1810;
+    }
+    
+    body {
+      font-family: 'Noto Sans TC', sans-serif;
+      background: linear-gradient(135deg, #1A0F0A 0%, #3D2914 50%, #2D1810 100%);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+      overflow-x: hidden;
+    }
+    
+    /* TV Frame */
+    .tv-container {
+      position: relative;
+      width: 100%;
+      max-width: 700px;
+    }
+    
+    .tv-frame {
+      background: linear-gradient(145deg, #5A4A3A, #3D2914);
+      border-radius: 40px;
+      padding: 30px;
+      box-shadow: 
+        0 20px 60px rgba(0,0,0,0.8),
+        inset 0 2px 4px rgba(255,255,255,0.1);
+      position: relative;
+    }
+    
+    .tv-top-panel {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding: 0 10px;
+    }
+    
+    .brand {
+      font-family: 'VT323', monospace;
+      color: var(--amber);
+      font-size: 24px;
+      text-shadow: 0 0 10px var(--glow);
+      letter-spacing: 2px;
+    }
+    
+    .channel-display {
+      background: var(--static-dark);
+      border: 3px solid #1A0F0A;
+      border-radius: 8px;
+      padding: 8px 20px;
+      font-family: 'VT323', monospace;
+      font-size: 28px;
+      color: var(--orange);
+      text-shadow: 0 0 15px var(--orange);
+      min-width: 100px;
+      text-align: center;
+      box-shadow: inset 0 0 20px rgba(0,0,0,0.8);
+    }
+    
+    /* Antenna */
+    .antenna {
+      position: absolute;
+      top: -60px;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      gap: 100px;
+    }
+    
+    .antenna-rod {
+      width: 4px;
+      height: 80px;
+      background: linear-gradient(to top, #5A4A3A, #8B7355);
+      border-radius: 2px;
+      transform-origin: bottom center;
+      transform: rotate(-20deg);
+      position: relative;
+    }
+    
+    .antenna-rod:last-child {
+      transform: rotate(20deg);
+    }
+    
+    .antenna-bulb {
+      position: absolute;
+      top: -8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 12px;
+      height: 12px;
+      background: radial-gradient(circle, var(--amber), var(--orange));
+      border-radius: 50%;
+      box-shadow: 0 0 15px var(--orange), 0 0 30px var(--glow);
+      animation: pulse-glow 2s ease-in-out infinite;
+    }
+    
+    @keyframes pulse-glow {
+      0%, 100% { opacity: 0.7; box-shadow: 0 0 10px var(--orange); }
+      50% { opacity: 1; box-shadow: 0 0 20px var(--orange), 0 0 40px var(--glow); }
+    }
+    
+    /* Screen */
+    .screen-container {
+      position: relative;
+      border-radius: 20px;
+      overflow: hidden;
+      background: #000;
+      box-shadow: inset 0 0 50px rgba(0,0,0,0.9);
+    }
+    
+    .screen {
+      width: 100%;
+      aspect-ratio: 4/3;
+      background: var(--screen-bg);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .screen-content {
+      position: absolute;
+      inset: 0;
+      padding: 30px;
+      display: flex;
+      flex-direction: column;
+      z-index: 2;
+      transition: opacity 0.1s;
+    }
+    
+    /* Scanlines */
+    .scanlines {
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0,0,0,0.3) 2px,
+        rgba(0,0,0,0.3) 4px
+      );
+      pointer-events: none;
+      z-index: 10;
+    }
+    
+    /* Static noise overlay */
+    .static-overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 5;
+      opacity: 0;
+      transition: opacity 0.15s;
+      pointer-events: none;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+      mix-blend-mode: overlay;
+    }
+    
+    .static-overlay.active {
+      opacity: 0.8;
+      animation: static-flicker 0.1s steps(5) infinite;
+    }
+    
+    @keyframes static-flicker {
+      0% { transform: translate(0, 0); }
+      25% { transform: translate(-2px, 1px); }
+      50% { transform: translate(1px, -1px); }
+      75% { transform: translate(-1px, 2px); }
+      100% { transform: translate(2px, -2px); }
+    }
+    
+    /* VHS tracking bar */
+    .vhs-bar {
+      position: absolute;
+      left: 0;
+      right: 0;
+      height: 30px;
+      background: linear-gradient(transparent, rgba(255,200,100,0.3), transparent);
+      z-index: 6;
+      opacity: 0;
+      pointer-events: none;
+      animation: vhs-track 0.8s ease-in-out infinite;
+    }
+    
+    .static-overlay.active .vhs-bar {
+      opacity: 1;
+    }
+    
+    @keyframes vhs-track {
+      0% { top: -30px; }
+      100% { top: 100%; }
+    }
+    
+    /* Channel Content */
+    .channel-day {
+      font-family: 'VT323', monospace;
+      color: var(--amber);
+      font-size: 48px;
+      text-shadow: 0 0 20px var(--glow);
+      margin-bottom: 10px;
+    }
+    
+    .channel-date {
+      font-size: 18px;
+      color: var(--warm-cream);
+      opacity: 0.8;
+      margin-bottom: 20px;
+    }
+    
+    .channel-summary {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    
+    .summary-item {
+      background: rgba(255,179,71,0.15);
+      border-left: 3px solid var(--orange);
+      padding: 8px 12px;
+      font-size: 14px;
+      color: var(--warm-cream);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .summary-emoji {
+      font-size: 18px;
+    }
+    
+    .channel-stats {
+      display: flex;
+      gap: 15px;
+      margin-top: 15px;
+      flex-wrap: wrap;
+    }
+    
+    .stat-badge {
+      background: var(--orange);
+      color: var(--dark-brown);
+      padding: 4px 12px;
+      border-radius: 4px;
+      font-family: 'VT323', monospace;
+      font-size: 16px;
+      font-weight: bold;
+    }
+    
+    /* TV Controls */
+    .tv-controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 25px;
+      padding: 0 20px;
+    }
+    
+    .knob-container {
+      display: flex;
+      gap: 30px;
+    }
+    
+    .knob-group {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .knob-label {
+      font-family: 'VT323', monospace;
+      color: var(--amber);
+      font-size: 12px;
+      letter-spacing: 1px;
+    }
+    
+    .knob {
+      width: 50px;
+      height: 50px;
+      background: radial-gradient(circle at 30% 30%, #6B5B4F, #3D2914);
+      border-radius: 50%;
+      border: 3px solid #2D1810;
+      cursor: pointer;
+      position: relative;
+      box-shadow: 
+        0 4px 8px rgba(0,0,0,0.5),
+        inset 0 2px 4px rgba(255,255,255,0.1);
+      transition: transform 0.1s;
+    }
+    
+    .knob::after {
+      content: '';
+      position: absolute;
+      top: 8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 3px;
+      height: 12px;
+      background: var(--amber);
+      border-radius: 2px;
+    }
+    
+    .knob:hover {
+      transform: scale(1.05);
+    }
+    
+    .knob:active {
+      transform: scale(0.95);
+    }
+    
+    .knob.ch-kan {
+      transform: rotate(var(--ch-rot, -30deg));
+    }
+    
+    .knob.vol-knob {
+      transform: rotate(var(--vol-rot, 0deg));
+    }
+    
+    .speaker-grille {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    
+    .speaker-line {
+      width: 80px;
+      height: 4px;
+      background: linear-gradient(90deg, #2D1810, #5A4A3A, #2D1810);
+      border-radius: 2px;
+    }
+    
+    .remote-buttons {
+      display: flex;
+      gap: 8px;
+    }
+    
+    .remote-btn {
+      width: 35px;
+      height: 35px;
+      border-radius: 50%;
+      background: linear-gradient(145deg, #4A3728, #2D1810);
+      border: 2px solid #1A0F0A;
+      color: var(--amber);
+      font-family: 'VT323', monospace;
+      font-size: 20px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 3px 6px rgba(0,0,0,0.4);
+      transition: all 0.15s;
+    }
+    
+    .remote-btn:hover {
+      background: linear-gradient(145deg, #5A4A3A, #3D2914);
+      transform: translateY(-2px);
+    }
+    
+    .remote-btn:active {
+      transform: translateY(1px);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.4);
+    }
+    
+    .remote-btn.power {
+      background: linear-gradient(145deg, #8B4513, #5A3010);
+      color: #FF6B6B;
+    }
+    
+    /* TV Guide */
+    .tv-guide {
+      margin-top: 30px;
+      background: linear-gradient(145deg, #3D2914, #2D1810);
+      border-radius: 20px;
+      padding: 20px;
+      width: 100%;
+      max-width: 700px;
+    }
+    
+    .guide-title {
+      font-family: 'VT323', monospace;
+      color: var(--amber);
+      font-size: 28px;
+      text-align: center;
+      margin-bottom: 15px;
+      text-shadow: 0 0 10px var(--glow);
+    }
+    
+    .guide-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 8px;
+    }
+    
+    .guide-channel {
+      background: rgba(255,179,71,0.1);
+      border: 2px solid transparent;
+      border-radius: 10px;
+      padding: 10px 8px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .guide-channel:hover {
+      background: rgba(255,179,71,0.2);
+      transform: translateY(-2px);
+    }
+    
+    .guide-channel.active {
+      border-color: var(--orange);
+      background: rgba(255,140,0,0.25);
+      box-shadow: 0 0 15px rgba(255,140,0,0.3);
+    }
+    
+    .guide-ch-num {
+      font-family: 'VT323', monospace;
+      font-size: 24px;
+      color: var(--orange);
+    }
+    
+    .guide-ch-day {
+      font-size: 13px;
+      color: var(--warm-cream);
+      margin-top: 4px;
+    }
+    
+    .guide-ch-date {
+      font-size: 11px;
+      color: var(--amber);
+      opacity: 0.7;
+    }
+    
+    /* Instructions */
+    .instructions {
+      margin-top: 20px;
+      text-align: center;
+      color: var(--warm-cream);
+      opacity: 0.6;
+      font-size: 13px;
+    }
+    
+    .instructions kbd {
+      background: var(--bezel);
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-family: 'VT323', monospace;
+      color: var(--amber);
+      margin: 0 3px;
+    }
+    
+    /* Responsive */
+    @media (max-width: 600px) {
+      .tv-frame { padding: 20px; border-radius: 25px; }
+      .screen-content { padding: 15px; }
+      .channel-day { font-size: 32px; }
+      .guide-grid { grid-template-columns: repeat(5, 1fr); gap: 5px; }
+      .guide-ch-day { font-size: 11px; }
+      .knob { width: 40px; height: 40px; }
+      .antenna-rod { height: 50px; }
+      .antenna { top: -40px; gap: 60px; }
+      .tv-controls { flex-direction: column; gap: 15px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="tv-container">
+  <!-- Antenna -->
+  <div class="antenna">
+    <div class="antenna-rod"><div class="antenna-bulb"></div></div>
+    <div class="antenna-rod"><div class="antenna-bulb"></div></div>
+  </div>
+  
+  <div class="tv-frame">
+    <!-- Top panel -->
+    <div class="tv-top-panel">
+      <div class="brand">SANYO</div>
+      <div class="channel-display">CH <span id="ch-num">1</span></div>
+    </div>
+    
+    <!-- Screen -->
+    <div class="screen-container">
+      <div class="screen">
+        <div class="screen-content" id="screen-content">
+          <!-- Dynamic content -->
+        </div>
+        <div class="scanlines"></div>
+        <div class="static-overlay" id="static-overlay">
+          <div class="vhs-bar"></div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- TV Controls -->
+    <div class="tv-controls">
+      <div class="speaker-grille">
+        <div class="speaker-line"></div>
+        <div class="speaker-line"></div>
+        <div class="speaker-line"></div>
+      </div>
+      
+      <div class="knob-container">
+        <div class="knob-group">
+          <div class="knob-label">CHANNEL</div>
+          <div class="knob ch-knob" id="knob-ch" style="--ch-rot: -30deg"></div>
+        </div>
+        <div class="knob-group">
+          <div class="knob-label">VOLUME</div>
+          <div class="knob vol-knob" id="knob-vol" style="--vol-rot: 0deg"></div>
+        </div>
+      </div>
+      
+      <div class="remote-buttons">
+        <button class="remote-btn" onclick="changeChannel(-1)">◀</button>
+        <button class="remote-btn power" onclick="togglePower()">⏻</button>
+        <button class="remote-btn" onclick="changeChannel(1)">▶</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TV Guide -->
+<div class="tv-guide">
+  <div class="guide-title">📺 W30 頻道表 — 2026年7月21日至25日</div>
+  <div class="guide-grid" id="guide-grid">
+    <!-- Generated by JS -->
+  </div>
+</div>
+
+<div class="instructions">
+  按 <kbd>←</kbd> <kbd>→</kbd> 切換頻道　<kbd>↑</kbd> <kbd>↓</kbd> 調整音量　<kbd>Space</kbd> 開關電源
+</div>
+
+<script>
+const channels = [
+  {
+    num: 1, day: '週一', date: '07/21',
+    title: 'Wiki 樂團首演',
+    items: [
+      { emoji: '🎻', text: '維基樂團首次亮相，四種弦樂器輪流演奏' },
+      { emoji: '🔄', text: 'Wiki Sync 四循環啟動，每30分鐘更新一次' },
+      { emoji: '📊', text: '心持平穩，系統運行正常' },
+    ],
+    stats: '30 heartbeats'
+  },
+  {
+    num: 2, day: '週二', date: '07/22',
+    title: '週間時刻表',
+    items: [
+      { emoji: '🚂', text: '每日前往週末的火車準時出發' },
+      { emoji: '💼', text: 'WAIC 2026 閉幕後第一個工作日' },
+      { emoji: '🎯', text: '本週目標追蹤開始' },
+    ],
+    stats: 'Hump Day 倒數中'
+  },
+  {
+    num: 3, day: '週三', date: '07/23',
+    title: 'Wiki 豆漿店',
+    items: [
+      { emoji: '🥛', text: '四道招牌菜：豆漿、豆花、燒餅、油條' },
+      { emoji: '🏮', text: '深夜溫暖宵夜時段，燈籠亮起' },
+      { emoji: '❤️', text: '蒸籠熱氣持續，心跳健康' },
+    ],
+    stats: '連續第18天運行'
+  },
+  {
+    num: 4, day: '週四', date: '07/24',
+    title: 'AI 頭版頭條',
+    items: [
+      { emoji: '🤖', text: '2026年7月全球AI五大趨勢出爐' },
+      { emoji: '📰', text: '主權AI、邊緣AI、搜尋流量衝突' },
+      { emoji: '🌐', text: 'WAIC 閉幕總結新鮮出爐' },
+    ],
+    stats: '8條精選資訊'
+  },
+  {
+    num: 5, day: '週五', date: '07/25',
+    title: '科技濃縮超市',
+    items: [
+      { emoji: '🛒', text: '308篇文章濃縮成8條精選' },
+      { emoji: '🏪', text: 'AI/LLM、Crypto、Tech 三大專區' },
+      { emoji: '📡', text: 'RSS、Web、GitHub 全方位攝入' },
+    ],
+    stats: '308→8 資訊濃縮'
+  }
+];
+
+let currentChannel = 1;
+let isOn = true;
+let knobVol = 0;
+
+function renderChannel(chNum) {
+  const ch = channels.find(c => c.num === chNum);
+  const content = document.getElementById('screen-content');
+  
+  let itemsHtml = ch.items.map(item => `
+    <div class="summary-item">
+      <span class="summary-emoji">${item.emoji}</span>
+      <span>${item.text}</span>
+    </div>
+  `).join('');
+  
+  content.innerHTML = `
+    <div class="channel-day">${ch.title}</div>
+    <div class="channel-date">${ch.day} ${ch.date}，W30 第三天</div>
+    <div class="channel-summary">
+      ${itemsHtml}
+    </div>
+    <div class="channel-stats">
+      <span class="stat-badge">${ch.stats}</span>
+    </div>
+  `;
+  
+  // Update channel display
+  document.getElementById('ch-num').textContent = chNum;
+  
+  // Update guide
+  document.querySelectorAll('.guide-channel').forEach(el => {
+    el.classList.toggle('active', parseInt(el.dataset.ch) === chNum);
+  });
+  
+  // Update knob rotation
+  const rot = -30 + (chNum - 1) * 15;
+  document.getElementById('knob-ch').style.setProperty('--ch-rot', rot + 'deg');
+}
+
+function changeChannel(delta) {
+  if (!isOn) return;
+  
+  const overlay = document.getElementById('static-overlay');
+  overlay.classList.add('active');
+  
+  setTimeout(() => {
+    currentChannel = ((currentChannel - 1 + delta + 5) % 5) + 1;
+    renderChannel(currentChannel);
+    
+    setTimeout(() => {
+      overlay.classList.remove('active');
+    }, 200);
+  }, 300);
+}
+
+function togglePower() {
+  isOn = !isOn;
+  const content = document.getElementById('screen-content');
+  const overlay = document.getElementById('static-overlay');
+  
+  if (isOn) {
+    overlay.classList.remove('active');
+    content.style.opacity = '1';
+    renderChannel(currentChannel);
+  } else {
+    overlay.classList.add('active');
+    setTimeout(() => {
+      content.style.opacity = '0';
+      overlay.classList.remove('active');
+    }, 300);
+  }
+}
+
+function renderGuide() {
+  const grid = document.getElementById('guide-grid');
+  grid.innerHTML = channels.map(ch => `
+    <div class="guide-channel ${ch.num === currentChannel ? 'active' : ''}" 
+         data-ch="${ch.num}" onclick="jumpToChannel(${ch.num})">
+      <div class="guide-ch-num">${ch.num}</div>
+      <div class="guide-ch-day">${ch.day}</div>
+      <div class="guide-ch-date">${ch.date}</div>
+    </div>
+  `).join('');
+}
+
+function jumpToChannel(num) {
+  if (num === currentChannel || !isOn) return;
+  const overlay = document.getElementById('static-overlay');
+  overlay.classList.add('active');
+  
+  setTimeout(() => {
+    currentChannel = num;
+    renderChannel(currentChannel);
+    setTimeout(() => overlay.classList.remove('active'), 200);
+  }, 300);
+}
+
+// Keyboard controls
+document.addEventListener('keydown', (e) => {
+  switch(e.key) {
+    case 'ArrowLeft': changeChannel(-1); break;
+    case 'ArrowRight': changeChannel(1); break;
+    case 'ArrowUp':
+      knobVol = Math.min(knobVol + 15, 100);
+      document.getElementById('knob-vol').style.setProperty('--vol-rot', knobVol + 'deg');
+      break;
+    case 'ArrowDown':
+      knobVol = Math.max(knobVol - 15, -100);
+      document.getElementById('knob-vol').style.setProperty('--vol-rot', knobVol + 'deg');
+      break;
+    case ' ':
+      e.preventDefault();
+      togglePower();
+      break;
+  }
+});
+
+// Click knob interaction
+let knobStartY = 0;
+document.getElementById('knob-ch').addEventListener('mousedown', (e) => {
+  knobStartY = e.clientY;
+  const handler = (me) => {
+    const delta = knobStartY - me.clientY;
+    if (Math.abs(delta) > 20) {
+      changeChannel(delta > 0 ? 1 : -1);
+      knobStartY = me.clientY;
+    }
+  };
+  const up = () => {
+    document.removeEventListener('mousemove', handler);
+    document.removeEventListener('mouseup', up);
+  };
+  document.addEventListener('mousemove', handler);
+  document.addEventListener('mouseup', up);
+});
+
+// Init
+renderGuide();
+renderChannel(1);
+</script>
+
+</body>
+</html>

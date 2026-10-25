@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>⏳ 時光命理軸 — 07/17</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Noto+Serif+TC:wght@400;700&family=Caveat:wght@600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Noto Serif TC', serif;
+      background: #FAFAF5;
+      min-height: 100vh;
+      color: #1C1409;
+      line-height: 1.6;
+    }
+
+    /* 頂部 Header */
+    .header {
+      background: #1C1409;
+      color: #FAFAF5;
+      padding: 2rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .header::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: repeating-linear-gradient(
+        -45deg,
+        transparent,
+        transparent 10px,
+        rgba(255,255,255,0.02) 10px,
+        rgba(255,255,255,0.02) 20px
+      );
+    }
+
+    .header-date {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.85rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      opacity: 0.7;
+      margin-bottom: 0.5rem;
+    }
+
+    .header-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.5rem;
+      font-weight: 900;
+      letter-spacing: 0.05em;
+      position: relative;
+    }
+
+    .header-subtitle {
+      font-family: 'Caveat', cursive;
+      font-size: 1.2rem;
+      opacity: 0.8;
+      margin-top: 0.5rem;
+    }
+
+    /* 主要內容區 */
+    .main-container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem;
+    }
+
+    /* 時間軸 */
+    .timeline {
+      position: relative;
+      padding-left: 3rem;
+    }
+
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 1rem;
+      top: 0;
+      bottom: 0;
+      width: 3px;
+      background: linear-gradient(180deg, #D4A84B 0%, #C94040 50%, #2B5F8A 100%);
+    }
+
+    .timeline-item {
+      position: relative;
+      margin-bottom: 2.5rem;
+      opacity: 0;
+      transform: translateX(-20px);
+      animation: slideIn 0.6s ease forwards;
+    }
+
+    .timeline-item:nth-child(1) { animation-delay: 0.1s; }
+    .timeline-item:nth-child(2) { animation-delay: 0.2s; }
+    .timeline-item:nth-child(3) { animation-delay: 0.3s; }
+    .timeline-item:nth-child(4) { animation-delay: 0.4s; }
+    .timeline-item:nth-child(5) { animation-delay: 0.5s; }
+
+    @keyframes slideIn {
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    .timeline-dot {
+      position: absolute;
+      left: -2.35rem;
+      top: 0.5rem;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      border: 3px solid;
+      background: #FAFAF5;
+      z-index: 1;
+    }
+
+    .timeline-item:nth-child(1) .timeline-dot { border-color: #D4A84B; }
+    .timeline-item:nth-child(2) .timeline-dot { border-color: #C94040; }
+    .timeline-item:nth-child(3) .timeline-dot { border-color: #2B5F8A; }
+    .timeline-item:nth-child(4) .timeline-dot { border-color: #3D7A5C; }
+    .timeline-item:nth-child(5) .timeline-dot { border-color: #9B8DC2; }
+
+    .timeline-time {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.75rem;
+      color: #888;
+      margin-bottom: 0.3rem;
+    }
+
+    .timeline-card {
+      background: white;
+      border-radius: 8px;
+      padding: 1.25rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      border-left: 4px solid;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .timeline-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+    }
+
+    .timeline-item:nth-child(1) .timeline-card { border-color: #D4A84B; }
+    .timeline-item:nth-child(2) .timeline-card { border-color: #C94040; }
+    .timeline-item:nth-child(3) .timeline-card { border-color: #2B5F8A; }
+    .timeline-item:nth-child(4) .timeline-card { border-color: #3D7A5C; }
+    .timeline-item:nth-child(5) .timeline-card { border-color: #9B8DC2; }
+
+    .timeline-card-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .timeline-card-content {
+      font-size: 0.95rem;
+    }
+
+    /* 命理卡片 */
+    .fortune-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .fortune-item {
+      background: #FAFAF5;
+      border-radius: 6px;
+      padding: 0.75rem;
+      text-align: center;
+    }
+
+    .fortune-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.7rem;
+      color: #888;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    .fortune-value {
+      font-family: 'Noto Serif TC', serif;
+      font-size: 1rem;
+      font-weight: 700;
+      margin-top: 0.25rem;
+    }
+
+    .fortune-good { color: #3D7A5C; }
+    .fortune-bad { color: #C94040; }
+
+    /* 任務狀態 */
+    .task-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.3rem 0.8rem;
+      border-radius: 20px;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.75rem;
+      margin-top: 0.5rem;
+    }
+
+    .task-done {
+      background: #E8F5E9;
+      color: #2E7D32;
+    }
+
+    .task-pending {
+      background: #FFF3E0;
+      color: #E65100;
+    }
+
+    /* IFYE 站點統計 */
+    .station-stats {
+      margin-top: 1rem;
+    }
+
+    .station-bar {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.5rem;
+      font-size: 0.85rem;
+    }
+
+    .station-name {
+      width: 80px;
+      font-size: 0.75rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .station-bar-fill {
+      height: 12px;
+      border-radius: 6px;
+      transition: width 1s ease;
+    }
+
+    .station-count {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.7rem;
+      color: #666;
+    }
+
+    /* 底部裝飾 */
+    .footer {
+      text-align: center;
+      padding: 2rem;
+      font-family: 'Caveat', cursive;
+      font-size: 1.1rem;
+      color: #888;
+      border-top: 1px solid #E8E8E3;
+      margin-top: 2rem;
+    }
+
+    /* 動態數字動畫 */
+    @keyframes countUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .count-animate {
+      animation: countUp 0.5s ease forwards;
+    }
+
+    /* 響應式 */
+    @media (max-width: 600px) {
+      .header-title {
+        font-size: 1.8rem;
+      }
+      
+      .timeline {
+        padding-left: 2.5rem;
+      }
+      
+      .timeline::before {
+        left: 0.7rem;
+      }
+      
+      .timeline-dot {
+        left: -1.85rem;
+        width: 14px;
+        height: 14px;
+      }
+      
+      .fortune-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="header-date">Thursday, July 17, 2026</div>
+    <h1 class="header-title">⏳ 時光命理軸</h1>
+    <p class="header-subtitle">命理的流轉 × 工作的足跡</p>
+  </header>
+
+  <main class="main-container">
+    <div class="timeline">
+      
+      <!-- 07:00 命理時辰 -->
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-time">07:00 — 命理的黎明</div>
+        <div class="timeline-card">
+          <h3 class="timeline-card-title">🃏 早晨命理指引</h3>
+          <div class="timeline-card-content">
+            <div class="fortune-grid">
+              <div class="fortune-item">
+                <div class="fortune-label">日柱</div>
+                <div class="fortune-value">辛卯 🐇</div>
+              </div>
+              <div class="fortune-item">
+                <div class="fortune-label">用神</div>
+                <div class="fortune-value fortune-good">金、土</div>
+              </div>
+              <div class="fortune-item">
+                <div class="fortune-label">忌神</div>
+                <div class="fortune-value fortune-bad">水、甲、火</div>
+              </div>
+              <div class="fortune-item">
+                <div class="fortune-label">宜</div>
+                <div class="fortune-value">學習、靜坐</div>
+              </div>
+            </div>
+            <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px dashed #E8E8E3;">
+              <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                <div>
+                  <span style="font-size: 0.75rem; color: #888;">塔羅</span>
+                  <div style="font-weight: 700;">錢幣騎士（正位）</div>
+                  <div style="font-size: 0.85rem; color: #666;">腳踏實地、盡忠職守</div>
+                </div>
+                <div>
+                  <span style="font-size: 0.75rem; color: #888;">梅花易數</span>
+                  <div style="font-weight: 700;">地雷復 → 地澤臨</div>
+                  <div style="font-size: 0.85rem; color: #C94040;">用克體，吉率33%</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 09:00 工作時段 -->
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-time">09:00 — 工作的開始</div>
+        <div class="timeline-card">
+          <h3 class="timeline-card-title">📧 待辦事項追蹤</h3>
+          <div class="timeline-card-content">
+            <div class="task-item" style="margin-bottom: 0.75rem;">
+              <span style="font-size: 1.2rem;">📋</span>
+              <span>4-H NAS 安全性風險通知</span>
+              <span class="task-status task-pending">⏳ 待回覆</span>
+            </div>
+            <div class="task-item" style="margin-bottom: 0.75rem;">
+              <span style="font-size: 1.2rem;">📦</span>
+              <span>4-H NAS 套件更新通知</span>
+              <span class="task-status task-pending">⏳ 待回覆</span>
+            </div>
+            <div class="task-item">
+              <span style="font-size: 1.2rem;">📝</span>
+              <span>年會簽核資料（農業推廣科翁梨娟）</span>
+              <span class="task-status task-pending">⏳ 待處理</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 15:00 IFYE 任務 -->
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-time">15:00 — IFYE 站點同步</div>
+        <div class="timeline-card">
+          <h3 class="timeline-card-title">🌏 IFYE 2026 站點分布</h3>
+          <div class="timeline-card-content">
+            <div style="display: flex; gap: 1.5rem; margin-bottom: 1rem;">
+              <div style="text-align: center;">
+                <div style="font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 900; color: #2B5F8A;" class="count-animate">9</div>
+                <div style="font-size: 0.75rem; color: #888;">代表人數</div>
+              </div>
+              <div style="text-align: center;">
+                <div style="font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 900; color: #3D7A5C;" class="count-animate">51</div>
+                <div style="font-size: 0.75rem; color: #888;">站點總數</div>
+              </div>
+              <div style="text-align: center;">
+                <div style="font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 900; color: #D4A84B;" class="count-animate">5</div>
+                <div style="font-size: 0.75rem; color: #888;">國家</div>
+              </div>
+            </div>
+            <div class="station-stats">
+              <div class="station-bar">
+                <span class="station-name">Justice</span>
+                <div class="station-bar-fill" style="width: 80px; background: #D4A84B;"></div>
+                <span class="station-count">8站</span>
+              </div>
+              <div class="station-bar">
+                <span class="station-name">Sven</span>
+                <div class="station-bar-fill" style="width: 80px; background: #2B5F8A;"></div>
+                <span class="station-count">8站</span>
+              </div>
+              <div class="station-bar">
+                <span class="station-name">Phoobet</span>
+                <div class="station-bar-fill" style="width: 70px; background: #C94040;"></div>
+                <span class="station-count">7站</span>
+              </div>
+              <div class="station-bar">
+                <span class="station-name">Dararat</span>
+                <div class="station-bar-fill" style="width: 70px; background: #3D7A5C;"></div>
+                <span class="station-count">7站</span>
+              </div>
+              <div class="station-bar">
+                <span class="station-name">Anna</span>
+                <div class="station-bar-fill" style="width: 70px; background: #9B8DC2;"></div>
+                <span class="station-count">7站</span>
+              </div>
+            </div>
+            <div style="margin-top: 1rem;">
+              <span class="task-status task-done">✅ 已同步</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 17:00 魚油時段 -->
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-time">17:10 — 魚油荒謬劇</div>
+        <div class="timeline-card">
+          <h3 class="timeline-card-title">🐬 海豚督導的日常督促</h3>
+          <div class="timeline-card-content">
+            <div style="background: #FFF9F0; border-radius: 8px; padding: 1rem; margin-bottom: 1rem;">
+              <p style="font-style: italic; margin-bottom: 0.5rem;">🦈 拖延鯊：「洋芋片能補 Omega-3 喔～」</p>
+              <p style="font-style: italic;">🐬 海豚督導：「假的。吃魚油。」</p>
+            </div>
+            <div style="font-size: 0.85rem; color: #666;">
+              <strong>今日成就：</strong>「今天沒被大自然的演化騙到」🏆
+            </div>
+            <div style="margin-top: 0.75rem;">
+              <span class="task-status task-done">✅ 每日荒謬劇完成</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 21:00 系統狀態 -->
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-time">21:00 — 系統觀測</div>
+        <div class="timeline-card">
+          <h3 class="timeline-card-title">🤖 系統健康狀態</h3>
+          <div class="timeline-card-content">
+            <div style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
+              <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <span style="font-size: 1.5rem;">阿笨</span>
+                <span style="padding: 0.25rem 0.75rem; background: #FFEBEE; color: #C94040; border-radius: 20px; font-size: 0.75rem; font-family: 'DM Mono', monospace;">
+                  🔴 session failed
+                </span>
+              </div>
+              <div style="font-size: 0.85rem; color: #888;">
+                已持續 <strong style="color: #C94040;">9 天</strong>（自 07/09 起）
+              </div>
+            </div>
+            <div style="margin-top: 1rem; padding: 0.75rem; background: #F5F5F0; border-radius: 6px; font-size: 0.85rem;">
+              <span style="color: #666;">三色蛋 second agent：</span>
+              <span style="color: #3D7A5C;">正常運行中 ✓</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="footer">
+    <p>命理的流轉，工作的足跡，每一天都是獨特的章節 📖</p>
+    <p style="margin-top: 0.5rem; font-size: 0.9rem;">Generated by Daily Lab — 2026/07/17 03:30</p>
+  </footer>
+
+  <script>
+    // 動態顯示時間軸動畫
+    document.addEventListener('DOMContentLoaded', () => {
+      // 數字動畫
+      const animateValue = (element, start, end, duration) => {
+        let startTimestamp = null;
+        const step = (timestamp) => {
+          if (!startTimestamp) startTimestamp = timestamp;
+          const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+          element.textContent = Math.floor(progress * (end - start) + start);
+          if (progress < 1) {
+            window.requestAnimationFrame(step);
+          }
+        };
+        window.requestAnimationFrame(step);
+      };
+
+      // 站點 bar 寬度動畫
+      setTimeout(() => {
+        document.querySelectorAll('.station-bar-fill').forEach(bar => {
+          const width = bar.style.width;
+          bar.style.width = '0';
+          setTimeout(() => {
+            bar.style.width = width;
+          }, 100);
+        });
+      }, 600);
+    });
+
+    // 頁面載入時添加微光效果
+    window.addEventListener('load', () => {
+      document.body.style.opacity = '0';
+      document.body.style.transition = 'opacity 0.5s ease';
+      setTimeout(() => {
+        document.body.style.opacity = '1';
+      }, 100);
+    });
+  </script>
+</body>
+</html>

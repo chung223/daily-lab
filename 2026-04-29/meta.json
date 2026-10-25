@@ -1,0 +1,6 @@
+{
+  "title": "四色循環時鐘",
+  "type": "工具系",
+  "description": "美麗的 Swiss/Bauhaus 幾何風格循環時鐘視覺化，圓形時鐘展示當前 cycle 與進度條、四色分明 (A橙/B藍/C紫/D綠)、倒數計時器、循環歷史記錄、互動式 cycle 卡片",
+  "inspiration": "來自多日記憶中的核心系統——OpenClaw 的四色循環 (A→B→C→D→A) 每 30 分鐘旋轉一次，24/7 持續運行"
+}

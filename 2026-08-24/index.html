@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>晨間快報 · Morning Express · 2026-08-24</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;700;900&family=Noto+Sans+TC:wght@400;500;700&family=Caveat:wght@400;600;700&family=Bangers&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --cream: #FFF9F0;
+      --cream-dark: #F5EDE0;
+      --coral: #FF6B6B;
+      --mint: #4ECDC4;
+      --lavender: #9B8FD9;
+      --gold: #FFD93D;
+      --peach: #FFAB91;
+      --navy: #2D3A4A;
+      --red: #E63946;
+      --green: #06d6a0;
+      --ink: #1a1a2e;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Noto Sans TC', sans-serif;
+      background: var(--cream);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Newspaper Halftone Background */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-image: radial-gradient(circle, rgba(0,0,0,0.03) 1px, transparent 1px);
+      background-size: 4px 4px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 20px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Header - Newspaper Masthead */
+    .masthead {
+      text-align: center;
+      padding: 30px 20px;
+      background: var(--cream-dark);
+      border: 4px double var(--ink);
+      border-radius: 8px;
+      margin-bottom: 24px;
+      position: relative;
+    }
+
+    .masthead::before,
+    .masthead::after {
+      content: '📰';
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 2rem;
+    }
+    .masthead::before { left: 20px; }
+    .masthead::after { right: 20px; }
+
+    .edition-line {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.75rem;
+      color: #666;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-bottom: 8px;
+    }
+
+    .newspaper-title {
+      font-family: 'Bangers', cursive;
+      font-size: clamp(2.5rem, 8vw, 4rem);
+      color: var(--ink);
+      letter-spacing: 4px;
+      text-shadow: 3px 3px 0 var(--gold), 5px 5px 0 rgba(0,0,0,0.1);
+      line-height: 1.1;
+    }
+
+    .date-line {
+      font-family: 'Caveat', cursive;
+      font-size: 1.2rem;
+      color: #666;
+      margin-top: 10px;
+    }
+
+    /* Stats Bar */
+    .stats-bar {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .stat-card {
+      background: white;
+      border: 3px solid var(--ink);
+      border-radius: 8px;
+      padding: 16px;
+      text-align: center;
+      position: relative;
+      transition: transform 0.2s;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-4px) rotate(-1deg);
+    }
+
+    .stat-card::after {
+      content: '';
+      position: absolute;
+      top: 4px;
+      left: 4px;
+      right: 4px;
+      bottom: 4px;
+      border: 1px dashed rgba(0,0,0,0.1);
+      border-radius: 4px;
+      pointer-events: none;
+    }
+
+    .stat-icon { font-size: 1.8rem; margin-bottom: 6px; }
+    .stat-value {
+      font-family: 'Bangers', cursive;
+      font-size: 1.6rem;
+      color: var(--ink);
+    }
+    .stat-label {
+      font-size: 0.75rem;
+      color: #666;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    /* Section Titles */
+    .section-header {
+      font-family: 'Bangers', cursive;
+      font-size: 1.8rem;
+      color: white;
+      background: var(--coral);
+      padding: 8px 20px;
+      display: inline-block;
+      transform: rotate(-2deg);
+      margin-bottom: 16px;
+      box-shadow: 4px 4px 0 var(--ink);
+    }
+
+    /* News Grid */
+    .news-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+      margin-bottom: 24px;
+    }
+
+    /* News Card */
+    .news-card {
+      background: white;
+      border: 3px solid var(--ink);
+      border-radius: 8px;
+      overflow: hidden;
+      transition: transform 0.2s, box-shadow 0.2s;
+      cursor: pointer;
+    }
+
+    .news-card:hover {
+      transform: translateY(-6px) rotate(1deg);
+      box-shadow: 6px 6px 0 var(--ink);
+    }
+
+    .card-header {
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .card-header.fortune { background: var(--lavender); }
+    .card-header.weather { background: var(--mint); }
+    .card-header.tech { background: var(--gold); }
+    .card-header.book { background: var(--peach); }
+    .card-header.world { background: var(--coral); }
+    .card-header.fishoil { background: var(--green); color: var(--ink); }
+
+    .card-icon { font-size: 1.6rem; }
+    .card-title {
+      font-family: 'Noto Serif TC', serif;
+      font-weight: 700;
+      font-size: 1rem;
+      color: var(--ink);
+    }
+
+    .card-body {
+      padding: 16px;
+    }
+
+    .card-content {
+      font-size: 0.9rem;
+      line-height: 1.7;
+      color: #444;
+    }
+
+    .card-tag {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      margin: 8px 4px 0 0;
+      font-weight: 500;
+    }
+
+    .tag-gold { background: #FFF3CD; color: #856404; }
+    .tag-earth { background: #D4EDDA; color: #155724; }
+    .tag-water { background: #CCE5FF; color: #004085; }
+    .tag-fire { background: #F8D7DA; color: #721C24; }
+    .tag-wood { background: #E2D9F3; color: #5A4D8A; }
+
+    /* Fish Oil Drama Section */
+    .drama-section {
+      background: linear-gradient(135deg, #E8F5E9 0%, #C8E6C9 100%);
+      border: 4px solid var(--ink);
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 24px;
+      position: relative;
+    }
+
+    .drama-title {
+      font-family: 'Bangers', cursive;
+      font-size: 1.6rem;
+      color: var(--ink);
+      text-align: center;
+      margin-bottom: 16px;
+    }
+
+    .dialogue-bubble {
+      background: white;
+      border: 3px solid var(--ink);
+      border-radius: 16px;
+      padding: 16px 20px;
+      margin-bottom: 12px;
+      position: relative;
+      animation: float 3s ease-in-out infinite;
+    }
+
+    .dialogue-bubble.dolphin {
+      margin-left: 40px;
+      border-bottom-left-radius: 4px;
+    }
+
+    .dialogue-bubble.shark {
+      margin-right: 40px;
+      border-bottom-right-radius: 4px;
+      background: #FFF8E1;
+    }
+
+    .dialogue-bubble::before {
+      content: attr(data-role);
+      position: absolute;
+      top: -12px;
+      font-size: 1.4rem;
+    }
+
+    .dialogue-bubble.dolphin::before { left: -8px; }
+    .dialogue-bubble.shark::before { right: -8px; }
+
+    .dialogue-text {
+      font-family: 'Caveat', cursive;
+      font-size: 1.2rem;
+      color: var(--ink);
+      line-height: 1.5;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-6px); }
+    }
+
+    /* Tech News Section */
+    .tech-section {
+      background: white;
+      border: 3px solid var(--ink);
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 24px;
+    }
+
+    .tech-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 12px 0;
+      border-bottom: 1px dashed #ddd;
+    }
+
+    .tech-item:last-child { border-bottom: none; }
+    .tech-icon { font-size: 1.4rem; flex-shrink: 0; }
+    .tech-text { font-size: 0.9rem; line-height: 1.6; color: #444; }
+
+    /* World News */
+    .world-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 12px;
+    }
+
+    .world-item {
+      background: #FFF0F0;
+      border: 2px solid var(--ink);
+      border-radius: 8px;
+      padding: 12px;
+      font-size: 0.85rem;
+      line-height: 1.5;
+    }
+
+    /* Footer */
+    .footer {
+      text-align: center;
+      padding: 24px;
+      color: #666;
+      font-size: 0.85rem;
+    }
+
+    .footer-emoji {
+      font-size: 1.5rem;
+      margin-bottom: 8px;
+    }
+
+    /* Confetti Canvas */
+    #confetti-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1000;
+    }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      .masthead::before,
+      .masthead::after { display: none; }
+      
+      .news-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .dialogue-bubble.dolphin,
+      .dialogue-bubble.shark {
+        margin-left: 20px;
+        margin-right: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="confetti-canvas"></canvas>
+  
+  <div class="container">
+    <!-- Masthead -->
+    <header class="masthead">
+      <div class="edition-line">Daily Express · 每日晨報 · Edition 2026-08-24</div>
+      <h1 class="newspaper-title">晨間快報</h1>
+      <div class="date-line">🌅 己巳日 · 多雲短暫陣雨 · 27-34°C</div>
+    </header>
+
+    <!-- Stats Bar -->
+    <div class="stats-bar">
+      <div class="stat-card">
+        <div class="stat-icon">🔮</div>
+        <div class="stat-value">錢幣五</div>
+        <div class="stat-label">逆位塔羅</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">🌡️</div>
+        <div class="stat-value">34°C</div>
+        <div class="stat-label">最高溫度</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">📚</div>
+        <div class="stat-value">NT$99</div>
+        <div class="stat-label">今日特價</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">🐬</div>
+        <div class="stat-value">💊</div>
+        <div class="stat-label">魚油時段</div>
+      </div>
+    </div>
+
+    <!-- Fortune Section -->
+    <section>
+      <h2 class="section-header">🔮 命理晨間預報</h2>
+      <div class="news-grid">
+        <article class="news-card" onclick="celebrate()">
+          <div class="card-header fortune">
+            <span class="card-icon">🃏</span>
+            <span class="card-title">塔羅指引</span>
+          </div>
+          <div class="card-body">
+            <div class="card-content">
+              <strong>錢幣五（逆位）</strong><br>
+              困頓消退，開始看見轉機。財務困難正在緩解，是重新出發的好時機。
+            </div>
+            <span class="card-tag tag-gold">💰 財務轉機</span>
+            <span class="card-tag tag-earth">🌱 新生</span>
+          </div>
+        </article>
+
+        <article class="news-card" onclick="celebrate()">
+          <div class="card-header fortune">
+            <span class="card-icon">📿</span>
+            <span class="card-title">水晶能量</span>
+          </div>
+          <div class="card-body">
+            <div class="card-content">
+              <strong>白水晶 + 黃水晶</strong><br>
+              白水晶澄清思緒，黃水晶招來財富能量。雙水晶搭配，平衡身心靈。
+            </div>
+            <span class="card-tag tag-earth">⚪ 白水晶</span>
+            <span class="card-tag tag-gold">🟡 黃水晶</span>
+          </div>
+        </article>
+
+        <article class="news-card" onclick="celebrate()">
+          <div class="card-header fortune">
+            <span class="card-icon">🔣</span>
+            <span class="card-title">梅花易數</span>
+          </div>
+          <div class="card-body">
+            <div class="card-content">
+              <strong>天風姤 → 火風鼎</strong><br>
+              宜主動求變、斷捨離。果斷行動，新局面即將開啟。
+            </div>
+            <span class="card-tag tag-fire">🔥 行動</span>
+            <span class="card-tag tag-wood">🌿 轉變</span>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- Weather Section -->
+    <section>
+      <h2 class="section-header">⛅ 天氣預報</h2>
+      <div class="news-grid">
+        <article class="news-card" onclick="celebrate()">
+          <div class="card-header weather">
+            <span class="card-icon">🌤️</span>
+            <span class="card-title">今日天氣</span>
+          </div>
+          <div class="card-body">
+            <div class="card-content">
+              <strong>多雲短暫陣雨</strong><br>
+              外出建議攜帶雨具，午後可能有局部陣雨。溫度 27-34°C。
+            </div>
+            <span class="card-tag tag-water">💧 陣雨</span>
+            <span class="card-tag tag-fire">☀️ 悶熱</span>
+          </div>
+        </article>
+
+        <article class="news-card" onclick="celebrate()">
+          <div class="card-header world">
+            <span class="card-icon">🌍</span>
+            <span class="card-title">國際要聞</span>
+          </div>
+          <div class="card-body">
+            <div class="card-content">
+              <strong>頭條新聞</strong>
+            </div>
+            <div class="world-grid" style="margin-top: 12px;">
+              <div class="world-item">🇺🇸 川普對伊朗僵局</div>
+              <div class="world-item">🇨🇦 加拿大報復關稅</div>
+              <div class="world-item">🇨🇳 中國人形機器人百米跑贏博爾特</div>
+              <div class="world-item">🇺🇦 烏克蘭購物中心遭攻擊</div>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- Tech News Section -->
+    <section>
+      <h2 class="section-header">🤖 科技前沿</h2>
+      <div class="tech-section">
+        <div class="tech-item">
+          <span class="tech-icon">🤖</span>
+          <p class="tech-text">
+            <strong>百度優必選具身智能展示</strong> — AI機器人新里程碑，實體智慧再突破
+          </p>
+        </div>
+        <div class="tech-item">
+          <span class="tech-icon">🔧</span>
+          <p class="tech-text">
+            <strong>Kiro 代理式AI工程工具</strong> — 革新軟體開發流程的AI助手
+          </p>
+        </div>
+        <div class="tech-item">
+          <span class="tech-icon">💰</span>
+          <p class="tech-text">
+            <strong>加密貨幣ETF單週吸金26億美元</strong> — 比特幣與以太坊持續吸引機構資金
+          </p>
+        </div>
+        <div class="tech-item">
+          <span class="tech-icon">⛓️</span>
+          <p class="tech-text">
+            <strong>Solana區塊時間縮短至350ms</strong> — 區塊鏈效能大幅提升
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Book Section -->
+    <section>
+      <h2 class="section-header">📚 今日特價書</h2>
+      <div class="news-grid">
+        <article class="news-card" onclick="celebrate()">
+          <div class="card-header book">
+            <span class="card-icon">🍰</span>
+            <span class="card-title">Readmoo 特惠</span>
+          </div>
+          <div class="card-body">
+            <div class="card-content">
+              <strong>法式鹹派，優雅上桌</strong><br>
+              〔暢銷紀念版〕Quiche<br>
+              <span style="color: var(--coral); font-weight: 700;">NT$ 99（28折）</span>
+            </div>
+            <span class="card-tag tag-peach">🍳 料理</span>
+            <span class="card-tag tag-gold">🏷️ 特價</span>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- Fish Oil Drama -->
+    <section>
+      <h2 class="section-header" style="background: var(--green);">🐬 魚油督導劇場</h2>
+      <div class="drama-section">
+        <div class="drama-title">🦈 拖延鯊：「你是督導還是保姆啊？」</div>
+        
+        <div class="dialogue-bubble dolphin" data-role="🐬">
+          <p class="dialogue-text">「你的 Omega-3 已经在敲你的血管门了！快拿出你的鱼油软胶囊！」</p>
+        </div>
+        
+        <div class="dialogue-bubble dolphin" data-role="🐬">
+          <p class="dialogue-text">「每天都會，直到你的细胞膜闪闪发亮为止 💊✨」</p>
+        </div>
+        
+        <div class="dialogue-bubble shark" data-role="🦈">
+          <p class="dialogue-text">「你是督導還是保姆啊？」</p>
+        </div>
+        
+        <div class="dialogue-bubble dolphin" data-role="🐬" style="animation-delay: 0.5s;">
+          <p class="dialogue-text">「都是。」</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="footer-emoji">🌅✨</div>
+      <p>晨間快報 · Morning Express · 2026-08-24</p>
+      <p style="margin-top: 8px; font-family: 'Caveat', cursive; font-size: 1rem;">
+        點擊任何卡片觸發慶祝動畫 🎉
+      </p>
+    </footer>
+  </div>
+
+  <script>
+    // Confetti System
+    const canvas = document.getElementById('confetti-canvas');
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+
+    class Particle {
+      constructor() {
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height - canvas.height;
+        this.size = Math.random() * 8 + 4;
+        this.speedY = Math.random() * 3 + 2;
+        this.speedX = Math.random() * 4 - 2;
+        this.rotation = Math.random() * 360;
+        this.rotationSpeed = Math.random() * 10 - 5;
+        this.colors = ['#FF6B6B', '#4ECDC4', '#9B8FD9', '#FFD93D', '#FFAB91', '#06d6a0'];
+        this.color = this.colors[Math.floor(Math.random() * this.colors.length)];
+        this.shape = Math.random() > 0.5 ? 'square' : 'circle';
+      }
+
+      update() {
+        this.y += this.speedY;
+        this.x += this.speedX;
+        this.rotation += this.rotationSpeed;
+        
+        if (this.y > canvas.height) {
+          this.y = -20;
+          this.x = Math.random() * canvas.width;
+        }
+      }
+
+      draw() {
+        ctx.save();
+        ctx.translate(this.x, this.y);
+        ctx.rotate(this.rotation * Math.PI / 180);
+        ctx.fillStyle = this.color;
+        
+        if (this.shape === 'square') {
+          ctx.fillRect(-this.size / 2, -this.size / 2, this.size, this.size);
+        } else {
+          ctx.beginPath();
+          ctx.arc(0, 0, this.size / 2, 0, Math.PI * 2);
+          ctx.fill();
+        }
+        ctx.restore();
+      }
+    }
+
+    function animate() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      if (particles.length < 100) {
+        for (let i = 0; i < 3; i++) {
+          particles.push(new Particle());
+        }
+      }
+      
+      particles.forEach((p, index) => {
+        p.update();
+        p.draw();
+      });
+      
+      requestAnimationFrame(animate);
+    }
+    animate();
+
+    function celebrate() {
+      for (let i = 0; i < 50; i++) {
+        const p = new Particle();
+        p.y = canvas.height / 2;
+        p.x = Math.random() * canvas.width;
+        p.speedY = Math.random() * -8 - 4;
+        particles.push(p);
+      }
+      
+      setTimeout(() => {
+        particles = particles.slice(-100);
+      }, 5000);
+    }
+
+    // Add click listeners to all cards
+    document.querySelectorAll('.news-card, .stat-card, .tech-section').forEach(el => {
+      el.addEventListener('click', celebrate);
+    });
+  </script>
+</body>
+</html>

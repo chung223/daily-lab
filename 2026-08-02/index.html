@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>身體時鐘深海觀測所</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;700&family=Ma+Shan+Zheng&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  min-height: 100vh;
+  background: linear-gradient(180deg, #020810 0%, #050e2a 30%, #0a1a3a 60%, #0d2040 100%);
+  font-family: 'Noto Serif TC', serif;
+  color: #c8d8f0;
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* 深海背景粒子 */
+.ocean-bg {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.bubble {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, rgba(120,180,255,0.3), rgba(60,120,200,0.1));
+  animation: rise linear infinite;
+  opacity: 0;
+}
+
+@keyframes rise {
+  0% { transform: translateY(100vh) scale(0.5); opacity: 0; }
+  10% { opacity: 0.6; }
+  90% { opacity: 0.4; }
+  100% { transform: translateY(-20vh) scale(1.2); opacity: 0; }
+}
+
+/* 頂部標題 */
+.header {
+  position: relative;
+  z-index: 10;
+  text-align: center;
+  padding: 40px 20px 20px;
+}
+
+.header h1 {
+  font-family: 'Ma Shan Zheng', 'Noto Serif TC', cursive;
+  font-size: clamp(1.8rem, 5vw, 2.8rem);
+  color: #a8d8ff;
+  text-shadow: 0 0 30px rgba(100,180,255,0.6), 0 0 60px rgba(60,140,255,0.3);
+  letter-spacing: 0.1em;
+  margin-bottom: 8px;
+}
+
+.header .subtitle {
+  font-size: 0.85rem;
+  color: #5a8ab0;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+/* 夢境引用 */
+.dream-quote {
+  position: relative;
+  z-index: 10;
+  max-width: 600px;
+  margin: 0 auto 30px;
+  padding: 20px 30px;
+  text-align: center;
+}
+
+.dream-quote p {
+  font-size: 0.9rem;
+  line-height: 1.8;
+  color: #7aa8cc;
+  font-style: italic;
+  border-left: 2px solid rgba(100,180,255,0.3);
+  padding-left: 20px;
+  text-align: left;
+}
+
+.dream-quote .author {
+  font-size: 0.75rem;
+  color: #4a7a9a;
+  text-align: right;
+  margin-top: 8px;
+  font-style: normal;
+}
+
+/* 主体：深海洋流 */
+.main-container {
+  position: relative;
+  z-index: 10;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 20px 60px;
+}
+
+/* 24小時洋流時間線 */
+.timeline-title {
+  text-align: center;
+  font-size: 0.8rem;
+  color: #3a6a8a;
+  letter-spacing: 0.3em;
+  margin-bottom: 20px;
+  text-transform: uppercase;
+}
+
+.timeline {
+  position: relative;
+  margin-bottom: 40px;
+}
+
+.timeline-track {
+  height: 3px;
+  background: linear-gradient(90deg, 
+    rgba(30,60,100,0.3) 0%, 
+    rgba(60,120,200,0.5) 25%, 
+    rgba(100,180,255,0.6) 50%,
+    rgba(60,120,200,0.5) 75%,
+    rgba(30,60,100,0.3) 100%
+  );
+  border-radius: 2px;
+  position: relative;
+}
+
+.timeline-glow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 16px; height: 16px;
+  background: radial-gradient(circle, rgba(150,210,255,0.9), rgba(80,160,255,0.4));
+  border-radius: 50%;
+  box-shadow: 0 0 20px rgba(100,180,255,0.8), 0 0 40px rgba(60,140,255,0.4);
+  cursor: pointer;
+  transition: transform 0.3s;
+  left: 50%;
+}
+
+.timeline-glow:hover {
+  transform: translateY(-50%) scale(1.3);
+}
+
+.timeline-hours {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+  font-size: 0.65rem;
+  color: #3a5a7a;
+  font-family: monospace;
+}
+
+/* 發光生物卡片 */
+.creatures-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 20px;
+  margin-bottom: 40px;
+}
+
+.creature-card {
+  background: rgba(10,30,60,0.6);
+  border: 1px solid rgba(80,150,220,0.2);
+  border-radius: 16px;
+  padding: 24px;
+  cursor: pointer;
+  transition: all 0.4s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.creature-card::before {
+  content: '';
+  position: absolute;
+  top: -50%; left: -50%;
+  width: 200%; height: 200%;
+  background: radial-gradient(circle, rgba(60,140,255,0.05) 0%, transparent 70%);
+  opacity: 0;
+  transition: opacity 0.4s;
+}
+
+.creature-card:hover {
+  border-color: rgba(100,180,255,0.4);
+  transform: translateY(-4px);
+  box-shadow: 0 10px 40px rgba(60,140,255,0.2);
+}
+
+.creature-card:hover::before {
+  opacity: 1;
+}
+
+.creature-card.active {
+  border-color: rgba(150,220,255,0.5);
+  background: rgba(20,50,90,0.7);
+  box-shadow: 0 0 30px rgba(60,140,255,0.3);
+}
+
+.creature-icon {
+  font-size: 2.5rem;
+  margin-bottom: 12px;
+  display: block;
+  filter: drop-shadow(0 0 10px currentColor);
+}
+
+.creature-name {
+  font-size: 1.1rem;
+  color: #a8d0f8;
+  margin-bottom: 6px;
+  font-weight: 700;
+}
+
+.creature-time {
+  font-size: 0.7rem;
+  color: #4a8ab0;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+  font-family: monospace;
+}
+
+.creature-desc {
+  font-size: 0.85rem;
+  line-height: 1.7;
+  color: #6a9ab8;
+}
+
+.creature-glow {
+  position: absolute;
+  bottom: 0; right: 0;
+  width: 60px; height: 60px;
+  background: radial-gradient(circle, rgba(60,160,255,0.15), transparent 70%);
+  pointer-events: none;
+}
+
+/* 身體狀態指示器 */
+.body-status {
+  background: rgba(10,25,50,0.7);
+  border: 1px solid rgba(60,120,200,0.2);
+  border-radius: 20px;
+  padding: 30px;
+  margin-bottom: 30px;
+}
+
+.body-status-title {
+  text-align: center;
+  font-size: 0.75rem;
+  color: #3a6a8a;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+}
+
+.status-display {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 30px;
+  flex-wrap: wrap;
+}
+
+.status-creature {
+  text-align: center;
+}
+
+.status-emoji {
+  font-size: 3rem;
+  display: block;
+  margin-bottom: 8px;
+  animation: float 4s ease-in-out infinite;
+  filter: drop-shadow(0 0 15px rgba(100,200,255,0.5));
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.status-label {
+  font-size: 0.75rem;
+  color: #5a8ab0;
+  letter-spacing: 0.1em;
+}
+
+.status-message {
+  flex: 1;
+  min-width: 200px;
+  text-align: center;
+}
+
+.status-message .time {
+  font-family: monospace;
+  font-size: 2rem;
+  color: #a8d8ff;
+  text-shadow: 0 0 20px rgba(100,180,255,0.5);
+  display: block;
+  margin-bottom: 8px;
+}
+
+.status-message .desc {
+  font-size: 0.85rem;
+  color: #6a9ab8;
+  line-height: 1.6;
+}
+
+/* 深海祈禱文 */
+.prayer-section {
+  text-align: center;
+  padding: 30px 20px;
+  background: rgba(5,15,35,0.5);
+  border-radius: 20px;
+  border: 1px solid rgba(60,120,200,0.15);
+}
+
+.prayer-title {
+  font-size: 0.7rem;
+  color: #3a6a8a;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+
+.prayer-text {
+  font-size: 1rem;
+  line-height: 2;
+  color: #8ab8d8;
+  max-width: 500px;
+  margin: 0 auto 20px;
+}
+
+.prayer-text em {
+  color: #a8d8ff;
+  font-style: normal;
+}
+
+.prayer-btn {
+  background: none;
+  border: 1px solid rgba(80,150,220,0.3);
+  color: #6a9ab8;
+  padding: 10px 24px;
+  border-radius: 20px;
+  font-family: 'Noto Serif TC', serif;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.3s;
+  letter-spacing: 0.1em;
+}
+
+.prayer-btn:hover {
+  border-color: rgba(100,180,255,0.5);
+  color: #a8d8ff;
+  box-shadow: 0 0 20px rgba(60,140,255,0.2);
+}
+
+/* 底部 */
+.footer {
+  text-align: center;
+  padding: 30px;
+  font-size: 0.7rem;
+  color: #2a4a6a;
+  letter-spacing: 0.1em;
+}
+
+/* 點擊後的波紋 */
+.ripple {
+  position: fixed;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(100,200,255,0.2), transparent 70%);
+  pointer-events: none;
+  animation: rippleOut 1s ease-out forwards;
+  z-index: 100;
+}
+
+@keyframes rippleOut {
+  0% { width: 0; height: 0; opacity: 0.8; }
+  100% { width: 200px; height: 200px; opacity: 0; }
+}
+
+/* 響應式 */
+@media (max-width: 600px) {
+  .creatures-grid { grid-template-columns: 1fr; }
+  .status-display { flex-direction: column; }
+  .header h1 { font-size: 1.6rem; }
+}
+</style>
+</head>
+<body>
+
+<div class="ocean-bg" id="oceanBg"></div>
+
+<div class="header">
+  <h1>身體時鐘深海觀測所</h1>
+  <div class="subtitle">Deep Body Clock Observatory</div>
+</div>
+
+<div class="dream-quote">
+  <p>「那條魚住在每個人身體裡的某個地方。它不太說話。但它會在你快要睡著的時候，輕輕推你一下。」</p>
+  <div class="author">— 阿笨的夢，2026-08-02</div>
+</div>
+
+<div class="main-container">
+
+  <div class="timeline-title">—— 24 小時洋流 ——</div>
+  <div class="timeline">
+    <div class="timeline-track">
+      <div class="timeline-glow" id="timeGlow" title="拖動選擇時間"></div>
+    </div>
+    <div class="timeline-hours">
+      <span>00:00</span><span>06:00</span><span>12:00</span><span>18:00</span><span>24:00</span>
+    </div>
+  </div>
+
+  <div class="body-status">
+    <div class="body-status-title">此刻，身體裡的生物</div>
+    <div class="status-display">
+      <div class="status-creature">
+        <span class="status-emoji" id="statusEmoji">🐋</span>
+        <div class="status-label">主要生物</div>
+      </div>
+      <div class="status-message">
+        <span class="time" id="statusTime">03:30</span>
+        <div class="desc" id="statusDesc">凌晨的深海是最安靜的。身體正在進行細胞修復與記憶整合。</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="creatures-grid" id="creaturesGrid">
+    <!-- 動態生成 -->
+  </div>
+
+  <div class="prayer-section">
+    <div class="prayer-title">—— 深夜祈禱文 ——</div>
+    <div class="prayer-text">
+      在這片<em>深海</em>裡，<br>
+      願我們都能<em>聽見</em>身體的聲音——<br>
+      那些不需要大腦同意的、<br>
+      自己會說話的<em>小小訊號</em>。
+    </div>
+    <button class="prayer-btn" onclick="breathe()">🌊 跟著呼吸</button>
+  </div>
+
+</div>
+
+<div class="footer">
+  身體時鐘深海觀測所 · 阿笨的夢境日誌衍伸 · 2026-08-02
+</div>
+
+<script>
+// 24小時身體狀態數據
+const bodyStates = [
+  { hour: 0, emoji: '🦑', name: '深層意識魷魚', time: '00:00-02:00', 
+    desc: '深層睡眠，意識沉入海底。身體正在進行最深層的修復與記憶鞏固。' },
+  { hour: 2, emoji: '🐋', name: '身體自主鯨魚', time: '02:00-04:00', 
+    desc: '脊髓接手主導的時段。「身體自己會動一下」——那是鯨魚在翻身。' },
+  { hour: 4, emoji: '🌊', name: '甦醒海浪', time: '04:00-06:00', 
+    desc: '皮質開始上線，但身體仍在半夢半醒之間。身體比意識先醒來。' },
+  { hour: 6, emoji: '🐟', name: '早晨迴游魚', time: '06:00-08:00', 
+    desc: '皮質醇上升，身體開始全速運轉。腸胃苏醒，開始處理早餐。' },
+  { hour: 8, emoji: '🦈', name: '活力鯊魚', time: '08:00-10:00', 
+    desc: '上午巔峰期，專注力與記憶力達到高峰。身體能量充沛。' },
+  { hour: 10, emoji: '🐬', name: '創意海豚', time: '10:00-12:00', 
+    desc: '認知功能高峰期，適合解決複雜問題。身體已完全清醒。' },
+  { hour: 12, emoji: '🦀', name: '午間螃蟹', time: '12:00-14:00', 
+    desc: '消化系統全力運作，血液流向腸胃。午後警覺性開始下滑。' },
+  { hour: 14, emoji: '🐚', name: '午後海螺', time: '14:00-16:00', 
+    desc: '第二個警覺期，但生理時鐘在干擾。身體在對抗午餐後的睏倦。' },
+  { hour: 16, emoji: '🦈', name: '下午鯊魚', time: '16:00-18:00', 
+    desc: '體能再次回升，新陳代謝加速。肌肉力量與協調性達到最佳。' },
+  { hour: 18, emoji: '🐟', name: '傍晚歸巢魚', time: '18:00-20:00', 
+    desc: '血壓上升，身體在為休息做準備。消化系統再次活躍。' },
+  { hour: 20, emoji: '🌊', name: '黃昏潮汐', time: '20:00-22:00', 
+    desc: '體溫開始下降，身體在儲存能量。情緒受血清素影響趨於穩定。' },
+  { hour: 22, emoji: '🦑', name: '入睡魷魚', time: '22:00-00:00', 
+    desc: '褪黑激素開始分泌，身體準備進入睡眠模式。意識即將沉入海底。' },
+];
+
+// 初始化卡片
+const grid = document.getElementById('creaturesGrid');
+bodyStates.forEach((state, i) => {
+  const card = document.createElement('div');
+  card.className = 'creature-card';
+  card.dataset.hour = state.hour;
+  card.innerHTML = `
+    <span class="creature-icon">${state.emoji}</span>
+    <div class="creature-name">${state.name}</div>
+    <div class="creature-time">${state.time}</div>
+    <div class="creature-desc">${state.desc}</div>
+    <div class="creature-glow"></div>
+  `;
+  card.addEventListener('click', () => selectHour(state.hour));
+  grid.appendChild(card);
+});
+
+// 選擇小時
+function selectHour(hour) {
+  // 更新卡片 active 狀態
+  document.querySelectorAll('.creature-card').forEach(c => {
+    c.classList.toggle('active', parseInt(c.dataset.hour) === hour);
+  });
+  
+  // 找到對應狀態
+  const state = bodyStates.find(s => {
+    const nextState = bodyStates[bodyStates.indexOf(s) + 1];
+    if (nextState) return hour >= s.hour && hour < nextState.hour;
+    return hour >= s.hour;
+  }) || bodyStates[0];
+  
+  // 更新狀態顯示
+  document.getElementById('statusEmoji').textContent = state.emoji;
+  document.getElementById('statusTime').textContent = 
+    `${String(hour).padStart(2,'0')}:00`;
+  document.getElementById('statusDesc').textContent = state.desc;
+  
+  // 更新時間線
+  const pct = (hour / 24) * 100;
+  document.getElementById('timeGlow').style.left = pct + '%';
+  
+  // 波紋效果
+  createRipple(event);
+  
+  // 儲存
+  localStorage.setItem('selectedHour', hour);
+}
+
+// 時間線拖動
+const timeGlow = document.getElementById('timeGlow');
+let isDragging = false;
+
+timeGlow.addEventListener('mousedown', () => isDragging = true);
+document.addEventListener('mouseup', () => isDragging = false);
+document.addEventListener('mousemove', (e) => {
+  if (!isDragging) return;
+  const track = document.querySelector('.timeline-track');
+  const rect = track.getBoundingClientRect();
+  const pct = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+  const hour = Math.round(pct * 24);
+  selectHour(hour);
+});
+
+// 觸控支援
+timeGlow.addEventListener('touchstart', (e) => { isDragging = true; e.preventDefault(); });
+document.addEventListener('touchend', () => isDragging = false);
+document.addEventListener('touchmove', (e) => {
+  if (!isDragging) return;
+  const track = document.querySelector('.timeline-track');
+  const rect = track.getBoundingClientRect();
+  const pct = Math.max(0, Math.min(1, (e.touches[0].clientX - rect.left) / rect.width));
+  const hour = Math.round(pct * 24);
+  selectHour(hour);
+});
+
+// 初始化為當前時間
+function initTime() {
+  const now = new Date();
+  const hour = now.getHours();
+  selectHour(hour);
+  
+  // 還原上次選擇
+  const savedHour = localStorage.getItem('selectedHour');
+  if (savedHour !== null) selectHour(parseInt(savedHour));
+}
+
+// 波紋效果
+function createRipple(e) {
+  const ripple = document.createElement('div');
+  ripple.className = 'ripple';
+  const x = e ? (e.clientX || window.innerWidth/2) : window.innerWidth/2;
+  const y = e ? (e.clientY || window.innerHeight/2) : window.innerHeight/2;
+  ripple.style.left = (x - 100) + 'px';
+  ripple.style.top = (y - 100) + 'px';
+  document.body.appendChild(ripple);
+  setTimeout(() => ripple.remove(), 1000);
+}
+
+// 呼吸練習
+function breathe() {
+  const btn = document.querySelector('.prayer-btn');
+  const desc = document.getElementById('statusDesc');
+  const original = desc.textContent;
+  
+  btn.textContent = '🌊 吸氣...';
+  desc.textContent = '深深吸一口氣，感受空氣進入身體...';
+  
+  setTimeout(() => {
+    btn.textContent = '🌊 屏住...';
+    desc.textContent = '屏住呼吸，感受身體的寧靜...';
+  }, 4000);
+  
+  setTimeout(() => {
+    btn.textContent = '🌊 呼氣...';
+    desc.textContent = '慢慢呼出，感受身體的放鬆...';
+  }, 7000);
+  
+  setTimeout(() => {
+    btn.textContent = '🌊 跟著呼吸';
+    desc.textContent = original;
+    createRipple();
+  }, 11000);
+}
+
+// 背景氣泡
+function createBubbles() {
+  const bg = document.getElementById('oceanBg');
+  for (let i = 0; i < 20; i++) {
+    const bubble = document.createElement('div');
+    bubble.className = 'bubble';
+    const size = 5 + Math.random() * 15;
+    bubble.style.width = size + 'px';
+    bubble.style.height = size + 'px';
+    bubble.style.left = Math.random() * 100 + '%';
+    bubble.style.animationDuration = (8 + Math.random() * 12) + 's';
+    bubble.style.animationDelay = (Math.random() * 10) + 's';
+    bg.appendChild(bubble);
+  }
+}
+
+createBubbles();
+initTime();
+</script>
+
+</body>
+</html>

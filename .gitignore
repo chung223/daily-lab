@@ -1,0 +1,23 @@
+# Dependencies
+node_modules/
+
+# Build outputs - 但保留每日專案的 dist
+!2026-*/dist/
+
+# IDE
+.idea/
+.vscode/
+
+# OS
+.DS_Store
+
+# Logs
+*.log
+
+# Environment
+.env
+.env.local
+
+# Jekyll (disable for SPA)
+.nojekyll
+node_modules/

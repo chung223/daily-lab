@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gratitude Graffiti │ 感恩塗鴉</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;700&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0d0d0d;
+      --surface: #1a1a1a;
+      --text: #f0ece2;
+      --text-dim: #6b6b6b;
+      --accent: #e8c547;
+      --accent-glow: rgba(232, 197, 71, 0.3);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'DM Mono', monospace;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Subtle grain */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+      opacity: 0.03;
+      pointer-events: none;
+      z-index: 1000;
+    }
+
+    /* Floating words container */
+    #graffiti {
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .word {
+      position: absolute;
+      font-family: 'Noto Serif TC', serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--accent);
+      text-shadow: 0 0 20px var(--accent-glow), 0 0 40px var(--accent-glow);
+      opacity: 0;
+      animation: floatUp 12s ease-out forwards;
+      white-space: nowrap;
+      cursor: default;
+      transition: transform 0.3s ease;
+    }
+
+    .word:hover {
+      transform: scale(1.1);
+    }
+
+    @keyframes floatUp {
+      0% {
+        opacity: 0;
+        transform: translateY(20px) scale(0.8);
+      }
+      10% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+      80% {
+        opacity: 0.8;
+      }
+      100% {
+        opacity: 0;
+        transform: translateY(-100px);
+      }
+    }
+
+    /* Input area */
+    .input-area {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 24px;
+      background: linear-gradient(to top, var(--bg) 60%, transparent);
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .input-wrapper {
+      display: flex;
+      gap: 12px;
+      max-width: 600px;
+      width: 100%;
+    }
+
+    input {
+      flex: 1;
+      padding: 16px 20px;
+      font-family: 'DM Mono', monospace;
+      font-size: 1rem;
+      background: var(--surface);
+      border: 1px solid #333;
+      border-radius: 8px;
+      color: var(--text);
+      outline: none;
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
+
+    input::placeholder {
+      color: var(--text-dim);
+    }
+
+    input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 20px var(--accent-glow);
+    }
+
+    button {
+      padding: 16px 28px;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.9rem;
+      background: var(--accent);
+      color: var(--bg);
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 400;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px var(--accent-glow);
+    }
+
+    button:active {
+      transform: translateY(0);
+    }
+
+    /* Counter */
+    .counter {
+      font-size: 0.85rem;
+      color: var(--text-dim);
+      letter-spacing: 0.05em;
+    }
+
+    .counter span {
+      color: var(--accent);
+      font-weight: 400;
+    }
+
+    /* Header */
+    .header {
+      position: fixed;
+      top: 24px;
+      left: 0;
+      right: 0;
+      text-align: center;
+      z-index: 10;
+    }
+
+    .header h1 {
+      font-family: 'Noto Serif TC', serif;
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--text);
+      letter-spacing: 0.1em;
+    }
+
+    .header p {
+      font-size: 0.8rem;
+      color: var(--text-dim);
+      margin-top: 4px;
+    }
+
+    /* Clear button */
+    .clear-btn {
+      position: fixed;
+      top: 24px;
+      right: 24px;
+      padding: 8px 16px;
+      font-size: 0.75rem;
+      background: transparent;
+      color: var(--text-dim);
+      border: 1px solid #333;
+      border-radius: 6px;
+      cursor: pointer;
+      z-index: 10;
+      transition: color 0.3s, border-color 0.3s;
+    }
+
+    .clear-btn:hover {
+      color: var(--text);
+      border-color: var(--text-dim);
+    }
+
+    @media (max-width: 600px) {
+      .input-wrapper {
+        flex-direction: column;
+      }
+      
+      button {
+        width: 100%;
+      }
+
+      .header h1 {
+        font-size: 1.4rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="graffiti"></div>
+
+  <div class="header">
+    <h1>感恩塗鴉</h1>
+    <p>Gratitude Graffiti</p>
+  </div>
+
+  <button class="clear-btn" onclick="clearAll()">清除 all</button>
+
+  <div class="input-area">
+    <div class="counter">今日累積 <span id="count">0</span> 件感恩</div>
+    <div class="input-wrapper">
+      <input 
+        type="text" 
+        id="gratitude-input" 
+        placeholder="今天想要感恩什麼？"
+        maxlength="30"
+      >
+      <button onclick="addGratitude()">寫下 ✨</button>
+    </div>
+  </div>
+
+  <script>
+    const STORAGE_KEY = 'gratitude-graffiti-20260216';
+    const graffiti = document.getElementById('graffiti');
+    const input = document.getElementById('gratitude-input');
+    const countEl = document.getElementById('count');
+
+    // Load today's entries from localStorage
+    let entries = [];
+    const today = new Date().toDateString();
+    
+    try {
+      const stored = localStorage.getItem(STORAGE_KEY);
+      if (stored) {
+        const data = JSON.parse(stored);
+        if (data.date === today) {
+          entries = data.entries || [];
+        }
+      }
+    } catch (e) {
+      console.log('Storage read error:', e);
+    }
+
+    updateCount();
+
+    // Render existing entries
+    entries.forEach((text, i) => {
+      setTimeout(() => createWord(text), i * 300);
+    });
+
+    function updateCount() {
+      countEl.textContent = entries.length;
+    }
+
+    function saveEntries() {
+      const data = {
+        date: today,
+        entries: entries
+      };
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    }
+
+    function createWord(text) {
+      const word = document.createElement('div');
+      word.className = 'word';
+      word.textContent = text;
+      
+      // Random position (avoid bottom area where input is)
+      const x = 10 + Math.random() * 80;
+      const y = 20 + Math.random() * 50;
+      word.style.left = `${x}%`;
+      word.style.top = `${y}%`;
+      
+      // Random animation duration variation
+      const duration = 10 + Math.random() * 4;
+      word.style.animationDuration = `${duration}s`;
+      
+      graffiti.appendChild(word);
+      
+      // Remove after animation
+      setTimeout(() => {
+        word.remove();
+      }, duration * 1000);
+    }
+
+    function addGratitude() {
+      const text = input.value.trim();
+      if (!text) return;
+      
+      entries.push(text);
+      saveEntries();
+      updateCount();
+      
+      createWord(text);
+      input.value = '';
+      input.focus();
+    }
+
+    function clearAll() {
+      if (confirm('確定要清除所有感恩記錄嗎？')) {
+        entries = [];
+        saveEntries();
+        updateCount();
+        graffiti.innerHTML = '';
+      }
+    }
+
+    // Enter key support
+    input.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        addGratitude();
+      }
+    });
+
+    // Auto-fade old entries every 30 seconds
+    setInterval(() => {
+      if (entries.length > 20) {
+        entries = entries.slice(-15);
+        saveEntries();
+        updateCount();
+      }
+    }, 30000);
+  </script>
+</body>
+</html>

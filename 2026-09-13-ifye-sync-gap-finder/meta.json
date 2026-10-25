@@ -1,0 +1,13 @@
+{
+  "name": "IFYE Sync Gap Finder",
+  "slug": "ifye-sync-gap-finder",
+  "date": "2026-09-13",
+  "category": "automation",
+  "description": "驗證 IFYE Notion → JSON 同步缺口的診斷工具",
+  "pain_point": "IFYE sync 每日漏 9 筆，relation 欄位空白導致 18+ 站孤立",
+  "status": "verified",
+  "verified_output": "發現 24 筆缺口（relation空白 18 + 名稱比對失敗 6）",
+  "files": ["ifye-gap-finder.py", "README.md"],
+  "requires": ["NOTION_API_KEY"],
+  "git_push": true
+}

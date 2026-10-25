@@ -1,0 +1,728 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>湯屋專注計時器</title>
+  <style>
+    :root{
+      /* Spirited Away-ish bathhouse mood (no external assets) */
+      --night:#071014;
+      --teal:#0C2A2E;
+      --paper:#F6E7C9;
+      --wood:#2A1A12;
+      --wood2:#3A2418;
+      --lacquer:#5A0B13;
+      --lantern:#FFB03B;
+      --lantern2:#FF5A3C;
+
+      --stroke: rgba(246,231,201,.22);
+      --txt: rgba(246,231,201,.92);
+      --muted: rgba(246,231,201,.66);
+      --accent: var(--lantern);
+      --accent2: #6DE3D0; /* a hint of river spirit */
+      --danger:#FF6B6B;
+      --shadow: 0 22px 85px rgba(0,0,0,.62);
+      --r: 22px;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      --sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans", "Helvetica Neue", Arial;
+      --serif: ui-serif, "Songti TC", "Noto Serif TC", "Iowan Old Style", "Palatino", serif;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:var(--sans);
+      color:var(--txt);
+      background:
+        /* back to premium night bathhouse mood */
+        radial-gradient(900px 700px at 18% 18%, rgba(255,176,59,.18), transparent 55%),
+        radial-gradient(700px 520px at 78% 28%, rgba(255,90,60,.10), transparent 60%),
+        radial-gradient(820px 620px at 55% 92%, rgba(109,227,208,.10), transparent 58%),
+        radial-gradient(1200px 900px at 55% 40%, rgba(12,42,46,.65), transparent 62%),
+        linear-gradient(180deg, var(--night), var(--teal));
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:28px;
+      overflow:hidden;
+    }
+
+    /* faint "steam" bands */
+    body:before{
+      content:"";
+      position:fixed; inset:-20%;
+      background:
+        radial-gradient(closest-side at 30% 20%, rgba(246,231,201,.05), transparent 55%),
+        radial-gradient(closest-side at 70% 35%, rgba(246,231,201,.04), transparent 60%),
+        repeating-linear-gradient(140deg, rgba(246,231,201,.03) 0 18px, rgba(246,231,201,.00) 18px 44px);
+      filter: blur(1px);
+      opacity:.55;
+      pointer-events:none;
+      animation: steam 18s ease-in-out infinite;
+    }
+    @keyframes steam{0%,100%{transform:translate3d(-1%, -1%, 0)}50%{transform:translate3d(1%, 1%, 0)}}
+
+    /* shoji / wooden lattice hint */
+    body:after{
+      content:"";
+      position:fixed; inset:0;
+      pointer-events:none;
+      opacity:.18;
+      background:
+        repeating-linear-gradient(0deg, rgba(246,231,201,.09) 0 1px, rgba(0,0,0,0) 1px 42px),
+        repeating-linear-gradient(90deg, rgba(246,231,201,.07) 0 1px, rgba(0,0,0,0) 1px 52px),
+        radial-gradient(900px 520px at 40% 35%, rgba(246,231,201,.08), transparent 60%);
+      mix-blend-mode: overlay;
+    }
+
+    /* bridge-scene diagonal sweep (subtle) */
+    .sweep{position:fixed; inset:0; pointer-events:none; opacity:.07; mix-blend-mode:overlay;
+      background: repeating-linear-gradient(135deg, rgba(0,0,0,.55) 0 18px, rgba(0,0,0,0) 18px 46px);
+    }
+    .lanterns{position:fixed; inset:0; pointer-events:none; opacity:.55}
+    .lantern{position:absolute; width:18px; height:26px; border-radius: 50% 50% 42% 42%;
+      background: radial-gradient(ellipse at 50% 55%, rgba(255,176,59,.92), rgba(255,90,60,.75) 78%);
+      box-shadow: 0 0 18px rgba(255,176,59,.22), 0 0 52px rgba(255,176,59,.08);
+      filter: blur(.0px);
+      animation: lanternGlow 4.2s ease-in-out infinite alternate;
+    }
+    .lantern:before{content:""; position:absolute; top:-10px; left:50%; transform:translateX(-50%); width:2px; height:10px; background: rgba(246,231,201,.22)}
+    .lantern:after{content:""; position:absolute; top:-2px; left:50%; transform:translateX(-50%); width:12px; height:4px; border-radius:2px; background: rgba(42,26,18,.55)}
+    .lantern.l1{left:14px; top:110px; animation-delay: .8s}
+    .lantern.l2{right:18px; top:96px; animation-delay: 1.6s}
+    .lantern.l3{left:18px; top:360px; animation-delay: 2.2s; opacity:.45}
+    .lantern.l4{right:20px; top:392px; animation-delay: 2.9s; opacity:.45}
+    @keyframes lanternGlow{0%{opacity:.65}100%{opacity:1; box-shadow: 0 0 26px rgba(255,176,59,.32), 0 0 70px rgba(255,176,59,.12);}}
+    .grain{position:fixed; inset:-40%; pointer-events:none; opacity:.10; mix-blend-mode:soft-light;
+      /* paper grain */
+      background-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="140" height="140"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency=".75" numOctaves="3" stitchTiles="stitch"/></filter><rect width="140" height="140" filter="url(%23n)" opacity=".9"/></svg>');
+      transform: rotate(4deg);
+      animation: drift 16s linear infinite;
+    }
+    @keyframes drift{from{transform:translate3d(-2%, -2%, 0) rotate(6deg)}to{transform:translate3d(2%, 2%, 0) rotate(6deg)}}
+
+    .app{
+      width:min(980px, 100%);
+      display:grid;
+      grid-template-columns: 1.15fr .85fr;
+      gap:18px;
+    }
+    @media (max-width: 880px){
+      .app{grid-template-columns:1fr;}
+    }
+
+    .panel{
+      background:
+        /* lacquered wood + warm paper */
+        linear-gradient(180deg, rgba(246,231,201,.10), rgba(246,231,201,.05)),
+        radial-gradient(1200px 420px at 30% -10%, rgba(255,176,59,.20), transparent 60%),
+        radial-gradient(900px 380px at 110% 20%, rgba(255,90,60,.14), transparent 60%),
+        linear-gradient(180deg, rgba(42,26,18,.62), rgba(12,42,46,.35));
+      border:1px solid var(--stroke);
+      border-radius: var(--r);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+      position:relative;
+    }
+    .panel:before{
+      content:"";
+      position:absolute; inset:-1px;
+      background:
+        /* subtle wood grain lines */
+        repeating-linear-gradient(90deg, rgba(0,0,0,.10) 0 2px, rgba(0,0,0,0) 2px 14px),
+        radial-gradient(900px 340px at 18% 0%, rgba(255,176,59,.22), transparent 62%),
+        radial-gradient(820px 320px at 108% 28%, rgba(255,90,60,.16), transparent 62%);
+      opacity:.35;
+      pointer-events:none;
+      mix-blend-mode:overlay;
+    }
+    .panel > *{position:relative; z-index:1}
+
+    header{
+      padding:18px 20px 14px;
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:16px;
+      border-bottom:1px solid rgba(246,231,201,.10);
+      position:relative;
+    }
+    .brand{
+      display:flex; flex-direction:column; gap:8px;
+      padding-top:2px;
+    }
+    .title{
+      font-family: var(--serif);
+      font-size:18px;
+      letter-spacing:.12em;
+      margin:0;
+    }
+    .subtitle{margin:0; color:var(--muted); font-size:13px; line-height:1.45}
+
+    /* signboard + seal (borrowed vibe from your design) */
+    .signboard{
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      padding:9px 12px;
+      border-radius: 8px;
+      border:1px solid rgba(246,231,201,.14);
+      background:
+        /* wood frame */
+        linear-gradient(180deg, rgba(107,69,48,.55), rgba(58,34,21,.55));
+      box-shadow: 0 14px 34px rgba(0,0,0,.28), inset 0 0 0 2px rgba(42,26,18,.45);
+      width: fit-content;
+      position:relative;
+    }
+    .signboard:after{
+      content:"";
+      position:absolute;
+      inset:4px;
+      border-radius: 6px;
+      background:
+        radial-gradient(40px 30px at 22% 18%, rgba(255,176,59,.16), transparent 62%),
+        linear-gradient(180deg, rgba(246,231,201,.10), rgba(246,231,201,.04));
+      border:1px solid rgba(246,231,201,.10);
+      pointer-events:none;
+      mix-blend-mode: screen;
+      opacity:.9;
+    }
+    .signNail{width:10px;height:10px;border-radius:50%; background: radial-gradient(circle at 30% 30%, rgba(246,231,201,.95), rgba(246,231,201,.15)); opacity:.78; box-shadow:0 0 10px rgba(255,176,59,.14)}
+    .signText{font-family: var(--serif); font-weight:900; letter-spacing:.18em; color: rgba(246,231,201,.92); position:relative; z-index:1}
+    .signNail{position:relative; z-index:1}
+
+    .seal{
+      position:absolute;
+      right:18px;
+      bottom:-14px;
+      width:36px;
+      height:36px;
+      border-radius: 6px;
+      border: 2px solid rgba(255,90,60,.55);
+      color: rgba(255,90,60,.85);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-family: var(--serif);
+      font-weight: 900;
+      letter-spacing:.1em;
+      transform: rotate(7deg);
+      opacity:.55;
+      background: rgba(246,231,201,.06);
+    }
+
+    .chip{
+      display:flex; align-items:center; gap:8px;
+      background: rgba(42,26,18,.35);
+      border:1px solid rgba(246,231,201,.18);
+      border-radius:999px;
+      padding:8px 10px;
+      font-family: var(--mono);
+      font-size:12px;
+      color: rgba(246,231,201,.82);
+      user-select:none;
+      white-space:nowrap;
+      box-shadow: 0 10px 24px rgba(0,0,0,.28);
+    }
+    .dot{width:8px; height:8px; border-radius:50%; background: var(--accent); box-shadow: 0 0 0 5px rgba(255,176,59,.12), 0 0 18px rgba(255,176,59,.35)}
+
+    .main{
+      padding:20px 22px 22px;
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:16px;
+    }
+    @media (max-width: 520px){
+      .main{grid-template-columns:1fr}
+    }
+
+    .card{
+      background: rgba(42,26,18,.26);
+      border:1px solid rgba(246,231,201,.14);
+      border-radius: 18px;
+      padding:16px;
+    }
+
+    .big{
+      grid-column: 1 / -1;
+      padding:18px;
+      display:grid;
+      grid-template-columns: 1.05fr .95fr;
+      gap:16px;
+      align-items:center;
+    }
+    @media (max-width: 720px){
+      .big{grid-template-columns:1fr}
+    }
+
+    .ringWrap{display:flex; align-items:center; justify-content:center; min-height:260px; position:relative}
+    svg{max-width:320px; width:100%; height:auto}
+
+    /* cute floating sparkles */
+    .sparkles{position:absolute; inset:-10px; pointer-events:none; filter: drop-shadow(0 10px 18px rgba(0,0,0,.25)); opacity:.9}
+    .sparkles i{position:absolute; width:8px; height:8px; border-radius:50%; background: rgba(255,176,59,.85)}
+    .sparkles i:after{content:""; position:absolute; inset:-3px; border-radius:50%; background: rgba(255,176,59,.18)}
+    .sparkles i:nth-child(2){width:6px;height:6px; background: rgba(109,227,208,.85)}
+    .sparkles i:nth-child(3){width:10px;height:10px; background: rgba(246,231,201,.75)}
+    .sparkles i:nth-child(4){width:5px;height:5px; background: rgba(255,90,60,.75)}
+    .sparkles i:nth-child(1){left:14%; top:22%; animation: floaty 6.5s ease-in-out infinite}
+    .sparkles i:nth-child(2){left:78%; top:18%; animation: floaty 7.2s ease-in-out infinite reverse}
+    .sparkles i:nth-child(3){left:70%; top:78%; animation: floaty 8.2s ease-in-out infinite}
+    .sparkles i:nth-child(4){left:20%; top:82%; animation: floaty 6.8s ease-in-out infinite reverse}
+    @keyframes floaty{0%,100%{transform:translate3d(0,0,0)}50%{transform:translate3d(0,-10px,0)}}
+    .time{
+      font-family:var(--mono);
+      font-size:44px;
+      letter-spacing:1px;
+      margin:0;
+      text-align:center;
+      text-shadow: 0 12px 28px rgba(0,0,0,.35);
+    }
+    .phase{margin:6px 0 0; color:var(--muted); text-align:center; font-size:13px}
+
+    .controls{display:flex; flex-direction:column; gap:12px}
+    .row{display:flex; gap:10px; flex-wrap:wrap}
+
+    button{
+      appearance:none;
+      border:1px solid rgba(246,231,201,.18);
+      background: rgba(246,231,201,.06);
+      color:var(--txt);
+      border-radius: 14px;
+      padding:12px 12px;
+      font-weight:650;
+      letter-spacing:.2px;
+      cursor:pointer;
+      transition: transform .08s ease, background .2s ease, border-color .2s ease, box-shadow .2s ease;
+    }
+    button:hover{background: rgba(246,231,201,.10)}
+    button:active{transform: translateY(1px)}
+    .primary{
+      border-color: rgba(255,176,59,.55);
+      background: linear-gradient(180deg, rgba(255,176,59,.22), rgba(255,90,60,.10));
+      box-shadow: 0 14px 40px rgba(255,176,59,.10);
+    }
+    .primary:hover{background: linear-gradient(180deg, rgba(255,176,59,.28), rgba(255,90,60,.12));}
+    .ghost{background: rgba(42,26,18,.22)}
+    .danger{border-color: rgba(255,107,107,.50)}
+
+    /* lantern-style buttons */
+    .btnLantern{
+      border-radius: 999px;
+      border:1px solid rgba(246,231,201,.22);
+      background:
+        radial-gradient(28px 22px at 22% 18%, rgba(255,176,59,.24), transparent 62%),
+        linear-gradient(180deg, rgba(42,26,18,.34), rgba(42,26,18,.18));
+      box-shadow: 0 12px 26px rgba(0,0,0,.26);
+      position:relative;
+      padding-left:28px;
+      font-family: var(--mono);
+    }
+    .btnLantern:before{
+      content:"";
+      position:absolute;
+      left:12px; top:50%;
+      width:8px; height:8px;
+      transform: translateY(-50%);
+      border-radius:50%;
+      background: rgba(246,231,201,.55);
+      opacity:.6;
+    }
+    .btnLantern:hover{background:
+        radial-gradient(28px 22px at 22% 18%, rgba(255,176,59,.30), transparent 62%),
+        linear-gradient(180deg, rgba(42,26,18,.40), rgba(42,26,18,.20));
+    }
+    .btnMain{
+      border-color: rgba(255,176,59,.55);
+      background:
+        radial-gradient(30px 24px at 22% 18%, rgba(255,176,59,.42), transparent 62%),
+        linear-gradient(180deg, rgba(255,176,59,.22), rgba(255,90,60,.10));
+      box-shadow: 0 14px 34px rgba(255,176,59,.14), 0 0 26px rgba(255,176,59,.10);
+    }
+    .btnMain:before{
+      background: rgba(255,176,59,.95);
+      opacity:1;
+      box-shadow: 0 0 16px rgba(255,176,59,.55);
+    }
+    .btnDanger{
+      border-color: rgba(255,107,107,.42);
+      background:
+        radial-gradient(30px 24px at 22% 18%, rgba(255,107,107,.26), transparent 62%),
+        linear-gradient(180deg, rgba(42,26,18,.34), rgba(42,26,18,.18));
+    }
+    .btnDanger:before{background: rgba(255,107,107,.75); opacity:1; box-shadow:0 0 14px rgba(255,107,107,.35)}
+
+    .kv{display:flex; flex-direction:column; gap:10px}
+    .kv label{font-size:12px; color:var(--muted)}
+
+    .seg{
+      display:flex; gap:8px; flex-wrap:wrap;
+    }
+    .seg input{display:none}
+    .seg label{
+      padding:10px 12px;
+      border-radius: 999px;
+      border:1px solid rgba(246,231,201,.22);
+      background:
+        radial-gradient(22px 18px at 28% 18%, rgba(255,176,59,.18), transparent 60%),
+        linear-gradient(180deg, rgba(42,26,18,.30), rgba(42,26,18,.18));
+      cursor:pointer;
+      user-select:none;
+      font-family:var(--mono);
+      font-size:12px;
+      color: rgba(246,231,201,.88);
+      position:relative;
+      box-shadow: 0 10px 22px rgba(0,0,0,.22);
+    }
+    .seg label:before{
+      content:"";
+      position:absolute;
+      left:10px; top:50%;
+      width:8px; height:8px;
+      transform: translateY(-50%);
+      border-radius:50%;
+      background: rgba(246,231,201,.55);
+      opacity:.55;
+    }
+    .seg label{padding-left:26px;}
+    .seg input:checked + label{
+      border-color: rgba(255,176,59,.62);
+      background:
+        radial-gradient(28px 22px at 22% 18%, rgba(255,176,59,.42), transparent 62%),
+        linear-gradient(180deg, rgba(255,176,59,.20), rgba(255,90,60,.10));
+      box-shadow: 0 14px 34px rgba(255,176,59,.14), 0 0 26px rgba(255,176,59,.10);
+    }
+    .seg input:checked + label:before{
+      background: rgba(255,176,59,.95);
+      opacity:1;
+      box-shadow: 0 0 16px rgba(255,176,59,.55);
+    }
+
+    input[type="range"]{width:100%}
+
+    .side{
+      padding:18px 18px 20px;
+    }
+    .side h3{margin:0 0 10px; font-size:13px; color:rgba(255,255,255,.78); letter-spacing:.25px}
+
+    .log{
+      font-family:var(--mono);
+      font-size:12px;
+      line-height:1.55;
+      color: rgba(255,255,255,.78);
+      background: rgba(0,0,0,.22);
+      border:1px solid rgba(255,255,255,.10);
+      border-radius: 16px;
+      padding:12px;
+      height: 300px;
+      overflow:auto;
+      white-space:pre-wrap;
+    }
+
+    .hint{color:var(--muted); font-size:12px; margin:10px 0 0}
+    a{color: rgba(124,92,255,.95)}
+  </style>
+</head>
+<body>
+  <div class="grain"></div>
+  <div class="sweep" aria-hidden="true"></div>
+  <div class="lanterns" aria-hidden="true">
+    <div class="lantern l1"></div>
+    <div class="lantern l2"></div>
+    <div class="lantern l3"></div>
+    <div class="lantern l4"></div>
+  </div>
+
+  <div class="app">
+    <section class="panel">
+      <header>
+        <div class="brand">
+          <div class="signboard" aria-hidden="true">
+            <span class="signNail"></span>
+            <span class="signText">湯屋專注計時器</span>
+          </div>
+          <p class="subtitle">把你丟進湯屋裡修行：<b>專注</b> / <b>短休息</b> / <b>長休息</b>。不花俏，但有一點燈籠暖光和工作紀錄（全離線）。</p>
+        </div>
+        <div class="seal" aria-hidden="true">湯</div>
+        <div class="chip" title="Local-only; no network">
+          <span class="dot"></span>
+          <span id="chipText">離線 • 本機</span>
+        </div>
+      </header>
+
+      <div class="main">
+        <div class="card big">
+          <div class="ringWrap">
+            <div class="sparkles" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+            <svg viewBox="0 0 120 120" aria-label="progress ring">
+              <defs>
+                <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0" stop-color="#FFB03B"/>
+                  <stop offset="1" stop-color="#FF5A3C"/>
+                </linearGradient>
+              </defs>
+              <circle cx="60" cy="60" r="46" fill="none" stroke="rgba(255,255,255,.10)" stroke-width="10" />
+              <circle id="ring" cx="60" cy="60" r="46" fill="none" stroke="url(#g)" stroke-linecap="round" stroke-width="10"
+                stroke-dasharray="289" stroke-dashoffset="0" transform="rotate(-90 60 60)" />
+              <circle id="ringGlow" cx="60" cy="60" r="46" fill="none" stroke="url(#g)" stroke-linecap="round" stroke-width="14" opacity=".18"
+                stroke-dasharray="289" stroke-dashoffset="0" transform="rotate(-90 60 60)" />
+              <circle cx="60" cy="60" r="36" fill="rgba(42,26,18,.22)" stroke="rgba(246,231,201,.14)"/>
+              <text x="60" y="62" text-anchor="middle" fill="rgba(246,231,201,.92)" font-family="ui-monospace" font-size="10">湯屋</text>
+            </svg>
+          </div>
+
+          <div class="controls">
+            <div>
+              <p class="time" id="time">25:00</p>
+              <p class="phase" id="phase">番茄（專注）</p>
+            </div>
+
+            <div class="kv">
+              <label>模式</label>
+              <div class="seg" id="modeSeg">
+                <input type="radio" name="mode" id="m_focus" value="focus" checked>
+                <label for="m_focus">FOCUS 25</label>
+
+                <input type="radio" name="mode" id="m_short" value="short">
+                <label for="m_short">SHORT 5</label>
+
+                <input type="radio" name="mode" id="m_long" value="long">
+                <label for="m_long">LONG 15</label>
+              </div>
+            </div>
+
+            <div class="kv">
+              <label>自訂分鐘（拖動後按「套用」）</label>
+              <input id="minutes" type="range" min="1" max="90" value="25" />
+              <div class="row">
+                <button class="btnLantern" id="apply">套用</button>
+                <button class="btnLantern btnMain" id="start">開始 / 暫停</button>
+                <button class="btnLantern btnDanger" id="reset">重設</button>
+              </div>
+            </div>
+
+            <p class="hint">小技巧：這頁不會送資料出去；紀錄存在 <code>localStorage</code>。關掉再開也還在。</p>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="kv">
+            <label>本次完成（自動）</label>
+            <p style="margin:0; font-family:var(--mono); font-size:26px" id="streak">0</p>
+          </div>
+        </div>
+        <div class="card">
+          <div class="kv">
+            <label>總完成（累積）</label>
+            <p style="margin:0; font-family:var(--mono); font-size:26px" id="total">0</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <aside class="panel side">
+      <h3>湯屋簿記（本機）</h3>
+      <div class="log" id="log"></div>
+      <p class="hint">點「重設」不會清掉歷史；要清除請用瀏覽器開發者工具 → Application → Local Storage。（湯婆婆也救不了你）</p>
+    </aside>
+  </div>
+
+  <script>
+    const $ = (s) => document.querySelector(s);
+
+    const ring = $('#ring');
+    const ringGlow = $('#ringGlow');
+    const timeEl = $('#time');
+    const phaseEl = $('#phase');
+    const chipText = $('#chipText');
+    const minutes = $('#minutes');
+    const applyBtn = $('#apply');
+    const startBtn = $('#start');
+    const resetBtn = $('#reset');
+    const logEl = $('#log');
+    const streakEl = $('#streak');
+    const totalEl = $('#total');
+
+    const CIRC = 2 * Math.PI * 46;
+    ring.setAttribute('stroke-dasharray', String(CIRC));
+    ringGlow.setAttribute('stroke-dasharray', String(CIRC));
+
+    const DEFAULTS = { focus: 25, short: 5, long: 15 };
+    const PHASE_NAME = { focus: '番茄（專注）', short: '短休息', long: '長休息' };
+
+    const store = {
+      get(key, fallback){
+        try{
+          const v = localStorage.getItem(key);
+          return v ? JSON.parse(v) : fallback;
+        }catch{ return fallback; }
+      },
+      set(key, val){ localStorage.setItem(key, JSON.stringify(val)); }
+    };
+
+    let state = store.get('osft_state', {
+      mode:'focus',
+      durationSec: DEFAULTS.focus*60,
+      remainingSec: DEFAULTS.focus*60,
+      running:false,
+      lastTick:null,
+      streak:0,
+      total: store.get('osft_total', 0),
+      log: store.get('osft_log', [])
+    });
+
+    function fmt(sec){
+      const m = Math.floor(sec/60);
+      const s = sec%60;
+      return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+    }
+
+    function setRing(rem, dur){
+      const p = Math.max(0, Math.min(1, rem/dur));
+      const off = CIRC*(1-p);
+      ring.style.strokeDashoffset = String(off);
+      ringGlow.style.strokeDashoffset = String(off);
+
+      // cute pulse: stronger when running
+      const base = state.running ? 0.26 : 0.16;
+      const wobble = 0.08 * Math.sin(Date.now()/420);
+      ringGlow.style.opacity = String(Math.max(0.10, Math.min(0.38, base + wobble)));
+    }
+
+    function render(){
+      timeEl.textContent = fmt(state.remainingSec);
+      phaseEl.textContent = PHASE_NAME[state.mode] || state.mode;
+      streakEl.textContent = String(state.streak);
+      totalEl.textContent = String(state.total);
+      setRing(state.remainingSec, state.durationSec);
+      chipText.textContent = state.running ? 'running • local' : 'paused • local';
+
+      // radio
+      const id = state.mode==='focus' ? '#m_focus' : state.mode==='short' ? '#m_short' : '#m_long';
+      $(id).checked = true;
+
+      // slider mirrors current duration in minutes, clamped
+      const mins = Math.max(1, Math.round(state.durationSec/60));
+      minutes.value = String(mins);
+
+      const lines = state.log.slice(-40).map(x => `• ${x}`).join('\n');
+      logEl.textContent = lines || '（尚無紀錄）';
+    }
+
+    function persist(){
+      store.set('osft_total', state.total);
+      store.set('osft_log', state.log);
+      store.set('osft_state', state);
+    }
+
+    function nowStamp(){
+      const d = new Date();
+      const yyyy = d.getFullYear();
+      const mm = String(d.getMonth()+1).padStart(2,'0');
+      const dd = String(d.getDate()).padStart(2,'0');
+      const hh = String(d.getHours()).padStart(2,'0');
+      const mi = String(d.getMinutes()).padStart(2,'0');
+      return `${yyyy}-${mm}-${dd} ${hh}:${mi}`;
+    }
+
+    function addLog(msg){
+      state.log.push(`${nowStamp()}  ${msg}`);
+      if(state.log.length > 500) state.log = state.log.slice(-500);
+    }
+
+    function complete(){
+      state.running = false;
+      state.lastTick = null;
+      state.streak += 1;
+      state.total += 1;
+      addLog(`完成 1 個 ${PHASE_NAME[state.mode] || state.mode}（${Math.round(state.durationSec/60)} 分鐘）`);
+
+      // auto-advance: focus -> short, short -> focus, long -> focus
+      if(state.mode === 'focus') setMode('short');
+      else setMode('focus');
+
+      // subtle beep
+      try{
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const o = ctx.createOscillator();
+        const g = ctx.createGain();
+        o.type = 'sine';
+        o.frequency.value = 880;
+        g.gain.value = 0.04;
+        o.connect(g); g.connect(ctx.destination);
+        o.start();
+        setTimeout(()=>{ o.stop(); ctx.close(); }, 120);
+      }catch{}
+    }
+
+    function setMode(mode){
+      state.mode = mode;
+      const mins = DEFAULTS[mode] ?? Math.max(1, Math.round(state.durationSec/60));
+      state.durationSec = mins*60;
+      state.remainingSec = mins*60;
+      state.running = false;
+      state.lastTick = null;
+      persist();
+      render();
+    }
+
+    function setCustom(mins){
+      const m = Math.max(1, Math.min(90, Math.round(mins)));
+      state.durationSec = m*60;
+      state.remainingSec = m*60;
+      state.running = false;
+      state.lastTick = null;
+      addLog(`套用自訂時間：${m} 分鐘`);
+      persist();
+      render();
+    }
+
+    function tick(){
+      if(!state.running) return;
+      const t = Date.now();
+      const last = state.lastTick ?? t;
+      const delta = Math.floor((t - last)/1000);
+      if(delta <= 0) return;
+      state.lastTick = last + delta*1000;
+      state.remainingSec = Math.max(0, state.remainingSec - delta);
+      if(state.remainingSec === 0) complete();
+      persist();
+      render();
+    }
+
+    // events
+    $('#modeSeg').addEventListener('change', (e)=>{
+      if(e.target && e.target.name==='mode') setMode(e.target.value);
+    });
+
+    applyBtn.addEventListener('click', ()=> setCustom(Number(minutes.value)));
+
+    startBtn.addEventListener('click', ()=>{
+      state.running = !state.running;
+      state.lastTick = Date.now();
+      addLog(state.running ? '開始' : '暫停');
+      persist();
+      render();
+    });
+
+    resetBtn.addEventListener('click', ()=>{
+      state.running = false;
+      state.lastTick = null;
+      state.remainingSec = state.durationSec;
+      state.streak = 0;
+      addLog('重設本次（streak 歸零、時間回滿）');
+      persist();
+      render();
+    });
+
+    // resume ticker
+    setInterval(tick, 250);
+
+    // initial render
+    render();
+    addLog('載入');
+    persist();
+  </script>
+</body>
+</html>

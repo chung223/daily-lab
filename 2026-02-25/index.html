@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>漣漪 Ripple</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-deep: #0a0c10;
+      --bg-surface: #101418;
+      --text-primary: #e8eaed;
+      --text-secondary: #8b9099;
+      --accent: #5eead4;
+      --accent-dim: #2dd4bf33;
+      --ripple-color: #5eead4;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Noto Serif TC', serif;
+      background: var(--bg-deep);
+      color: var(--text-primary);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Layered background */
+    .bg-layer {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    .bg-layer-1 {
+      background: 
+        radial-gradient(ellipse 80% 50% at 50% 100%, #0f2820 0%, transparent 70%),
+        radial-gradient(ellipse 60% 40% at 20% 80%, #1a1f2e 0%, transparent 50%),
+        var(--bg-deep);
+    }
+
+    .bg-layer-2 {
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+      opacity: 0.03;
+    }
+
+    /* Water surface */
+    .water-surface {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 45vh;
+      background: linear-gradient(to bottom, 
+        transparent 0%, 
+        rgba(10, 40, 36, 0.3) 30%,
+        rgba(15, 50, 45, 0.6) 100%
+      );
+      overflow: hidden;
+    }
+
+    .water-line {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, 
+        transparent 0%, 
+        var(--accent-dim) 20%, 
+        var(--accent) 50%, 
+        var(--accent-dim) 80%, 
+        transparent 100%
+      );
+      opacity: 0.4;
+    }
+
+    /* Ripples container */
+    .ripples-container {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 45vh;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .ripple {
+      position: absolute;
+      bottom: 30%;
+      left: 50%;
+      transform: translateX(-50%);
+      border: 1px solid var(--ripple-color);
+      border-radius: 50%;
+      opacity: 0;
+      animation: rippleExpand 4s ease-out forwards;
+    }
+
+    @keyframes rippleExpand {
+      0% {
+        width: 10px;
+        height: 6px;
+        opacity: 0.8;
+        border-width: 2px;
+      }
+      100% {
+        width: 600px;
+        height: 300px;
+        opacity: 0;
+        border-width: 1px;
+      }
+    }
+
+    .ripple-text {
+      position: absolute;
+      bottom: 35%;
+      left: 50%;
+      transform: translateX(-50%);
+      font-family: 'Noto Serif TC', serif;
+      font-size: 14px;
+      color: var(--accent);
+      opacity: 0;
+      animation: textFloat 4s ease-out forwards;
+      white-space: nowrap;
+      text-shadow: 0 0 10px var(--accent-dim);
+    }
+
+    @keyframes textFloat {
+      0% {
+        opacity: 0;
+        transform: translateX(-50%) translateY(20px) scale(0.9);
+      }
+      20% {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0) scale(1);
+      }
+      80% {
+        opacity: 0.6;
+        transform: translateX(-50%) translateY(-10px) scale(1);
+      }
+      100% {
+        opacity: 0;
+        transform: translateX(-50%) translateY(-30px) scale(0.9);
+      }
+    }
+
+    /* Main content */
+    .container {
+      position: relative;
+      z-index: 10;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      padding-bottom: 50vh;
+    }
+
+    .title {
+      font-size: clamp(2rem, 8vw, 4rem);
+      font-weight: 600;
+      letter-spacing: 0.2em;
+      margin-bottom: 0.5rem;
+      background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .subtitle {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      margin-bottom: 3rem;
+    }
+
+    .input-wrapper {
+      width: 100%;
+      max-width: 400px;
+      position: relative;
+    }
+
+    .input-field {
+      width: 100%;
+      padding: 1rem 1.5rem;
+      font-family: 'Noto Serif TC', serif;
+      font-size: 1rem;
+      background: rgba(16, 20, 24, 0.8);
+      border: 1px solid rgba(94, 234, 212, 0.2);
+      border-radius: 2px;
+      color: var(--text-primary);
+      outline: none;
+      transition: all 0.3s ease;
+    }
+
+    .input-field::placeholder {
+      color: var(--text-secondary);
+    }
+
+    .input-field:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 20px var(--accent-dim);
+    }
+
+    .hint {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--text-secondary);
+      text-align: center;
+      margin-top: 1rem;
+      opacity: 0.6;
+    }
+
+    /* Counter */
+    .counter {
+      position: fixed;
+      top: 2rem;
+      right: 2rem;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      z-index: 100;
+    }
+
+    .counter-number {
+      font-size: 1.5rem;
+      color: var(--accent);
+      display: block;
+      text-align: right;
+    }
+
+    /* Stars */
+    .stars {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    .star {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      background: var(--text-primary);
+      border-radius: 50%;
+      opacity: 0;
+      animation: starTwinkle 3s ease-in-out infinite;
+    }
+
+    @keyframes starTwinkle {
+      0%, 100% { opacity: 0; }
+      50% { opacity: 0.6; }
+    }
+
+    @media (max-width: 480px) {
+      .container {
+        padding: 1rem;
+        padding-bottom: 55vh;
+      }
+      
+      .title {
+        letter-spacing: 0.15em;
+      }
+
+      .counter {
+        top: 1rem;
+        right: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-layer bg-layer-1"></div>
+  <div class="bg-layer bg-layer-2"></div>
+  
+  <!-- Stars -->
+  <div class="stars" id="stars"></div>
+
+  <!-- Water surface -->
+  <div class="water-surface">
+    <div class="water-line"></div>
+  </div>
+
+  <!-- Ripples -->
+  <div class="ripples-container" id="ripples"></div>
+
+  <!-- Counter -->
+  <div class="counter">
+    <span class="counter-number" id="count">0</span>
+    漣漪
+  </div>
+
+  <!-- Main content -->
+  <div class="container">
+    <h1 class="title">漣漪</h1>
+    <p class="subtitle">Ripple Meditation</p>
+    
+    <div class="input-wrapper">
+      <input 
+        type="text" 
+        class="input-field" 
+        id="textInput" 
+        placeholder="輸入思緒..." 
+        maxlength="20"
+        autocomplete="off"
+      >
+      <p class="hint">Enter 後產生漣漪</p>
+    </div>
+  </div>
+
+  <script>
+    // Storage
+    const STORAGE_KEY = 'ripple-count';
+    let count = parseInt(localStorage.getItem(STORAGE_KEY) || '0');
+    document.getElementById('count').textContent = count;
+
+    // Generate stars
+    const starsContainer = document.getElementById('stars');
+    for (let i = 0; i < 50; i++) {
+      const star = document.createElement('div');
+      star.className = 'star';
+      star.style.left = Math.random() * 100 + '%';
+      star.style.top = Math.random() * 60 + '%';
+      star.style.animationDelay = Math.random() * 3 + 's';
+      star.style.animationDuration = (2 + Math.random() * 2) + 's';
+      starsContainer.appendChild(star);
+    }
+
+    // Create ripple
+    function createRipple(text) {
+      const container = document.getElementById('ripples');
+      
+      // Ripple ring
+      const ripple = document.createElement('div');
+      ripple.className = 'ripple';
+      ripple.style.left = (30 + Math.random() * 40) + '%';
+      container.appendChild(ripple);
+
+      // Text
+      if (text) {
+        const textEl = document.createElement('div');
+        textEl.className = 'ripple-text';
+        textEl.textContent = text;
+        textEl.style.left = ripple.style.left;
+        container.appendChild(textEl);
+      }
+
+      // Cleanup
+      setTimeout(() => {
+        ripple.remove();
+        textEl?.remove();
+      }, 4000);
+    }
+
+    // Handle input
+    const input = document.getElementById('textInput');
+    input.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter' && input.value.trim()) {
+        count++;
+        localStorage.setItem(STORAGE_KEY, count.toString());
+        document.getElementById('count').textContent = count;
+        
+        createRipple(input.value.trim());
+        input.value = '';
+      }
+    });
+
+    // Ambient ripples (no text)
+    setInterval(() => {
+      if (Math.random() > 0.7) {
+        createRipple('');
+      }
+    }, 2000);
+  </script>
+</body>
+</html>

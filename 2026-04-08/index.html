@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🐟 魚油占卜時光機 | Fish Oil Oracle Machine</title>
+    <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=Noto+Sans+TC:wght@400;500;700&family=Fredoka:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --coral: #FF6B6B;
+            --coral-light: #FF8E8E;
+            --ocean: #4ECDC4;
+            --ocean-deep: #2EADA4;
+            --sand: #FFF8E7;
+            --sand-dark: #F5ECD9;
+            --cream: #FFFAF5;
+            --gold: #FFD93D;
+            --text: #2D3436;
+            --text-light: #636E72;
+        }
+
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background: linear-gradient(180deg, var(--ocean) 0%, var(--ocean-deep) 50%, var(--coral) 100%);
+            min-height: 100vh;
+            color: var(--text);
+            overflow-x: hidden;
+        }
+
+        /* 泡泡背景 */
+        .bubbles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .bubble {
+            position: absolute;
+            bottom: -100px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            animation: rise linear infinite;
+        }
+
+        @keyframes rise {
+            0% {
+                transform: translateY(0) scale(1);
+                opacity: 0.6;
+            }
+            100% {
+                transform: translateY(-100vh) scale(0.5);
+                opacity: 0;
+            }
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* 標題區 */
+        header {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .logo-capsule {
+            width: 120px;
+            height: 60px;
+            margin: 0 auto 20px;
+            position: relative;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .capsule-body {
+            width: 120px;
+            height: 50px;
+            background: linear-gradient(135deg, rgba(255,200,100,0.9), rgba(255,180,80,0.9));
+            border-radius: 25px;
+            position: absolute;
+            top: 10px;
+            box-shadow: 
+                inset 0 -5px 15px rgba(0,0,0,0.1),
+                0 5px 20px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+
+        .capsule-body::before {
+            content: '';
+            position: absolute;
+            top: 5px;
+            left: 10px;
+            width: 30px;
+            height: 15px;
+            background: rgba(255,255,255,0.6);
+            border-radius: 50%;
+        }
+
+        .capsule-line {
+            position: absolute;
+            width: 4px;
+            height: 50px;
+            background: linear-gradient(180deg, #DDD 0%, #FFF 50%, #DDD 100%);
+            border-radius: 2px;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        h1 {
+            font-family: 'Ma Shan Zheng', cursive;
+            font-size: 2.5rem;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: var(--sand);
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        /* 海豚督導區 */
+        .dolphin-zone {
+            background: rgba(255,255,255,0.95);
+            border-radius: 20px;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .dolphin-zone::before {
+            content: '🐬 海豚督導';
+            position: absolute;
+            top: -10px;
+            left: 20px;
+            background: var(--coral);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .dolphin-quote {
+            font-size: 1.1rem;
+            color: var(--text);
+            line-height: 1.6;
+            margin-top: 15px;
+            font-style: italic;
+        }
+
+        .dolphin-signature {
+            text-align: right;
+            color: var(--ocean-deep);
+            font-weight: 600;
+            margin-top: 10px;
+        }
+
+        /* 輸入區 */
+        .input-section {
+            background: rgba(255,255,255,0.95);
+            border-radius: 20px;
+            padding: 25px;
+            margin: 20px 0;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 8px;
+        }
+
+        .input-group input,
+        .input-group textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid var(--sand-dark);
+            border-radius: 12px;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: border-color 0.3s;
+        }
+
+        .input-group input:focus,
+        .input-group textarea:focus {
+            outline: none;
+            border-color: var(--ocean);
+        }
+
+        .input-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .input-hint {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            margin-top: 5px;
+        }
+
+        .btn-divine {
+            width: 100%;
+            padding: 15px 30px;
+            background: linear-gradient(135deg, var(--coral), var(--coral-light));
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            font-family: inherit;
+        }
+
+        .btn-divine:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(255,107,107,0.4);
+        }
+
+        .btn-divine:active {
+            transform: translateY(0);
+        }
+
+        /* 占卜結果區 */
+        .oracle-result {
+            display: none;
+            background: rgba(255,255,255,0.95);
+            border-radius: 20px;
+            padding: 30px;
+            margin: 20px 0;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .result-capsule {
+            width: 150px;
+            height: 75px;
+            margin: 0 auto 25px;
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+
+        .result-capsule.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .capsule-front,
+        .capsule-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 38px;
+        }
+
+        .capsule-front {
+            background: linear-gradient(135deg, rgba(255,200,100,0.9), rgba(255,180,80,0.9));
+            box-shadow: 
+                inset 0 -8px 20px rgba(0,0,0,0.1),
+                0 8px 30px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .capsule-front::before {
+            content: '';
+            position: absolute;
+            top: 8px;
+            left: 15px;
+            width: 40px;
+            height: 20px;
+            background: rgba(255,255,255,0.6);
+            border-radius: 50%;
+        }
+
+        .capsule-line-front {
+            position: absolute;
+            width: 5px;
+            height: 75px;
+            background: linear-gradient(180deg, #DDD 0%, #FFF 50%, #DDD 100%);
+            border-radius: 3px;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .capsule-front-text {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255,255,255,0.9);
+            padding: 3px 10px;
+            border-radius: 10px;
+            font-size: 0.7rem;
+            color: var(--text);
+        }
+
+        .capsule-back {
+            background: var(--sand);
+            transform: rotateY(180deg);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 15px;
+            border: 3px solid var(--coral);
+        }
+
+        .oracle-symbol {
+            font-size: 2rem;
+            margin-bottom: 5px;
+        }
+
+        .oracle-name {
+            font-family: 'Fredoka', sans-serif;
+            font-size: 1rem;
+            color: var(--coral);
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .tap-hint {
+            text-align: center;
+            color: var(--text-light);
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+        }
+
+        .oracle-wisdom {
+            display: none;
+            text-align: center;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .wisdom-card {
+            background: linear-gradient(135deg, var(--ocean), var(--ocean-deep));
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+
+        .wisdom-symbol {
+            font-size: 3rem;
+            margin-bottom: 10px;
+        }
+
+        .wisdom-title {
+            font-family: 'Fredoka', sans-serif;
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+        }
+
+        .wisdom-text {
+            font-size: 1.05rem;
+            line-height: 1.6;
+        }
+
+        .wisdom-action {
+            background: rgba(255,255,255,0.2);
+            padding: 12px 20px;
+            border-radius: 10px;
+            margin-top: 15px;
+            font-size: 0.95rem;
+        }
+
+        /* 歷史記錄 */
+        .history-section {
+            background: rgba(255,255,255,0.95);
+            border-radius: 20px;
+            padding: 25px;
+            margin: 20px 0;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        }
+
+        .section-title {
+            font-family: 'Fredoka', sans-serif;
+            font-size: 1.3rem;
+            color: var(--text);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .history-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .history-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 12px;
+            background: var(--sand);
+            border-radius: 12px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .history-item:hover {
+            transform: translateX(5px);
+        }
+
+        .history-date {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            white-space: nowrap;
+        }
+
+        .history-question {
+            flex: 1;
+            font-size: 0.95rem;
+            color: var(--text);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .history-symbol {
+            font-size: 1.5rem;
+        }
+
+        .empty-history {
+            text-align: center;
+            color: var(--text-light);
+            padding: 30px;
+        }
+
+        .empty-history-icon {
+            font-size: 3rem;
+            margin-bottom: 10px;
+        }
+
+        /* 統計面板 */
+        .stats-panel {
+            background: linear-gradient(135deg, var(--coral), var(--coral-light));
+            color: white;
+            border-radius: 20px;
+            padding: 20px;
+            margin: 20px 0;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            box-shadow: 0 10px 40px rgba(255,107,107,0.3);
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-family: 'Fredoka', sans-serif;
+            font-size: 2rem;
+            font-weight: 600;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            opacity: 0.9;
+        }
+
+        /* 底部裝飾 */
+        .wave-decoration {
+            height: 50px;
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 100'%3E%3Cpath fill='%23FFF8E7' d='M0,50 C360,100 1080,0 1440,50 L1440,100 L0,100 Z'/%3E%3C/svg%3E") no-repeat;
+            background-size: cover;
+            margin: 20px -20px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: white;
+            font-size: 0.9rem;
+        }
+
+        footer a {
+            color: var(--sand);
+        }
+
+        /* 響應式 */
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            .stats-panel {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 10px;
+            }
+
+            .stat-value {
+                font-size: 1.5rem;
+            }
+
+            .result-capsule {
+                width: 130px;
+                height: 65px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 泡泡背景 -->
+    <div class="bubbles" id="bubbles"></div>
+
+    <div class="container">
+        <!-- 標題區 -->
+        <header>
+            <div class="logo-capsule">
+                <div class="capsule-body"></div>
+                <div class="capsule-line"></div>
+            </div>
+            <h1>魚油占卜時光機</h1>
+            <p class="subtitle">🐟 Fish Oil Oracle Machine · 海豚督導認證</p>
+        </header>
+
+        <!-- 海豚督導區 -->
+        <div class="dolphin-zone">
+            <p class="dolphin-quote" id="dolphinQuote">「親愛的同修，早安！今天的魚油已經攝取了嗎？沒有？沒關係，讓我們先透過占卜來確認宇宙的旨意...」</p>
+            <p class="dolphin-signature">— 🐬 海豚督導 Dr. Flipperstein</p>
+        </div>
+
+        <!-- 統計面板 -->
+        <div class="stats-panel">
+            <div class="stat-item">
+                <div class="stat-value" id="totalDivines">0</div>
+                <div class="stat-label">占卜次數</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="totalDays">0</div>
+                <div class="stat-label">連續天數</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="streakDays">0</div>
+                <div class="stat-label">魚油提醒天數</div>
+            </div>
+        </div>
+
+        <!-- 輸入區 -->
+        <div class="input-section">
+            <div class="input-group">
+                <label for="userQuestion">🎯 你的問題</label>
+                <textarea id="userQuestion" placeholder="例如：今天工作運勢如何？適合表白嗎？"></textarea>
+                <p class="input-hint">越具體的問題，占卜越準確（但也不要想太多啦）</p>
+            </div>
+            <button class="btn-divine" onclick="divine()">
+                🐟 抽出魚油膠囊占卜
+            </button>
+        </div>
+
+        <!-- 占卜結果 -->
+        <div class="oracle-result" id="oracleResult">
+            <p class="tap-hint">👆 點擊魚油膠囊翻面查看結果</p>
+            <div class="result-capsule" id="resultCapsule" onclick="flipCapsule()">
+                <div class="capsule-front">
+                    <div class="capsule-line-front"></div>
+                    <span class="capsule-front-text">魚油膠囊</span>
+                </div>
+                <div class="capsule-back">
+                    <div class="oracle-symbol" id="oracleSymbol">🌊</div>
+                    <div class="oracle-name" id="oracleName">等待揭曉...</div>
+                </div>
+            </div>
+            <div class="oracle-wisdom" id="oracleWisdom">
+                <div class="wisdom-card">
+                    <div class="wisdom-symbol" id="wisdomSymbol">🌊</div>
+                    <div class="wisdom-title" id="wisdomTitle">預言標題</div>
+                    <div class="wisdom-text" id="wisdomText">預言內容...</div>
+                    <div class="wisdom-action" id="wisdomAction">💡 建議行動</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 歷史記錄 -->
+        <div class="history-section">
+            <h2 class="section-title">📜 占卜歷史</h2>
+            <div class="history-list" id="historyList">
+                <div class="empty-history">
+                    <div class="empty-history-icon">🐟</div>
+                    <p>還沒有占卜記錄</p>
+                    <p>勇敢地問出你的第一個問題吧！</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="wave-decoration"></div>
+    </div>
+
+    <footer>
+        <p>🐬 海豚督導出品 · 魚油占卜時光機 v1.0</p>
+        <p>每日占卜，改變命運（大概）</p>
+    </footer>
+
+    <script>
+        // 占卜資料庫
+        const oracleCards = [
+            {
+                symbol: '🌊',
+                name: '深海智慧',
+                title: '順流而行',
+                text: '今天的能量如潮水般湧來，適合順勢而為。不要抗拒那些看起來像阻礙的東西，它們其實是讓你繞道去遇見更重要的人的指引。',
+                action: '穿上你最舒服的衣服，讓直覺帶路。'
+            },
+            {
+                symbol: '🐟',
+                name: '魚油奇蹟',
+                title: '營養充足的早晨',
+                text: '一顆小小的魚油，蘊含大大的智慧。就像你即將做的某個小決定，會在未來產生巨大的正面影響。持續服用你的人生魚油膠囊！',
+                action: '記得今天吃魚油（如果還沒吃的話）。'
+            },
+            {
+                symbol: '🌅',
+                name: '晨曦預兆',
+                title: '新的開始',
+                text: '黎明前總是最黑暗的時刻，但太陽馬上就要升起。今天你會遇到一個讓你重新充滿希望的人或事。睁大眼睛，注意那些微小的跡象。',
+                action: '早起看看日出，或者至少拉開窗簾。'
+            },
+            {
+                symbol: '🔮',
+                name: '命運纖維',
+                title: '看不見的連結',
+                text: '宇宙是一張巨大的網，而你正在與某個重要的人產生共振。今天的某個巧合，其實是命運精心策劃的相遇。',
+                action: '對那些「偶然」的相遇保持開放態度。'
+            },
+            {
+                symbol: '⚡',
+                name: '閃電覺醒',
+                title: '靈光乍現',
+                text: '一道閃電即將照亮你的思路！那個困擾你很久的問題，今天會突然有了答案。不是因為你更聰明，而是因為你準備好了。',
+                action: '隨身帶著筆，靈感隨時會來敲門。'
+            },
+            {
+                symbol: '🦋',
+                name: '蝴蝶效應',
+                title: '小動作大改變',
+                text: '今天你的一個小選擇，會像蝴蝶扇動翅膀一樣，在未來引發巨大的改變。不要低估任何一個善意或勇敢的決定。',
+                action: '做一件你一直在拖延的小事。'
+            },
+            {
+                symbol: '🌀',
+                name: '時光漩渦',
+                title: '穿越時空',
+                text: '過去、現在、未來在此刻交匯。適合回顧那些讓你後悔的決定，從中提取智慧；也適合想像你想要的未來，開始朝它前進。',
+                action: '寫一封信給過去或未來的自己。'
+            },
+            {
+                symbol: '💎',
+                name: '水晶透視',
+                title: '真相浮現',
+                text: '迷霧即將散去，你會看清某個一直模糊不清的情況。不是世界變了，而是你的視角改變了。用新的眼光重新審視老問題。',
+                action: '找一個安靜的時刻，閉上眼睛深呼吸三次。'
+            },
+            {
+                symbol: '🌙',
+                name: '月光冥想',
+                title: '內在平靜',
+                text: '月亮說：休息不是浪費時間，而是必要的投資。今天適合放慢腳步，聆聽內心的聲音。外在世界會等你的。',
+                action: '給自己15分鐘的發呆時間。'
+            },
+            {
+                symbol: '🔥',
+                name: '鳳凰之火',
+                title: '浴火重生',
+                text: '某些東西正在燃燒殆盡，但那是为了迎接新的誕生。今天可能會結束某個章節，但這是必要的。擁抱改變，它帶來的是解脫。',
+                action: '對即將結束的事物說聲謝謝，然後放手。'
+            },
+            {
+                symbol: '🎭',
+                name: '命運骰子',
+                title: '隨機的禮物',
+                text: '擲出你的命運骰子！今天適合做一個你一直在猶豫的決定。因為無論結果如何，都會是正確的——因為你終於行動了。',
+                action: '做一個你一直不敢做的決定（小的就好，安全第一）。'
+            },
+            {
+                symbol: '🧭',
+                name: '指南針心',
+                title: '跟隨內心',
+                text: '你的內心有一個指南針，它一直在指向真正的北方。今天適合暫時忽略邏輯，讓感覺帶路。跟隨那個微弱的「對」的感覺。',
+                action: '問自己：「如果我不害怕，我會怎麼選？」'
+            }
+        ];
+
+        // 海豚督導語錄
+        const dolphinQuotes = [
+            '「親愛的同修，早安！今天的魚油已經攝取了嗎？沒有？沒關係，讓我們先透過占卜來確認宇宙的旨意...」',
+            '「啊，你來了！我等這一刻等了好久——或者說，我以為我等了。時間在魚油膠囊裡是沒有意义的。🐬」',
+            '「根據我的深海研究（和大量的魚油攝取），我預見今天將是非凡的一天——或者至少是有趣的一天。」',
+            '「記住，每一顆魚油膠囊都是宇宙的一個小秘密。今天，讓我幫你解讀其中一個...」',
+            '「嗨！我是海豚督導，今天的值班占卜師。請忽略我偶爾的嗝（那是因為吃了太多omega-3）。」',
+            '「在深邃的海洋裡，我們學會了：不要問問題，要問魚油。讓我們開始今天的占卜儀式吧！」',
+            '「早安！根據魚油占卜學的最新研究（我剛剛發明的），今天你的運勢是：還不錯！很精確吧？」',
+            '「注意！我即將進入深度占卜模式... 不要問我這是什麼意思，總之很厲害就對了。」'
+        ];
+
+        // 初始化
+        function init() {
+            createBubbles();
+            setRandomDolphinQuote();
+            loadHistory();
+            updateStats();
+            setDolphinStreak();
+        }
+
+        // 創建泡泡
+        function createBubbles() {
+            const container = document.getElementById('bubbles');
+            for (let i = 0; i < 15; i++) {
+                const bubble = document.createElement('div');
+                bubble.className = 'bubble';
+                bubble.style.left = Math.random() * 100 + '%';
+                bubble.style.width = (Math.random() * 30 + 10) + 'px';
+                bubble.style.height = bubble.style.width;
+                bubble.style.animationDuration = (Math.random() * 10 + 8) + 's';
+                bubble.style.animationDelay = (Math.random() * 5) + 's';
+                container.appendChild(bubble);
+            }
+        }
+
+        // 隨機海豚督導語錄
+        function setRandomDolphinQuote() {
+            const quote = dolphinQuotes[Math.floor(Math.random() * dolphinQuotes.length)];
+            document.getElementById('dolphinQuote').textContent = quote;
+        }
+
+        // 占卜功能
+        function divine() {
+            const question = document.getElementById('userQuestion').value.trim();
+            
+            // 選擇卡片（基於問題長度隨機選擇）
+            const cardIndex = (question.length + Math.floor(Math.random() * 100)) % oracleCards.length;
+            const card = oracleCards[cardIndex];
+            
+            // 顯示結果區
+            const result = document.getElementById('oracleResult');
+            result.style.display = 'block';
+            result.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            
+            // 設定膠囊符號
+            document.getElementById('oracleSymbol').textContent = card.symbol;
+            document.getElementById('oracleName').textContent = card.name;
+            
+            // 重置翻轉狀態
+            const capsule = document.getElementById('resultCapsule');
+            capsule.classList.remove('flipped');
+            document.getElementById('oracleWisdom').style.display = 'none';
+            
+            // 保存到歷史
+            saveToHistory(question, card);
+            
+            // 更新統計
+            updateStats();
+        }
+
+        // 翻轉膠囊
+        function flipCapsule() {
+            const capsule = document.getElementById('resultCapsule');
+            capsule.classList.add('flipped');
+            
+            // 延遲顯示預言
+            setTimeout(() => {
+                // 重新獲取當前卡片
+                const question = document.getElementById('userQuestion').value.trim();
+                const cardIndex = (question.length + Math.floor(Math.random() * 100)) % oracleCards.length;
+                const card = oracleCards[cardIndex];
+                
+                document.getElementById('wisdomSymbol').textContent = card.symbol;
+                document.getElementById('wisdomTitle').textContent = card.title;
+                document.getElementById('wisdomText').textContent = card.text;
+                document.getElementById('wisdomAction').textContent = card.action;
+                
+                document.getElementById('oracleWisdom').style.display = 'block';
+            }, 400);
+        }
+
+        // 保存歷史
+        function saveToHistory(question, card) {
+            const history = JSON.parse(localStorage.getItem('fishOracleHistory') || '[]');
+            history.unshift({
+                date: new Date().toISOString(),
+                question: question || '（沒有輸入問題）',
+                symbol: card.symbol,
+                name: card.name,
+                title: card.title
+            });
+            
+            // 只保留最近20筆
+            if (history.length > 20) history.pop();
+            
+            localStorage.setItem('fishOracleHistory', JSON.stringify(history));
+            renderHistory();
+        }
+
+        // 渲染歷史
+        function renderHistory() {
+            const history = JSON.parse(localStorage.getItem('fishOracleHistory') || '[]');
+            const container = document.getElementById('historyList');
+            
+            if (history.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-history">
+                        <div class="empty-history-icon">🐟</div>
+                        <p>還沒有占卜記錄</p>
+                        <p>勇敢地問出你的第一個問題吧！</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = history.map(item => {
+                const date = new Date(item.date);
+                const dateStr = `${date.getMonth()+1}/${date.getDate()} ${date.getHours()}:${String(date.getMinutes()).padStart(2, '0')}`;
+                return `
+                    <div class="history-item" onclick="showHistoryDetail('${item.date}')">
+                        <div class="history-symbol">${item.symbol}</div>
+                        <div>
+                            <div class="history-date">${dateStr}</div>
+                            <div class="history-question">${item.question}</div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // 顯示歷史詳情（示範用，實際不做事）
+        function showHistoryDetail(dateStr) {
+            const history = JSON.parse(localStorage.getItem('fishOracleHistory') || '[]');
+            const item = history.find(h => h.date === dateStr);
+            if (item) {
+                document.getElementById('userQuestion').value = item.question;
+                divine();
+            }
+        }
+
+        // 更新統計
+        function updateStats() {
+            const history = JSON.parse(localStorage.getItem('fishOracleHistory') || '[]');
+            document.getElementById('totalDivines').textContent = history.length;
+            
+            // 計算連續天數
+            if (history.length > 0) {
+                const dates = [...new Set(history.map(h => h.date.split('T')[0]))];
+                document.getElementById('totalDays').textContent = dates.length;
+            }
+        }
+
+        // 設定魚油提醒天數（從localStorage讀取魚油提醒記錄）
+        function setDolphinStreak() {
+            const fishOilLogs = JSON.parse(localStorage.getItem('fishOilLogs') || '[]');
+            document.getElementById('streakDays').textContent = fishOilLogs.length;
+        }
+
+        // 頁面載入
+        init();
+    </script>
+</body>
+</html>

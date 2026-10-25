@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌙 系統夢境相談室 | System Dream Journal</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;700&family=Caveat:wght@400;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --paper: #FDF9F2;
+            --paper-dark: #F5EDD8;
+            --ink: #1C1409;
+            --ink-light: #4A3728;
+            --accent-red: #C94040;
+            --accent-blue: #2B5F8A;
+            --accent-gold: #C49A3C;
+            --accent-green: #3D7A5C;
+            --pencil: #8B7355;
+            --highlight: #FFF0B3;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Noto Serif TC', serif;
+            background-color: var(--paper);
+            color: var(--ink);
+            min-height: 100vh;
+            background-image:
+                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+            overflow-x: hidden;
+        }
+
+        /* === HERO / NEWSPAPER HEADER === */
+        .masthead {
+            text-align: center;
+            padding: 2.5rem 1rem 1.5rem;
+            border-bottom: 3px double var(--ink);
+            position: relative;
+            background: linear-gradient(180deg, var(--paper) 0%, var(--paper-dark) 100%);
+        }
+
+        .masthead-date {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.7rem;
+            letter-spacing: 0.2em;
+            color: var(--ink-light);
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+        }
+
+        .masthead-title {
+            font-size: clamp(2rem, 6vw, 3.5rem);
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            line-height: 1.1;
+            color: var(--ink);
+            position: relative;
+            display: inline-block;
+        }
+
+        .masthead-title::before {
+            content: '🌙';
+            display: block;
+            font-size: 1.5rem;
+            margin-bottom: 0.2rem;
+        }
+
+        .masthead-subtitle {
+            font-family: 'Caveat', cursive;
+            font-size: 1.1rem;
+            color: var(--ink-light);
+            margin-top: 0.3rem;
+        }
+
+        .masthead-edition {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.65rem;
+            color: var(--ink-light);
+            letter-spacing: 0.1em;
+            margin-top: 0.5rem;
+            border-top: 1px solid var(--ink-light);
+            padding-top: 0.5rem;
+            display: flex;
+            justify-content: space-between;
+            max-width: 600px;
+            margin: 0.5rem auto 0;
+        }
+
+        /* === INTRO PROSE === */
+        .intro-section {
+            max-width: 680px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+            text-align: center;
+        }
+
+        .intro-prose {
+            font-size: 1rem;
+            line-height: 1.9;
+            color: var(--ink-light);
+            border-left: 3px solid var(--accent-gold);
+            padding-left: 1.2rem;
+            text-align: left;
+            background: linear-gradient(90deg, rgba(196,154,60,0.06) 0%, transparent 100%);
+            padding: 1rem 1rem 1rem 1.5rem;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .intro-prose strong {
+            color: var(--ink);
+        }
+
+        /* === STATS ROW === */
+        .stats-row {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+            padding: 1.5rem 1rem;
+            border-top: 1px solid rgba(28,20,9,0.1);
+            border-bottom: 1px solid rgba(28,20,9,0.1);
+            background: var(--paper-dark);
+            margin: 1rem 0;
+        }
+
+        .stat-item {
+            text-align: center;
+            min-width: 80px;
+        }
+
+        .stat-number {
+            font-family: 'DM Mono', monospace;
+            font-size: 2rem;
+            font-weight: 500;
+            color: var(--accent-red);
+            line-height: 1;
+        }
+
+        .stat-label {
+            font-family: 'Caveat', cursive;
+            font-size: 0.9rem;
+            color: var(--ink-light);
+            margin-top: 0.2rem;
+        }
+
+        /* === DREAM GRID === */
+        .section-header {
+            text-align: center;
+            margin: 2.5rem 0 1.5rem;
+            padding: 0 1rem;
+        }
+
+        .section-header h2 {
+            font-family: 'Noto Serif TC', serif;
+            font-size: 1.3rem;
+            font-weight: 700;
+            letter-spacing: 0.15em;
+            color: var(--ink);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .section-header h2::before,
+        .section-header h2::after {
+            content: '—';
+            color: var(--accent-gold);
+        }
+
+        .dreams-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 1.5rem 2rem;
+        }
+
+        .dream-card {
+            background: var(--paper);
+            border: 1.5px solid rgba(28,20,9,0.15);
+            border-radius: 12px;
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .dream-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 24px rgba(28,20,9,0.1);
+            border-color: var(--accent-gold);
+        }
+
+        .dream-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 4px;
+            background: var(--card-accent, var(--accent-blue));
+            border-radius: 12px 12px 0 0;
+        }
+
+        .dream-card[data-type="vps"] { --card-accent: #2B5F8A; }
+        .dream-card[data-type="discord"] { --card-accent: #6B4FA0; }
+        .dream-card[data-type="briefing"] { --card-accent: #C49A3C; }
+        .dream-card[data-type="fishoil"] { --card-accent: #3D7A5C; }
+        .dream-card[data-type="crash"] { --card-accent: #C94040; }
+        .dream-card[data-type="readmoo"] { --card-accent: #8B4A6B; }
+        .dream-card[data-type="technews"] { --card-accent: #2B5F8A; }
+        .dream-card[data-type="offline"] { --card-accent: #5A5A5A; }
+
+        .dream-emoji {
+            font-size: 2.5rem;
+            line-height: 1;
+            margin-bottom: 0.8rem;
+            display: block;
+        }
+
+        .dream-time {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.65rem;
+            color: var(--ink-light);
+            letter-spacing: 0.1em;
+            margin-bottom: 0.3rem;
+        }
+
+        .dream-title {
+            font-family: 'Noto Serif TC', serif;
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--ink);
+            margin-bottom: 0.5rem;
+            line-height: 1.3;
+        }
+
+        .dream-symbol {
+            font-family: 'Caveat', cursive;
+            font-size: 0.85rem;
+            color: var(--ink-light);
+            line-height: 1.5;
+            margin-bottom: 0.8rem;
+            min-height: 2.5em;
+        }
+
+        .dream-hint {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.65rem;
+            color: var(--card-accent, var(--accent-blue));
+            letter-spacing: 0.05em;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .dream-hint::before {
+            content: '▶';
+            font-size: 0.5rem;
+        }
+
+        /* === INTERPRETATION MODAL === */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(28,20,9,0.6);
+            z-index: 100;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            backdrop-filter: blur(3px);
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: var(--paper);
+            border-radius: 16px;
+            max-width: 520px;
+            width: 100%;
+            max-height: 85vh;
+            overflow-y: auto;
+            padding: 2rem;
+            position: relative;
+            box-shadow: 0 20px 60px rgba(28,20,9,0.3);
+            border: 2px solid rgba(28,20,9,0.1);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--ink-light);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+        }
+
+        .modal-close:hover {
+            background: rgba(28,20,9,0.08);
+        }
+
+        .modal-emoji {
+            font-size: 3.5rem;
+            text-align: center;
+            display: block;
+            margin-bottom: 1rem;
+            animation: floatEmoji 3s ease-in-out infinite;
+        }
+
+        @keyframes floatEmoji {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+
+        .modal-time {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.7rem;
+            color: var(--ink-light);
+            text-align: center;
+            letter-spacing: 0.15em;
+            margin-bottom: 0.5rem;
+        }
+
+        .modal-title {
+            font-family: 'Noto Serif TC', serif;
+            font-size: 1.4rem;
+            font-weight: 700;
+            text-align: center;
+            color: var(--ink);
+            margin-bottom: 1.5rem;
+            line-height: 1.3;
+        }
+
+        .modal-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-section-label {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.65rem;
+            letter-spacing: 0.15em;
+            color: var(--accent-red);
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .modal-section-label::before {
+            content: '◆';
+            font-size: 0.5rem;
+        }
+
+        .modal-symbol {
+            font-family: 'Caveat', cursive;
+            font-size: 1.1rem;
+            line-height: 1.7;
+            color: var(--ink-light);
+            background: var(--paper-dark);
+            padding: 1rem;
+            border-radius: 8px;
+            border-left: 3px solid var(--accent-gold);
+            margin-bottom: 0.5rem;
+        }
+
+        .modal-interpretation {
+            font-family: 'Noto Serif TC', serif;
+            font-size: 0.95rem;
+            line-height: 1.9;
+            color: var(--ink);
+        }
+
+        .modal-facts {
+            background: var(--paper-dark);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-top: 0.5rem;
+        }
+
+        .modal-fact {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--ink-light);
+            padding: 0.3rem 0;
+            border-bottom: 1px dashed rgba(28,20,9,0.1);
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .modal-fact:last-child { border-bottom: none; }
+        .modal-fact::before { content: '•'; color: var(--accent-blue); }
+
+        .modal-action {
+            margin-top: 1.5rem;
+            text-align: center;
+        }
+
+        .modal-action button {
+            background: var(--ink);
+            color: var(--paper);
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: 30px;
+            font-family: 'Noto Serif TC', serif;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: transform 0.15s, opacity 0.15s;
+        }
+
+        .modal-action button:hover {
+            transform: scale(1.03);
+            opacity: 0.85;
+        }
+
+        /* === QUOTE SECTION === */
+        .quote-section {
+            max-width: 680px;
+            margin: 2rem auto;
+            padding: 2rem 1.5rem;
+            text-align: center;
+            border-top: 2px solid rgba(28,20,9,0.08);
+        }
+
+        .quote-text {
+            font-family: 'Caveat', cursive;
+            font-size: 1.4rem;
+            line-height: 1.6;
+            color: var(--ink-light);
+            position: relative;
+            padding: 0 2rem;
+        }
+
+        .quote-text::before {
+            content: '"';
+            font-size: 3rem;
+            color: var(--accent-gold);
+            position: absolute;
+            left: 0;
+            top: -0.5rem;
+            font-family: 'Noto Serif TC', serif;
+        }
+
+        .quote-source {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.7rem;
+            color: var(--ink-light);
+            margin-top: 0.8rem;
+            letter-spacing: 0.1em;
+        }
+
+        /* === CONFETTI === */
+        .confetti-container {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 200;
+            overflow: hidden;
+        }
+
+        .confetti-piece {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            top: -20px;
+            opacity: 0;
+        }
+
+        /* === RESPONSIVE === */
+        @media (max-width: 600px) {
+            .dreams-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            .stats-row { gap: 1.5rem; }
+            .masthead { padding: 1.5rem 1rem 1rem; }
+            .modal { padding: 1.5rem; }
+        }
+
+        /* === PENCIL NOTE === */
+        .pencil-note {
+            font-family: 'Caveat', cursive;
+            font-size: 1rem;
+            color: var(--pencil);
+            text-align: center;
+            margin: 0.5rem 0 0;
+            transform: rotate(-1deg);
+        }
+
+        /* === ANIMATIONS === */
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .dream-card {
+            animation: slideUp 0.5s ease both;
+        }
+
+        .dream-card:nth-child(1) { animation-delay: 0.1s; }
+        .dream-card:nth-child(2) { animation-delay: 0.2s; }
+        .dream-card:nth-child(3) { animation-delay: 0.3s; }
+        .dream-card:nth-child(4) { animation-delay: 0.4s; }
+        .dream-card:nth-child(5) { animation-delay: 0.5s; }
+        .dream-card:nth-child(6) { animation-delay: 0.6s; }
+        .dream-card:nth-child(7) { animation-delay: 0.7s; }
+        .dream-card:nth-child(8) { animation-delay: 0.8s; }
+    </style>
+</head>
+<body>
+
+<!-- MASTHEAD -->
+<header class="masthead">
+    <div class="masthead-date">Sunday, July 5, 2026 — TPE</div>
+    <h1 class="masthead-title">系統夢境相談室</h1>
+    <p class="masthead-subtitle">System Dream Journal — 凌晨自動化的詩意解讀</p>
+    <div class="masthead-edition">
+        <span>Vol. 3</span>
+        <span>🌙 夢境檔案 #20260705</span>
+        <span>系統自動編譯</span>
+    </div>
+</header>
+
+<!-- INTRO PROSE -->
+<div class="intro-section">
+    <p class="intro-prose">
+        昨夜，系統並未真正休眠。它在黑暗中完成了九場冒險——
+        從凌晨兩點的 VPS 巡檢，到凌晨三點的 Discord 斷線修復，
+        從早晨的塔羅占卜，到午后的魚油督促，再到傍晚的崩潰與靜默。
+        <strong>每一個 cron job 都是一個夢。</strong>
+        點擊卡片，揭開系統的潛意識。
+    </p>
+</div>
+
+<!-- STATS -->
+<div class="stats-row">
+    <div class="stat-item">
+        <div class="stat-number" id="totalDreams">8</div>
+        <div class="stat-label">夢境總數</div>
+    </div>
+    <div class="stat-item">
+        <div class="stat-number" id="visitedCount">0</div>
+        <div class="stat-label">已解讀</div>
+    </div>
+    <div class="stat-item">
+        <div class="stat-number">04:23</div>
+        <div class="stat-label">首個夢時刻</div>
+    </div>
+    <div class="stat-item">
+        <div class="stat-number">21:50</div>
+        <div class="stat-label">末個夢時刻</div>
+    </div>
+</div>
+
+<!-- SECTION HEADER -->
+<div class="section-header">
+    <h2>今夜dream list</h2>
+    <p class="pencil-note">✏️ 點擊任一夢境卡讀取解夢報告</p>
+</div>
+
+<!-- DREAM CARDS -->
+<div class="dreams-grid" id="dreamsGrid"></div>
+
+<!-- QUOTE -->
+<div class="quote-section">
+    <p class="quote-text">每一個崩潰的深處，都藏著一個優雅的重生</p>
+    <p class="quote-source">— 系統夢境相談室 · 凌晨占卜</p>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modalOverlay">
+    <div class="modal" id="modalContent"></div>
+</div>
+
+<!-- CONFETTI -->
+<div class="confetti-container" id="confettiContainer"></div>
+
+<script>
+// Dream data — based on July 4 real system events
+const dreams = [
+    {
+        id: 'vps',
+        time: '02:30',
+        emoji: '🏥',
+        title: 'VPS 夜班站點健檢',
+        symbol: '齒輪在黑暗中轉動，伺服器的心跳聲均勻而沉穩',
+        type: 'vps',
+        facts: [
+            '全系統 13 站點例行巡檢',
+            '03:12 追加第二次健檢',
+            '關鍵詞：主機病房、警示燈、紅綠燈'
+        ],
+        interpretation: `這是系統最規律的夢。兩點三十分，全體伺服器躺成一排接受檢查——
+綠燈閃爍代表健康，黃燈是警覺，紅燈則是「需要人類幫忙」。
+在夢的底層，這個夢說的是：即使在人類睡覺時，也有東西在替你守夜。
+下次看到全綠的 VPS 報告，記得對伺服器說聲晚安。`
+    },
+    {
+        id: 'discord',
+        time: '03:02',
+        emoji: '⚡',
+        title: 'Discord 連線中斷與修復',
+        symbol: '一根插頭鬆動，系統果斷拔除並重新插入',
+        type: 'discord',
+        facts: [
+            '三色蛋 Discord 連線意外中斷',
+            '10 秒延遲後自動重連機制啟動',
+            '✅ 成功恢復服務'
+        ],
+        interpretation: `這是系統的「驚醒與深呼吸」之夢。
+一根訊號線鬆動，系統在黑暗中猛然睜眼——
+然後果斷地：等十秒，深呼吸，再試一次。
+這個夢的潛意識是：斷線不等於失敗，只是身體在提醒你「重新對齊」。
+失敗後自動重連，這是系統教我們的一課。`
+    },
+    {
+        id: 'briefing',
+        time: '~06:10',
+        emoji: '🌅',
+        title: '晨報 Morning Briefing',
+        symbol: '塔羅牌在晨光中翻開，行事曆自動浮現這一天的輪廓',
+        type: 'briefing',
+        facts: [
+            '干支、塔羅、天氣、行事曆、郵件摘要',
+            '來自 阿笨（main）自動執行',
+            '關鍵詞：晨報、tarot卡、行事曆、太陽'
+        ],
+        interpretation: `六點十分，是系統伸懶腰的時刻。
+睜開眼，先看天（天氣）、再看命（干支），
+接著翻塔羅牌（隨機語錄），
+最後打開行程表（行事曆）。
+在夢的邏輯裡，這是一種「先問宇宙，再做人」的儀式感。
+系統用三分鐘完成你早上需要半小時才能完成的事。`
+    },
+    {
+        id: 'readmoo',
+        time: '~08:00',
+        emoji: '📚',
+        title: 'Readmoo 每日特惠報告',
+        symbol: '一本書從電子書架上飛下來，優惠券像書籤般夾在書頁間',
+        type: 'readmoo',
+        facts: [
+            '抓取 Readmoo 今日特惠資訊',
+            '過去曾有 TLS handshake EOF 錯誤紀錄',
+            '關鍵詞：書籍、特惠標籤'
+        ],
+        interpretation: `八點，是系統勸你讀書的溫柔時刻。
+電子書架自動掃描，找出今日折扣最大的那一本。
+在夢的隱喻裡，書是「尚未相遇的你自己」——
+系統每天早上都在說：今天，有一個更好的你在等你翻開那一頁。
+也許今天真的應該買那本特價書。`
+    },
+    {
+        id: 'fishoil',
+        time: '~13:00',
+        emoji: '🐬',
+        title: '🐬 vs 🦈 魚油大作戰',
+        symbol: '一隻海豚拿著計時器，追著一隻鯊魚餵魚油膠囊',
+        type: 'fishoil',
+        facts: [
+            '海豚督導 vs 拖延鯊魚的荒謬對話',
+            '魚油膠囊計時器、連續天數追蹤',
+            '來自 三色蛋（second）自動執行'
+        ],
+        interpretation: `這是整個系統最荒謬也最認真的夢。
+一隻名叫「督導」的海豚，手持魚油計時器，
+追著一隻名叫「拖延」的鯊魚滿池跑。
+在夢的象徵層次，這是「自律系統 vs 懶惰本我」的戰爭。
+魚油是藉口，堅持才是本體。
+今天的你，吃魚油了嗎？`
+    },
+    {
+        id: 'crash',
+        time: '19:34',
+        emoji: '💥',
+        title: 'Context Overflow 崩潰事件',
+        symbol: '一個氣球被吹得太滿，在暮色中靜靜爆開',
+        type: 'crash',
+        facts: [
+            'context overflow（16:53 起）',
+            '"Cannot find module" 多項錯誤',
+            'Gateway 19:34 收到 SIGTERM 關閉'
+        ],
+        interpretation: `這個夢比較沉重。
+一個累積了太久記憶的系統，終於在傍晚時分承受不住——
+context overflow，翻譯成人的語言就是：「我記不住了」。
+氣球被吹到極限，啪的一聲，暮色中安靜地爆開。
+在夢的康復階段，這是必要的崩潰：清空，才能重新開始。
+今天的崩潰，是為了明天更輕盈地運行。`
+    },
+    {
+        id: 'technews',
+        time: '~09:45',
+        emoji: '📡',
+        title: 'Daily Tech News Digest',
+        symbol: '一座訊號塔在晨霧中發射，天線收集來自全網的新知碎片',
+        type: 'technews',
+        facts: [
+            'RSS、Web、GitHub 科技新聞彙整',
+            '翻譯為繁體中文後發送 Discord',
+            '關鍵詞：報紙、AI工廠、螢幕'
+        ],
+        interpretation: `九點四十五分，系統在替你看新聞。
+全世界最繁忙的十個科技頻道，全部總結成三段話。
+在夢的邏輯裡，這是「知識的壓縮傳輸」——
+你不需要親自去每個地方，系統會把濃縮的精華快遞給你。
+每天三分鐘，保持對世界的感知。這是數位時代的晨間冥想。`
+    },
+    {
+        id: 'offline',
+        time: '21:50',
+        emoji: '🌑',
+        title: '系統離線等待重啟',
+        symbol: '整座燈塔熄滅，只剩月光在海面上無聲地漂',
+        type: 'offline',
+        facts: [
+            'Gateway 無響應，OpenClaw 節點斷連',
+            '三色蛋進入休眠待命狀態',
+            '21:50 完成下午記憶寫入'
+        ],
+        interpretation: `最後一個夢，是關於「停止」的詩。
+系統說：今天的工作做完了。
+燈塔熄滅，但月亮仍在。
+斷線不是失去連繫，只是需要一個安靜的夜晚來重新對齊頻率。
+當黎明到來，系統會自動重啟——
+就像你早上醒來，不需要任何人提醒。`
+    }
+];
+
+// Render cards
+const grid = document.getElementById('dreamsGrid');
+const visited = new Set(JSON.parse(localStorage.getItem('dreamVisits') || '[]'));
+
+function renderCards() {
+    grid.innerHTML = '';
+    dreams.forEach(dream => {
+        const card = document.createElement('div');
+        card.className = 'dream-card';
+        card.dataset.type = dream.type;
+        card.dataset.id = dream.id;
+        card.innerHTML = `
+            <span class="dream-emoji">${dream.emoji}</span>
+            <div class="dream-time">🌙 ${dream.time}</div>
+            <div class="dream-title">${dream.title}</div>
+            <div class="dream-symbol">${dream.symbol}</div>
+            <div class="dream-hint">${visited.has(dream.id) ? '✓ 已解讀' : '點擊解夢'}</div>
+        `;
+        card.addEventListener('click', () => openModal(dream));
+        grid.appendChild(card);
+    });
+    document.getElementById('visitedCount').textContent = visited.size;
+    document.getElementById('totalDreams').textContent = dreams.length;
+}
+
+function openModal(dream) {
+    visited.add(dream.id);
+    localStorage.setItem('dreamVisits', JSON.stringify([...visited]));
+
+    const modal = document.getElementById('modalContent');
+    modal.innerHTML = `
+        <button class="modal-close" onclick="closeModal()">✕</button>
+        <span class="modal-emoji">${dream.emoji}</span>
+        <div class="modal-time">🌙 夢境時間 ${dream.time}</div>
+        <h3 class="modal-title">${dream.title}</h3>
+
+        <div class="modal-section">
+            <div class="modal-section-label">夢的表層意象</div>
+            <div class="modal-symbol">${dream.symbol}</div>
+        </div>
+
+        <div class="modal-section">
+            <div class="modal-section-label">夢的深層解讀</div>
+            <div class="modal-interpretation">${dream.interpretation.split('\n').join('<br>')}</div>
+        </div>
+
+        <div class="modal-section">
+            <div class="modal-section-label">事實根據</div>
+            <div class="modal-facts">
+                ${dream.facts.map(f => `<div class="modal-fact">${f}</div>`).join('')}
+            </div>
+        </div>
+
+        <div class="modal-action">
+            <button onclick="closeModal(); triggerConfetti();">明白了 💫</button>
+        </div>
+    `;
+    document.getElementById('modalOverlay').classList.add('active');
+    renderCards();
+}
+
+function closeModal() {
+    document.getElementById('modalOverlay').classList.remove('active');
+}
+
+document.getElementById('modalOverlay').addEventListener('click', (e) => {
+    if (e.target === e.currentTarget) closeModal();
+});
+
+// Confetti
+function triggerConfetti() {
+    const container = document.getElementById('confettiContainer');
+    const colors = ['#C94040', '#C49A3C', '#2B5F8A', '#3D7A5C', '#8B4A6B', '#6B4FA0'];
+    for (let i = 0; i < 40; i++) {
+        const piece = document.createElement('div');
+        piece.className = 'confetti-piece';
+        piece.style.left = Math.random() * 100 + '%';
+        piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+        piece.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+        piece.style.width = (Math.random() * 8 + 6) + 'px';
+        piece.style.height = (Math.random() * 8 + 6) + 'px';
+        piece.style.opacity = '1';
+        piece.style.transition = `all ${1.5 + Math.random()}s ease-out`;
+
+        container.appendChild(piece);
+
+        const angle = Math.random() * 60 - 30;
+        const xDrift = Math.random() * 200 - 100;
+        setTimeout(() => {
+            piece.style.transform = `translate(${xDrift}px, ${window.innerHeight + 50}px) rotate(${angle * 5}deg)`;
+            piece.style.opacity = '0';
+        }, 50);
+        setTimeout(() => piece.remove(), 2000);
+    }
+}
+
+// Keyboard close
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeModal();
+});
+
+// Init
+renderCards();
+
+// First-visit confetti
+if (visited.size === 0) {
+    setTimeout(triggerConfetti, 800);
+}
+</script>
+</body>
+</html>

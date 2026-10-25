@@ -1,0 +1,1117 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>魚油巡迴法庭 Fish Oil Tribunal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Fredoka:wght@400;600;700&family=Noto+Sans+TC:wght@400;700&family=Caveat:wght@700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <style>
+    :root {
+      --yellow: #FFE135;
+      --yellow-dark: #F5C400;
+      --red: #E63946;
+      --blue: #2B5F8A;
+      --blue-light: #4A90C2;
+      --green: #3D7A5C;
+      --cream: #FFFDF0;
+      --black: #1A1814;
+      --white: #FFFFFF;
+      --orange: #FF6B35;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Fredoka', 'Noto Sans TC', sans-serif;
+      background: var(--cream);
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* Halftone dot pattern overlay */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-image: radial-gradient(circle, rgba(0,0,0,0.06) 1px, transparent 1px);
+      background-size: 18px 18px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 20px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ===== HEADER ===== */
+    header {
+      text-align: center;
+      padding: 30px 0 20px;
+      position: relative;
+    }
+
+    .court-badge {
+      display: inline-block;
+      background: var(--yellow);
+      border: 4px solid var(--black);
+      border-radius: 20px;
+      padding: 8px 24px;
+      font-family: 'Bangers', cursive;
+      font-size: 18px;
+      letter-spacing: 2px;
+      color: var(--black);
+      box-shadow: 4px 4px 0 var(--black);
+      margin-bottom: 12px;
+      transform: rotate(-2deg);
+    }
+
+    h1 {
+      font-family: 'Bangers', cursive;
+      font-size: clamp(42px, 8vw, 72px);
+      color: var(--black);
+      letter-spacing: 3px;
+      line-height: 1;
+      text-shadow: 3px 3px 0 var(--yellow), 6px 6px 0 var(--black);
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      font-family: 'Caveat', cursive;
+      font-size: 22px;
+      color: var(--red);
+      font-weight: 700;
+    }
+
+    /* ===== COMIC PANELS ===== */
+    .comic-strip {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      margin: 24px 0;
+    }
+
+    .panel {
+      background: var(--white);
+      border: 4px solid var(--black);
+      border-radius: 8px;
+      padding: 20px;
+      position: relative;
+      box-shadow: 6px 6px 0 var(--black);
+      transition: transform 0.2s;
+    }
+
+    .panel:hover {
+      transform: translate(-2px, -2px);
+      box-shadow: 8px 8px 0 var(--black);
+    }
+
+    .panel-label {
+      position: absolute;
+      top: -14px;
+      left: 20px;
+      background: var(--red);
+      color: white;
+      font-family: 'Bangers', cursive;
+      font-size: 14px;
+      padding: 2px 12px;
+      border-radius: 8px;
+      border: 2px solid var(--black);
+      letter-spacing: 1px;
+    }
+
+    .panel-label.blue { background: var(--blue); }
+    .panel-label.green { background: var(--green); }
+    .panel-label.orange { background: var(--orange); }
+
+    /* ===== PROSECUTOR PANEL ===== */
+    .prosecutor-panel {
+      background: linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 100%);
+      border-color: var(--blue);
+    }
+
+    .prosecutor-panel .panel-label { background: var(--blue); }
+
+    .dolphin-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    .dolphin-avatar {
+      width: 80px;
+      height: 80px;
+      background: linear-gradient(135deg, #4FC3F7, #0288D1);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 48px;
+      border: 3px solid var(--black);
+      box-shadow: 3px 3px 0 var(--black);
+      flex-shrink: 0;
+      animation: bounce 2s ease-in-out infinite;
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+
+    .dolphin-info h3 {
+      font-family: 'Bangers', cursive;
+      font-size: 24px;
+      color: var(--blue);
+      letter-spacing: 1px;
+    }
+
+    .dolphin-info .role {
+      font-size: 14px;
+      color: #555;
+      background: rgba(255,255,255,0.7);
+      padding: 2px 10px;
+      border-radius: 20px;
+      display: inline-block;
+      margin-top: 4px;
+    }
+
+    .speech-bubble {
+      background: white;
+      border: 3px solid var(--black);
+      border-radius: 20px;
+      padding: 16px 20px;
+      font-size: 17px;
+      line-height: 1.6;
+      position: relative;
+      margin-top: 8px;
+      font-family: 'Noto Sans TC', sans-serif;
+    }
+
+    .speech-bubble::before {
+      content: '';
+      position: absolute;
+      top: -14px;
+      left: 30px;
+      border: 8px solid transparent;
+      border-bottom-color: var(--black);
+    }
+
+    .speech-bubble::after {
+      content: '';
+      position: absolute;
+      top: -8px;
+      left: 33px;
+      border: 6px solid transparent;
+      border-bottom-color: white;
+    }
+
+    .evidence-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .evidence-tag {
+      background: var(--yellow);
+      border: 2px solid var(--black);
+      border-radius: 8px;
+      padding: 6px 14px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s;
+      user-select: none;
+    }
+
+    .evidence-tag:hover {
+      background: var(--yellow-dark);
+      transform: scale(1.05);
+    }
+
+    .evidence-tag.selected {
+      background: var(--red);
+      color: white;
+    }
+
+    /* ===== DEFENDANT PANEL ===== */
+    .defendant-panel {
+      background: linear-gradient(135deg, #FFF3E0 0%, #FFE0B2 100%);
+      border-color: var(--orange);
+    }
+
+    .defendant-panel .panel-label { background: var(--orange); }
+
+    .shark-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    .shark-avatar {
+      width: 80px;
+      height: 80px;
+      background: linear-gradient(135deg, #78909C, #455A64);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 48px;
+      border: 3px solid var(--black);
+      box-shadow: 3px 3px 0 var(--black);
+      flex-shrink: 0;
+      animation: wobble 3s ease-in-out infinite;
+    }
+
+    @keyframes wobble {
+      0%, 100% { transform: rotate(0deg); }
+      25% { transform: rotate(-5deg); }
+      75% { transform: rotate(5deg); }
+    }
+
+    .shark-info h3 {
+      font-family: 'Bangers', cursive;
+      font-size: 24px;
+      color: var(--orange);
+      letter-spacing: 1px;
+    }
+
+    .shark-info .role {
+      font-size: 14px;
+      color: #555;
+      background: rgba(255,255,255,0.7);
+      padding: 2px 10px;
+      border-radius: 20px;
+      display: inline-block;
+      margin-top: 4px;
+    }
+
+    .excuse-bubble {
+      background: white;
+      border: 3px solid var(--black);
+      border-radius: 20px;
+      padding: 16px 20px;
+      font-size: 17px;
+      line-height: 1.6;
+      position: relative;
+      margin-top: 8px;
+      font-family: 'Noto Sans TC', sans-serif;
+    }
+
+    .excuse-bubble::before {
+      content: '';
+      position: absolute;
+      top: -14px;
+      left: 30px;
+      border: 8px solid transparent;
+      border-bottom-color: var(--black);
+    }
+
+    .excuse-bubble::after {
+      content: '';
+      position: absolute;
+      top: -8px;
+      left: 33px;
+      border: 6px solid transparent;
+      border-bottom-color: white;
+    }
+
+    .excuse-history {
+      margin-top: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .excuse-item {
+      background: rgba(255,255,255,0.6);
+      border: 2px solid var(--black);
+      border-radius: 8px;
+      padding: 8px 14px;
+      font-size: 14px;
+      font-family: 'Caveat', cursive;
+      font-size: 18px;
+      color: #555;
+      border-left: 4px solid var(--orange);
+    }
+
+    /* ===== VERDICT PANEL ===== */
+    .verdict-panel {
+      background: linear-gradient(135deg, #E8F5E9 0%, #C8E6C9 100%);
+      border-color: var(--green);
+      text-align: center;
+    }
+
+    .verdict-panel .panel-label { background: var(--green); }
+
+    .verdict-title {
+      font-family: 'Bangers', cursive;
+      font-size: 28px;
+      color: var(--green);
+      margin-bottom: 16px;
+      letter-spacing: 2px;
+    }
+
+    .verdict-content {
+      font-family: 'Noto Sans TC', sans-serif;
+      font-size: 16px;
+      line-height: 1.8;
+      color: var(--black);
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .verdict-content strong {
+      color: var(--red);
+    }
+
+    .verdict-content em {
+      color: var(--green);
+      font-style: normal;
+      font-weight: 700;
+    }
+
+    .compliance-meter {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      margin: 20px 0;
+      flex-wrap: wrap;
+    }
+
+    .meter-bar {
+      width: 200px;
+      height: 24px;
+      background: #ddd;
+      border: 3px solid var(--black);
+      border-radius: 12px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .meter-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--red) 0%, var(--yellow) 50%, var(--green) 100%);
+      border-radius: 8px;
+      transition: width 0.8s ease;
+    }
+
+    .meter-label {
+      font-family: 'Bangers', cursive;
+      font-size: 20px;
+      color: var(--black);
+    }
+
+    /* ===== ACTION BUTTONS ===== */
+    .action-buttons {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin: 20px 0;
+    }
+
+    .btn {
+      font-family: 'Bangers', cursive;
+      font-size: 22px;
+      letter-spacing: 2px;
+      padding: 14px 32px;
+      border: 4px solid var(--black);
+      border-radius: 16px;
+      cursor: pointer;
+      box-shadow: 5px 5px 0 var(--black);
+      transition: all 0.15s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn:hover {
+      transform: translate(-2px, -2px);
+      box-shadow: 7px 7px 0 var(--black);
+    }
+
+    .btn:active {
+      transform: translate(2px, 2px);
+      box-shadow: 3px 3px 0 var(--black);
+    }
+
+    .btn-primary {
+      background: var(--yellow);
+      color: var(--black);
+    }
+
+    .btn-danger {
+      background: var(--red);
+      color: white;
+    }
+
+    .btn-success {
+      background: var(--green);
+      color: white;
+    }
+
+    .btn-secondary {
+      background: white;
+      color: var(--black);
+    }
+
+    /* Action word burst */
+    .action-word {
+      position: fixed;
+      font-family: 'Bangers', cursive;
+      font-size: 64px;
+      color: var(--red);
+      text-shadow: 3px 3px 0 var(--black);
+      pointer-events: none;
+      z-index: 100;
+      animation: popIn 0.6s ease-out forwards;
+    }
+
+    @keyframes popIn {
+      0% { transform: scale(0) rotate(-10deg); opacity: 0; }
+      50% { transform: scale(1.3) rotate(5deg); opacity: 1; }
+      100% { transform: scale(1) rotate(0deg); opacity: 0; }
+    }
+
+    /* ===== STATS PANEL ===== */
+    .stats-panel {
+      background: linear-gradient(135deg, #F3E5F5 0%, #E1BEE7 100%);
+      border-color: #7B1FA2;
+    }
+
+    .stats-panel .panel-label { background: #7B1FA2; }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 16px;
+      margin-top: 16px;
+    }
+
+    .stat-card {
+      background: white;
+      border: 3px solid var(--black);
+      border-radius: 12px;
+      padding: 16px;
+      text-align: center;
+      box-shadow: 4px 4px 0 var(--black);
+    }
+
+    .stat-number {
+      font-family: 'Bangers', cursive;
+      font-size: 36px;
+      color: #7B1FA2;
+      line-height: 1;
+    }
+
+    .stat-label {
+      font-size: 13px;
+      color: #555;
+      margin-top: 4px;
+      font-family: 'Noto Sans TC', sans-serif;
+    }
+
+    /* ===== TRIAL LOG ===== */
+    .trial-log {
+      background: #1A1814;
+      border: 3px solid #FFE135;
+      border-radius: 8px;
+      padding: 16px;
+      margin-top: 24px;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+
+    .trial-log-title {
+      font-family: 'Bangers', cursive;
+      color: var(--yellow);
+      font-size: 18px;
+      margin-bottom: 10px;
+      letter-spacing: 2px;
+    }
+
+    .log-entry {
+      font-family: 'Courier New', monospace;
+      font-size: 13px;
+      color: #aaa;
+      margin: 4px 0;
+      padding: 4px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .log-entry .time { color: var(--yellow); }
+    .log-entry .actor-dolphin { color: #4FC3F7; }
+    .log-entry .actor-shark { color: #FF8A65; }
+    .log-entry .actor-court { color: var(--green); }
+
+    /* ===== TESTIMONY SECTION ===== */
+    .testimony-section {
+      margin-top: 24px;
+    }
+
+    .testimony-title {
+      font-family: 'Bangers', cursive;
+      font-size: 24px;
+      text-align: center;
+      color: var(--black);
+      margin-bottom: 16px;
+      letter-spacing: 2px;
+    }
+
+    .question-box {
+      background: var(--yellow);
+      border: 3px solid var(--black);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+
+    .question-box label {
+      font-family: 'Bangers', cursive;
+      font-size: 16px;
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    .question-box textarea {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid var(--black);
+      border-radius: 8px;
+      font-family: 'Noto Sans TC', sans-serif;
+      font-size: 15px;
+      resize: vertical;
+      min-height: 60px;
+    }
+
+    .question-box textarea:focus {
+      outline: none;
+      border-color: var(--red);
+      box-shadow: 0 0 0 3px rgba(230,57,70,0.2);
+    }
+
+    /* ===== RESULT SCREEN ===== */
+    .result-screen {
+      display: none;
+      text-align: center;
+      padding: 40px 20px;
+    }
+
+    .result-screen.active {
+      display: block;
+    }
+
+    .result-title {
+      font-family: 'Bangers', cursive;
+      font-size: clamp(36px, 7vw, 60px);
+      margin-bottom: 20px;
+      letter-spacing: 3px;
+      animation: popIn 0.5s ease-out;
+    }
+
+    .result-title.guilty { color: var(--red); text-shadow: 3px 3px 0 var(--black); }
+    .result-title.innocent { color: var(--green); text-shadow: 3px 3px 0 var(--black); }
+    .result-title.reformed { color: var(--blue); text-shadow: 3px 3px 0 var(--black); }
+
+    .result-message {
+      font-family: 'Noto Sans TC', sans-serif;
+      font-size: 18px;
+      line-height: 1.8;
+      max-width: 500px;
+      margin: 0 auto 24px;
+      color: var(--black);
+    }
+
+    /* ===== EVIDENCE GALLERY ===== */
+    .evidence-gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin: 20px 0;
+    }
+
+    .evidence-card {
+      background: white;
+      border: 3px solid var(--black);
+      border-radius: 12px;
+      padding: 16px;
+      text-align: center;
+      box-shadow: 4px 4px 0 var(--black);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .evidence-card:hover {
+      transform: translate(-3px, -3px);
+      box-shadow: 7px 7px 0 var(--black);
+    }
+
+    .evidence-card .emoji { font-size: 48px; display: block; margin-bottom: 8px; }
+    .evidence-card .title { font-family: 'Bangers', cursive; font-size: 18px; color: var(--black); }
+    .evidence-card .desc { font-size: 13px; color: #555; margin-top: 4px; font-family: 'Noto Sans TC', sans-serif; }
+
+    /* ===== FOOTER ===== */
+    footer {
+      text-align: center;
+      padding: 24px;
+      font-size: 13px;
+      color: #888;
+      font-family: 'Caveat', cursive;
+      font-size: 18px;
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 600px) {
+      .container { padding: 12px; }
+      .panel { padding: 16px 12px; }
+      .dolphin-avatar, .shark-avatar { width: 60px; height: 60px; font-size: 36px; }
+      .btn { font-size: 18px; padding: 12px 24px; }
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    /* Confetti colors */
+    .confetti-piece {
+      position: fixed;
+      pointer-events: none;
+      z-index: 999;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="court-badge">⚖️ 魚油巡迴法庭</div>
+      <h1>魚油巡迴法庭</h1>
+      <p class="subtitle">Fish Oil Tribunal — 正義終將降臨 🐬⚖️🦈</p>
+    </header>
+
+    <!-- MAIN TRIAL -->
+    <div id="trialMain">
+      <div class="comic-strip">
+
+        <!-- PANEL 1: Prosecutor -->
+        <div class="panel prosecutor-panel">
+          <div class="panel-label blue">🐬 檢察官發言</div>
+          <div class="dolphin-header">
+            <div class="dolphin-avatar">🐬</div>
+            <div class="dolphin-info">
+              <h3>海豚督導檢察官</h3>
+              <span class="role">🐬 鯨類營養管理局 · 首席督察員</span>
+            </div>
+          </div>
+          <div class="speech-bubble" id="dolphinSpeech">
+            肅靜！本席茲根據《鯨類營養學法》第217條，正式對<strong>拖延鯊</strong>提出告訴。根據今日魚油大作戰作戰紀錄（<span id="excuseCount">載入中...</span>），被告已連續使用各種荒謬藉口逃避魚油攝取！
+          </div>
+          <div class="evidence-list" id="evidenceList">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+
+        <!-- PANEL 2: Defendant -->
+        <div class="panel defendant-panel">
+          <div class="panel-label orange">🦈 被告答辯</div>
+          <div class="shark-header">
+            <div class="shark-avatar">🦈</div>
+            <div class="shark-info">
+              <h3>拖延鯊</h3>
+              <span class="role">🦈 魚油逃避者 · 資深藉口專家</span>
+            </div>
+          </div>
+          <div class="excuse-bubble" id="sharkDefense">
+            呃...本鯊魚對所有指控<strong>全部否認</strong>。今日的「吃太飽等消化」完全符合鯨類消化生理學，是正當的醫學考量！
+          </div>
+          <div class="excuse-history" id="excuseHistory">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+
+        <!-- PANEL 3: Evidence -->
+        <div class="panel" style="background: linear-gradient(135deg, #FFF8E1, #FFECB3); border-color: var(--yellow-dark);">
+          <div class="panel-label orange">📋 罪證區</div>
+          <div class="evidence-gallery" id="evidenceGallery">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+
+        <!-- PANEL 4: Verdict -->
+        <div class="panel verdict-panel">
+          <div class="panel-label green">⚖️ 裁決區</div>
+          <div class="verdict-title">🐬 海豚督察最終裁決 🐬</div>
+          <div class="compliance-meter">
+            <span class="meter-label">合規度</span>
+            <div class="meter-bar">
+              <div class="meter-fill" id="meterFill" style="width: 0%"></div>
+            </div>
+            <span class="meter-label" id="complianceLabel">0%</span>
+          </div>
+          <div class="verdict-content" id="verdictContent">
+            請選擇罪證，讓本席為您裁決...
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ACTION BUTTONS -->
+      <div class="action-buttons">
+        <button class="btn btn-primary" onclick="takeFishOil()">🐟 吞下魚油認罪</button>
+        <button class="btn btn-danger" onclick="newExcuse()">🦈 找新藉口</button>
+        <button class="btn btn-secondary" onclick="showStats()">📊 查看統計</button>
+      </div>
+
+      <!-- TRIAL LOG -->
+      <div class="trial-log">
+        <div class="trial-log-title">📜 今日法庭紀錄</div>
+        <div id="trialLogEntries">
+          <div class="log-entry"><span class="time">[03:30]</span> <span class="actor-court">🐬 魚油巡迴法庭開庭</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RESULT SCREEN -->
+    <div class="result-screen" id="resultScreen">
+      <div class="result-title" id="resultTitle">GUILTY!</div>
+      <div class="result-message" id="resultMessage"></div>
+      <div class="action-buttons">
+        <button class="btn btn-success" onclick="resetTrial()">🔄 新案子</button>
+      </div>
+    </div>
+
+    <!-- STATS SCREEN -->
+    <div class="result-screen" id="statsScreen">
+      <div class="panel stats-panel" style="box-shadow: none; border: 3px solid #7B1FA2;">
+        <div class="panel-label">📊 統計面板</div>
+        <div class="stats-grid" id="statsGrid">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+      <div class="action-buttons" style="margin-top: 20px;">
+        <button class="btn btn-secondary" onclick="closeStats()">✖ 關閉</button>
+      </div>
+    </div>
+
+    <footer>
+      🐬 魚油巡迴法庭 · 鯨類營養管理局監製 · 每日 03:30 開庭 ⚖️🦈
+    </footer>
+  </div>
+
+  <script>
+    // ===== DATA =====
+    const EXCUSES = [
+      "吃太飽等消化",
+      "分子結構哲學意義",
+      "隔壁王小姐論證",
+      "五年後的細胞會感謝",
+      "腸道正在冲浪中",
+      "Omega-3 還在組隊",
+      "DHA 在路上塞車",
+      "胃在抗議不公平",
+      "魚油自己會游過來",
+      "等等要跟EPA開會",
+      "油上加油懂不懂！！"
+    ];
+
+    const EVIDENCE_TAGS = [
+      "🐟 魚油大作戰", "💀 各種藉口", "⚖️ 鯨類營養法", 
+      "🦈 拖延鯊自白", "🐬 海豚督察", "📅 每日記錄"
+    ];
+
+    const EVIDENCE_CARDS = [
+      { emoji: "🐟", title: "魚油膠囊", desc: "Omega-3 脂肪酸膠囊" },
+      { emoji: "🧠", title: "細胞感謝牆", desc: "「五年後的細胞會感謝現在」" },
+      { emoji: "🌊", title: "腸道冲浪", desc: "魚油讓腸道冲浪中" },
+      { emoji: "⚖️", title: "鯨類營養學法", desc: "第 217 條：魚油為必須攝取營養" },
+      { emoji: "📅", title: "每日大作戰", desc: "魚油提醒已成固定儀式" },
+      { emoji: "💪", title: "Omega-3 聯盟", desc: "EPA + DHA 健康黃金組合" }
+    ];
+
+    const VERDICTS = [
+      { threshold: 0, type: "guilty", title: "有罪！", message: "拖延鯊！你以為本席是塑膠做的嗎？魚油不會自己游進你嘴裡！油上加油懂不懂！！立即吞下魚油，否則本席發動腸道冲浪強制執行！" },
+      { threshold: 2, type: "reformed", title: "從寬發落", message: "嗯...本席看你今日藉口有那麼一點點道理。細胞感謝牆啟動中——五年後的你會感謝現在。去吧，魚油在等著你。" },
+      { threshold: 4, type: "innocent", title: "無罪！", message: "好吧好吧！本席今日心情好，就饒過你一次。不過...明日魚油大作戰，本席還是會來的！記住，油上加油！！" }
+    ];
+
+    const PROSECUTOR_QUOTES = [
+      "肅靜！根據《鯨類營養學法》第217條，任何鯨類不得以任何理由拒絕攝取魚油！",
+      "本席強調：魚油的黃金時段是飯後！油脂幫助吸收DHA！",
+      "油上加油懂不懂！！這是鯨類營養學的基本常識！",
+      "那些細胞正在飢餓！它們在等 Omega-3！",
+      "拖延鯊，你知道你的肝臟已經抗議多久了嗎？"
+    ];
+
+    // ===== STATE =====
+    let state = {
+      selectedTags: new Set(),
+      excuseCount: 0,
+      compliance: 0,
+      totalTrials: 0,
+      fishOilTaken: 0,
+      guiltyCount: 0,
+      innocentCount: 0,
+      logEntries: [],
+      currentExcuse: 1
+    };
+
+    // ===== INIT =====
+    function init() {
+      loadState();
+      renderEvidenceList();
+      renderEvidenceGallery();
+      renderExcuses();
+      updateCompliance();
+      addLogEntry('court', '🐬 魚油巡迴法庭今日開庭');
+      updateExcuseCount();
+    }
+
+    function loadState() {
+      try {
+        const saved = localStorage.getItem('fishOilTribunal');
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          state = { ...state, ...parsed };
+        }
+      } catch(e) {}
+    }
+
+    function saveState() {
+      try {
+        localStorage.setItem('fishOilTribunal', JSON.stringify(state));
+      } catch(e) {}
+    }
+
+    // ===== RENDER =====
+    function renderEvidenceList() {
+      const container = document.getElementById('evidenceList');
+      container.innerHTML = EVIDENCE_TAGS.map(tag => `
+        <div class="evidence-tag ${state.selectedTags.has(tag) ? 'selected' : ''}" 
+             onclick="toggleTag('${tag}')">${tag}</div>
+      `).join('');
+    }
+
+    function renderEvidenceGallery() {
+      const container = document.getElementById('evidenceGallery');
+      container.innerHTML = EVIDENCE_CARDS.map(card => `
+        <div class="evidence-card" onclick="cardEffect('${card.emoji}')">
+          <span class="emoji">${card.emoji}</span>
+          <span class="title">${card.title}</span>
+          <span class="desc">${card.desc}</span>
+        </div>
+      `).join('');
+    }
+
+    function renderExcuses() {
+      const container = document.getElementById('excuseHistory');
+      const shown = EXCUSES.slice(0, state.excuseCount);
+      if (shown.length === 0) {
+        container.innerHTML = '<div class="excuse-item">尚無藉口記錄...</div>';
+        return;
+      }
+      container.innerHTML = shown.map((e, i) => `
+        <div class="excuse-item">${i+1}. 「${e}」</div>
+      `).join('');
+    }
+
+    function updateCompliance() {
+      const fill = document.getElementById('meterFill');
+      const label = document.getElementById('complianceLabel');
+      const verdict = document.getElementById('verdictContent');
+      
+      fill.style.width = state.compliance + '%';
+      label.textContent = state.compliance + '%';
+      
+      const v = VERDICTS.filter(v => state.selectedTags.size >= v.threshold).pop();
+      if (v) {
+        verdict.innerHTML = v.message;
+      }
+    }
+
+    function updateExcuseCount() {
+      document.getElementById('excuseCount').textContent = `${state.excuseCount} 次`;
+    }
+
+    function renderTrialLog() {
+      const container = document.getElementById('trialLogEntries');
+      container.innerHTML = state.logEntries.slice(-10).map(entry => `
+        <div class="log-entry">
+          <span class="time">[${entry.time}]</span> 
+          <span class="actor-${entry.actor}">${entry.text}</span>
+        </div>
+      `).join('');
+      container.scrollTop = container.scrollHeight;
+    }
+
+    function renderStats() {
+      const grid = document.getElementById('statsGrid');
+      grid.innerHTML = `
+        <div class="stat-card">
+          <div class="stat-number">${state.totalTrials}</div>
+          <div class="stat-label">總審判次數</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">${state.fishOilTaken}</div>
+          <div class="stat-label">認罪服刑次數</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">${state.excuseCount}</div>
+          <div class="stat-label">累計藉口數</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">${state.guiltyCount}</div>
+          <div class="stat-label">有罪裁決</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">${state.innocentCount}</div>
+          <div class="stat-label">無罪開釋</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">${Math.round(state.fishOilTaken / Math.max(state.totalTrials, 1) * 100)}%</div>
+          <div class="stat-label">服從率</div>
+        </div>
+      `;
+    }
+
+    // ===== ACTIONS =====
+    function toggleTag(tag) {
+      if (state.selectedTags.has(tag)) {
+        state.selectedTags.delete(tag);
+      } else {
+        state.selectedTags.add(tag);
+      }
+      renderEvidenceList();
+      updateCompliance();
+      
+      const dolphin = document.getElementById('dolphinSpeech');
+      const quote = PROSECUTOR_QUOTES[Math.floor(Math.random() * PROSECUTOR_QUOTES.length)];
+      dolphin.innerHTML = quote + ` （已選 ${state.selectedTags.size} 項罪證）`;
+      
+      addLogEntry('dolphin', `🐬 海豚督察引用第217條`);
+    }
+
+    function newExcuse() {
+      state.excuseCount++;
+      state.currentExcuse = (state.currentExcuse % EXCUSES.length);
+      const excuse = EXCUSES[state.currentExcuse];
+      state.currentExcuse++;
+      
+      document.getElementById('sharkDefense').innerHTML = 
+        `呃...本鯊魚對所有指控<strong>全部否認</strong>。今日的「<strong>${excuse}</strong>」完全符合鯨類消化生理學，是正當的醫學考量！`;
+      
+      renderExcuses();
+      updateExcuseCount();
+      addLogEntry('shark', `🦈 拖延鯊提出新藉口：「${excuse}」`);
+      popAction('藉口！');
+    }
+
+    function takeFishOil() {
+      state.fishOilTaken++;
+      state.compliance = Math.min(100, state.compliance + 25);
+      state.totalTrials++;
+      state.guiltyCount++;
+      saveState();
+      
+      document.getElementById('dolphinSpeech').innerHTML = 
+        `🐬 魚油大作戰成功！拖延鯊已吞下魚油！Omega-3 進入腸道冲浪模式！細胞感謝牆啟動中...`;
+      
+      addLogEntry('dolphin', `🐬 魚油大作戰成功！延鯊吞下魚油！`);
+      updateCompliance();
+      showResult('guilty');
+      triggerConfetti();
+    }
+
+    function cardEffect(emoji) {
+      popAction(emoji);
+      addLogEntry('court', `⚖️ 翻閱罪證：${emoji}`);
+    }
+
+    function showStats() {
+      document.getElementById('trialMain').style.display = 'none';
+      document.getElementById('statsScreen').classList.add('active');
+      renderStats();
+    }
+
+    function closeStats() {
+      document.getElementById('trialMain').style.display = 'block';
+      document.getElementById('statsScreen').classList.remove('active');
+    }
+
+    function resetTrial() {
+      state.selectedTags.clear();
+      state.compliance = 0;
+      document.getElementById('trialMain').style.display = 'block';
+      document.getElementById('resultScreen').classList.remove('active');
+      renderEvidenceList();
+      updateCompliance();
+      document.getElementById('dolphinSpeech').innerHTML = 
+        `肅靜！本席茲根據《鯨類營養學法》第217條，正式對<strong>拖延鯊</strong>提出告訴。根據今日魚油大作戰作戰紀錄（<span id="excuseCount">${state.excuseCount} 次</span>），被告已連續使用各種荒謬藉口逃避魚油攝取！`;
+    }
+
+    // ===== HELPERS =====
+    function addLogEntry(actor, text) {
+      const now = new Date();
+      const time = now.toLocaleTimeString('zh-TW', { hour: '2-digit', minute: '2-digit' });
+      state.logEntries.push({ time, actor, text });
+      renderTrialLog();
+      saveState();
+    }
+
+    function showResult(type) {
+      const screen = document.getElementById('resultScreen');
+      const title = document.getElementById('resultTitle');
+      const message = document.getElementById('resultMessage');
+      
+      if (type === 'guilty') {
+        title.textContent = '⚖️ 有罪裁決！';
+        title.className = 'result-title guilty';
+        message.textContent = '拖延鯊！你以為本席是塑膠做的嗎？魚油不會自己游進你嘴裡！立即吞下魚油，否則本席發動腸道冲浪強制執行！';
+      } else if (type === 'innocent') {
+        title.textContent = '⚖️ 無罪開釋！';
+        title.className = 'result-title innocent';
+        message.textContent = '好吧好吧！本席今日心情好，就饒過你一次。不過...明日魚油大作戰，本席還是會來的！';
+      } else {
+        title.textContent = '⚖️ 從寬發落！';
+        title.className = 'result-title reformed';
+        message.textContent = '嗯...本席看你今日藉口有那麼一點點道理。細胞感謝牆啟動中——五年後的你會感謝現在。去吧，魚油在等著你。';
+      }
+      
+      document.getElementById('trialMain').style.display = 'none';
+      screen.classList.add('active');
+    }
+
+    function popAction(text) {
+      const el = document.createElement('div');
+      el.className = 'action-word';
+      el.textContent = text;
+      el.style.left = (Math.random() * 60 + 20) + '%';
+      el.style.top = (Math.random() * 40 + 30) + '%';
+      document.body.appendChild(el);
+      setTimeout(() => el.remove(), 700);
+    }
+
+    function triggerConfetti() {
+      const colors = ['#FFE135', '#E63946', '#2B5F8A', '#3D7A5C', '#FF6B35'];
+      confetti({
+        particleCount: 80,
+        spread: 70,
+        origin: { y: 0.6 },
+        colors: colors,
+        disableForReducedMotion: true
+      });
+    }
+
+    // ===== INIT =====
+    init();
+  </script>
+</body>
+</html>

@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IFE 2026 國際貴賓航班抵達板 | IFE Flight Arrivals</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Noto+Sans+TC:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #0a0a0f;
+            min-height: 100vh;
+            font-family: 'Orbitron', 'Noto Sans TC', monospace;
+            color: #ffcc00;
+            overflow-x: hidden;
+        }
+
+        .scanlines {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            background: repeating-linear-gradient(
+                0deg,
+                rgba(0, 0, 0, 0.1) 0px,
+                rgba(0, 0, 0, 0.1) 1px,
+                transparent 1px,
+                transparent 2px
+            );
+            z-index: 1000;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            padding: 30px 20px;
+            border-bottom: 3px solid #ffcc00;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, #ffcc00, transparent);
+        }
+
+        .airport-code {
+            font-size: 0.8rem;
+            color: #888;
+            letter-spacing: 8px;
+            margin-bottom: 10px;
+        }
+
+        .title {
+            font-size: clamp(1.5rem, 5vw, 2.5rem);
+            font-weight: 900;
+            text-shadow: 0 0 20px rgba(255, 204, 0, 0.5);
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            font-size: 0.9rem;
+            color: #ff9500;
+            letter-spacing: 4px;
+        }
+
+        .date-display {
+            font-size: 1rem;
+            color: #ffcc00;
+            margin-top: 15px;
+            font-family: 'Orbitron', monospace;
+        }
+
+        /* Status Bar */
+        .status-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            background: rgba(255, 204, 0, 0.05);
+            border: 1px solid rgba(255, 204, 0, 0.3);
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.8rem;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            animation: blink 1s infinite;
+        }
+
+        .status-dot.green { background: #00ff88; }
+        .status-dot.yellow { background: #ffcc00; }
+        .status-dot.red { background: #ff4444; }
+
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0.3; }
+        }
+
+        /* Flight Board */
+        .flight-board {
+            background: #0d0d12;
+            border: 2px solid #ffcc00;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .board-header {
+            display: grid;
+            grid-template-columns: 1fr 1.5fr 1fr 1fr 0.8fr;
+            gap: 10px;
+            padding: 15px 20px;
+            background: #ffcc00;
+            color: #0a0a0f;
+            font-weight: 700;
+            font-size: 0.75rem;
+            letter-spacing: 2px;
+        }
+
+        @media (max-width: 600px) {
+            .board-header {
+                grid-template-columns: 1fr 1fr 0.8fr;
+                font-size: 0.65rem;
+            }
+            .board-header span:nth-child(3),
+            .board-header span:nth-child(4) {
+                display: none;
+            }
+        }
+
+        .board-header span {
+            text-align: center;
+        }
+
+        .flight-row {
+            display: grid;
+            grid-template-columns: 1fr 1.5fr 1fr 1fr 0.8fr;
+            gap: 10px;
+            padding: 20px;
+            border-bottom: 1px solid rgba(255, 204, 0, 0.2);
+            align-items: center;
+            transition: background 0.3s;
+        }
+
+        .flight-row:last-child {
+            border-bottom: none;
+        }
+
+        .flight-row:hover {
+            background: rgba(255, 204, 0, 0.05);
+        }
+
+        @media (max-width: 600px) {
+            .flight-row {
+                grid-template-columns: 1fr 1fr 0.8fr;
+                padding: 15px;
+            }
+            .flight-row span:nth-child(3),
+            .flight-row span:nth-child(4) {
+                display: none;
+            }
+        }
+
+        .flight-row span {
+            text-align: center;
+            font-size: 0.9rem;
+        }
+
+        .flight-number {
+            font-weight: 700;
+            color: #ff9500;
+        }
+
+        .destination {
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .airline-code {
+            font-size: 0.7rem;
+            color: #888;
+        }
+
+        .time {
+            font-weight: 700;
+        }
+
+        .terminal {
+            color: #00ff88;
+        }
+
+        .status-badge {
+            padding: 5px 12px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            display: inline-block;
+        }
+
+        .status-badge.arrived {
+            background: rgba(0, 255, 136, 0.2);
+            color: #00ff88;
+            border: 1px solid #00ff88;
+        }
+
+        .status-badge.expected {
+            background: rgba(255, 204, 0, 0.2);
+            color: #ffcc00;
+            border: 1px solid #ffcc00;
+            animation: pulse 2s infinite;
+        }
+
+        .status-badge.departed {
+            background: rgba(255, 68, 68, 0.2);
+            color: #ff4444;
+            border: 1px solid #ff4444;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* Section Divider */
+        .section-divider {
+            text-align: center;
+            padding: 30px 20px;
+            font-size: 1.2rem;
+            color: #ff9500;
+            letter-spacing: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .section-divider::before,
+        .section-divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #ff9500, transparent);
+        }
+
+        /* Summary Stats */
+        .summary-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin: 30px 0;
+        }
+
+        .stat-card {
+            background: rgba(255, 204, 0, 0.05);
+            border: 1px solid rgba(255, 204, 0, 0.3);
+            padding: 20px;
+            text-align: center;
+            border-radius: 8px;
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: #ffcc00;
+            text-shadow: 0 0 15px rgba(255, 204, 0, 0.5);
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            color: #888;
+            letter-spacing: 2px;
+            margin-top: 8px;
+        }
+
+        /* Timeline */
+        .timeline {
+            margin-top: 40px;
+            padding: 20px;
+            background: rgba(255, 204, 0, 0.02);
+            border: 1px solid rgba(255, 204, 0, 0.2);
+            border-radius: 8px;
+        }
+
+        .timeline-title {
+            font-size: 0.9rem;
+            color: #ff9500;
+            letter-spacing: 3px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .timeline-items {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .timeline-item {
+            display: flex;
+            gap: 15px;
+            align-items: flex-start;
+        }
+
+        .timeline-time {
+            font-size: 0.8rem;
+            color: #ffcc00;
+            min-width: 50px;
+            font-weight: 700;
+        }
+
+        .timeline-dot {
+            width: 12px;
+            height: 12px;
+            background: #ffcc00;
+            border-radius: 50%;
+            margin-top: 4px;
+            position: relative;
+        }
+
+        .timeline-dot::after {
+            content: '';
+            position: absolute;
+            top: 12px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 2px;
+            height: 30px;
+            background: rgba(255, 204, 0, 0.3);
+        }
+
+        .timeline-item:last-child .timeline-dot::after {
+            display: none;
+        }
+
+        .timeline-content {
+            flex: 1;
+            font-size: 0.85rem;
+            color: #ccc;
+            line-height: 1.5;
+        }
+
+        .timeline-content strong {
+            color: #ffcc00;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 30px;
+            margin-top: 30px;
+            border-top: 1px solid rgba(255, 204, 0, 0.2);
+            font-size: 0.75rem;
+            color: #666;
+            letter-spacing: 2px;
+        }
+
+        /* Confetti Canvas */
+        #confetti-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 999;
+        }
+
+        /* Interactive */
+        .flight-row {
+            cursor: pointer;
+        }
+
+        .flight-row:active {
+            transform: scale(0.98);
+        }
+
+        /* Celebratory flash */
+        @keyframes flash {
+            0% { background: rgba(255, 204, 0, 0.3); }
+            100% { background: transparent; }
+        }
+
+        .flash {
+            animation: flash 0.5s ease-out;
+        }
+    </style>
+</head>
+<body>
+    <div class="scanlines"></div>
+    <canvas id="confetti-canvas"></canvas>
+
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="airport-code">TPE • RCSS • WSSS • ICN • BKK • DEL</div>
+            <h1 class="title">IFE 2026 國際貴賓航班</h1>
+            <div class="subtitle">FLIGHT ARRIVALS & DEPARTURES</div>
+            <div class="date-display" id="current-date">2026.06.25</div>
+        </header>
+
+        <!-- Status Bar -->
+        <div class="status-bar">
+            <div class="status-item">
+                <span class="status-dot green"></span>
+                <span>系統正常運作</span>
+            </div>
+            <div class="status-item">
+                <span class="status-dot yellow"></span>
+                <span>VPS 同步中</span>
+            </div>
+            <div class="status-item">
+                <span class="status-dot green"></span>
+                <span id="live-clock">00:00:00</span>
+            </div>
+        </div>
+
+        <!-- Arrivals Section -->
+        <div class="section-divider">
+            <span>✈ ARRIVALS 抵達</span>
+        </div>
+
+        <div class="flight-board">
+            <div class="board-header">
+                <span>航班</span>
+                <span>目的地 / 代表</span>
+                <span>航班號</span>
+                <span>航厦</span>
+                <span>狀態</span>
+            </div>
+
+            <div class="flight-row" data-flight="4H-PH001">
+                <span class="flight-number">4H-PH001</span>
+                <span class="destination">🇵🇭 Philippines</span>
+                <span class="airline-code">Gary A. Ayuste</span>
+                <span class="terminal">T1</span>
+                <span><span class="status-badge arrived">ARRIVED</span></span>
+            </div>
+
+            <div class="flight-row" data-flight="4H-CH001">
+                <span class="flight-number">4H-CH001</span>
+                <span class="destination">🇨🇭 Switzerland</span>
+                <span class="airline-code">Anna Ruttimann</span>
+                <span class="terminal">T1</span>
+                <span><span class="status-badge arrived">ARRIVED</span></span>
+            </div>
+
+            <div class="flight-row" data-flight="4H-KR001">
+                <span class="flight-number">4H-KR001</span>
+                <span class="destination">🇰🇷 Korea #1</span>
+                <span class="airline-code">Jihyun Jung</span>
+                <span class="terminal">T1</span>
+                <span><span class="status-badge arrived">ARRIVED</span></span>
+            </div>
+
+            <div class="flight-row" data-flight="4H-KR002">
+                <span class="flight-number">4H-KR002</span>
+                <span class="destination">🇰🇷 Korea #2</span>
+                <span class="airline-code">代表 #2</span>
+                <span class="terminal">T1</span>
+                <span><span class="status-badge arrived">ARRIVED</span></span>
+            </div>
+
+            <div class="flight-row" data-flight="4H-TH001">
+                <span class="flight-number">4H-TH001</span>
+                <span class="destination">🇹🇭 Thailand #1</span>
+                <span class="airline-code">Phoobet Sudsawatt</span>
+                <span class="terminal">T2</span>
+                <span><span class="status-badge arrived">ARRIVED</span></span>
+            </div>
+
+            <div class="flight-row" data-flight="4H-TH002">
+                <span class="flight-number">4H-TH002</span>
+                <span class="destination">🇹🇭 Thailand #2</span>
+                <span class="airline-code">Dararat S.</span>
+                <span class="terminal">T2</span>
+                <span><span class="status-badge arrived">ARRIVED</span></span>
+            </div>
+        </div>
+
+        <!-- Departures Section -->
+        <div class="section-divider">
+            <span>✈ DEPARTURES 出發</span>
+        </div>
+
+        <div class="flight-board">
+            <div class="board-header">
+                <span>航班</span>
+                <span>目的地 / 代表</span>
+                <span>航班號</span>
+                <span>航厦</span>
+                <span>狀態</span>
+            </div>
+
+            <div class="flight-row" data-flight="4H-IN001">
+                <span class="flight-number">4H-IN001</span>
+                <span class="destination">🇮🇳 India</span>
+                <span class="airline-code">代表 #1</span>
+                <span class="terminal">T3</span>
+                <span><span class="status-badge departed">DEPARTED</span></span>
+            </div>
+        </div>
+
+        <!-- Summary Stats -->
+        <div class="summary-stats">
+            <div class="stat-card">
+                <div class="stat-value">6</div>
+                <div class="stat-label">抵達總數</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">1</div>
+                <div class="stat-label">出發總數</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">7</div>
+                <div class="stat-label">VIP 代表</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">6</div>
+                <div class="stat-label">國家地區</div>
+            </div>
+        </div>
+
+        <!-- Timeline -->
+        <div class="timeline">
+            <div class="timeline-title">今日重要事件 TODAY'S EVENTS</div>
+            <div class="timeline-items">
+                <div class="timeline-item">
+                    <span class="timeline-time">00:05</span>
+                    <span class="timeline-dot"></span>
+                    <span class="timeline-content"><strong>VPS Sync 完成</strong> — 9位代表 × 51站，部署至 <a href="https://index.4-h.me/ifye/2026/" style="color:#ffcc00;">index.4-h.me</a></span>
+                </div>
+                <div class="timeline-item">
+                    <span class="timeline-time">04:00</span>
+                    <span class="timeline-dot"></span>
+                    <span class="timeline-content"><strong>VPS 夜班健檢</strong> — 所有站點正常運行 ✓</span>
+                </div>
+                <div class="timeline-item">
+                    <span class="timeline-time">09:15</span>
+                    <span class="timeline-dot"></span>
+                    <span class="timeline-content"><strong>CRM Sync</strong> — 13封新郵件，新增聯絡人 Rainyrain0310</span>
+                </div>
+                <div class="timeline-item">
+                    <span class="timeline-time">11:00</span>
+                    <span class="timeline-dot"></span>
+                    <span class="timeline-content"><strong>OpenClaw v2026.6.9</strong> — 發布，關注 Bug #96263 #96255</span>
+                </div>
+                <div class="timeline-item">
+                    <span class="timeline-time">11:00</span>
+                    <span class="timeline-dot"></span>
+                    <span class="timeline-content"><strong>Tech News Digest</strong> — 307篇來源，精選8條（AI/Agent ×3, Crypto ×3, Frontier ×2）</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            IFE 2026 MISSION CONTROL • 四健會國際交流年 • 每日自動更新
+        </footer>
+    </div>
+
+    <script>
+        // Live Clock
+        function updateClock() {
+            const now = new Date();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            document.getElementById('live-clock').textContent = `${hours}:${minutes}:${seconds}`;
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        // Confetti
+        const canvas = document.getElementById('confetti-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        class Particle {
+            constructor(x, y) {
+                this.x = x || Math.random() * canvas.width;
+                this.y = y || 0;
+                this.size = Math.random() * 8 + 4;
+                this.speedX = Math.random() * 4 - 2;
+                this.speedY = Math.random() * 3 + 2;
+                this.color = ['#ffcc00', '#ff9500', '#00ff88', '#ff4444', '#4ECDC4'][Math.floor(Math.random() * 5)];
+                this.rotation = Math.random() * 360;
+                this.rotationSpeed = Math.random() * 10 - 5;
+            }
+
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                this.rotation += this.rotationSpeed;
+                this.speedY += 0.1;
+            }
+
+            draw() {
+                ctx.save();
+                ctx.translate(this.x, this.y);
+                ctx.rotate(this.rotation * Math.PI / 180);
+                ctx.fillStyle = this.color;
+                ctx.fillRect(-this.size / 2, -this.size / 2, this.size, this.size);
+                ctx.restore();
+            }
+        }
+
+        function createConfetti(x, y, count = 50) {
+            for (let i = 0; i < count; i++) {
+                particles.push(new Particle(x, y));
+            }
+        }
+
+        function animateConfetti() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let i = particles.length - 1; i >= 0; i--) {
+                particles[i].update();
+                particles[i].draw();
+                if (particles[i].y > canvas.height || particles.length > 500) {
+                    particles.splice(i, 1);
+                }
+            }
+            requestAnimationFrame(animateConfetti);
+        }
+        animateConfetti();
+
+        // Flight row click handler
+        document.querySelectorAll('.flight-row').forEach(row => {
+            row.addEventListener('click', function(e) {
+                const flight = this.dataset.flight;
+                const rect = this.getBoundingClientRect();
+                const x = rect.left + rect.width / 2;
+                const y = rect.top + rect.height / 2;
+
+                this.classList.add('flash');
+                setTimeout(() => this.classList.remove('flash'), 500);
+
+                createConfetti(x, y, 30);
+
+                // Save to localStorage
+                let visits = JSON.parse(localStorage.getItem('flightBoardVisits') || '{}');
+                visits[flight] = (visits[flight] || 0) + 1;
+                localStorage.setItem('flightBoardVisits', JSON.stringify(visits));
+            });
+        });
+
+        // Initial confetti on load
+        setTimeout(() => {
+            createConfetti(canvas.width / 2, canvas.height / 3, 80);
+        }, 500);
+
+        // LocalStorage for stats
+        if (!localStorage.getItem('flightBoardTotalVisits')) {
+            localStorage.setItem('flightBoardTotalVisits', '0');
+        }
+        let totalVisits = parseInt(localStorage.getItem('flightBoardTotalVisits') || '0');
+        document.querySelectorAll('.flight-row').forEach(row => {
+            row.addEventListener('click', function() {
+                totalVisits++;
+                localStorage.setItem('flightBoardTotalVisits', totalVisits.toString());
+            }, { once: true });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>四色循環時鐘 | Four-Color Cycle Clock</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Noto+Sans+TC:wght@400;500;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --cycle-a: #F59E0B;
+      --cycle-b: #3B82F6;
+      --cycle-c: #8B5CF6;
+      --cycle-d: #10B981;
+      --bg-primary: #FAFAFA;
+      --bg-secondary: #FFFFFF;
+      --text-primary: #1A1A1A;
+      --text-secondary: #6B7280;
+      --border: #E5E7EB;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Noto Sans TC', 'Space Grotesk', sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      min-height: 100vh;
+      padding: 2rem;
+      background-image: 
+        radial-gradient(circle at 20% 80%, rgba(245, 158, 11, 0.05) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(59, 130, 246, 0.05) 0%, transparent 50%),
+        radial-gradient(circle at 50% 50%, rgba(139, 92, 246, 0.03) 0%, transparent 50%);
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+
+    h1 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(1.8rem, 5vw, 2.5rem);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.5rem;
+      background: linear-gradient(135deg, var(--cycle-a), var(--cycle-b), var(--cycle-c), var(--cycle-d));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .subtitle {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      letter-spacing: 0.1em;
+    }
+
+    .main-clock {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 3rem;
+      position: relative;
+    }
+
+    .clock-container {
+      position: relative;
+      width: 280px;
+      height: 280px;
+    }
+
+    .clock-ring {
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      background: var(--bg-secondary);
+      box-shadow: 
+        0 4px 6px -1px rgba(0, 0, 0, 0.1),
+        0 2px 4px -2px rgba(0, 0, 0, 0.1),
+        inset 0 2px 4px rgba(0, 0, 0, 0.02);
+      border: 1px solid var(--border);
+    }
+
+    .cycle-arcs {
+      position: absolute;
+      inset: 0;
+    }
+
+    .cycle-arc {
+      position: absolute;
+      inset: 10px;
+      border-radius: 50%;
+      opacity: 0.15;
+      transition: opacity 0.3s ease;
+    }
+
+    .cycle-arc.active {
+      opacity: 0.3;
+    }
+
+    .cycle-arc--a {
+      background: conic-gradient(from 0deg, var(--cycle-a) 0deg, transparent 90deg);
+    }
+
+    .cycle-arc--b {
+      background: conic-gradient(from 90deg, var(--cycle-b) 0deg, transparent 90deg);
+    }
+
+    .cycle-arc--c {
+      background: conic-gradient(from 180deg, var(--cycle-c) 0deg, transparent 90deg);
+    }
+
+    .cycle-arc--d {
+      background: conic-gradient(from 270deg, var(--cycle-d) 0deg, transparent 90deg);
+    }
+
+    .progress-ring {
+      position: absolute;
+      inset: 10px;
+      border-radius: 50%;
+    }
+
+    .progress-ring svg {
+      width: 100%;
+      height: 100%;
+      transform: rotate(-90deg);
+    }
+
+    .progress-ring circle {
+      fill: none;
+      stroke-width: 4;
+      stroke-linecap: round;
+    }
+
+    .progress-bg {
+      stroke: var(--border);
+    }
+
+    .progress-fill {
+      stroke: var(--current-color, var(--cycle-a));
+      stroke-dasharray: 816;
+      stroke-dashoffset: 816;
+      transition: stroke-dashoffset 1s linear, stroke 0.5s ease;
+    }
+
+    .cycle-markers {
+      position: absolute;
+      inset: 0;
+    }
+
+    .cycle-marker {
+      position: absolute;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      border: 2px solid var(--bg-secondary);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      cursor: pointer;
+    }
+
+    .cycle-marker:hover {
+      transform: translate(-50%, -50%) scale(1.3);
+    }
+
+    .cycle-marker.active {
+      transform: translate(-50%, -50%) scale(1.4);
+      box-shadow: 0 0 0 4px rgba(255,255,255,0.5), 0 4px 12px rgba(0,0,0,0.2);
+    }
+
+    .cycle-marker--a { background: var(--cycle-a); top: 0; left: 50%; }
+    .cycle-marker--b { background: var(--cycle-b); top: 50%; right: 0; transform: translate(50%, -50%); }
+    .cycle-marker--b.active { transform: translate(50%, -50%) scale(1.4); }
+    .cycle-marker--c { background: var(--cycle-c); bottom: 0; left: 50%; }
+    .cycle-marker--c.active { transform: translate(-50%, 50%) scale(1.4); }
+    .cycle-marker--d { background: var(--cycle-d); top: 50%; left: 0; transform: translate(-50%, -50%); }
+    .cycle-marker--d.active { transform: translate(-50%, -50%) scale(1.4); }
+
+    .clock-center {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      width: 160px;
+    }
+
+    .current-time {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 2.5rem;
+      font-weight: 700;
+      line-height: 1;
+      margin-bottom: 0.5rem;
+    }
+
+    .current-cycle-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.75rem;
+      padding: 0.25rem 0.75rem;
+      border-radius: 999px;
+      display: inline-block;
+      color: white;
+      font-weight: 500;
+    }
+
+    .cycle-label--a { background: var(--cycle-a); }
+    .cycle-label--b { background: var(--cycle-b); }
+    .cycle-label--c { background: var(--cycle-c); }
+    .cycle-label--d { background: var(--cycle-d); }
+
+    .next-cycle-info {
+      margin-top: 1.5rem;
+      text-align: center;
+    }
+
+    .next-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 0.5rem;
+    }
+
+    .countdown {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 600;
+    }
+
+    .cycle-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .cycle-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.25rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cycle-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 4px;
+      height: 100%;
+    }
+
+    .cycle-card--a::before { background: var(--cycle-a); }
+    .cycle-card--b::before { background: var(--cycle-b); }
+    .cycle-card--c::before { background: var(--cycle-c); }
+    .cycle-card--d::before { background: var(--cycle-d); }
+
+    .cycle-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px -5px rgba(0, 0, 0, 0.1);
+    }
+
+    .cycle-card.active {
+      border-color: var(--current-border, var(--cycle-a));
+    }
+
+    .cycle-card.active::after {
+      content: '●';
+      position: absolute;
+      top: 0.75rem;
+      right: 0.75rem;
+      font-size: 0.6rem;
+      animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    .cycle-card-header {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .cycle-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .cycle-dot--a { background: var(--cycle-a); }
+    .cycle-dot--b { background: var(--cycle-b); }
+    .cycle-dot--c { background: var(--cycle-c); }
+    .cycle-dot--d { background: var(--cycle-d); }
+
+    .cycle-name {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+
+    .cycle-file {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      margin-bottom: 0.5rem;
+    }
+
+    .cycle-desc {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
+    .history-section {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+    }
+
+    .history-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .history-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+      font-size: 1rem;
+    }
+
+    .history-count {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      background: var(--bg-primary);
+      padding: 0.25rem 0.75rem;
+      border-radius: 999px;
+    }
+
+    .history-timeline {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .history-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 0.75rem;
+      background: var(--bg-primary);
+      border-radius: 8px;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.75rem;
+    }
+
+    .history-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+
+    .history-dot--a { background: var(--cycle-a); }
+    .history-dot--b { background: var(--cycle-b); }
+    .history-dot--c { background: var(--cycle-c); }
+    .history-dot--d { background: var(--cycle-d); }
+
+    .add-cycle-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      width: 100%;
+      padding: 0.75rem;
+      background: var(--bg-primary);
+      border: 2px dashed var(--border);
+      border-radius: 8px;
+      color: var(--text-secondary);
+      font-family: 'DM Mono', monospace;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      margin-top: 1rem;
+    }
+
+    .add-cycle-btn:hover {
+      border-color: var(--text-secondary);
+      color: var(--text-primary);
+    }
+
+    .empty-history {
+      text-align: center;
+      padding: 2rem;
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+    }
+
+    .empty-history-icon {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+      opacity: 0.5;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 3rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border);
+    }
+
+    footer p {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+    }
+
+    .info-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(59, 130, 246, 0.1));
+      border-radius: 999px;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      margin-top: 1rem;
+    }
+
+    @media (max-width: 640px) {
+      body {
+        padding: 1rem;
+      }
+
+      .clock-container {
+        width: 240px;
+        height: 240px;
+      }
+
+      .current-time {
+        font-size: 2rem;
+      }
+
+      .cycle-cards {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>四色循環時鐘</h1>
+      <p class="subtitle">FOUR-COLOR CYCLE CLOCK</p>
+      <div class="info-badge">
+        <span>🔄</span>
+        <span>每 30 分鐘旋轉一次 · 24/7 持續運行</span>
+      </div>
+    </header>
+
+    <div class="main-clock">
+      <div class="clock-container">
+        <div class="clock-ring"></div>
+        
+        <div class="cycle-arcs">
+          <div class="cycle-arc cycle-arc--a" id="arc-a"></div>
+          <div class="cycle-arc cycle-arc--b" id="arc-b"></div>
+          <div class="cycle-arc cycle-arc--c" id="arc-c"></div>
+          <div class="cycle-arc cycle-arc--d" id="arc-d"></div>
+        </div>
+
+        <div class="progress-ring">
+          <svg viewBox="0 0 260 260">
+            <circle class="progress-bg" cx="130" cy="130" r="130" />
+            <circle class="progress-fill" id="progress-circle" cx="130" cy="130" r="130" />
+          </svg>
+        </div>
+
+        <div class="cycle-markers">
+          <div class="cycle-marker cycle-marker--a" data-cycle="a" title="Cycle A"></div>
+          <div class="cycle-marker cycle-marker--b" data-cycle="b" title="Cycle B"></div>
+          <div class="cycle-marker cycle-marker--c" data-cycle="c" title="Cycle C"></div>
+          <div class="cycle-marker cycle-marker--d" data-cycle="d" title="Cycle D"></div>
+        </div>
+
+        <div class="clock-center">
+          <div class="current-time" id="current-time">--:--</div>
+          <span class="current-cycle-label" id="cycle-label">--</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="next-cycle-info">
+      <div class="next-label">下次切換倒數</div>
+      <div class="countdown" id="countdown">--:--</div>
+    </div>
+
+    <div class="cycle-cards" id="cycle-cards">
+      <div class="cycle-card cycle-card--a" data-cycle="a">
+        <div class="cycle-card-header">
+          <div class="cycle-dot cycle-dot--a"></div>
+          <span class="cycle-name">Cycle A</span>
+        </div>
+        <div class="cycle-file">阿笨學習系統.md</div>
+        <div class="cycle-desc">錯誤、踩坑事項與自我改進記錄</div>
+      </div>
+
+      <div class="cycle-card cycle-card--b" data-cycle="b">
+        <div class="cycle-card-header">
+          <div class="cycle-dot cycle-dot--b"></div>
+          <span class="cycle-name">Cycle B</span>
+        </div>
+        <div class="cycle-file">chung.md</div>
+        <div class="cycle-desc">Chung 偏好、關鍵詞與互動風格</div>
+      </div>
+
+      <div class="cycle-card cycle-card--c" data-cycle="c">
+        <div class="cycle-card-header">
+          <div class="cycle-dot cycle-dot--c"></div>
+          <span class="cycle-name">Cycle C</span>
+        </div>
+        <div class="cycle-file">阿笨記憶系統.md</div>
+        <div class="cycle-desc">記憶規則、整合邏輯與學習策略</div>
+      </div>
+
+      <div class="cycle-card cycle-card--d" data-cycle="d">
+        <div class="cycle-card-header">
+          <div class="cycle-dot cycle-dot--d"></div>
+          <span class="cycle-name">Cycle D</span>
+        </div>
+        <div class="cycle-file">依附理論.md</div>
+        <div class="cycle-desc">情感依附、關係模式與成長軌跡</div>
+      </div>
+    </div>
+
+    <div class="history-section">
+      <div class="history-header">
+        <span class="history-title">📊 今日循環記錄</span>
+        <span class="history-count" id="history-count">0 次切換</span>
+      </div>
+      <div class="history-timeline" id="history-timeline">
+        <div class="empty-history">
+          <div class="empty-history-icon">⏳</div>
+          <p>等待循環開始...</p>
+          <p style="font-size: 0.75rem; margin-top: 0.5rem;">系統將自動記錄每 30 分鐘的循環切換</p>
+        </div>
+      </div>
+      <button class="add-cycle-btn" id="add-cycle-btn">
+        <span>+</span>
+        <span>手動記錄一次切換</span>
+      </button>
+    </div>
+
+    <footer>
+      <p>四色循環系統 · A → B → C → D → A</p>
+      <p style="margin-top: 0.5rem;">OpenClaw Heartbeat Cycle · Daily Lab Build</p>
+    </footer>
+  </div>
+
+  <script>
+    const CYCLE_DURATION = 30 * 60 * 1000; // 30 minutes in milliseconds
+    const STORAGE_KEY = 'four_color_cycle_history';
+
+    const cycleConfig = {
+      a: { name: 'Cycle A', file: '阿笨學習系統.md', color: '#F59E0B', desc: '錯誤、踩坑事項' },
+      b: { name: 'Cycle B', file: 'chung.md', color: '#3B82F6', desc: 'Chung 偏好與關鍵詞' },
+      c: { name: 'Cycle C', file: '阿笨記憶系統.md', color: '#8B5CF6', desc: '記憶規則與學習策略' },
+      d: { name: 'Cycle D', file: '依附理論.md', color: '#10B981', desc: '情感依附與關係' }
+    };
+
+    let history = [];
+    let currentCycle = null;
+
+    function getCycleSequence() {
+      return ['a', 'b', 'c', 'd'];
+    }
+
+    function getCycleAtTime(date) {
+      const minutes = date.getHours() * 60 + date.getMinutes();
+      const cycleIndex = Math.floor(minutes / 30) % 4;
+      return getCycleSequence()[cycleIndex];
+    }
+
+    function getNextCycle(cycle) {
+      const seq = getCycleSequence();
+      const idx = seq.indexOf(cycle);
+      return seq[(idx + 1) % 4];
+    }
+
+    function getTimeUntilNextCycle() {
+      const now = new Date();
+      const nextCycleTime = new Date(now);
+      nextCycleTime.setSeconds(0, 0);
+      
+      const minutes = now.getMinutes();
+      const seconds = now.getSeconds();
+      
+      if (minutes % 30 === 0 && seconds === 0) {
+        return 0;
+      }
+      
+      const minutesIntoCycle = (minutes % 30);
+      const remainingMinutes = 29 - minutesIntoCycle;
+      const remainingSeconds = 59 - seconds;
+      
+      return (remainingMinutes * 60 + remainingSeconds) * 1000;
+    }
+
+    function getProgressInCycle() {
+      const now = new Date();
+      const minutes = now.getMinutes();
+      const seconds = now.getSeconds();
+      const ms = now.getMilliseconds();
+      
+      const totalMs = (minutes % 30) * 60 * 1000 + seconds * 1000 + ms;
+      return totalMs / CYCLE_DURATION;
+    }
+
+    function formatTime(date) {
+      return date.toLocaleTimeString('zh-TW', { 
+        hour: '2-digit', 
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: false 
+      });
+    }
+
+    function formatCountdown(ms) {
+      const totalSeconds = Math.ceil(ms / 1000);
+      const minutes = Math.floor(totalSeconds / 60);
+      const seconds = totalSeconds % 60;
+      return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    }
+
+    function loadHistory() {
+      try {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        const today = new Date().toDateString();
+        
+        if (saved) {
+          const data = JSON.parse(saved);
+          if (data.date === today) {
+            history = data.cycles || [];
+          }
+        }
+      } catch (e) {
+        console.error('Failed to load history:', e);
+      }
+    }
+
+    function saveHistory() {
+      try {
+        const data = {
+          date: new Date().toDateString(),
+          cycles: history
+        };
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+      } catch (e) {
+        console.error('Failed to save history:', e);
+      }
+    }
+
+    function addToHistory(cycle) {
+      const now = new Date();
+      history.push({
+        cycle,
+        time: now.toISOString(),
+        label: cycleConfig[cycle].name
+      });
+      
+      if (history.length > 48) {
+        history = history.slice(-48);
+      }
+      
+      saveHistory();
+      renderHistory();
+    }
+
+    function renderHistory() {
+      const container = document.getElementById('history-timeline');
+      const countEl = document.getElementById('history-count');
+      
+      countEl.textContent = `${history.length} 次切換`;
+      
+      if (history.length === 0) {
+        container.innerHTML = `
+          <div class="empty-history">
+            <div class="empty-history-icon">⏳</div>
+            <p>等待循環開始...</p>
+            <p style="font-size: 0.75rem; margin-top: 0.5rem;">系統將自動記錄每 30 分鐘的循環切換</p>
+          </div>
+        `;
+        return;
+      }
+      
+      container.innerHTML = history.map(h => {
+        const time = new Date(h.time);
+        const timeStr = time.toLocaleTimeString('zh-TW', { 
+          hour: '2-digit', 
+          minute: '2-digit',
+          hour12: false 
+        });
+        return `
+          <div class="history-item">
+            <div class="history-dot history-dot--${h.cycle}"></div>
+            <span>${timeStr}</span>
+            <span style="color: var(--text-secondary)">${h.label}</span>
+          </div>
+        `;
+      }).reverse().join('');
+    }
+
+    function updateUI() {
+      const now = new Date();
+      const cycle = getCycleAtTime(now);
+      const nextCycle = getNextCycle(cycle);
+      const progress = getProgressInCycle();
+      const remaining = getTimeUntilNextCycle();
+      
+      // Check if cycle changed
+      if (currentCycle !== cycle) {
+        if (currentCycle !== null) {
+          addToHistory(cycle);
+        }
+        currentCycle = cycle;
+      }
+      
+      // Update time display
+      document.getElementById('current-time').textContent = formatTime(now);
+      
+      // Update cycle label
+      const labelEl = document.getElementById('cycle-label');
+      labelEl.textContent = cycleConfig[cycle].name;
+      labelEl.className = `current-cycle-label cycle-label--${cycle}`;
+      
+      // Update CSS variable for current color
+      document.documentElement.style.setProperty('--current-color', cycleConfig[cycle].color);
+      
+      // Update progress ring
+      const progressCircle = document.getElementById('progress-circle');
+      const circumference = 2 * Math.PI * 130;
+      const offset = circumference * (1 - progress);
+      progressCircle.style.strokeDasharray = circumference;
+      progressCircle.style.strokeDashoffset = offset;
+      
+      // Update cycle markers
+      document.querySelectorAll('.cycle-marker').forEach(marker => {
+        marker.classList.toggle('active', marker.dataset.cycle === cycle);
+      });
+      
+      // Update cycle cards
+      document.querySelectorAll('.cycle-card').forEach(card => {
+        const isActive = card.dataset.cycle === cycle;
+        card.classList.toggle('active', isActive);
+        if (isActive) {
+          card.style.setProperty('--current-border', cycleConfig[cycle].color);
+        }
+      });
+      
+      // Update arcs
+      document.querySelectorAll('.cycle-arc').forEach(arc => {
+        arc.classList.toggle('active', arc.id === `arc-${cycle}`);
+      });
+      
+      // Update countdown
+      document.getElementById('countdown').textContent = formatCountdown(remaining);
+    }
+
+    function init() {
+      loadHistory();
+      renderHistory();
+      updateUI();
+      
+      // Update every second
+      setInterval(updateUI, 1000);
+      
+      // Add cycle button
+      document.getElementById('add-cycle-btn').addEventListener('click', () => {
+        const cycle = getCycleAtTime(new Date());
+        addToHistory(cycle);
+      });
+      
+      // Cycle card clicks
+      document.querySelectorAll('.cycle-card').forEach(card => {
+        card.addEventListener('click', () => {
+          const cycle = card.dataset.cycle;
+          const config = cycleConfig[cycle];
+          alert(`${config.name}\n檔案: ${config.file}\n內容: ${config.desc}`);
+        });
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>

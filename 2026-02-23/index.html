@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>萤火虫 | Firefly</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400&family=Noto+Serif+TC:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-deep: #050508;
+      --bg-layer1: #0a0a0f;
+      --bg-layer2: #0f0f18;
+      --text-primary: #e8e4dc;
+      --text-muted: #6b6860;
+      --accent-warm: #f4d03f;
+      --accent-glow: #ffe066;
+      --accent-amber: #d4a017;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Noto Serif TC', serif;
+      background: var(--bg-deep);
+      color: var(--text-primary);
+      min-height: 100vh;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Three-layer background */
+    .bg-layer {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    .bg-layer-1 {
+      background: radial-gradient(ellipse 80% 50% at 50% 100%, #0f0f18 0%, transparent 70%);
+    }
+
+    .bg-layer-2 {
+      background: 
+        radial-gradient(circle at 20% 30%, rgba(244, 208, 63, 0.03) 0%, transparent 25%),
+        radial-gradient(circle at 80% 60%, rgba(212, 160, 23, 0.03) 0%, transparent 20%);
+    }
+
+    /* Grain overlay */
+    .grain {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0.08;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    }
+
+    /* Main container */
+    .container {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 2rem;
+    }
+
+    /* Input area */
+    .input-area {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+      transition: opacity 0.5s ease;
+    }
+
+    .input-area.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    h1 {
+      font-size: clamp(2rem, 6vw, 3.5rem);
+      font-weight: 600;
+      letter-spacing: 0.15em;
+      text-align: center;
+      background: linear-gradient(135deg, var(--accent-glow) 0%, var(--accent-amber) 50%, var(--accent-warm) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-shadow: 0 0 60px rgba(244, 208, 63, 0.3);
+    }
+
+    .subtitle {
+      font-family: 'DM Mono', monospace;
+      font-size: clamp(0.75rem, 2vw, 0.875rem);
+      color: var(--text-muted);
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+    }
+
+    .input-wrapper {
+      position: relative;
+      width: 100%;
+      max-width: 400px;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 1rem 1.5rem;
+      font-family: 'Noto Serif TC', serif;
+      font-size: 1.125rem;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(244, 208, 63, 0.15);
+      border-radius: 2rem;
+      color: var(--text-primary);
+      outline: none;
+      transition: all 0.3s ease;
+    }
+
+    input[type="text"]::placeholder {
+      color: var(--text-muted);
+      font-style: italic;
+    }
+
+    input[type="text"]:focus {
+      border-color: rgba(244, 208, 63, 0.4);
+      box-shadow: 0 0 30px rgba(244, 208, 63, 0.1);
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    /* Counter */
+    .counter {
+      position: fixed;
+      top: 2rem;
+      right: 2rem;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      letter-spacing: 0.1em;
+    }
+
+    .counter span {
+      color: var(--accent-warm);
+      font-weight: 400;
+    }
+
+    /* Firefly container */
+    .firefly-container {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 5;
+    }
+
+    .firefly {
+      position: absolute;
+      width: 6px;
+      height: 6px;
+      background: var(--accent-warm);
+      border-radius: 50%;
+      box-shadow: 
+        0 0 10px var(--accent-glow),
+        0 0 20px var(--accent-warm),
+        0 0 40px var(--accent-amber);
+      animation: float-up ease-out forwards, glow 2s ease-in-out infinite;
+      opacity: 0;
+    }
+
+    .firefly-text {
+      position: absolute;
+      font-family: 'Noto Serif TC', serif;
+      font-size: 0.875rem;
+      color: var(--accent-glow);
+      text-shadow: 0 0 10px var(--accent-warm);
+      white-space: nowrap;
+      animation: float-up-text ease-out forwards;
+      opacity: 0;
+    }
+
+    @keyframes float-up {
+      0% {
+        transform: translateY(0) scale(0);
+        opacity: 0;
+      }
+      10% {
+        opacity: 1;
+        transform: translateY(-20px) scale(1);
+      }
+      90% {
+        opacity: 0.8;
+      }
+      100% {
+        transform: translateY(-100vh) scale(0.3);
+        opacity: 0;
+      }
+    }
+
+    @keyframes float-up-text {
+      0% {
+        transform: translateY(0);
+        opacity: 0;
+      }
+      15% {
+        opacity: 1;
+      }
+      80% {
+        opacity: 0.6;
+      }
+      100% {
+        transform: translateY(-80vh);
+        opacity: 0;
+      }
+    }
+
+    @keyframes glow {
+      0%, 100% {
+        box-shadow: 
+          0 0 10px var(--accent-glow),
+          0 0 20px var(--accent-warm),
+          0 0 40px var(--accent-amber);
+      }
+      50% {
+        box-shadow: 
+          0 0 15px var(--accent-glow),
+          0 0 30px var(--accent-warm),
+          0 0 60px var(--accent-amber);
+      }
+    }
+
+    /* Hint */
+    .hint {
+      position: fixed;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      font-family: 'DM Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      letter-spacing: 0.2em;
+      opacity: 0.6;
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-layer bg-layer-1"></div>
+  <div class="bg-layer bg-layer-2"></div>
+  <div class="grain"></div>
+
+  <div class="counter">萤火虫 <span id="count">0</span></div>
+
+  <div class="container">
+    <div class="input-area" id="inputArea">
+      <h1>萤火虫</h1>
+      <p class="subtitle">Firefly</p>
+      <div class="input-wrapper">
+        <input type="text" id="textInput" placeholder="输入文字..." maxlength="20" autocomplete="off">
+      </div>
+    </div>
+  </div>
+
+  <div class="firefly-container" id="fireflyContainer"></div>
+
+  <div class="hint">输入文字，化为萤火虫</div>
+
+  <script>
+    const input = document.getElementById('textInput');
+    const container = document.getElementById('fireflyContainer');
+    const inputArea = document.getElementById('inputArea');
+    const countEl = document.getElementById('count');
+
+    // Load count from localStorage
+    let fireflyCount = parseInt(localStorage.getItem('fireflyCount') || '0');
+    countEl.textContent = fireflyCount;
+
+    // Create firefly effect
+    function createFirefly(text) {
+      const charCount = text.length;
+      const startX = Math.random() * (window.innerWidth - 100) + 50;
+      const startY = window.innerHeight - 100;
+
+      // Create firefly dot
+      const firefly = document.createElement('div');
+      firefly.className = 'firefly';
+      firefly.style.left = `${startX}px`;
+      firefly.style.top = `${startY}px`;
+      firefly.style.animationDuration = `${4 + Math.random() * 3}s`;
+      firefly.style.animationDelay = '0s';
+      container.appendChild(firefly);
+
+      // Create text for each character (spread out)
+      for (let i = 0; i < charCount; i++) {
+        const charEl = document.createElement('div');
+        charEl.className = 'firefly-text';
+        charEl.textContent = text[i];
+        charEl.style.left = `${startX + (i * 16) - (charCount * 8)}px`;
+        charEl.style.top = `${startY + 20}px`;
+        charEl.style.animationDuration = `${5 + Math.random() * 2}s`;
+        charEl.style.animationDelay = `${i * 0.1}s`;
+        container.appendChild(charEl);
+
+        // Remove text element after animation
+        setTimeout(() => charEl.remove(), 7000);
+      }
+
+      // Remove firefly after animation
+      setTimeout(() => firefly.remove(), 8000);
+
+      // Update counter
+      fireflyCount++;
+      countEl.textContent = fireflyCount;
+      localStorage.setItem('fireflyCount', fireflyCount.toString());
+    }
+
+    // Handle input
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && input.value.trim()) {
+        const text = input.value.trim();
+        createFirefly(text);
+        input.value = '';
+      }
+    });
+
+    // Allow clicking anywhere to create firefly
+    document.addEventListener('click', (e) => {
+      if (e.target === input || input.contains(e.target)) return;
+      // Could add click-to-create here if desired
+    });
+
+    // Focus input on load
+    input.focus();
+  </script>
+</body>
+</html>

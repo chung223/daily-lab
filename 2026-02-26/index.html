@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>月影 Moon Shadow</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@300;400;600&family=DM+Mono:wght@300&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-deep: #050508;
+      --bg-surface: #0a0a0f;
+      --text-primary: #e8e4dc;
+      --text-secondary: #6b6560;
+      --moon-glow: #f5f0e6;
+      --shadow-color: rgba(245, 240, 230, 0.15);
+      --accent: #c9a86c;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Noto Serif TC', serif;
+      background: var(--bg-deep);
+      color: var(--text-primary);
+      min-height: 100vh;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Grain overlay */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+      opacity: 0.04;
+      pointer-events: none;
+      z-index: 1000;
+    }
+
+    /* Starfield */
+    .stars {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+    }
+
+    .star {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      background: var(--text-secondary);
+      border-radius: 50%;
+      opacity: 0;
+      animation: twinkle 4s infinite;
+    }
+
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.1; }
+      50% { opacity: 0.6; }
+    }
+
+    /* Moon */
+    .moon {
+      position: fixed;
+      top: 8%;
+      right: 15%;
+      width: 80px;
+      height: 80px;
+      background: radial-gradient(circle at 30% 30%, var(--moon-glow), #d4cfc4);
+      border-radius: 50%;
+      box-shadow: 
+        0 0 60px rgba(245, 240, 230, 0.3),
+        0 0 120px rgba(245, 240, 230, 0.1);
+      z-index: 1;
+      animation: moonFloat 20s ease-in-out infinite;
+    }
+
+    .moon::before {
+      content: '';
+      position: absolute;
+      top: 15%;
+      left: 20%;
+      width: 15px;
+      height: 15px;
+      background: rgba(180, 170, 160, 0.3);
+      border-radius: 50%;
+    }
+
+    .moon::after {
+      content: '';
+      position: absolute;
+      top: 45%;
+      left: 55%;
+      width: 25px;
+      height: 20px;
+      background: rgba(180, 170, 160, 0.2);
+      border-radius: 50%;
+    }
+
+    @keyframes moonFloat {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    /* Main container */
+    .container {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 2rem;
+    }
+
+    /* Title */
+    .title {
+      font-size: 1.2rem;
+      font-weight: 300;
+      letter-spacing: 0.3em;
+      color: var(--text-secondary);
+      margin-bottom: 3rem;
+      text-transform: uppercase;
+    }
+
+    /* Input area */
+    .input-area {
+      position: relative;
+      width: 100%;
+      max-width: 500px;
+    }
+
+    input {
+      width: 100%;
+      padding: 1rem 1.5rem;
+      font-family: 'Noto Serif TC', serif;
+      font-size: 1.1rem;
+      font-weight: 300;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 4px;
+      color: var(--text-primary);
+      text-align: center;
+      outline: none;
+      transition: all 0.3s ease;
+    }
+
+    input::placeholder {
+      color: var(--text-secondary);
+      font-weight: 300;
+    }
+
+    input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 30px rgba(201, 168, 108, 0.1);
+    }
+
+    /* Shadow text container */
+    .shadows-container {
+      position: fixed;
+      inset: 0;
+      z-index: 5;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .shadow-text {
+      position: absolute;
+      font-family: 'Noto Serif TC', serif;
+      font-weight: 300;
+      white-space: nowrap;
+      opacity: 0;
+      animation: shadowDrift 12s ease-out forwards;
+    }
+
+    @keyframes shadowDrift {
+      0% {
+        opacity: 0;
+        transform: translate(0, 0) scale(0.8);
+      }
+      20% {
+        opacity: var(--shadow-color);
+        transform: translate(var(--shadow-x), var(--shadow-y)) scale(1);
+      }
+      80% {
+        opacity: var(--shadow-color);
+      }
+      100% {
+        opacity: 0;
+        transform: translate(calc(var(--shadow-x) * 2), calc(var(--shadow-y) * 1.5)) scale(1.1);
+      }
+    }
+
+    /* Counter */
+    .counter {
+      position: fixed;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      font-family: 'DM Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      letter-spacing: 0.1em;
+      z-index: 100;
+    }
+
+    .counter span {
+      color: var(--accent);
+    }
+
+    /* Hint */
+    .hint {
+      position: fixed;
+      bottom: 4rem;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      opacity: 0.6;
+      z-index: 100;
+    }
+
+    @media (max-width: 768px) {
+      .moon {
+        top: 5%;
+        right: 10%;
+        width: 60px;
+        height: 60px;
+      }
+      
+      .title {
+        font-size: 1rem;
+        letter-spacing: 0.2em;
+      }
+      
+      input {
+        font-size: 1rem;
+        padding: 0.8rem 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="stars" id="stars"></div>
+  <div class="moon"></div>
+  
+  <div class="shadows-container" id="shadows"></div>
+  
+  <div class="container">
+    <h1 class="title">月影</h1>
+    <div class="input-area">
+      <input 
+        type="text" 
+        id="textInput" 
+        placeholder="輸入文字，觀看月影" 
+        maxlength="20"
+        autocomplete="off"
+      >
+    </div>
+  </div>
+  
+  <p class="hint">Enter 後投射月影</p>
+  <p class="counter">已投射 <span id="count">0</span> 次</p>
+
+  <script>
+    // Initialize stars
+    const starsContainer = document.getElementById('stars');
+    for (let i = 0; i < 80; i++) {
+      const star = document.createElement('div');
+      star.className = 'star';
+      star.style.left = Math.random() * 100 + '%';
+      star.style.top = Math.random() * 100 + '%';
+      star.style.animationDelay = Math.random() * 4 + 's';
+      star.style.animationDuration = (3 + Math.random() * 3) + 's';
+      starsContainer.appendChild(star);
+    }
+
+    // Load counter
+    let count = parseInt(localStorage.getItem('moonshadow-count') || '0');
+    document.getElementById('count').textContent = count;
+
+    // Input handler
+    const input = document.getElementById('textInput');
+    const shadowsContainer = document.getElementById('shadows');
+
+    input.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter' && input.value.trim()) {
+        createShadow(input.value.trim());
+        input.value = '';
+        input.blur();
+        
+        // Update counter
+        count++;
+        localStorage.setItem('moonshadow-count', count.toString());
+        document.getElementById('count').textContent = count;
+      }
+    });
+
+    function createShadow(text) {
+      const shadow = document.createElement('div');
+      shadow.className = 'shadow-text';
+      shadow.textContent = text;
+      
+      // Random position (upper portion of screen)
+      const x = 10 + Math.random() * 80;
+      const y = 20 + Math.random() * 40;
+      
+      // Shadow offset (towards moon direction - top right)
+      const shadowX = 60 + Math.random() * 40;
+      const shadowY = -30 - Math.random() * 20;
+      
+      shadow.style.left = x + '%';
+      shadow.style.top = y + '%';
+      shadow.style.setProperty('--shadow-x', shadowX + 'px');
+      shadow.style.setProperty('--shadow-y', shadowY + 'px');
+      shadow.style.fontSize = (1.5 + Math.random() * 1) + 'rem';
+      shadow.style.color = 'transparent';
+      
+      shadowsContainer.appendChild(shadow);
+      
+      // Remove after animation
+      setTimeout(() => {
+        shadow.remove();
+      }, 12000);
+    }
+
+    // Keep input focused when clicking anywhere
+    document.addEventListener('click', () => {
+      if (document.activeElement !== input) {
+        input.focus();
+      }
+    });
+  </script>
+</body>
+</html>

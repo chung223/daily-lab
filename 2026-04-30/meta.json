@@ -1,0 +1,6 @@
+{
+  "title": "網站急救漫畫課 (Website Rescue Comic Lab)",
+  "type": "學習系",
+  "description": "用亮色漫畫分鏡把 6 個真實 bug 做成可翻面的教學卡，並加入 script tag 修復小遊戲與 i18n 症狀對照",
+  "inspiration": "來自 2026-04-29 Chung 真實處理的 summit.fourh.org.tw 維運現場——一次修掉 FAQ Accordion ID 重複、Skip Link 重複、OG URL 指向首頁、韓文機翻痕跡、語言切換 ARIA 提示，以及最戲劇化的 HTML script tag 未關閉 bug；另外還有「Registration 頁正常、首頁翻譯失效」的 i18n 除錯過程"
+}

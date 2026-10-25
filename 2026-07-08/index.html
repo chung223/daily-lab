@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Session ICU 重症監護室</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Noto+Serif+TC:wght@400;700&family=DM+Mono:wght@400;500&family=Caveat:wght@400;700&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.2/anime.min.js"></script>
+  <style>
+    :root {
+      --bg: #FAF7F2;
+      --primary: #2B5F8A;
+      --accent: #C94040;
+      --success: #3D7A5C;
+      --warning: #D4A84B;
+      --text: #1C1409;
+      --muted: #8B8680;
+      --card-bg: #FFFFFF;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Noto Serif TC', serif;
+      background-color: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* Paper texture overlay */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+      opacity: 0.03;
+      pointer-events: none;
+      z-index: 1000;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+
+    /* Header */
+    header {
+      text-align: center;
+      margin-bottom: 48px;
+      position: relative;
+    }
+
+    .medical-cross {
+      position: absolute;
+      top: -20px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 40px;
+      height: 40px;
+      opacity: 0.1;
+    }
+
+    h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 8px;
+      letter-spacing: 2px;
+    }
+
+    .subtitle {
+      font-size: 1rem;
+      color: var(--muted);
+      margin-bottom: 16px;
+    }
+
+    .current-time {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.875rem;
+      color: var(--muted);
+    }
+
+    /* Stats Panel */
+    .stats-panel {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 40px;
+    }
+
+    .stat-card {
+      background: var(--card-bg);
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      border: 1px solid rgba(0,0,0,0.05);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+    }
+
+    .stat-number {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.5rem;
+      font-weight: 700;
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+
+    .stat-number.total { color: var(--primary); }
+    .stat-number.healthy { color: var(--success); }
+    .stat-number.critical { color: var(--warning); }
+    .stat-number.dead { color: var(--accent); }
+
+    .stat-label {
+      font-size: 0.875rem;
+      color: var(--muted);
+    }
+
+    /* Session Grid */
+    .session-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 24px;
+      margin-bottom: 40px;
+    }
+
+    .session-card {
+      background: var(--card-bg);
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+      border: 2px solid transparent;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .session-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+    }
+
+    .session-card.healthy::before { background: var(--success); }
+    .session-card.critical::before { background: var(--warning); }
+    .session-card.dead::before { background: var(--accent); }
+
+    .session-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+    }
+
+    .session-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 16px;
+    }
+
+    .session-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 500;
+    }
+
+    .status-badge.healthy {
+      background: rgba(61, 122, 92, 0.1);
+      color: var(--success);
+    }
+
+    .status-badge.critical {
+      background: rgba(212, 168, 75, 0.1);
+      color: var(--warning);
+    }
+
+    .status-badge.dead {
+      background: rgba(201, 64, 64, 0.1);
+      color: var(--accent);
+    }
+
+    /* ECG Animation */
+    .ecg-container {
+      height: 40px;
+      margin: 16px 0;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .ecg-line {
+      width: 100%;
+      height: 100%;
+    }
+
+    .ecg-path {
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .ecg-path.healthy { stroke: var(--success); }
+    .ecg-path.critical { stroke: var(--warning); }
+    .ecg-path.dead { stroke: var(--accent); }
+
+    .session-info {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.875rem;
+    }
+
+    .info-label {
+      color: var(--muted);
+    }
+
+    .info-value {
+      font-family: 'DM Mono', monospace;
+      color: var(--text);
+    }
+
+    .heartbeat-dot {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      margin-right: 6px;
+    }
+
+    .heartbeat-dot.alive {
+      background: var(--success);
+      animation: pulse 1s ease-in-out infinite;
+    }
+
+    .heartbeat-dot.dead {
+      background: var(--accent);
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(1.2); }
+    }
+
+    /* Revive Button */
+    .revive-btn {
+      width: 100%;
+      padding: 12px 24px;
+      border: 2px solid var(--primary);
+      background: transparent;
+      color: var(--primary);
+      font-family: 'Noto Serif TC', serif;
+      font-size: 0.875rem;
+      font-weight: 500;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .revive-btn:hover:not(:disabled) {
+      background: var(--primary);
+      color: white;
+    }
+
+    .revive-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .revive-btn.reviving {
+      background: var(--primary);
+      color: white;
+      animation: pulse-btn 0.5s ease-in-out infinite;
+    }
+
+    @keyframes pulse-btn {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.02); }
+    }
+
+    /* Empty State */
+    .empty-state {
+      text-align: center;
+      padding: 80px 20px;
+      color: var(--muted);
+    }
+
+    .empty-icon {
+      font-size: 4rem;
+      margin-bottom: 16px;
+      opacity: 0.5;
+    }
+
+    .empty-text {
+      font-size: 1.25rem;
+      margin-bottom: 8px;
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 24px;
+      border-top: 1px solid rgba(0,0,0,0.08);
+    }
+
+    .refresh-btn {
+      padding: 10px 24px;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-family: 'Noto Serif TC', serif;
+      font-size: 0.875rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .refresh-btn:hover {
+      background: #1e4a6e;
+    }
+
+    .last-refresh {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--muted);
+      margin-top: 12px;
+    }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-size: 0.875rem;
+      opacity: 0;
+      transition: all 0.3s ease;
+      z-index: 1001;
+    }
+
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+
+    .toast.success {
+      background: var(--success);
+      color: white;
+    }
+
+    .toast.error {
+      background: var(--accent);
+      color: white;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .stats-panel {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      h1 {
+        font-size: 1.75rem;
+      }
+
+      .session-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* SVG Icons */
+    .icon {
+      width: 16px;
+      height: 16px;
+      vertical-align: middle;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <svg class="medical-cross" viewBox="0 0 40 40" fill="currentColor">
+        <rect x="16" y="4" width="8" height="32" rx="2"/>
+        <rect x="4" y="16" width="32" height="8" rx="2"/>
+      </svg>
+      <h1>Session ICU 重症監護室</h1>
+      <p class="subtitle">系統對話健康監測</p>
+      <p class="current-time" id="currentTime">載入中...</p>
+    </header>
+
+    <div class="stats-panel" id="statsPanel">
+      <div class="stat-card">
+        <div class="stat-number total" id="statTotal">-</div>
+        <div class="stat-label">總病患數</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number healthy" id="statHealthy">-</div>
+        <div class="stat-label">健康</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number critical" id="statCritical">-</div>
+        <div class="stat-label">危急</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number dead" id="statDead">-</div>
+        <div class="stat-label">死亡</div>
+      </div>
+    </div>
+
+    <div class="session-grid" id="sessionGrid">
+      <div class="empty-state">
+        <div class="empty-icon">🏥</div>
+        <p class="empty-text">載入病患資料中...</p>
+      </div>
+    </div>
+
+    <footer>
+      <button class="refresh-btn" onclick="loadSessions()">
+        🔄 重新整理
+      </button>
+      <p class="last-refresh" id="lastRefresh">上次更新：-</p>
+    </footer>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    // ECG path data generators
+    function generateECGAlive() {
+      return 'M0,20 L30,20 L35,20 L40,10 L45,30 L50,20 L55,20 L90,20 L95,20 L100,10 L105,30 L110,20 L115,20 L150,20 L155,20 L160,10 L165,30 L170,20 L175,20 L200,20';
+    }
+
+    function generateECGFlatline() {
+      return 'M0,20 L200,20';
+    }
+
+    function formatDuration(ms) {
+      if (!ms || ms <= 0) return '未知';
+      const seconds = Math.floor(ms / 1000);
+      const minutes = Math.floor(seconds / 60);
+      const hours = Math.floor(minutes / 60);
+      const days = Math.floor(hours / 24);
+      
+      if (days > 0) return `${days}天 ${hours % 24}小時`;
+      if (hours > 0) return `${hours}小時 ${minutes % 60}分`;
+      if (minutes > 0) return `${minutes}分鐘`;
+      return `${seconds}秒`;
+    }
+
+    function formatTimestamp(ts) {
+      if (!ts) return '未知';
+      const date = new Date(ts);
+      const now = new Date();
+      const diff = now - date;
+      
+      if (diff < 60000) return '剛剛';
+      if (diff < 3600000) return `${Math.floor(diff / 60000)} 分鐘前`;
+      if (diff < 86400000) return `${Math.floor(diff / 3600000)} 小時前`;
+      
+      return date.toLocaleString('zh-TW', {
+        month: 'numeric',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+    }
+
+    function getSessionStatus(session) {
+      // Determine status based on available fields
+      const status = session.status?.toLowerCase() || 'unknown';
+      const activeMinutes = session.activeMinutes || 0;
+      
+      if (status === 'failed' || status === 'dead' || status === 'terminated') {
+        return 'dead';
+      }
+      if (status === 'active' && activeMinutes < 30) {
+        return 'healthy';
+      }
+      if (status === 'active' && activeMinutes >= 30) {
+        return 'critical';
+      }
+      if (status === 'idle') {
+        return 'critical';
+      }
+      return 'healthy';
+    }
+
+    function getSessionName(session) {
+      return session.label || session.sessionKey || session.agentId || 'Unknown Session';
+    }
+
+    function getECGPath(status) {
+      return status === 'dead' ? generateECGFlatline() : generateECGAlive();
+    }
+
+    function showToast(message, type = 'success') {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      toast.className = `toast ${type} show`;
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 3000);
+    }
+
+    function animateECG() {
+      anime({
+        targets: '.ecg-path.healthy',
+        strokeDashoffset: [0, -100],
+        easing: 'linear',
+        duration: 2000,
+        loop: true
+      });
+    }
+
+    function createSessionCard(session, index) {
+      const status = getSessionStatus(session);
+      const name = getSessionName(session);
+      const uptime = session.activeMinutes ? session.activeMinutes * 60 * 1000 : 0;
+      const lastActivity = session.lastMessageAt || session.createdAt;
+
+      const statusLabels = {
+        healthy: '健康',
+        critical: '危急',
+        dead: '死亡'
+      };
+
+      const card = document.createElement('div');
+      card.className = `session-card ${status}`;
+      card.innerHTML = `
+        <div class="session-header">
+          <div class="session-name">${name}</div>
+          <span class="status-badge ${status}">
+            <span class="heartbeat-dot ${status === 'dead' ? 'dead' : 'alive'}"></span>
+            ${statusLabels[status]}
+          </span>
+        </div>
+        
+        <div class="ecg-container">
+          <svg class="ecg-line" viewBox="0 0 200 40" preserveAspectRatio="none">
+            <path class="ecg-path ${status}" d="${getECGPath(status)}"/>
+          </svg>
+        </div>
+        
+        <div class="session-info">
+          <div class="info-row">
+            <span class="info-label">運行時間</span>
+            <span class="info-value">${status === 'dead' ? '已終止' : formatDuration(uptime)}</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">最後活動</span>
+            <span class="info-value">${formatTimestamp(lastActivity)}</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Session ID</span>
+            <span class="info-value">${(session.sessionKey || 'N/A').substring(0, 12)}...</span>
+          </div>
+        </div>
+        
+        ${status === 'dead' ? `
+          <button class="revive-btn" onclick="reviveSession('${session.sessionKey}', this)">
+            ⚡ 嘗試搶救
+          </button>
+        ` : `
+          <button class="revive-btn" disabled style="opacity: 0.3;">
+            ✓ 狀態穩定
+          </button>
+        `}
+      `;
+
+      return card;
+    }
+
+    async function reviveSession(sessionKey, btn) {
+      btn.textContent = '搶救中...';
+      btn.classList.add('reviving');
+      btn.disabled = true;
+
+      try {
+        // Call wake API
+        const response = await fetch('/api/cron/wake', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ sessionKey })
+        });
+
+        if (response.ok) {
+          showToast('🎉 搶救成功！Session 已甦醒', 'success');
+          setTimeout(loadSessions, 1500);
+        } else {
+          throw new Error('Wake failed');
+        }
+      } catch (e) {
+        btn.textContent = '搶救失敗';
+        btn.classList.remove('reviving');
+        btn.style.borderColor = 'var(--accent)';
+        btn.style.color = 'var(--accent)';
+        showToast('⚠️ 搶救失敗，請手動檢查', 'error');
+      }
+    }
+
+    async function loadSessions() {
+      const grid = document.getElementById('sessionGrid');
+      grid.innerHTML = '<div class="empty-state"><div class="empty-icon">🏥</div><p class="empty-text">載入病患資料中...</p></div>';
+
+      try {
+        // Fetch sessions from API
+        const response = await fetch('/api/sessions');
+        const data = await response.json();
+        
+        if (!data.sessions || data.sessions.length === 0) {
+          grid.innerHTML = `
+            <div class="empty-state">
+              <div class="empty-icon">😴</div>
+              <p class="empty-text">ICU空空如也</p>
+              <p class="subtitle">目前沒有任何病患</p>
+            </div>
+          `;
+          updateStats(0, 0, 0, 0);
+          return;
+        }
+
+        // Process and sort sessions
+        const sessions = data.sessions.sort((a, b) => {
+          const statusOrder = { dead: 0, critical: 1, healthy: 2 };
+          return statusOrder[getSessionStatus(a)] - statusOrder[getSessionStatus(b)];
+        });
+
+        // Render cards
+        grid.innerHTML = '';
+        sessions.forEach((session, index) => {
+          const card = createSessionCard(session, index);
+          grid.appendChild(card);
+        });
+
+        // Update stats
+        const stats = { healthy: 0, critical: 0, dead: 0 };
+        sessions.forEach(s => {
+          const status = getSessionStatus(s);
+          stats[status]++;
+        });
+        updateStats(sessions.length, stats.healthy, stats.critical, stats.dead);
+
+        // Animate ECG for alive sessions
+        setTimeout(animateECG, 500);
+
+      } catch (e) {
+        console.error('Failed to load sessions:', e);
+        
+        // Try to load from localStorage as fallback
+        const cached = localStorage.getItem('sessionICU_cache');
+        if (cached) {
+          const data = JSON.parse(cached);
+          grid.innerHTML = '';
+          data.sessions.forEach((session, index) => {
+            const card = createSessionCard(session, index);
+            grid.appendChild(card);
+          });
+          updateStats(data.stats.total, data.stats.healthy, data.stats.critical, data.stats.dead);
+          showToast('⚠️ 連線異常，顯示快取資料', 'error');
+        } else {
+          grid.innerHTML = `
+            <div class="empty-state">
+              <div class="empty-icon">📡</div>
+              <p class="empty-text">連線異常</p>
+              <p class="subtitle">無法取得 session 資料</p>
+            </div>
+          `;
+        }
+      }
+
+      // Update timestamps
+      document.getElementById('lastRefresh').textContent = 
+        `上次更新：${new Date().toLocaleString('zh-TW')}`;
+    }
+
+    function updateStats(total, healthy, critical, dead) {
+      document.getElementById('statTotal').textContent = total;
+      document.getElementById('statHealthy').textContent = healthy;
+      document.getElementById('statCritical').textContent = critical;
+      document.getElementById('statDead').textContent = dead;
+
+      // Cache to localStorage
+      localStorage.setItem('sessionICU_cache', JSON.stringify({
+        sessions: [],
+        stats: { total, healthy, critical, dead },
+        timestamp: Date.now()
+      }));
+    }
+
+    function updateTime() {
+      const now = new Date();
+      document.getElementById('currentTime').textContent = 
+        now.toLocaleString('zh-TW', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit',
+          weekday: 'long'
+        });
+    }
+
+    // Initialize
+    updateTime();
+    setInterval(updateTime, 1000);
+    loadSessions();
+    setInterval(loadSessions, 30000);
+  </script>
+</body>
+</html>

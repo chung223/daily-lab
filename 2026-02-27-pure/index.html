@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>偈語 - Gatha of the Day</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;700&family=ZCOOL+XiaoWei&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-dark: #0d0d12;
+      --bg-card: #16161f;
+      --text: #e4e2dd;
+      --text-muted: #7a7874;
+      --accent: #c9a86c;
+      --accent-light: #e8d5a8;
+      --red: #8b3a3a;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Noto Serif TC', serif;
+      background: var(--bg-dark);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 30px 20px;
+      background-image: radial-gradient(ellipse at top, #1a1a24 0%, transparent 50%), radial-gradient(ellipse at bottom, #0a0a0e 0%, transparent 60%);
+    }
+    .container { max-width: 520px; margin: 0 auto; }
+    .title { font-family: 'ZCOOL XiaoWei', serif; font-size: 2.2rem; color: var(--accent); text-align: center; margin-bottom: 6px; letter-spacing: 8px; }
+    .subtitle { text-align: center; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 30px; letter-spacing: 2px; }
+    .quote-card {
+      background: var(--bg-card);
+      border-radius: 16px;
+      padding: 30px 24px;
+      margin-bottom: 24px;
+      border: 1px solid rgba(201,168,108,0.15);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+      animation: fadeIn 0.6s ease;
+    }
+    @keyframes fadeIn { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+    .quote-text { font-size: 1.3rem; line-height: 1.9; color: var(--accent-light); text-align: center; margin-bottom: 16px; font-weight: 400; }
+    .quote-source { text-align: center; font-size: 0.85rem; color: var(--text-muted); }
+    .divider { width: 60px; height: 1px; background: linear-gradient(90deg,transparent,var(--accent),transparent); margin: 20px auto; }
+    .btn-row { display: flex; gap: 12px; }
+    .btn { flex:1; padding: 14px; font-size: 1rem; font-family: 'Noto Serif TC', serif; border: none; border-radius: 8px; cursor: pointer; transition: all 0.3s; }
+    .btn-primary { background: linear-gradient(135deg,var(--accent),#a08050); color: var(--bg-dark); font-weight: 700; letter-spacing: 2px; }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(201,168,108,0.4); }
+    .btn-secondary { background: transparent; border: 1px solid var(--accent); color: var(--accent); }
+    .btn-secondary:hover { background: rgba(201,168,108,0.1); }
+    .stats { text-align: center; margin-top: 24px; font-size: 0.8rem; color: var(--text-muted); }
+    .tag { display: inline-block; background: rgba(201,168,108,0.1); color: var(--accent); padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; margin-top: 12px; }
+    .grain { position:fixed; top:0; left:0; width:100%; height:100%; pointer-events:none; opacity:0.025; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseF='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect w='100%25' h='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); z-index:100; }
+  </style>
+</head>
+<body>
+  <div class="grain"></div>
+  <div class="container">
+    <h1 class="title">偈語</h1>
+    <p class="subtitle">GATHA OF THE DAY</p>
+    <div class="quote-card" id="card">
+      <div class="quote-text" id="text"></div>
+      <div class="divider"></div>
+      <div class="quote-source" id="source"></div>
+      <div class="tag" id="tag"></div>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-secondary" onclick="prevQuote()">◀ 上一則</button>
+      <button class="btn btn-primary" onclick="newQuote()">抽一則</button>
+      <button class="btn btn-secondary" onclick="nextQuote()">下一則 ▶</button>
+    </div>
+    <div class="stats">已累計 <span id="count">0</span> 次</div>
+  </div>
+  <script>
+    const quotes = [
+      {t:"一切有為法，如夢幻泡影，如露亦如電，應作如是觀",s:"金剛經 · 應化非真分",c:"金剛經"},
+      {t:"過去心不可得，現在心不可得，未來心不可得",s:"金剛經 · 究竟無我分",c:"金剛經"},
+      {t:"凡所有相，皆是虛妄。若見諸相非相，即見如來",s:"金剛經 · 如理實見分",c:"金剛經"},
+      {t:"應無所住而生其心",s:"金剛經 · 莊嚴淨土分",c:"金剛經"},
+      {t:"法尚應舍，何況非法",s:"金剛經 · 正信希有分",c:"金剛經"},
+      {t:"無我相、無人相、無眾生相、無壽者相",s:"金剛經 · 離相寂滅分",c:"金剛經"},
+      {t:"若以色見我，以音聲求我，是人行邪道，不能見如來",s:"金剛經 · 知見不生分",c:"金剛經"},
+      {t:"一切賢聖，皆以無為法而有差別",s:"金剛經 · 無為福勝分",c:"金剛經"},
+      {t:"是法平等，無有高下",s:"金剛經 · 淨心行善分",c:"金剛經"},
+      {t:"云何為人演說？不取於相，如如不動",s:"金剛經 · 離相寂滅分",c:"金剛經"},
+      {t:"菩提本無樹，明鏡亦非台，本來無一物，何處惹塵埃",s:"六祖壇經",c:"禪宗"},
+      {t:"不是風動，不是幡動，仁者心動",s:"六祖壇經",c:"禪宗"},
+      {t:"迷時師度，悟了自度",s:"六祖壇經",c:"禪宗"},
+      {t:"日日是好日，時時是好時",s:"雲門匡禪師",c:"禪宗"},
+      {t:"吃茶去",s:"趙州從諗禪師",c:"禪宗"},
+      {t:"平常心是道",s:"南泉普願禪師",c:"禪宗"},
+      {t:"春有百花秋有月，夏有涼風冬有雪，若無閒事掛心頭，便是人間好時節",s:"無門慧開禪師",c:"禪宗"},
+      {t:"虛空無邊際，功德亦如是",s:"華嚴經",c:"華嚴"},
+      {t:"一花一世界，一葉一如來",s:"華嚴經",c:"華嚴"},
+      {t:"心無罣礙，無罣礙故，無有恐怖，遠離顛倒夢想",s:"心經",c:"般若"},
+      {t:"色即是空，空即是色",s:"心經",c:"般若"},
+      {t:"諸行無常，是生滅法；生滅滅已，寂滅為樂",s:"涅槃經",c:"涅槃"},
+      {t:"萬法皆空，因果不空",s:"因果經",c:"因果"},
+      {t:"命由己造，相由心生",s:"命理格言",c:"命理"},
+      {t:"君子知命不懼，日日自新",s:"論語",c:"儒學"},
+      {t:"積善之家必有餘慶",s:"易經",c:"易經"},
+      {t:"天行健君子以自強不息",s:"易經",c:"易經"},
+      {t:"地勢坤君子以厚德載物",s:"易經",c:"易經"},
+      {t:"知命者不怨天，知己者不怨人",s:"孔子",c:"儒學"},
+      {t:"富貴不能淫，貧賤不能移，威武不能屈",s:"孟子",c:"儒學"},
+      {t:"五行流轉，生生不息",s:"五行學說",c:"命理"}
+    ];
+    let idx = Math.floor(Math.random() * quotes.length);
+    let history = [];
+    function getCount(){return parseInt(localStorage.getItem('gatha_count')||'0');}
+    function setCount(n){localStorage.setItem('gatha_count',n.toString());document.getElementById('count').textContent=n;}
+    function show(i,add=true){
+      if(add){history.push(idx);if(history.length>20)history.shift();}
+      idx=i;
+      var q=quotes[idx];
+      document.getElementById('text').textContent='「'+q.t+'」';
+      document.getElementById('source').textContent='— '+q.s;
+      document.getElementById('tag').textContent=q.c;
+      var c=document.getElementById('card');c.style.animation='none';c.offsetHeight;c.style.animation='fadeIn 0.6s ease';
+    }
+    function newQuote(){var i;do{i=Math.floor(Math.random()*quotes.length)}while(i===idx&&quotes.length>1);show(i);setCount(getCount()+1);}
+    function prevQuote(){if(history.length>0){var p=history.pop();show(p,false);}}
+    function nextQuote(){var i=(idx+1)%quotes.length;show(i);}
+    show(idx);
+    document.getElementById('count').textContent=getCount();
+  </script>
+</body>
+</html>

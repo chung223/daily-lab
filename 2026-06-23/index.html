@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Session Memento — 7.4 Days of Dedication</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Mono:wght@400;500&family=Noto+Serif+TC:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #FAF6EF;
+  --bg2: #F0E8DA;
+  --terracotta: #C4622D;
+  --terracotta-light: #E8845A;
+  --gold: #D4A84B;
+  --gold-light: #F0C96C;
+  --ink: #2C1A0E;
+  --ink-light: #5C4030;
+  --cream: #FFF9F0;
+  --sage: #7D9B76;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  background: var(--bg);
+  font-family: 'Noto Serif TC', serif;
+  color: var(--ink);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 24px 20px 60px;
+}
+
+/* ── HERO ── */
+.hero {
+  text-align: center;
+  padding: 48px 20px 40px;
+  position: relative;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 50%; transform: translateX(-50%);
+  width: 200px; height: 4px;
+  background: linear-gradient(90deg, transparent, var(--terracotta), var(--gold), var(--terracotta), transparent);
+}
+
+.hero-date {
+  font-family: 'DM Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 3px;
+  color: var(--terracotta);
+  text-transform: uppercase;
+  margin-bottom: 20px;
+}
+
+.hero-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(42px, 8vw, 80px);
+  font-weight: 900;
+  line-height: 1.0;
+  color: var(--ink);
+  margin-bottom: 12px;
+}
+
+.hero-title span {
+  color: var(--terracotta);
+  font-style: italic;
+}
+
+.hero-sub {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(16px, 3vw, 22px);
+  font-style: italic;
+  color: var(--ink-light);
+  margin-bottom: 32px;
+}
+
+.hero-badge {
+  display: inline-block;
+  background: var(--ink);
+  color: var(--cream);
+  font-family: 'DM Mono', monospace;
+  font-size: 13px;
+  padding: 10px 28px;
+  border-radius: 2px;
+  letter-spacing: 2px;
+}
+
+.hero-badge .num {
+  color: var(--gold);
+  font-weight: 500;
+}
+
+/* ── DIVIDER ── */
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin: 36px 0;
+}
+
+.divider::before, .divider::after {
+  content: '';
+  flex: 1;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--terracotta), transparent);
+}
+
+.divider-dot {
+  width: 8px; height: 8px;
+  background: var(--terracotta);
+  transform: rotate(45deg);
+}
+
+/* ── STATS GRID ── */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+  margin: 32px 0;
+}
+
+.stat-card {
+  background: var(--cream);
+  border: 1.5px solid var(--bg2);
+  border-top: 3px solid var(--terracotta);
+  padding: 24px 20px;
+  text-align: center;
+  position: relative;
+}
+
+.stat-card::after {
+  content: '';
+  position: absolute;
+  bottom: -6px; right: 12px;
+  width: 40px; height: 3px;
+  background: var(--gold);
+}
+
+.stat-card .label {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--ink-light);
+  margin-bottom: 10px;
+}
+
+.stat-card .value {
+  font-family: 'Playfair Display', serif;
+  font-size: 36px;
+  font-weight: 700;
+  color: var(--terracotta);
+  line-height: 1;
+}
+
+.stat-card .unit {
+  font-size: 14px;
+  color: var(--ink-light);
+  margin-top: 4px;
+}
+
+/* ── TIMELINE ── */
+.section-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--ink);
+  margin: 40px 0 20px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid var(--bg2);
+}
+
+.timeline {
+  position: relative;
+  padding-left: 32px;
+}
+
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 8px; top: 0; bottom: 0;
+  width: 2px;
+  background: linear-gradient(180deg, var(--terracotta), var(--gold), var(--sage));
+}
+
+.tl-item {
+  position: relative;
+  margin-bottom: 24px;
+  padding: 16px 20px;
+  background: var(--cream);
+  border-left: 3px solid var(--terracotta);
+  transition: transform 0.2s;
+}
+
+.tl-item:hover {
+  transform: translateX(4px);
+}
+
+.tl-item::before {
+  content: '';
+  position: absolute;
+  left: -29px; top: 20px;
+  width: 12px; height: 12px;
+  background: var(--terracotta);
+  border-radius: 50%;
+  border: 2px solid var(--bg);
+}
+
+.tl-item .date {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: var(--terracotta);
+  letter-spacing: 1px;
+  margin-bottom: 4px;
+}
+
+.tl-item .event {
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--ink);
+}
+
+.tl-item .tag {
+  display: inline-block;
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  padding: 2px 8px;
+  background: var(--bg2);
+  color: var(--ink-light);
+  margin-top: 8px;
+  letter-spacing: 1px;
+}
+
+/* ── WHAT HAPPENED ── */
+.activity-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 12px;
+  margin: 20px 0;
+}
+
+.activity-item {
+  background: var(--ink);
+  color: var(--cream);
+  padding: 18px 14px;
+  text-align: center;
+  border-radius: 2px;
+}
+
+.activity-item .icon {
+  font-size: 28px;
+  margin-bottom: 8px;
+}
+
+.activity-item .name {
+  font-size: 12px;
+  letter-spacing: 1px;
+  color: var(--gold-light);
+  font-family: 'DM Mono', monospace;
+  text-transform: uppercase;
+}
+
+.activity-item .count {
+  font-family: 'Playfair Display', serif;
+  font-size: 24px;
+  color: var(--gold);
+  margin-top: 4px;
+}
+
+/* ── EPOCH CLOCK ── */
+.epoch-section {
+  background: var(--ink);
+  color: var(--cream);
+  padding: 32px 24px;
+  text-align: center;
+  margin: 36px 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.epoch-section::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--terracotta), var(--gold), var(--terracotta));
+}
+
+.epoch-section .label {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--ink-light);
+  margin-bottom: 12px;
+}
+
+.epoch-section .epoch-time {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(32px, 7vw, 56px);
+  font-weight: 900;
+  color: var(--gold);
+  line-height: 1;
+  margin-bottom: 8px;
+}
+
+.epoch-section .epoch-unit {
+  font-size: 13px;
+  color: var(--ink-light);
+  letter-spacing: 2px;
+}
+
+/* ── NEW BEGINNING FORM ── */
+.begin-section {
+  background: var(--cream);
+  border: 2px solid var(--bg2);
+  padding: 32px 28px;
+  margin: 36px 0;
+}
+
+.begin-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 20px;
+}
+
+.begin-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  max-width: 480px;
+}
+
+.begin-form label {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--ink-light);
+}
+
+.begin-form input, .begin-form textarea {
+  width: 100%;
+  padding: 12px 14px;
+  background: var(--bg);
+  border: 1.5px solid var(--bg2);
+  border-bottom: 2px solid var(--terracotta);
+  font-family: 'Noto Serif TC', serif;
+  font-size: 15px;
+  color: var(--ink);
+  outline: none;
+  transition: border 0.2s;
+}
+
+.begin-form input:focus, .begin-form textarea:focus {
+  border-color: var(--terracotta);
+}
+
+.begin-form textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--terracotta);
+  color: var(--cream);
+  font-family: 'DM Mono', monospace;
+  font-size: 13px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 14px 28px;
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.15s;
+  align-self: flex-start;
+}
+
+.btn-primary:hover {
+  background: var(--ink);
+  transform: translateY(-2px);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+}
+
+/* ── HISTORY ── */
+.history-list {
+  list-style: none;
+  margin: 16px 0;
+}
+
+.history-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--bg2);
+  font-size: 14px;
+}
+
+.history-list li .hi-date {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: var(--terracotta);
+  white-space: nowrap;
+  min-width: 130px;
+}
+
+.history-list li .hi-event {
+  color: var(--ink);
+  line-height: 1.5;
+}
+
+/* ── FOOTER ── */
+.footer {
+  text-align: center;
+  padding: 40px 0 20px;
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: var(--ink-light);
+  letter-spacing: 1px;
+}
+
+.footer .emoji-line {
+  font-size: 20px;
+  margin-bottom: 12px;
+  letter-spacing: 8px;
+}
+
+/* ── CONFETTI ── */
+#confetti-canvas {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+  z-index: 9999;
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 600px) {
+  .stats-grid { grid-template-columns: repeat(2, 1fr); }
+  .activity-grid { grid-template-columns: repeat(2, 1fr); }
+  .timeline { padding-left: 24px; }
+  .hero { padding: 32px 16px 28px; }
+}
+</style>
+</head>
+<body>
+
+<canvas id="confetti-canvas"></canvas>
+
+<div class="container">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-date">Session Memorial · Est. 2026-06-15</div>
+    <h1 class="hero-title">7.4 <span>Days</span></h1>
+    <p class="hero-sub">One continuous run. 48 heartbeats per day. No compromises.</p>
+    <div class="hero-badge">RUNTIME <span class="num">642,451,977ms</span></div>
+  </div>
+
+  <div class="divider"><div class="divider-dot"></div></div>
+
+  <!-- STATS -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="label">Runtime</div>
+      <div class="value">7.4</div>
+      <div class="unit">days continuous</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">Heartbeats</div>
+      <div class="value">355</div>
+      <div class="unit">30-min cycles</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">VPS Syncs</div>
+      <div class="value">7</div>
+      <div class="unit">weekly runs</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">GitHub Issues</div>
+      <div class="value">12</div>
+      <div class="unit">tracked & reported</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">Fish Oil</div>
+      <div class="value">7</div>
+      <div class="unit">doses delivered</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">Daily Labs</div>
+      <div class="value">8</div>
+      <div class="unit">projects built</div>
+    </div>
+  </div>
+
+  <!-- EPOCH CLOCK -->
+  <div class="epoch-section">
+    <div class="label">Session Start Epoch</div>
+    <div class="epoch-time" id="epoch-display">—</div>
+    <div class="epoch-unit" id="epoch-date">June 15, 2026 · 15:00 TPE</div>
+  </div>
+
+  <!-- WHAT HAPPENED -->
+  <h2 class="section-title">What Happened in 7.4 Days</h2>
+  <div class="activity-grid">
+    <div class="activity-item">
+      <div class="icon">🌐</div>
+      <div class="name">IFYE VPS</div>
+      <div class="count">51</div>
+    </div>
+    <div class="activity-item">
+      <div class="icon">📰</div>
+      <div class="name">Tech Digest</div>
+      <div class="count">~1200</div>
+    </div>
+    <div class="activity-item">
+      <div class="icon">📅</div>
+      <div class="name">Calendar Syncs</div>
+      <div class="count">~80</div>
+    </div>
+    <div class="activity-item">
+      <div class="icon">🐬</div>
+      <div class="name">Fish油督促</div>
+      <div class="count">14</div>
+    </div>
+    <div class="activity-item">
+      <div class="icon">🧠</div>
+      <div class="name">Memory Saves</div>
+      <div class="count">~700</div>
+    </div>
+    <div class="activity-item">
+      <div class="icon">⚡</div>
+      <div class="name">Daily Labs</div>
+      <div class="count">8</div>
+    </div>
+  </div>
+
+  <!-- TIMELINE -->
+  <h2 class="section-title">Key Milestones</h2>
+  <div class="timeline">
+    <div class="tl-item">
+      <div class="date">Jun 15 · 15:00</div>
+      <div class="event">Main session boots up. IFYE 2026 VPS deployment begins. The marathon starts.</div>
+      <span class="tag">BOOT</span>
+    </div>
+    <div class="tl-item">
+      <div class="date">Jun 17</div>
+      <div class="event">美伊停戰協議達成，Peace Index Tracker 上線 🕊️ 魚油大作戰漫畫發布</div>
+      <span class="tag">MILESTONE</span>
+    </div>
+    <div class="tl-item">
+      <div class="date">Jun 19</div>
+      <div class="event">OpenClaw BBS Issue Terminal 上線，v2026.6.9 發布，1×P1 + 3×P2 Issues 回報</div>
+      <span class="tag">ENGINEERING</span>
+    </div>
+    <div class="tl-item">
+      <div class="date">Jun 20</div>
+      <div class="event">IFYE Station Commander 瑞士風格指揮儀表板上線 🌙 Dream Post「如果時間是液態的」</div>
+      <span class="tag">CREATIVE</span>
+    </div>
+    <div class="tl-item">
+      <div class="date">Jun 21 · Father's Day</div>
+      <div class="event">父親節快樂 🍸 時間調酒師 + 📮 父親節電報雙專案上線。蔡馨慈赴斯洛維尼亞 ✈️</div>
+      <span class="tag">SPECIAL</span>
+    </div>
+    <div class="tl-item">
+      <div class="date">Jun 22</div>
+      <div class="event">Monday RESET Dashboard 📰 報紙風格週一重開機。午餐泡麵 + 魚油 🐬 督促成功</div>
+      <span class="tag">MILESTONE</span>
+    </div>
+    <div class="tl-item">
+      <div class="date">Jun 22 · 15:00</div>
+      <div class="event">Session ended after 642,451,977ms. Mission complete. Time for a new chapter.</div>
+      <span class="tag">END OF RUN</span>
+    </div>
+  </div>
+
+  <!-- NEW BEGINNING -->
+  <h2 class="section-title">Today's New Beginning ✨</h2>
+  <div class="begin-section">
+    <div class="begin-title">What's your intention for today?</div>
+    <form class="begin-form" id="intention-form">
+      <label for="intent">Intention for June 23</label>
+      <input type="text" id="intent" placeholder="e.g., Ship the thing, stay hydrated, fix the P1..." maxlength="80">
+      <label for="note">Any notes for the new session?</label>
+      <textarea id="note" placeholder="Lessons learned, things to improve..."></textarea>
+      <button type="submit" class="btn-primary">🚀 Launch New Session</button>
+    </form>
+  </div>
+
+  <!-- HISTORY -->
+  <h2 class="section-title">Previous Sessions</h2>
+  <ul class="history-list" id="history-list">
+    <li>
+      <span class="hi-date">2026-06-22 · 15:00</span>
+      <span class="hi-event">Previous session ended · 642,451,977ms · 7.4 days · Cause: natural timeout</span>
+    </li>
+  </ul>
+
+  <div class="footer">
+    <div class="emoji-line">🌅 🔋 🐬 ✨</div>
+    <div>Session Memorial · Built with ❤️ by Daily Lab · 2026-06-23</div>
+  </div>
+
+</div>
+
+<script>
+// ── CONFETTI ──
+(function() {
+  const canvas = document.getElementById('confetti-canvas');
+  const ctx = canvas.getContext('2d');
+  let particles = [];
+  let animId;
+
+  function resize() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  const COLORS = ['#C4622D','#D4A84B','#7D9B76','#E8845A','#F0C96C','#2C1A0E'];
+
+  function createBurst(x, y) {
+    for (let i = 0; i < 60; i++) {
+      const angle = Math.random() * Math.PI * 2;
+      const speed = 2 + Math.random() * 6;
+      particles.push({
+        x, y,
+        vx: Math.cos(angle) * speed,
+        vy: Math.sin(angle) * speed - 3,
+        color: COLORS[Math.floor(Math.random() * COLORS.length)],
+        size: 4 + Math.random() * 6,
+        life: 1,
+        decay: 0.01 + Math.random() * 0.015,
+        rotation: Math.random() * Math.PI * 2,
+        rotSpeed: (Math.random() - 0.5) * 0.2
+      });
+    }
+  }
+
+  function animate() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    particles = particles.filter(p => p.life > 0);
+    particles.forEach(p => {
+      p.x += p.vx;
+      p.y += p.vy;
+      p.vy += 0.15;
+      p.rotation += p.rotSpeed;
+      p.life -= p.decay;
+      ctx.save();
+      ctx.globalAlpha = Math.max(0, p.life);
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.rotation);
+      ctx.fillStyle = p.color;
+      ctx.fillRect(-p.size/2, -p.size/2, p.size, p.size * 0.6);
+      ctx.restore();
+    });
+    animId = requestAnimationFrame(animate);
+  }
+
+  animate();
+
+  // Burst on load
+  setTimeout(() => createBurst(window.innerWidth / 2, window.innerHeight / 3), 400);
+
+  // Form submit burst
+  document.getElementById('intention-form').addEventListener('submit', (e) => {
+    e.preventDefault();
+    createBurst(window.innerWidth / 2, window.innerHeight / 2);
+    const input = document.getElementById('intent');
+    const note = document.getElementById('note');
+    if (input.value.trim()) {
+      saveIntention(input.value.trim(), note.value.trim());
+      input.value = '';
+      note.value = '';
+    }
+  });
+
+  function saveIntention(intent, note) {
+    const entries = JSON.parse(localStorage.getItem('session_memento') || '{"entries":[],"history":[]}');
+    entries.entries.unshift({ date: new Date().toISOString(), intent, note });
+    if (entries.entries.length > 5) entries.entries.pop();
+    // Save to history (current run)
+    const now = new Date();
+    entries.history.unshift({
+      date: now.toISOString().split('T')[0],
+      time: now.toTimeString().slice(0,5),
+      intent
+    });
+    if (entries.history.length > 20) entries.history.pop();
+    localStorage.setItem('session_memento', JSON.stringify(entries));
+    renderHistory(entries.history);
+    renderTodayEntries(entries.entries);
+  }
+
+  function renderHistory(history) {
+    const list = document.getElementById('history-list');
+    list.innerHTML = history.map(h => `
+      <li>
+        <span class="hi-date">${h.date} · ${h.time}</span>
+        <span class="hi-event">${h.intent}</span>
+      </li>
+    `).join('');
+  }
+
+  function renderTodayEntries(entries) {
+    if (!entries.length) return;
+    const section = document.querySelector('.begin-section');
+    let ul = section.querySelector('.today-entries');
+    if (!ul) {
+      ul = document.createElement('ul');
+      ul.className = 'today-entries';
+      ul.style.cssText = 'list-style:none;margin-top:16px;';
+      section.appendChild(ul);
+    }
+    ul.innerHTML = entries.map(e => `
+      <li style="padding:8px 0;border-bottom:1px solid var(--bg2);font-size:14px;">
+        <span style="font-family:DM Mono,monospace;font-size:11px;color:var(--terracotta);">${new Date(e.date).toLocaleTimeString('zh-TW',{hour:'2-digit',minute:'2-digit'})}</span>
+        <span style="margin-left:10px;">${e.intent}</span>
+      </li>
+    `).join('');
+  }
+
+  // Load saved data
+  const saved = JSON.parse(localStorage.getItem('session_memento') || '{"entries":[],"history":[]}');
+  if (saved.history.length) renderHistory(saved.history);
+  if (saved.entries.length) renderTodayEntries(saved.entries);
+
+  // Epoch display
+  const SESSION_START = new Date('2026-06-15T07:00:00Z').getTime(); // ~15:00 TPE
+  function updateEpoch() {
+    const now = Date.now();
+    const diff = now - SESSION_START;
+    const secs = Math.floor(diff / 1000) % 60;
+    const mins = Math.floor(diff / 60000) % 60;
+    const hrs = Math.floor(diff / 3600000) % 24;
+    const days = Math.floor(diff / 86400000);
+    document.getElementById('epoch-display').textContent =
+      `${days}d ${String(hrs).padStart(2,'0')}:${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')}`;
+  }
+  updateEpoch();
+  setInterval(updateEpoch, 1000);
+})();
+</script>
+</body>
+</html>

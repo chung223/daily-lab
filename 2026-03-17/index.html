@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>星光流 | Starry Flow</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Noto+Sans+TC:wght@300;400;500&family=Noto+Serif+TC:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-deep: #050510;
+      --glass-bg: rgba(255, 255, 255, 0.03);
+      --glass-border: rgba(255, 255, 255, 0.08);
+      --text-primary: #f1f5f9;
+      --text-secondary: #94a3b8;
+      --star-gold: #fbbf24;
+      --star-peach: #fb923c;
+      --star-pink: #f472b6;
+      --star-mint: #34d399;
+      --star-blue: #60a5fa;
+      --star-white: #f8fafc;
+      --accent-glow: rgba(251, 191, 36, 0.3);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      background: var(--bg-deep);
+      font-family: 'Noto Sans TC', sans-serif;
+      color: var(--text-primary);
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Nebula Background Layers */
+    .nebula {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .nebula-1 {
+      background: 
+        radial-gradient(ellipse 80% 50% at 20% 80%, rgba(139, 92, 246, 0.12) 0%, transparent 50%),
+        radial-gradient(ellipse 60% 40% at 80% 20%, rgba(59, 130, 246, 0.1) 0%, transparent 50%);
+      animation: nebulaDrift 20s ease-in-out infinite alternate;
+    }
+
+    .nebula-2 {
+      background: 
+        radial-gradient(ellipse 70% 50% at 60% 70%, rgba(236, 72, 153, 0.08) 0%, transparent 50%),
+        radial-gradient(ellipse 50% 30% at 30% 30%, rgba(34, 197, 94, 0.06) 0%, transparent 50%);
+      animation: nebulaDrift 25s ease-in-out infinite alternate-reverse;
+    }
+
+    @keyframes nebulaDrift {
+      0% { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(-20px, -10px) scale(1.05); }
+    }
+
+    /* Stars Background */
+    .bg-stars {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .bg-star {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      background: var(--star-white);
+      border-radius: 50%;
+      opacity: 0.4;
+      animation: twinkle 3s ease-in-out infinite;
+    }
+
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.2; transform: scale(1); }
+      50% { opacity: 0.6; transform: scale(1.2); }
+    }
+
+    /* Header */
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      padding: 20px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 100;
+      background: linear-gradient(to bottom, rgba(5, 5, 16, 0.8) 0%, transparent 100%);
+    }
+
+    .logo {
+      font-family: 'Cinzel', serif;
+      font-size: 1.5rem;
+      font-weight: 600;
+      letter-spacing: 3px;
+      background: linear-gradient(135deg, var(--star-gold), var(--star-peach));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-shadow: 0 0 30px var(--accent-glow);
+    }
+
+    .logo span {
+      font-size: 1rem;
+      opacity: 0.7;
+      margin-left: 8px;
+    }
+
+    .stats {
+      font-family: 'Noto Serif TC', serif;
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .stats-count {
+      color: var(--star-gold);
+      font-weight: 600;
+      font-size: 1.1rem;
+      text-shadow: 0 0 10px var(--accent-glow);
+    }
+
+    /* Main Canvas */
+    #starCanvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 10;
+    }
+
+    /* Input Panel */
+    .input-panel {
+      position: fixed;
+      bottom: 40px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 100;
+      width: 90%;
+      max-width: 500px;
+    }
+
+    .input-container {
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      border-radius: 20px;
+      padding: 8px;
+      display: flex;
+      gap: 8px;
+      box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    }
+
+    .input-field {
+      flex: 1;
+      background: transparent;
+      border: none;
+      outline: none;
+      padding: 14px 18px;
+      font-family: 'Noto Serif TC', serif;
+      font-size: 1rem;
+      color: var(--text-primary);
+      font-style: italic;
+    }
+
+    .input-field::placeholder {
+      color: var(--text-secondary);
+      opacity: 0.6;
+    }
+
+    .release-btn {
+      background: linear-gradient(135deg, var(--star-gold), var(--star-peach));
+      border: none;
+      border-radius: 14px;
+      padding: 14px 24px;
+      font-family: 'Noto Sans TC', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 500;
+      color: #050510;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      white-space: nowrap;
+    }
+
+    .release-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 25px var(--accent-glow);
+    }
+
+    .release-btn:active {
+      transform: scale(0.98);
+    }
+
+    /* Hint Text */
+    .hint {
+      position: fixed;
+      bottom: 120px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-family: 'Noto Serif TC', serif;
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      opacity: 0.5;
+      z-index: 50;
+      letter-spacing: 2px;
+      animation: fadeInOut 4s ease-in-out infinite;
+    }
+
+    @keyframes fadeInOut {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 0.6; }
+    }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      .logo {
+        font-size: 1.2rem;
+      }
+      .logo span {
+        display: none;
+      }
+      .input-panel {
+        bottom: 24px;
+      }
+      .input-container {
+        flex-direction: column;
+        padding: 12px;
+      }
+      .release-btn {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Nebula Background -->
+  <div class="nebula nebula-1"></div>
+  <div class="nebula nebula-2"></div>
+  
+  <!-- Background Stars -->
+  <div class="bg-stars" id="bgStars"></div>
+
+  <!-- Header -->
+  <header>
+    <div class="logo">星光流 <span>Starry Flow</span></div>
+    <div class="stats">
+      ✦ <span class="stats-count" id="starCount">0</span>
+    </div>
+  </header>
+
+  <!-- Star Canvas -->
+  <canvas id="starCanvas"></canvas>
+
+  <!-- Hint -->
+  <div class="hint">寫下你的願望，讓星光飛升</div>
+
+  <!-- Input Panel -->
+  <div class="input-panel">
+    <div class="input-container">
+      <input 
+        type="text" 
+        class="input-field" 
+        id="wishInput" 
+        placeholder="寫下你的願望..."
+        maxlength="20"
+        autocomplete="off"
+      >
+      <button class="release-btn" id="releaseBtn">許願 ✦</button>
+    </div>
+  </div>
+
+  <script>
+    // === State ===
+    const state = {
+      stars: [],
+      totalStars: parseInt(localStorage.getItem('starryFlow_total') || '0'),
+      starColors: [
+        '#fbbf24', // gold
+        '#fb923c', // peach
+        '#f472b6', // pink
+        '#34d399', // mint
+        '#60a5fa', // blue
+        '#f8fafc', // white
+        '#a78bfa', // purple
+      ]
+    };
+
+    // === Elements ===
+    const canvas = document.getElementById('starCanvas');
+    const ctx = canvas.getContext('2d');
+    const input = document.getElementById('wishInput');
+    const btn = document.getElementById('releaseBtn');
+    const countEl = document.getElementById('starCount');
+
+    // === Init ===
+    function init() {
+      resizeCanvas();
+      createBgStars();
+      updateCount();
+      animate();
+      
+      window.addEventListener('resize', resizeCanvas);
+      btn.addEventListener('click', releaseStars);
+      input.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') releaseStars();
+      });
+    }
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+
+    function createBgStars() {
+      const container = document.getElementById('bgStars');
+      for (let i = 0; i < 80; i++) {
+        const star = document.createElement('div');
+        star.className = 'bg-star';
+        star.style.left = Math.random() * 100 + '%';
+        star.style.top = Math.random() * 100 + '%';
+        star.style.animationDelay = Math.random() * 3 + 's';
+        star.style.animationDuration = (2 + Math.random() * 2) + 's';
+        container.appendChild(star);
+      }
+    }
+
+    function updateCount() {
+      countEl.textContent = state.totalStars.toLocaleString();
+    }
+
+    // === Star Release ===
+    function releaseStars() {
+      const text = input.value.trim();
+      if (!text) {
+        input.focus();
+        return;
+      }
+
+      const chars = text.split('');
+      const startX = canvas.width / 2;
+      const startY = canvas.height - 120;
+      
+      chars.forEach((char, i) => {
+        setTimeout(() => {
+          createStar(char, startX + (i - chars.length / 2) * 16, startY);
+        }, i * 80);
+      });
+
+      state.totalStars += chars.length;
+      localStorage.setItem('starryFlow_total', state.totalStars.toString());
+      updateCount();
+      
+      input.value = '';
+      input.blur();
+    }
+
+    function createStar(char, x, y) {
+      const color = state.starColors[Math.floor(Math.random() * state.starColors.length)];
+      const star = {
+        char,
+        x,
+        y,
+        vx: (Math.random() - 0.5) * 0.5,
+        vy: -1.5 - Math.random() * 0.5,
+        size: 18 + Math.random() * 8,
+        color,
+        opacity: 1,
+        glow: 15 + Math.random() * 10,
+        rotation: Math.random() * Math.PI * 2,
+        rotationSpeed: (Math.random() - 0.5) * 0.02,
+        wobble: Math.random() * Math.PI * 2,
+        wobbleSpeed: 0.02 + Math.random() * 0.01,
+        scale: 1,
+        pulsePhase: Math.random() * Math.PI * 2,
+      };
+      state.stars.push(star);
+    }
+
+    // === Click Ripple ===
+    canvas.addEventListener('click', (e) => {
+      const x = e.clientX;
+      const y = e.clientY;
+      
+      // Check if clicked near any star
+      state.stars.forEach(star => {
+        const dx = star.x - x;
+        const dy = star.y - y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        
+        if (dist < 40) {
+          // Create ripple effect
+          star.pulsePhase = 0;
+          star.scale = 1.5;
+        }
+      });
+    });
+
+    // === Animation Loop ===
+    function animate() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      state.stars = state.stars.filter(star => {
+        // Update position
+        star.wobble += star.wobbleSpeed;
+        star.x += star.vx + Math.sin(star.wobble) * 0.3;
+        star.y += star.vy;
+        
+        // Update rotation
+        star.rotation += star.rotationSpeed;
+        
+        // Pulse effect
+        star.pulsePhase += 0.05;
+        const pulse = Math.sin(star.pulsePhase) * 0.1 + 1;
+        star.scale = star.scale * 0.95 + pulse * 0.05;
+        
+        // Fade out when too high
+        if (star.y < 100) {
+          star.opacity -= 0.008;
+        }
+        
+        if (star.opacity <= 0) {
+          return false;
+        }
+        
+        // Draw star
+        ctx.save();
+        ctx.translate(star.x, star.y);
+        ctx.rotate(star.rotation);
+        ctx.scale(star.scale, star.scale);
+        
+        // Glow
+        const gradient = ctx.createRadialGradient(0, 0, 0, 0, 0, star.size * 1.5);
+        gradient.addColorStop(0, star.color);
+        gradient.addColorStop(0.3, star.color + '80');
+        gradient.addColorStop(1, 'transparent');
+        ctx.fillStyle = gradient;
+        ctx.globalAlpha = star.opacity;
+        ctx.beginPath();
+        ctx.arc(0, 0, star.size * 1.5, 0, Math.PI * 2);
+        ctx.fill();
+        
+        // Core
+        ctx.fillStyle = '#ffffff';
+        ctx.globalAlpha = star.opacity * 0.9;
+        ctx.font = `${star.size}px "Noto Serif TC", serif`;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(star.char, 0, 0);
+        
+        ctx.restore();
+        
+        return true;
+      });
+      
+      requestAnimationFrame(animate);
+    }
+
+    // === Touch support ===
+    input.addEventListener('touchstart', (e) => {
+      e.stopPropagation();
+    });
+
+    // Start
+    init();
+  </script>
+</body>
+</html>

@@ -1,0 +1,6 @@
+{
+  "title": "漏洞急診室 | Vulnerability ER",
+  "type": "tool",
+  "description": "漫畫風格急診室，把 5 個 GitHub Issues 做成病患卡片，包含嚴重程度badge、三格漫畫面板（症狀/危險程度/就醫日期）、護理處方箋、已處理按鈕。localStorage 持久化已處理狀態，彩屑慶祝動畫",
+  "inspiration": "來自 2026-05-20 阿笨的 GitHub 監控報告——發現 5 個重要 Issues，包括 2 個 P1 安全漏洞（Codex Runtime prompt injection、OAuth lastGood 過期設定檔）、2 個 High 優先（嵌入式 runner hook、Telegram 傳檔）、1 個 Medium（P2 Gemini streaming timeout）。把這些真實的安全漏洞做成互動式急診 triage 面板"
+}

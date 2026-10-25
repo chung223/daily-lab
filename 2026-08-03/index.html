@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IFYE 2026 Ambassador Gallery</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Noto+Serif+TC:wght@400;500&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg-cream: #FDF9F4;
+      --bg-card: #FFFFFF;
+      --navy: #1E3A5F;
+      --gold: #D4A574;
+      --coral: #E07A5F;
+      --sage: #81B29A;
+      --lavender: #9B8FD9;
+      --text-dark: #2C2C2C;
+      --text-light: #666666;
+      --border: #E8E2D9;
+    }
+
+    body {
+      font-family: 'Nunito', 'Noto Serif TC', sans-serif;
+      background: var(--bg-cream);
+      color: var(--text-dark);
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px 24px;
+    }
+
+    /* Header */
+    header {
+      text-align: center;
+      margin-bottom: 48px;
+      padding-bottom: 32px;
+      border-bottom: 2px solid var(--navy);
+      position: relative;
+    }
+
+    header::after {
+      content: '';
+      position: absolute;
+      bottom: -6px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 120px;
+      height: 2px;
+      background: var(--gold);
+    }
+
+    .overline {
+      font-size: 12px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--coral);
+      margin-bottom: 12px;
+      font-weight: 700;
+    }
+
+    h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(32px, 6vw, 56px);
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 8px;
+      line-height: 1.2;
+    }
+
+    .subtitle {
+      font-family: 'Noto Serif TC', serif;
+      font-size: 18px;
+      color: var(--text-light);
+    }
+
+    /* Stats Bar */
+    .stats-bar {
+      display: flex;
+      justify-content: center;
+      gap: 48px;
+      margin-bottom: 48px;
+      flex-wrap: wrap;
+    }
+
+    .stat-item {
+      text-align: center;
+    }
+
+    .stat-number {
+      font-family: 'Playfair Display', serif;
+      font-size: 42px;
+      font-weight: 700;
+      color: var(--navy);
+      line-height: 1;
+    }
+
+    .stat-label {
+      font-size: 13px;
+      color: var(--text-light);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-top: 4px;
+    }
+
+    /* Ambassador Grid */
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 28px;
+      color: var(--navy);
+      margin-bottom: 24px;
+      padding-left: 16px;
+      border-left: 4px solid var(--gold);
+    }
+
+    .ambassador-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 24px;
+      margin-bottom: 56px;
+    }
+
+    .ambassador-card {
+      background: var(--bg-card);
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      border: 1px solid var(--border);
+    }
+
+    .ambassador-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+    }
+
+    .ambassador-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    .avatar {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: var(--navy);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      flex-shrink: 0;
+    }
+
+    .ambassador-info h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--navy);
+      margin-bottom: 2px;
+    }
+
+    .country {
+      font-size: 14px;
+      color: var(--text-light);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .stations-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: linear-gradient(135deg, var(--sage), #6B9E7A);
+      color: white;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    /* Stations Section */
+    .stations-section {
+      margin-bottom: 48px;
+    }
+
+    .stations-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 12px;
+    }
+
+    .station-btn {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-size: 13px;
+      color: var(--text-dark);
+    }
+
+    .station-btn:hover {
+      background: var(--navy);
+      color: white;
+      border-color: var(--navy);
+      transform: scale(1.05);
+    }
+
+    .station-btn.active {
+      background: var(--gold);
+      color: white;
+      border-color: var(--gold);
+    }
+
+    .station-number {
+      font-family: 'Playfair Display', serif;
+      font-size: 20px;
+      font-weight: 700;
+      display: block;
+    }
+
+    .station-name {
+      font-size: 11px;
+      margin-top: 4px;
+      opacity: 0.8;
+    }
+
+    /* Category Tabs */
+    .category-tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .tab {
+      padding: 8px 16px;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      background: var(--bg-card);
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.2s ease;
+      color: var(--text-light);
+    }
+
+    .tab:hover {
+      border-color: var(--navy);
+      color: var(--navy);
+    }
+
+    .tab.active {
+      background: var(--navy);
+      color: white;
+      border-color: var(--navy);
+    }
+
+    /* Detail Modal */
+    .detail-panel {
+      background: var(--bg-card);
+      border-radius: 12px;
+      padding: 24px;
+      margin-top: 24px;
+      border: 2px solid var(--gold);
+      display: none;
+    }
+
+    .detail-panel.visible {
+      display: block;
+      animation: slideIn 0.3s ease;
+    }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .detail-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .detail-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 24px;
+      color: var(--navy);
+    }
+
+    .close-btn {
+      background: none;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      color: var(--text-light);
+      padding: 4px 8px;
+    }
+
+    .close-btn:hover {
+      color: var(--coral);
+    }
+
+    .detail-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+      gap: 12px;
+    }
+
+    .detail-item {
+      text-align: center;
+      padding: 12px;
+      background: var(--bg-cream);
+      border-radius: 8px;
+    }
+
+    .detail-value {
+      font-family: 'Playfair Display', serif;
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--navy);
+    }
+
+    .detail-label {
+      font-size: 12px;
+      color: var(--text-light);
+      margin-top: 4px;
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 32px 0;
+      border-top: 1px solid var(--border);
+      color: var(--text-light);
+      font-size: 14px;
+    }
+
+    footer a {
+      color: var(--navy);
+      text-decoration: none;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .container {
+        padding: 24px 16px;
+      }
+
+      .stats-bar {
+        gap: 24px;
+      }
+
+      .stat-number {
+        font-size: 32px;
+      }
+
+      .ambassador-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .stations-grid {
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+      }
+
+      .detail-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    /* Confetti */
+    .confetti {
+      position: fixed;
+      pointer-events: none;
+      z-index: 1000;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="overline">International 4-H Youth Exchange 2026</div>
+      <h1>IFYE 2026 Ambassador Gallery</h1>
+      <p class="subtitle">九位代表・五十一站　世界一家</p>
+    </header>
+
+    <div class="stats-bar">
+      <div class="stat-item">
+        <div class="stat-number">9</div>
+        <div class="stat-label">Ambassadors</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">51</div>
+        <div class="stat-label">Stations</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">🌏</div>
+        <div class="stat-label">Global Network</div>
+      </div>
+    </div>
+
+    <section>
+      <h2 class="section-title">Meet Our Ambassadors</h2>
+      <div class="ambassador-grid" id="ambassadorGrid"></div>
+    </section>
+
+    <section class="stations-section">
+      <h2 class="section-title">Station Collection</h2>
+      <div class="category-tabs" id="categoryTabs"></div>
+      <div class="stations-grid" id="stationsGrid"></div>
+      <div class="detail-panel" id="detailPanel">
+        <div class="detail-header">
+          <div class="detail-title" id="detailTitle"></div>
+          <button class="close-btn" onclick="closeDetail()">×</button>
+        </div>
+        <div class="detail-grid" id="detailGrid"></div>
+      </div>
+    </section>
+
+    <footer>
+      <p>IFYE 2026 Taiwan Chapter</p>
+      <p><a href="https://index.4-h.me/ifye/2026/" target="_blank">View Full Index →</a></p>
+    </footer>
+  </div>
+
+  <script>
+    // Data
+    const ambassadors = [
+      { name: 'Anna Ruttimann', country: 'Switzerland', flag: '🇨🇭', color: '#E63946' },
+      { name: 'Dararat Surinpornwattana', country: 'Thailand', flag: '🇹🇭', color: '#1D3557' },
+      { name: 'Gary A. Ayuste', country: 'Philippines', flag: '🇵🇭', color: '#F4A261' },
+      { name: 'Ibrahim B. Sansalona', country: 'Gambia', flag: '🇬🇲', color: '#2A9D8F' },
+      { name: 'Jihyun Jung', country: 'South Korea', flag: '🇰🇷', color: '#264653' },
+      { name: 'Justice Kwasi Etsey', country: 'Ghana', flag: '🇬🇭', color: '#E9C46A' },
+      { name: 'Phoobet Sudsawatt', country: 'Thailand', flag: '🇹🇭', color: '#8338EC' },
+      { name: 'Sven', country: 'Sweden', flag: '🇸🇪', color: '#3A86FF' },
+      { name: 'Yerim An', country: 'South Korea', flag: '🇰🇷', color: '#FF006E' }
+    ];
+
+    const stationCategories = {
+      '送機 Departure': [1, 2, 3, 4, 5, 6, 7, 8],
+      '國際農水 Int\'l Ag': [9, 10, 11, 12, 13],
+      '年會 Conference': [14, 15, 16, 17, 18],
+      '接送機 Pickup': [19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36]
+    };
+
+    const stationInfo = {
+      1: { name: '第1站送機', reps: ['Anna Ruttimann'] },
+      2: { name: '第2站送機', reps: ['Dararat Surinpornwattana', 'Phoobet Sudsawatt'] },
+      3: { name: '第3站送機', reps: ['Gary A. Ayuste'] },
+      4: { name: '第4站送機', reps: ['Ibrahim B. Sansalona'] },
+      5: { name: '第5站送機', reps: ['Jihyun Jung', 'Yerim An'] },
+      6: { name: '第6站送機', reps: ['Justice Kwasi Etsey'] },
+      7: { name: '第7站送機', reps: ['Sven'] },
+      8: { name: '第8站送機', reps: ['Anna Ruttimann'] },
+      9: { name: '國際農水1', reps: ['All'] },
+      10: { name: '國際農水2', reps: ['All'] },
+      11: { name: '國際農水3', reps: ['All'] },
+      12: { name: '國際農水4', reps: ['All'] },
+      13: { name: '國際農水5', reps: ['All'] },
+      14: { name: '年會Day1', reps: ['All'] },
+      15: { name: '年會Day2', reps: ['All'] },
+      16: { name: '年會Day3', reps: ['All'] },
+      17: { name: '年會Day4', reps: ['All'] },
+      18: { name: '年會總結', reps: ['All'] }
+    };
+
+    // Fill remaining stations (19-51 are pickup stations)
+    for (let i = 19; i <= 51; i++) {
+      stationInfo[i] = { name: `接送機 #${i-18}`, reps: ['Various'] };
+    }
+
+    let activeCategory = 'all';
+    let selectedStations = JSON.parse(localStorage.getItem('ifye2026_stations') || '[]');
+
+    // Render Ambassadors
+    function renderAmbassadors() {
+      const grid = document.getElementById('ambassadorGrid');
+      grid.innerHTML = ambassadors.map((amb, i) => `
+        <div class="ambassador-card">
+          <div class="ambassador-header">
+            <div class="avatar" style="background: ${amb.color}">
+              ${amb.flag}
+            </div>
+            <div class="ambassador-info">
+              <h3>${amb.name}</h3>
+              <div class="country">${amb.flag} ${amb.country}</div>
+            </div>
+          </div>
+          <div class="stations-badge">
+            📍 ${getStationsForAmbassador(amb.name).length} stations
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function getStationsForAmbassador(name) {
+      return Object.entries(stationInfo)
+        .filter(([_, info]) => info.reps.includes(name))
+        .map(([num]) => parseInt(num));
+    }
+
+    // Render Station Tabs
+    function renderTabs() {
+      const tabs = document.getElementById('categoryTabs');
+      tabs.innerHTML = `
+        <button class="tab ${activeCategory === 'all' ? 'active' : ''}" onclick="filterStations('all')">
+          All (51)
+        </button>
+      ` + Object.keys(stationCategories).map(cat => `
+        <button class="tab ${activeCategory === cat ? 'active' : ''}" onclick="filterStations('${cat}')">
+          ${cat} (${stationCategories[cat].length})
+        </button>
+      `).join('');
+    }
+
+    // Render Stations
+    function renderStations() {
+      const grid = document.getElementById('stationsGrid');
+      let stations = activeCategory === 'all' 
+        ? Object.keys(stationInfo).map(Number)
+        : stationCategories[activeCategory];
+
+      grid.innerHTML = stations.map(num => {
+        const info = stationInfo[num];
+        const isSelected = selectedStations.includes(num);
+        return `
+          <button class="station-btn ${isSelected ? 'active' : ''}" onclick="toggleStation(${num})">
+            <span class="station-number">${num}</span>
+            <span class="station-name">${info.name}</span>
+          </button>
+        `;
+      }).join('');
+    }
+
+    function filterStations(category) {
+      activeCategory = category;
+      renderTabs();
+      renderStations();
+    }
+
+    function toggleStation(num) {
+      const idx = selectedStations.indexOf(num);
+      if (idx > -1) {
+        selectedStations.splice(idx, 1);
+      } else {
+        selectedStations.push(num);
+        triggerConfetti();
+      }
+      localStorage.setItem('ifye2026_stations', JSON.stringify(selectedStations));
+      renderStations();
+    }
+
+    function showDetail(num) {
+      const info = stationInfo[num];
+      const panel = document.getElementById('detailPanel');
+      const reps = info.reps[0] === 'All' ? ambassadors : ambassadors.filter(a => info.reps.includes(a.name));
+      
+      document.getElementById('detailTitle').textContent = `${num}. ${info.name}`;
+      document.getElementById('detailGrid').innerHTML = `
+        <div class="detail-item">
+          <div class="detail-value">${num}</div>
+          <div class="detail-label">Station #</div>
+        </div>
+        <div class="detail-item">
+          <div class="detail-value">${reps.length}</div>
+          <div class="detail-label">Ambassadors</div>
+        </div>
+        <div class="detail-item">
+          <div class="detail-value">${info.reps.join(', ')}</div>
+          <div class="detail-label">Assigned To</div>
+        </div>
+      `;
+      panel.classList.add('visible');
+    }
+
+    function closeDetail() {
+      document.getElementById('detailPanel').classList.remove('visible');
+    }
+
+    // Confetti effect
+    function triggerConfetti() {
+      const colors = ['#D4A574', '#E07A5F', '#81B29A', '#9B8FD9', '#1E3A5F'];
+      for (let i = 0; i < 30; i++) {
+        const conf = document.createElement('div');
+        conf.className = 'confetti';
+        conf.style.cssText = `
+          position: fixed;
+          width: 10px;
+          height: 10px;
+          background: ${colors[Math.floor(Math.random() * colors.length)]};
+          left: ${Math.random() * 100}vw;
+          top: -10px;
+          border-radius: ${Math.random() > 0.5 ? '50%' : '0'};
+          animation: fall ${1 + Math.random()}s linear forwards;
+        `;
+        document.body.appendChild(conf);
+        setTimeout(() => conf.remove(), 2000);
+      }
+
+      if (!document.getElementById('confetti-style')) {
+        const style = document.createElement('style');
+        style.id = 'confetti-style';
+        style.textContent = `
+          @keyframes fall {
+            to {
+              transform: translateY(100vh) rotate(720deg);
+              opacity: 0;
+            }
+          }
+        `;
+        document.head.appendChild(style);
+      }
+    }
+
+    // Init
+    renderAmbassadors();
+    renderTabs();
+    renderStations();
+  </script>
+</body>
+</html>

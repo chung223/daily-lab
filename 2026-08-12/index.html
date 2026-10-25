@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>時間時報 · Time Chronicle</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=Space+Mono:wght@400;700&family=Noto+Serif+TC:wght@300;400;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      background: linear-gradient(135deg, #0a0a1a 0%, #1a1a2e 50%, #16213e 100%);
+      font-family: 'Cormorant Garamond', 'Noto Serif TC', serif;
+      color: #f0f0f0;
+      overflow-x: hidden;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 40px 20px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* Header */
+    header {
+      text-align: center;
+      margin-bottom: 50px;
+    }
+
+    h1 {
+      font-size: 3rem;
+      font-weight: 300;
+      letter-spacing: 0.3em;
+      color: #e8d5b7;
+      text-shadow: 0 0 40px rgba(232, 213, 183, 0.3);
+      margin-bottom: 10px;
+    }
+
+    .subtitle {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.75rem;
+      letter-spacing: 0.5em;
+      color: #6b7280;
+      text-transform: uppercase;
+    }
+
+    /* Main Clock Display */
+    .clock-container {
+      position: relative;
+      width: 320px;
+      height: 320px;
+      margin-bottom: 60px;
+    }
+
+    .clock-face {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, #2a2a4a 0%, #0a0a1a 70%);
+      border: 2px solid rgba(232, 213, 183, 0.2);
+      box-shadow: 
+        0 0 60px rgba(232, 213, 183, 0.1),
+        inset 0 0 80px rgba(0, 0, 0, 0.5);
+      position: relative;
+    }
+
+    .time-display {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+    }
+
+    .hour-minute {
+      font-family: 'Space Mono', monospace;
+      font-size: 4.5rem;
+      font-weight: 700;
+      color: #e8d5b7;
+      line-height: 1;
+      text-shadow: 0 0 30px rgba(232, 213, 183, 0.4);
+    }
+
+    .seconds {
+      font-family: 'Space Mono', monospace;
+      font-size: 1.2rem;
+      color: #6b7280;
+      margin-top: 5px;
+    }
+
+    .ampm {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.8rem;
+      color: #9ca3af;
+      letter-spacing: 0.3em;
+      margin-top: 10px;
+    }
+
+    /* Time Markers */
+    .time-marker {
+      position: absolute;
+      width: 2px;
+      height: 10px;
+      background: rgba(232, 213, 183, 0.3);
+      top: 10px;
+      left: 50%;
+      transform-origin: center 150px;
+    }
+
+    .time-marker.major {
+      height: 15px;
+      width: 3px;
+      background: rgba(232, 213, 183, 0.5);
+    }
+
+    /* Celestial Body */
+    .celestial-body {
+      position: absolute;
+      width: 60px;
+      height: 60px;
+      top: -30px;
+      left: 50%;
+      transform: translateX(-50%);
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, #f5f5dc 0%, #d4c896 50%, #a89968 100%);
+      box-shadow: 0 0 40px rgba(245, 245, 220, 0.5);
+      transition: all 0.8s ease;
+    }
+
+    .celestial-body.moon {
+      background: radial-gradient(circle at 30% 30%, #e8e8e8 0%, #c0c0c0 50%, #808080 100%);
+      box-shadow: 0 0 40px rgba(200, 200, 200, 0.4);
+    }
+
+    .celestial-body.sun {
+      background: radial-gradient(circle at 30% 30%, #fff9c4 0%, #ffd54f 50%, #ff8f00 100%);
+      box-shadow: 0 0 60px rgba(255, 213, 79, 0.6);
+      width: 70px;
+      height: 70px;
+      top: -35px;
+    }
+
+    .celestial-body.stars {
+      background: transparent;
+      box-shadow: none;
+    }
+
+    .star {
+      position: absolute;
+      width: 3px;
+      height: 3px;
+      background: #fff;
+      border-radius: 50%;
+      animation: twinkle 2s ease-in-out infinite;
+    }
+
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.3; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.2); }
+    }
+
+    /* Period Info */
+    .period-info {
+      text-align: center;
+      margin-bottom: 50px;
+      padding: 30px 40px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(232, 213, 183, 0.1);
+      border-radius: 20px;
+      backdrop-filter: blur(10px);
+      max-width: 500px;
+    }
+
+    .period-name {
+      font-size: 2rem;
+      font-weight: 300;
+      color: #e8d5b7;
+      margin-bottom: 15px;
+      letter-spacing: 0.2em;
+    }
+
+    .period-quote {
+      font-style: italic;
+      font-size: 1.1rem;
+      color: #9ca3af;
+      line-height: 1.8;
+      margin-bottom: 20px;
+    }
+
+    .period-mood {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.3em;
+      color: #6b7280;
+      text-transform: uppercase;
+    }
+
+    /* Timeline Slider */
+    .timeline-container {
+      width: 100%;
+      max-width: 600px;
+      margin-bottom: 50px;
+    }
+
+    .timeline-labels {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 15px;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.65rem;
+      color: #6b7280;
+      letter-spacing: 0.1em;
+    }
+
+    .timeline-slider {
+      width: 100%;
+      height: 6px;
+      -webkit-appearance: none;
+      appearance: none;
+      background: linear-gradient(90deg, 
+        #1a1a3a 0%, 
+        #2a2a4a 25%, 
+        #3a3a5a 40%,
+        #ff8c42 50%,
+        #ffd700 60%,
+        #3a3a5a 75%,
+        #1a1a3a 100%
+      );
+      border-radius: 3px;
+      outline: none;
+      cursor: pointer;
+    }
+
+    .timeline-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: #e8d5b7;
+      cursor: pointer;
+      box-shadow: 0 0 20px rgba(232, 213, 183, 0.5);
+      border: 3px solid #0a0a1a;
+    }
+
+    .timeline-slider::-moz-range-thumb {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: #e8d5b7;
+      cursor: pointer;
+      box-shadow: 0 0 20px rgba(232, 213, 183, 0.5);
+      border: 3px solid #0a0a1a;
+    }
+
+    /* Quick Hours */
+    .quick-hours {
+      display: grid;
+      grid-template-columns: repeat(8, 1fr);
+      gap: 10px;
+      width: 100%;
+      max-width: 500px;
+    }
+
+    .quick-hour {
+      padding: 12px 8px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(232, 213, 183, 0.1);
+      border-radius: 10px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.85rem;
+      color: #9ca3af;
+    }
+
+    .quick-hour:hover {
+      background: rgba(232, 213, 183, 0.1);
+      border-color: rgba(232, 213, 183, 0.3);
+      color: #e8d5b7;
+      transform: translateY(-3px);
+    }
+
+    .quick-hour.active {
+      background: rgba(232, 213, 183, 0.15);
+      border-color: #e8d5b7;
+      color: #e8d5b7;
+      box-shadow: 0 0 20px rgba(232, 213, 183, 0.2);
+    }
+
+    /* Footer */
+    footer {
+      margin-top: auto;
+      padding-top: 40px;
+      text-align: center;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.65rem;
+      color: #4b5563;
+      letter-spacing: 0.2em;
+    }
+
+    /* Confetti */
+    .confetti {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1000;
+    }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      h1 {
+        font-size: 2rem;
+        letter-spacing: 0.2em;
+      }
+
+      .clock-container {
+        width: 260px;
+        height: 260px;
+      }
+
+      .hour-minute {
+        font-size: 3.5rem;
+      }
+
+      .period-info {
+        padding: 20px 25px;
+      }
+
+      .period-name {
+        font-size: 1.5rem;
+      }
+
+      .quick-hours {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>時間時報</h1>
+      <div class="subtitle">Time Chronicle · 二十四時辰</div>
+    </header>
+
+    <div class="clock-container">
+      <div class="celestial-body" id="celestialBody">
+        <div class="star" style="top: 10px; left: 20px; animation-delay: 0s;"></div>
+        <div class="star" style="top: 25px; left: 35px; animation-delay: 0.5s;"></div>
+        <div class="star" style="top: 15px; left: 45px; animation-delay: 1s;"></div>
+      </div>
+      <div class="clock-face">
+        <div class="time-display">
+          <div class="hour-minute" id="hourMinute">03:30</div>
+          <div class="seconds" id="seconds">42</div>
+          <div class="ampm" id="ampm">AM</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="period-info">
+      <div class="period-name" id="periodName">寅時 · 黎明前</div>
+      <div class="period-quote" id="periodQuote">「此刻世界最寂靜，連夢境都在深呼吸。」</div>
+      <div class="period-mood" id="periodMood">寂 / 靜 / 思</div>
+    </div>
+
+    <div class="timeline-container">
+      <div class="timeline-labels">
+        <span>00:00</span>
+        <span>06:00</span>
+        <span>12:00</span>
+        <span>18:00</span>
+        <span>24:00</span>
+      </div>
+      <input type="range" class="timeline-slider" id="timeline" min="0" max="1440" value="210" step="1">
+    </div>
+
+    <div class="quick-hours">
+      <div class="quick-hour" data-hour="0">子</div>
+      <div class="quick-hour" data-hour="3">丑</div>
+      <div class="quick-hour" data-hour="6">寅</div>
+      <div class="quick-hour" data-hour="9">卯</div>
+      <div class="quick-hour" data-hour="12">辰</div>
+      <div class="quick-hour" data-hour="15">巳</div>
+      <div class="quick-hour" data-hour="18">午</div>
+      <div class="quick-hour" data-hour="21">亥</div>
+    </div>
+
+    <footer>
+      CHUNG'S LAB · 2026 · 時間是最公平的貨幣
+    </footer>
+  </div>
+
+  <canvas class="confetti" id="confetti"></canvas>
+
+  <script>
+    // Time Period Data
+    const timePeriods = {
+      0: { name: '子時 · 夜半', quote: '「萬籟此時都寂寥，惟有月光照古今。」', mood: '沉 / 夢 / 靜', type: 'moon' },
+      1: { name: '丑時 · 雞鳴', quote: '「黑暗中，靈魂開始它的夜間漫遊。」', mood: '意識/游離', type: 'moon' },
+      2: { name: '寅時 · 黎明', quote: '「此刻世界最寂靜，連夢境都在深呼吸。」', mood: '寂 / 靜 / 思', type: 'moon' },
+      3: { name: '卯時 · 日出', quote: '「第一縷光線划破黑暗，像一把金色的鑰匙。」', mood: '醒 / 新 / 生', type: 'sun' },
+      4: { name: '辰時 · 朝食', quote: '「陽光灑滿窗欞，一天正式拉開序幕。」', mood: '啟 / 動 / 食', type: 'sun' },
+      5: { name: '巳時 · 隅中', quote: '「思緒如泉水湧動，創造力在此刻巔峰。」', mood: '專 / 創 / 智', type: 'sun' },
+      6: { name: '午時 · 日中', quote: '「驕陽似火，萬物生長，生命力達到頂點。」', mood: '旺 / 盛 / 陽', type: 'sun' },
+      7: { name: '未時 · 日昳', quote: '「日頭偏西，適合短暫的休憩與思考。」', mood: '緩 / 省 / 收', type: 'sun' },
+      8: { name: '申時 · 晡時', quote: '「陽光溫柔了，思維卻開始奔騰。」', mood: '思 / 行 / 動', type: 'sun' },
+      9: { name: '酉時 · 日入', quote: '「夕陽無限好，只是近黃昏的詩意時刻。」', mood: '美的/歎', type: 'sun' },
+      10: { name: '戌時 · 黃昏', quote: '「天邊的橙紅，像一杯陳年的酒。」', mood: '暮 / 思 / 歸', type: 'sun' },
+      11: { name: '亥時 · 人定', quote: '「夜幕降臨，城市開始它的另一種呼吸。」', mood: '歸 / 安 / 靜', type: 'moon' }
+    };
+
+    // DOM Elements
+    const hourMinuteEl = document.getElementById('hourMinute');
+    const secondsEl = document.getElementById('seconds');
+    const ampmEl = document.getElementById('ampm');
+    const periodNameEl = document.getElementById('periodName');
+    const periodQuoteEl = document.getElementById('periodQuote');
+    const periodMoodEl = document.getElementById('periodMood');
+    const celestialBodyEl = document.getElementById('celestialBody');
+    const timelineEl = document.getElementById('timeline');
+    const quickHours = document.querySelectorAll('.quick-hour');
+
+    // Current time
+    let currentMinutes = 210; // Default 03:30
+
+    // Update clock display
+    function updateClock() {
+      const hours = Math.floor(currentMinutes / 60);
+      const minutes = currentMinutes % 60;
+      const displayHours = hours % 12 || 12;
+      const ampmText = hours < 12 ? 'AM' : 'PM';
+      
+      hourMinuteEl.textContent = `${displayHours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+      ampmEl.textContent = ampmText;
+      secondsEl.textContent = new Date().getSeconds().toString().padStart(2, '0');
+
+      // Update period info
+      const periodIndex = Math.floor(hours / 2) % 12;
+      const period = timePeriods[periodIndex];
+      periodNameEl.textContent = period.name;
+      periodQuoteEl.textContent = period.quote;
+      periodMoodEl.textContent = period.mood;
+
+      // Update celestial body
+      celestialBodyEl.className = 'celestial-body ' + period.type;
+      
+      // Update quick hours active state
+      quickHours.forEach(btn => {
+        btn.classList.toggle('active', parseInt(btn.dataset.hour) === hours);
+      });
+    }
+
+    // Real-time seconds update
+    setInterval(() => {
+      secondsEl.textContent = new Date().getSeconds().toString().padStart(2, '0');
+    }, 1000);
+
+    // Timeline slider
+    timelineEl.addEventListener('input', (e) => {
+      currentMinutes = parseInt(e.target.value);
+      updateClock();
+    });
+
+    // Quick hour buttons
+    quickHours.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const hour = parseInt(btn.dataset.hour);
+        currentMinutes = hour * 60;
+        timelineEl.value = currentMinutes;
+        updateClock();
+        triggerConfetti();
+      });
+    });
+
+    // Confetti effect
+    function triggerConfetti() {
+      const canvas = document.getElementById('confetti');
+      const ctx = canvas.getContext('2d');
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+
+      const particles = [];
+      const colors = ['#e8d5b7', '#d4a574', '#c9b1ff', '#81b29a', '#f77f00'];
+
+      for (let i = 0; i < 50; i++) {
+        particles.push({
+          x: canvas.width / 2,
+          y: canvas.height / 2,
+          vx: (Math.random() - 0.5) * 15,
+          vy: (Math.random() - 0.5) * 15,
+          size: Math.random() * 8 + 3,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          life: 1
+        });
+      }
+
+      function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        let alive = false;
+        particles.forEach(p => {
+          if (p.life > 0) {
+            alive = true;
+            p.x += p.vx;
+            p.y += p.vy;
+            p.vy += 0.3;
+            p.life -= 0.02;
+            
+            ctx.globalAlpha = p.life;
+            ctx.fillStyle = p.color;
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+            ctx.fill();
+          }
+        });
+
+        if (alive) {
+          requestAnimationFrame(animate);
+        } else {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+      }
+
+      animate();
+    }
+
+    // Initialize
+    updateClock();
+
+    // Click on clock to trigger confetti
+    document.querySelector('.clock-container').addEventListener('click', () => {
+      triggerConfetti();
+    });
+  </script>
+</body>
+</html>

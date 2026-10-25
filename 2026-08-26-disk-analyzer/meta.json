@@ -1,0 +1,6 @@
+{
+  "title": "磁碟空間分析器",
+  "type": "script",
+  "description": "分析 Mac 磁碟空間，找出最大消耗者。特色：避開網路掛載點避免卡死，直接緩解 96% 滿的緊急狀態。",
+  "evidence": "2026-08-19~25 recap：磁碟 97%/98% 滿、agentmemory Timeout、Backup SIGTERM 中斷"
+}

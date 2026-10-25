@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Q&A Hands 破冰工具</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Noto+Sans+TC:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --paper: #fef9f0;
+      --pen-red: #e63946;
+      --pen-blue: #457b9d;
+      --pen-green: #2a9d8f;
+      --pen-orange: #f4a261;
+      --pen-purple: #7b2cbf;
+      --ink: #1d3557;
+      --highlighter: #ffea00;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Noto Sans TC', sans-serif;
+      background: var(--paper);
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* Paper texture background */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: 
+        radial-gradient(circle at 20% 80%, rgba(230, 57, 70, 0.05) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(69, 123, 157, 0.05) 0%, transparent 50%),
+        radial-gradient(circle at 40% 40%, rgba(244, 162, 97, 0.03) 0%, transparent 30%);
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+      position: relative;
+    }
+
+    /* Hand-drawn border */
+    .card {
+      background: white;
+      border-radius: 20px;
+      padding: 24px;
+      margin: 16px 0;
+      position: relative;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      border: 3px solid var(--ink);
+      transform: rotate(-0.5deg);
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: -4px;
+      left: -4px;
+      right: -4px;
+      bottom: -4px;
+      border: 2px dashed var(--ink);
+      border-radius: 24px;
+      opacity: 0.3;
+      pointer-events: none;
+    }
+
+    h1 {
+      font-family: 'Caveat', cursive;
+      font-size: 2.8rem;
+      color: var(--ink);
+      text-align: center;
+      margin-bottom: 8px;
+      position: relative;
+      display: inline-block;
+      width: 100%;
+    }
+
+    h1::after {
+      content: '✎';
+      position: absolute;
+      right: 10%;
+      top: 0;
+      font-size: 1.5rem;
+      transform: rotate(15deg);
+    }
+
+    .subtitle {
+      font-family: 'Caveat', cursive;
+      font-size: 1.3rem;
+      color: var(--pen-red);
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .hand-container {
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+      gap: 8px;
+      padding: 30px 10px;
+      position: relative;
+    }
+
+    .finger {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+
+    .finger:hover {
+      transform: translateY(-5px);
+    }
+
+    .finger.active {
+      transform: translateY(-10px);
+    }
+
+    .finger-shape {
+      width: 50px;
+      height: 120px;
+      background: var(--paper);
+      border: 3px solid var(--ink);
+      border-radius: 25px 25px 15px 15px;
+      position: relative;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .finger-shape::before {
+      content: '';
+      position: absolute;
+      width: 80%;
+      height: 80%;
+      border: 2px dashed currentColor;
+      border-radius: 20px;
+      opacity: 0.3;
+    }
+
+    .finger-1 .finger-shape { 
+      height: 70px; 
+      border-radius: 20px;
+    }
+    .finger-2 .finger-shape { 
+      border-color: var(--pen-blue);
+      color: var(--pen-blue);
+    }
+    .finger-3 .finger-shape { 
+      border-color: var(--pen-green);
+      color: var(--pen-green);
+    }
+    .finger-4 .finger-shape { 
+      border-color: var(--pen-orange);
+      color: var(--pen-orange);
+    }
+    .finger-5 .finger-shape { 
+      height: 80px;
+      border-color: var(--pen-purple);
+      color: var(--pen-purple);
+      border-radius: 15px 15px 25px 25px;
+    }
+
+    .finger.active .finger-shape {
+      background: var(--highlighter);
+      box-shadow: 0 0 20px rgba(255, 234, 0, 0.5);
+    }
+
+    .finger-number {
+      font-family: 'Caveat', cursive;
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin-top: 8px;
+    }
+
+    .finger-1 .finger-number { color: var(--pen-red); }
+    .finger-2 .finger-number { color: var(--pen-blue); }
+    .finger-3 .finger-number { color: var(--pen-green); }
+    .finger-4 .finger-number { color: var(--pen-orange); }
+    .finger-5 .finger-number { color: var(--pen-purple); }
+
+    .finger-palm {
+      width: 140px;
+      height: 80px;
+      background: var(--paper);
+      border: 3px solid var(--ink);
+      border-radius: 20px 20px 40px 40px;
+      position: relative;
+      margin-top: -10px;
+    }
+
+    .finger-palm::after {
+      content: '🙌';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 2rem;
+    }
+
+    /* Question Input Modal */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(29, 53, 87, 0.7);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 100;
+      backdrop-filter: blur(4px);
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .modal {
+      background: white;
+      border-radius: 20px;
+      padding: 24px;
+      width: 90%;
+      max-width: 400px;
+      border: 4px solid var(--ink);
+      position: relative;
+      transform: scale(0.8);
+      opacity: 0;
+      transition: all 0.3s ease;
+    }
+
+    .modal-overlay.active .modal {
+      transform: scale(1);
+      opacity: 1;
+    }
+
+    .modal::before {
+      content: '';
+      position: absolute;
+      top: -6px;
+      left: -6px;
+      right: -6px;
+      bottom: -6px;
+      border: 3px dashed var(--ink);
+      border-radius: 26px;
+      opacity: 0.2;
+      pointer-events: none;
+    }
+
+    .modal-title {
+      font-family: 'Caveat', cursive;
+      font-size: 1.8rem;
+      color: var(--ink);
+      margin-bottom: 16px;
+      text-align: center;
+    }
+
+    .modal-finger-indicator {
+      font-family: 'Caveat', cursive;
+      font-size: 2.5rem;
+      text-align: center;
+      margin-bottom: 12px;
+    }
+
+    .question-input {
+      width: 100%;
+      padding: 16px;
+      font-family: 'Noto Sans TC', sans-serif;
+      font-size: 1rem;
+      border: 3px solid var(--ink);
+      border-radius: 12px;
+      resize: none;
+      min-height: 100px;
+      transition: border-color 0.3s;
+    }
+
+    .question-input:focus {
+      outline: none;
+      border-color: var(--pen-blue);
+    }
+
+    .btn-row {
+      display: flex;
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .btn {
+      flex: 1;
+      padding: 12px 20px;
+      font-family: 'Caveat', cursive;
+      font-size: 1.3rem;
+      border: 3px solid var(--ink);
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      background: white;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+
+    .btn:active {
+      transform: translateY(0);
+    }
+
+    .btn-save {
+      background: var(--highlighter);
+      color: var(--ink);
+    }
+
+    .btn-cancel {
+      background: white;
+    }
+
+    /* Questions List */
+    .questions-panel {
+      display: none;
+    }
+
+    .questions-panel.active {
+      display: block;
+    }
+
+    .questions-header {
+      font-family: 'Caveat', cursive;
+      font-size: 1.5rem;
+      color: var(--ink);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .question-item {
+      background: white;
+      border: 3px solid var(--ink);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 12px;
+      position: relative;
+      transition: all 0.3s ease;
+    }
+
+    .question-item:hover {
+      transform: rotate(0.5deg);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+    }
+
+    .question-item::before {
+      content: '';
+      position: absolute;
+      top: -2px;
+      left: -2px;
+      right: -2px;
+      bottom: -2px;
+      border: 2px dashed var(--ink);
+      border-radius: 14px;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .question-item:hover::before {
+      opacity: 0.3;
+    }
+
+    .question-finger-badge {
+      position: absolute;
+      top: -12px;
+      left: 16px;
+      background: var(--highlighter);
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-family: 'Caveat', cursive;
+      font-size: 1.2rem;
+      font-weight: 700;
+      border: 2px solid var(--ink);
+    }
+
+    .question-text {
+      font-size: 1rem;
+      line-height: 1.5;
+      color: var(--ink);
+      margin-top: 8px;
+    }
+
+    .question-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .btn-small {
+      padding: 6px 12px;
+      font-family: 'Caveat', cursive;
+      font-size: 1rem;
+      border: 2px solid var(--ink);
+      border-radius: 8px;
+      cursor: pointer;
+      background: white;
+      transition: all 0.2s;
+    }
+
+    .btn-small:hover {
+      background: var(--highlighter);
+    }
+
+    .btn-small.delete:hover {
+      background: var(--pen-red);
+      color: white;
+    }
+
+    /* Instructions */
+    .instructions {
+      background: linear-gradient(135deg, #fff9e6 0%, #fff 100%);
+      border: 3px solid var(--ink);
+      border-radius: 16px;
+      padding: 20px;
+      margin: 20px 0;
+      position: relative;
+    }
+
+    .instructions::before {
+      content: '📝 使用說明';
+      position: absolute;
+      top: -14px;
+      left: 20px;
+      background: var(--highlighter);
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-family: 'Caveat', cursive;
+      font-size: 1.2rem;
+      font-weight: 700;
+      border: 2px solid var(--ink);
+    }
+
+    .instructions ol {
+      margin-left: 24px;
+      margin-top: 8px;
+    }
+
+    .instructions li {
+      font-size: 0.95rem;
+      line-height: 1.8;
+      color: var(--ink);
+    }
+
+    /* Empty State */
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: #666;
+    }
+
+    .empty-state .emoji {
+      font-size: 3rem;
+      margin-bottom: 12px;
+    }
+
+    .empty-state p {
+      font-family: 'Caveat', cursive;
+      font-size: 1.3rem;
+    }
+
+    /* Toggle Button */
+    .toggle-btn {
+      display: block;
+      width: 100%;
+      padding: 14px;
+      font-family: 'Caveat', cursive;
+      font-size: 1.4rem;
+      background: var(--ink);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      margin: 16px 0;
+      transition: all 0.2s;
+    }
+
+    .toggle-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+    }
+
+    /* Decorations */
+    .deco-star {
+      position: fixed;
+      font-size: 2rem;
+      opacity: 0.15;
+      pointer-events: none;
+      animation: float 6s ease-in-out infinite;
+    }
+
+    .deco-star:nth-child(1) { top: 10%; left: 5%; animation-delay: 0s; }
+    .deco-star:nth-child(2) { top: 30%; right: 8%; animation-delay: 1s; }
+    .deco-star:nth-child(3) { bottom: 20%; left: 10%; animation-delay: 2s; }
+    .deco-star:nth-child(4) { bottom: 40%; right: 5%; animation-delay: 3s; }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-15px) rotate(10deg); }
+    }
+
+    /* Responsive */
+    @media (max-width: 480px) {
+      h1 { font-size: 2.2rem; }
+      .finger-shape { width: 40px; height: 100px; }
+      .finger-1 .finger-shape { height: 55px; }
+      .finger-5 .finger-shape { height: 65px; }
+      .finger-palm { width: 110px; height: 65px; }
+      .finger-number { font-size: 1.4rem; }
+      .card { padding: 16px; }
+    }
+
+    /* Hand-drawn underline animation */
+    .hand-underline {
+      position: relative;
+      display: inline-block;
+    }
+
+    .hand-underline::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 10'%3E%3Cpath d='M0 5 Q 25 0, 50 5 T 100 5' stroke='%23e63946' fill='none' stroke-width='2'/%3E%3C/svg%3E") repeat-x;
+      background-size: 100px 10px;
+    }
+
+    /* Print styles */
+    @media print {
+      body { background: white; }
+      .card { box-shadow: none; border: 2px solid #333; }
+      .deco-star { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Decorative elements -->
+  <span class="deco-star">✏️</span>
+  <span class="deco-star">📎</span>
+  <span class="deco-star">✨</span>
+  <span class="deco-star">💡</span>
+
+  <div class="container">
+    <h1>Q&A Hands</h1>
+    <p class="subtitle">互動式破冰小遊戲</p>
+
+    <div class="card">
+      <div class="hand-container" id="handDisplay">
+        <div class="finger finger-1" data-finger="1">
+          <div class="finger-shape">👆</div>
+          <span class="finger-number">1</span>
+        </div>
+        <div class="finger finger-2" data-finger="2">
+          <div class="finger-shape"></div>
+          <span class="finger-number">2</span>
+        </div>
+        <div class="finger finger-3" data-finger="3">
+          <div class="finger-shape"></div>
+          <span class="finger-number">3</span>
+        </div>
+        <div class="finger finger-4" data-finger="4">
+          <div class="finger-shape"></div>
+          <span class="finger-number">4</span>
+        </div>
+        <div class="finger finger-5" data-finger="5">
+          <div class="finger-shape"></div>
+          <span class="finger-number">5</span>
+        </div>
+        <div class="finger-palm"></div>
+      </div>
+      <p style="text-align: center; font-family: 'Caveat', cursive; font-size: 1.1rem; color: #666; margin-top: 8px;">
+        點擊任一手指輸入問題 ✏️
+      </p>
+    </div>
+
+    <button class="toggle-btn" id="toggleQuestions">
+      📋 查看已填寫的問題
+    </button>
+
+    <div class="questions-panel" id="questionsPanel">
+      <div class="questions-header">
+        <span>📋</span>
+        我的問題清單
+      </div>
+      <div id="questionsList"></div>
+      <div class="empty-state" id="emptyState">
+        <div class="emoji">🤔</div>
+        <p>還沒有問題，點擊手指開始填寫吧！</p>
+      </div>
+    </div>
+
+    <div class="instructions">
+      <ol>
+        <li>每人選擇一張紙，在五根手指範圍內各寫一個<strong>開放式問題</strong></li>
+        <li>問題類型建議：興趣、夢想、經驗、願望、秘密等</li>
+        <li>寫完後，大家圍在一起，尋找有<strong>相似答案</strong>的人</li>
+        <li>在相同問題的位置用<strong>線連起來</strong>，形成獨特的圖案！</li>
+        <li>這就是你的「<strong>Q&A Hands</strong>」互動破冰遊戲 🎉</li>
+      </ol>
+    </div>
+
+    <div class="card" style="text-align: center; padding: 16px;">
+      <p style="font-family: 'Caveat', cursive; font-size: 1.2rem; color: #666;">
+        💡 參考來源：<a href="https://www.educationworld.com/a_lesson/lesson/lesson343.shtml" target="_blank" style="color: var(--pen-blue);">Education World Q&A Hands</a>
+      </p>
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal">
+      <div class="modal-finger-indicator" id="modalFingerIndicator">👆</div>
+      <div class="modal-title" id="modalTitle">第 1 指問題</div>
+      <textarea 
+        class="question-input" 
+        id="questionInput" 
+        placeholder="在這裡輸入你的問題..."
+      ></textarea>
+      <div class="btn-row">
+        <button class="btn btn-cancel" id="btnCancel">取消</button>
+        <button class="btn btn-save" id="btnSave">儲存 ✓</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // State
+    let questions = JSON.parse(localStorage.getItem('qa-hands-questions') || '{}');
+    let currentFinger = null;
+
+    // Finger labels
+    const fingerLabels = ['拇指', '食指', '中指', '無名指', '小指'];
+    const fingerEmojis = ['👆', '👉', '☝️', '🤙', '👇'];
+
+    // DOM Elements
+    const modalOverlay = document.getElementById('modalOverlay');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalFingerIndicator = document.getElementById('modalFingerIndicator');
+    const questionInput = document.getElementById('questionInput');
+    const btnSave = document.getElementById('btnSave');
+    const btnCancel = document.getElementById('btnCancel');
+    const questionsPanel = document.getElementById('questionsPanel');
+    const questionsList = document.getElementById('questionsList');
+    const emptyState = document.getElementById('emptyState');
+    const toggleBtn = document.getElementById('toggleQuestions');
+    const handDisplay = document.getElementById('handDisplay');
+
+    // Initialize
+    function init() {
+      updateHandDisplay();
+      renderQuestions();
+      
+      // Add click handlers to fingers
+      document.querySelectorAll('.finger[data-finger]').forEach(finger => {
+        finger.addEventListener('click', () => {
+          const fingerNum = finger.dataset.finger;
+          openModal(parseInt(fingerNum));
+        });
+      });
+
+      // Modal handlers
+      btnSave.addEventListener('click', saveQuestion);
+      btnCancel.addEventListener('click', closeModal);
+      modalOverlay.addEventListener('click', (e) => {
+        if (e.target === modalOverlay) closeModal();
+      });
+
+      // Toggle panel
+      toggleBtn.addEventListener('click', () => {
+        questionsPanel.classList.toggle('active');
+        toggleBtn.textContent = questionsPanel.classList.contains('active') 
+          ? '🙈 隱藏問題清單' 
+          : '📋 查看已填寫的問題';
+      });
+
+      // Enter key to save
+      questionInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && e.ctrlKey) {
+          saveQuestion();
+        }
+      });
+    }
+
+    function openModal(fingerNum) {
+      currentFinger = fingerNum;
+      modalTitle.textContent = `第 ${fingerNum} 指問題`;
+      modalFingerIndicator.textContent = fingerEmojis[fingerNum - 1];
+      questionInput.value = questions[fingerNum] || '';
+      modalOverlay.classList.add('active');
+      questionInput.focus();
+      
+      // Highlight finger
+      document.querySelectorAll('.finger').forEach(f => f.classList.remove('active'));
+      document.querySelector(`.finger-${fingerNum}`).classList.add('active');
+    }
+
+    function closeModal() {
+      modalOverlay.classList.remove('active');
+      currentFinger = null;
+      document.querySelectorAll('.finger').forEach(f => f.classList.remove('active'));
+    }
+
+    function saveQuestion() {
+      const text = questionInput.value.trim();
+      if (text) {
+        questions[currentFinger] = text;
+      } else {
+        delete questions[currentFinger];
+      }
+      
+      localStorage.setItem('qa-hands-questions', JSON.stringify(questions));
+      updateHandDisplay();
+      renderQuestions();
+      closeModal();
+    }
+
+    function updateHandDisplay() {
+      for (let i = 1; i <= 5; i++) {
+        const finger = document.querySelector(`.finger-${i}`);
+        const shape = finger.querySelector('.finger-shape');
+        
+        if (questions[i]) {
+          shape.innerHTML = `<span style="font-size: 1.5rem;">${fingerEmojis[i-1]}</span>`;
+          shape.style.background = 'var(--highlighter)';
+        } else {
+          shape.innerHTML = '';
+          shape.style.background = 'var(--paper)';
+        }
+      }
+    }
+
+    function renderQuestions() {
+      const hasQuestions = Object.keys(questions).length > 0;
+      emptyState.style.display = hasQuestions ? 'none' : 'block';
+      
+      if (!hasQuestions) {
+        questionsList.innerHTML = '';
+        return;
+      }
+
+      questionsList.innerHTML = Object.entries(questions)
+        .sort(([a], [b]) => a - b)
+        .map(([finger, text]) => `
+          <div class="question-item">
+            <span class="question-finger-badge" style="color: var(--pen-${['red','blue','green','orange','purple'][finger-1]})">
+              第${finger}指 ${fingerEmojis[finger-1]}
+            </span>
+            <p class="question-text">${escapeHtml(text)}</p>
+            <div class="question-actions">
+              <button class="btn-small" onclick="editQuestion(${finger})">✏️ 編輯</button>
+              <button class="btn-small delete" onclick="deleteQuestion(${finger})">🗑️ 刪除</button>
+            </div>
+          </div>
+        `).join('');
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    function editQuestion(finger) {
+      openModal(finger);
+    }
+
+    function deleteQuestion(finger) {
+      if (confirm(`確定要刪除第 ${finger} 指的問題嗎？`)) {
+        delete questions[finger];
+        localStorage.setItem('qa-hands-questions', JSON.stringify(questions));
+        updateHandDisplay();
+        renderQuestions();
+      }
+    }
+
+    // Start
+    init();
+  </script>
+</body>
+</html>

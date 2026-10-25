@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>知識星河 — Knowledge Constellation</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&family=Caveat:wght@400;600&family=Playfair+Display:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background: linear-gradient(180deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            color: #e8e8e8;
+            overflow-x: hidden;
+        }
+        
+        .stars-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 30px 20px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 40px 20px;
+            background: rgba(255,255,255,0.03);
+            border-radius: 24px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.8rem;
+            font-weight: 600;
+            background: linear-gradient(135deg, #ffd700 0%, #ff6b6b 50%, #4ecdc4 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            font-family: 'Caveat', cursive;
+            font-size: 1.4rem;
+            color: #a8b2c1;
+        }
+        
+        .date-selector {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .date-btn {
+            padding: 8px 16px;
+            border: 1px solid rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.05);
+            color: #e8e8e8;
+            border-radius: 20px;
+            cursor: pointer;
+            font-family: 'Noto Sans TC', sans-serif;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+        
+        .date-btn:hover, .date-btn.active {
+            background: linear-gradient(135deg, rgba(255,215,0,0.3), rgba(78,205,196,0.3));
+            border-color: rgba(255,215,0,0.5);
+            transform: scale(1.05);
+        }
+        
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 30px;
+        }
+        
+        .card {
+            background: rgba(255,255,255,0.05);
+            border-radius: 20px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+        
+        .card-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .card-title .icon {
+            font-size: 1.8rem;
+        }
+        
+        /* Timeline Visualizer */
+        .timeline-container {
+            position: relative;
+            padding: 20px 0;
+        }
+        
+        .timeline-axis {
+            position: relative;
+            height: 8px;
+            background: linear-gradient(90deg, 
+                #ff6b6b 0%, #ffd93d 25%, #4ecdc4 50%, #a8e6cf 75%, #ffd93d 100%);
+            border-radius: 4px;
+            margin: 40px 0;
+        }
+        
+        .timeline-hour {
+            position: absolute;
+            top: -30px;
+            transform: translateX(-50%);
+            font-size: 0.75rem;
+            color: #8892a0;
+        }
+        
+        .timeline-node {
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            transform: translate(-50%, -50%);
+        }
+        
+        .timeline-node:hover {
+            transform: translate(-50%, -50%) scale(1.5);
+            z-index: 10;
+        }
+        
+        .timeline-node::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: inherit;
+            opacity: 0.3;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.3; }
+            50% { transform: translate(-50%, -50%) scale(1.5); opacity: 0.1; }
+        }
+        
+        .node-tooltip {
+            position: absolute;
+            bottom: 25px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(20,20,40,0.95);
+            padding: 10px 15px;
+            border-radius: 10px;
+            font-size: 0.8rem;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            border: 1px solid rgba(255,255,255,0.2);
+            z-index: 20;
+        }
+        
+        .timeline-node:hover .node-tooltip {
+            opacity: 1;
+        }
+        
+        /* Topic Constellation */
+        .constellation-container {
+            position: relative;
+            height: 400px;
+            background: radial-gradient(ellipse at center, rgba(78,205,196,0.1) 0%, transparent 70%);
+            border-radius: 16px;
+            overflow: hidden;
+        }
+        
+        .topic-node {
+            position: absolute;
+            padding: 8px 14px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            backdrop-filter: blur(5px);
+        }
+        
+        .topic-node:hover {
+            transform: scale(1.1);
+            z-index: 10;
+        }
+        
+        .topic-node::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100%;
+            height: 100%;
+            border-radius: 20px;
+            background: inherit;
+            opacity: 0.5;
+            filter: blur(10px);
+            z-index: -1;
+        }
+        
+        .constellation-line {
+            position: absolute;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transform-origin: left center;
+            pointer-events: none;
+        }
+        
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .stat-card {
+            background: rgba(255,255,255,0.03);
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+        
+        .stat-value {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            font-weight: 600;
+            background: linear-gradient(135deg, #ffd700, #ff6b6b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            color: #8892a0;
+            margin-top: 5px;
+        }
+        
+        /* Wiki Sync Pattern */
+        .sync-pattern {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin: 20px 0;
+        }
+        
+        .sync-cycle {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+        
+        .sync-node {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.85rem;
+            border: 2px solid;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .sync-node:hover {
+            transform: scale(1.15);
+        }
+        
+        .sync-node.type-a { border-color: #ff6b6b; color: #ff6b6b; }
+        .sync-node.type-b { border-color: #ffd93d; color: #ffd93d; }
+        .sync-node.type-c { border-color: #4ecdc4; color: #4ecdc4; }
+        .sync-node.type-d { border-color: #a8e6cf; color: #a8e6cf; }
+        
+        .sync-connector {
+            width: 20px;
+            height: 2px;
+            background: rgba(255,255,255,0.2);
+        }
+        
+        .sync-arrow {
+            color: rgba(255,255,255,0.4);
+            font-size: 1.2rem;
+        }
+        
+        /* Topic Distribution */
+        .topic-bars {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .topic-bar {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .topic-name {
+            width: 120px;
+            font-size: 0.85rem;
+            color: #b8c0cc;
+        }
+        
+        .bar-container {
+            flex: 1;
+            height: 24px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .bar-fill {
+            height: 100%;
+            border-radius: 12px;
+            transition: width 1s ease-out;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .bar-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            animation: shimmer 2s infinite;
+        }
+        
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        
+        .bar-value {
+            width: 50px;
+            text-align: right;
+            font-size: 0.85rem;
+            color: #e8e8e8;
+            font-weight: 500;
+        }
+        
+        /* Knowledge Timeline List */
+        .knowledge-list {
+            max-height: 500px;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+        
+        .knowledge-list::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .knowledge-list::-webkit-scrollbar-track {
+            background: rgba(255,255,255,0.05);
+            border-radius: 3px;
+        }
+        
+        .knowledge-list::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,0.2);
+            border-radius: 3px;
+        }
+        
+        .knowledge-item {
+            display: flex;
+            gap: 15px;
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 10px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.05);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .knowledge-item:hover {
+            background: rgba(255,255,255,0.08);
+            transform: translateX(5px);
+        }
+        
+        .knowledge-time {
+            font-family: 'Caveat', cursive;
+            font-size: 1.1rem;
+            color: #4ecdc4;
+            min-width: 50px;
+        }
+        
+        .knowledge-content {
+            flex: 1;
+        }
+        
+        .knowledge-title {
+            font-weight: 500;
+            margin-bottom: 5px;
+        }
+        
+        .knowledge-desc {
+            font-size: 0.85rem;
+            color: #8892a0;
+        }
+        
+        .knowledge-category {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            background: rgba(255,215,0,0.15);
+            color: #ffd700;
+        }
+        
+        /* Footer */
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            color: #6b7280;
+            font-size: 0.85rem;
+        }
+        
+        footer span {
+            font-family: 'Caveat', cursive;
+            font-size: 1.1rem;
+        }
+        
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            h1 { font-size: 2rem; }
+            .card { padding: 20px; }
+            .constellation-container { height: 300px; }
+            .topic-name { width: 80px; font-size: 0.75rem; }
+            .date-btn { padding: 6px 12px; font-size: 0.8rem; }
+        }
+    </style>
+</head>
+<body>
+    <canvas class="stars-bg" id="starsCanvas"></canvas>
+    
+    <div class="container">
+        <header>
+            <h1>✨ 知識星河 ✨</h1>
+            <p class="subtitle">Knowledge Constellation — 探索每日的思維軌跡</p>
+            <div class="date-selector">
+                <button class="date-btn active" data-date="2026-05-22">05/22</button>
+                <button class="date-btn" data-date="2026-05-21">05/21</button>
+                <button class="date-btn" data-date="2026-05-20">05/20</button>
+                <button class="date-btn" data-date="2026-05-19">05/19</button>
+                <button class="date-btn" data-date="2026-05-18">05/18</button>
+            </div>
+        </header>
+        
+        <div class="main-content">
+            <!-- Timeline Visualizer -->
+            <div class="card">
+                <h2 class="card-title"><span class="icon">🌌</span> 24小時思維時間軸</h2>
+                <div class="timeline-container" id="timelineContainer">
+                    <div class="timeline-axis" id="timelineAxis"></div>
+                </div>
+            </div>
+            
+            <!-- Stats Grid -->
+            <div class="card">
+                <h2 class="card-title"><span class="icon">📊</span> 今日數據</h2>
+                <div class="stats-grid" id="statsGrid">
+                    <div class="stat-card">
+                        <div class="stat-value" id="heartbeatCount">0</div>
+                        <div class="stat-label">Heartbeat 執行次數</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="wikiSyncCount">0</div>
+                        <div class="stat-label">Wiki Sync 週期</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="memoryRecallCount">0</div>
+                        <div class="stat-label">Memory Recall 次數</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="uniqueTopics">0</div>
+                        <div class="stat-label">獨特知識主題</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Topic Constellation -->
+            <div class="card">
+                <h2 class="card-title"><span class="icon">🌟</span> 知識星座圖</h2>
+                <div class="constellation-container" id="constellationContainer"></div>
+            </div>
+            
+            <!-- Wiki Sync Pattern -->
+            <div class="card">
+                <h2 class="card-title"><span class="icon">🔄</span> Wiki Sync 循環</h2>
+                <p style="color: #8892a0; font-size: 0.9rem; margin-bottom: 15px;">
+                    知識在四個領域之間輪替：A → B → C → D → A → ...
+                </p>
+                <div class="sync-pattern" id="syncPattern"></div>
+                <div style="display: flex; justify-content: center; gap: 30px; margin-top: 20px; flex-wrap: wrap;">
+                    <div style="text-align: center;">
+                        <div class="sync-node type-a">A</div>
+                        <div style="font-size: 0.75rem; color: #8892a0; margin-top: 5px;">學習系統</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div class="sync-node type-b">B</div>
+                        <div style="font-size: 0.75rem; color: #8892a0; margin-top: 5px;">Chung 實體</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div class="sync-node type-c">C</div>
+                        <div style="font-size: 0.75rem; color: #8892a0; margin-top: 5px;">記憶系統</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div class="sync-node type-d">D</div>
+                        <div style="font-size: 0.75rem; color: #8892a0; margin-top: 5px;">依附理論</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Topic Distribution -->
+            <div class="card">
+                <h2 class="card-title"><span class="icon">📈</span> 主題分佈</h2>
+                <div class="topic-bars" id="topicBars"></div>
+            </div>
+            
+            <!-- Knowledge Timeline List -->
+            <div class="card">
+                <h2 class="card-title"><span class="icon">📜</span> 知識時間線</h2>
+                <div class="knowledge-list" id="knowledgeList"></div>
+            </div>
+        </div>
+        
+        <footer>
+            <span>每一個節點都是一顆星星</span> — Daily Lab @ 03:30 AM
+        </footer>
+    </div>
+    
+    <script>
+        // Data for different dates
+        const dataStore = {
+            '2026-05-22': {
+                heartbeat: 44,
+                wikiSync: 30,
+                memoryRecall: 44,
+                topics: [
+                    { name: '金剛經', time: '13:53', desc: '魚池比喻、提起與放下', color: '#ffd700', cat: '靈性' },
+                    { name: 'Naval', time: '10:23', desc: '愛自己是幸福基石、責任主體性', color: '#ff6b6b', cat: '哲學' },
+                    { name: 'Wiki Sync', time: '19:23', desc: 'ABCD 輪替概念同步', color: '#4ecdc4', cat: '技術' },
+                    { name: '能量提升', time: '06:23', desc: '不消耗、正確充能、正確耗能', color: '#a8e6cf', cat: '健康' },
+                    { name: 'Kolb 體驗學習', time: '10:53', desc: '具體→反思→概念→實驗', color: '#ff9f43', cat: '學習' },
+                    { name: '災難四騎士', time: '08:23', desc: '批評、輕蔑、防禦、砌牆', color: '#ee5a5a', cat: '關係' },
+                    { name: '衝突風格', time: '04:53', desc: '迴避型、驗證型、火爆型', color: '#9b59b6', cat: '關係' },
+                    { name: 'IFYE 2026', time: '12:04', desc: '8代表、46站、6國家', color: '#3498db', cat: '旅遊' },
+                    { name: '幸運數字', time: '02:53', desc: '數字 1、6，黑藍開運', color: '#e74c3c', cat: '玄學' },
+                    { name: '依附理論', time: '21:23', desc: '三種依附風格解析', color: '#1abc9c', cat: '心理' }
+                ],
+                topicDistribution: [
+                    { name: '關係/社交', value: 12, color: '#ff6b6b' },
+                    { name: '健康/能量', value: 8, color: '#4ecdc4' },
+                    { name: '學習/反思', value: 7, color: '#ffd93d' },
+                    { name: '技術/工具', value: 6, color: '#a8e6cf' },
+                    { name: '哲學/靈性', value: 5, color: '#9b59b6' },
+                    { name: '工作/財務', value: 4, color: '#3498db' }
+                ]
+            },
+            '2026-05-21': {
+                heartbeat: 48,
+                wikiSync: 32,
+                memoryRecall: 48,
+                topics: [
+                    { name: '安全漏洞', time: '14:00', desc: 'Codex Runtime injection、OAuth 設定', color: '#ee5a5a', cat: '安全' },
+                    { name: '魚油劇場', time: '13:10', desc: '膠囊罷工仲裁庭、海豚督導', color: '#ffd700', cat: '日常' },
+                    { name: 'CRM Sync', time: '08:30', desc: '15封郵件、新增2聯絡人', color: '#4ecdc4', cat: '工作' },
+                    { name: 'Readmoo', time: '08:30', desc: '《搭便車不是一件隨機的事》', color: '#a8e6cf', cat: '閱讀' },
+                    { name: 'Tech News', time: '09:30', desc: '330篇 → 8條精選', color: '#3498db', cat: '資訊' }
+                ],
+                topicDistribution: [
+                    { name: '工作/財務', value: 14, color: '#3498db' },
+                    { name: '健康/能量', value: 10, color: '#4ecdc4' },
+                    { name: '資訊/閱讀', value: 8, color: '#ffd93d' },
+                    { name: '安全/技術', value: 6, color: '#ee5a5a' }
+                ]
+            },
+            '2026-05-20': {
+                heartbeat: 46,
+                wikiSync: 31,
+                memoryRecall: 46,
+                topics: [
+                    { name: '味道翻譯', time: '03:30', desc: '感官翻譯機專案製作', color: '#ff6b6b', cat: '創作' },
+                    { name: 'GitHub Issues', time: '10:00', desc: '5個重要 Issues 追蹤', color: '#4ecdc4', cat: '技術' },
+                    { name: 'Thread 分析', time: '14:00', desc: '@dolphin_roast 互動分析', color: '#ffd93d', cat: '社群' }
+                ],
+                topicDistribution: [
+                    { name: '技術/工具', value: 15, color: '#4ecdc4' },
+                    { name: '創作/設計', value: 12, color: '#ff6b6b' },
+                    { name: '社群/互動', value: 8, color: '#ffd93d' }
+                ]
+            },
+            '2026-05-19': {
+                heartbeat: 45,
+                wikiSync: 30,
+                memoryRecall: 45,
+                topics: [
+                    { name: '午餐辯論', time: '03:30', desc: '專案製作完成', color: '#ff6b6b', cat: '創作' },
+                    { name: '矛盾蛋', time: '02:00', desc: '夢境矛盾宣言', color: '#9b59b6', cat: '靈感' },
+                    { name: 'Wiki Sync', time: '15:00', desc: 'ABCD 四領域', color: '#4ecdc4', cat: '技術' }
+                ],
+                topicDistribution: [
+                    { name: '創作/設計', value: 14, color: '#ff6b6b' },
+                    { name: '技術/工具', value: 10, color: '#4ecdc4' },
+                    { name: '靈感/夢境', value: 7, color: '#9b59b6' }
+                ]
+            },
+            '2026-05-18': {
+                heartbeat: 47,
+                wikiSync: 31,
+                memoryRecall: 47,
+                topics: [
+                    { name: '航海日誌', time: '03:30', desc: '船長日誌專案完成', color: '#1a3a5c', cat: '創作' },
+                    { name: '三色蛋夢境', time: '06:00', desc: '沒有固定遠方的船', color: '#c9a227', cat: '靈感' },
+                    { name: 'Busan 行程', time: '09:00', desc: '釜山旅行規劃', color: '#3498db', cat: '旅遊' }
+                ],
+                topicDistribution: [
+                    { name: '創作/設計', value: 16, color: '#1a3a5c' },
+                    { name: '旅遊/規劃', value: 12, color: '#3498db' },
+                    { name: '靈感/夢境', value: 9, color: '#c9a227' }
+                ]
+            }
+        };
+        
+        // Stars Background
+        const canvas = document.getElementById('starsCanvas');
+        const ctx = canvas.getContext('2d');
+        let stars = [];
+        
+        function initStars() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            stars = [];
+            for (let i = 0; i < 150; i++) {
+                stars.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    size: Math.random() * 2 + 0.5,
+                    opacity: Math.random() * 0.8 + 0.2,
+                    speed: Math.random() * 0.5 + 0.1
+                });
+            }
+        }
+        
+        function animateStars() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            stars.forEach(star => {
+                ctx.beginPath();
+                ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(255, 255, 255, ${star.opacity})`;
+                ctx.fill();
+                star.opacity += (Math.random() - 0.5) * 0.1;
+                star.opacity = Math.max(0.2, Math.min(1, star.opacity));
+            });
+            requestAnimationFrame(animateStars);
+        }
+        
+        initStars();
+        animateStars();
+        window.addEventListener('resize', initStars);
+        
+        // Load Data Function
+        function loadDateData(date) {
+            const data = dataStore[date] || dataStore['2026-05-22'];
+            
+            // Update stats
+            document.getElementById('heartbeatCount').textContent = data.heartbeat;
+            document.getElementById('wikiSyncCount').textContent = data.wikiSync;
+            document.getElementById('memoryRecallCount').textContent = data.memoryRecall;
+            document.getElementById('uniqueTopics').textContent = data.topics.length;
+            
+            // Render Timeline
+            const timelineAxis = document.getElementById('timelineAxis');
+            timelineAxis.innerHTML = '';
+            
+            const hours = ['00', '04', '08', '12', '16', '20', '24'];
+            hours.forEach((h, i) => {
+                const hourLabel = document.createElement('div');
+                hourLabel.className = 'timeline-hour';
+                hourLabel.textContent = h + ':00';
+                hourLabel.style.left = (i * 20) + '%';
+                timelineAxis.appendChild(hourLabel);
+            });
+            
+            data.topics.forEach((topic, i) => {
+                const timeParts = topic.time.split(':');
+                const hour = parseInt(timeParts[0]);
+                const minute = parseInt(timeParts[1]);
+                const position = ((hour * 60 + minute) / (24 * 60)) * 100;
+                
+                const node = document.createElement('div');
+                node.className = 'timeline-node';
+                node.style.left = position + '%';
+                node.style.top = '50%';
+                node.style.background = topic.color;
+                
+                const tooltip = document.createElement('div');
+                tooltip.className = 'node-tooltip';
+                tooltip.innerHTML = `<strong>${topic.time}</strong><br>${topic.name}`;
+                node.appendChild(tooltip);
+                
+                timelineAxis.appendChild(node);
+            });
+            
+            // Render Constellation
+            const constellation = document.getElementById('constellationContainer');
+            constellation.innerHTML = '';
+            
+            data.topics.forEach((topic, i) => {
+                const angle = (i / data.topics.length) * Math.PI * 2;
+                const radius = 120 + Math.random() * 60;
+                const centerX = constellation.offsetWidth / 2;
+                const centerY = constellation.offsetHeight / 2;
+                
+                const node = document.createElement('div');
+                node.className = 'topic-node';
+                node.textContent = topic.name;
+                node.style.background = topic.color + '30';
+                node.style.color = topic.color;
+                node.style.border = `1px solid ${topic.color}`;
+                node.style.left = (centerX + Math.cos(angle) * radius) + 'px';
+                node.style.top = (centerY + Math.sin(angle) * radius) + 'px';
+                node.style.transform = 'translate(-50%, -50%)';
+                
+                node.addEventListener('mouseenter', () => {
+                    constellation.querySelectorAll('.topic-node').forEach(n => {
+                        n.style.opacity = '0.4';
+                    });
+                    node.style.opacity = '1';
+                });
+                
+                node.addEventListener('mouseleave', () => {
+                    constellation.querySelectorAll('.topic-node').forEach(n => {
+                        n.style.opacity = '1';
+                    });
+                });
+                
+                constellation.appendChild(node);
+            });
+            
+            // Render Topic Bars
+            const topicBars = document.getElementById('topicBars');
+            topicBars.innerHTML = '';
+            
+            data.topicDistribution.forEach(topic => {
+                const bar = document.createElement('div');
+                bar.className = 'topic-bar';
+                bar.innerHTML = `
+                    <div class="topic-name">${topic.name}</div>
+                    <div class="bar-container">
+                        <div class="bar-fill" style="width: 0%; background: ${topic.color};" data-width="${(topic.value / 20) * 100}%"></div>
+                    </div>
+                    <div class="bar-value">${topic.value}</div>
+                `;
+                topicBars.appendChild(bar);
+            });
+            
+            setTimeout(() => {
+                document.querySelectorAll('.bar-fill').forEach(bar => {
+                    bar.style.width = bar.dataset.width;
+                });
+            }, 100);
+            
+            // Render Knowledge List
+            const knowledgeList = document.getElementById('knowledgeList');
+            knowledgeList.innerHTML = '';
+            
+            data.topics.sort((a, b) => {
+                const timeA = a.time.split(':').join('');
+                const timeB = b.time.split(':').join('');
+                return timeA - timeB;
+            }).forEach(topic => {
+                const item = document.createElement('div');
+                item.className = 'knowledge-item';
+                item.innerHTML = `
+                    <div class="knowledge-time">${topic.time}</div>
+                    <div class="knowledge-content">
+                        <div class="knowledge-title">${topic.name}</div>
+                        <div class="knowledge-desc">${topic.desc}</div>
+                    </div>
+                    <div class="knowledge-category">${topic.cat}</div>
+                `;
+                knowledgeList.appendChild(item);
+            });
+            
+            // Render Sync Pattern
+            const syncPattern = document.getElementById('syncPattern');
+            syncPattern.innerHTML = '';
+            
+            const cycle = ['A', 'B', 'C', 'D'];
+            for (let i = 0; i < 3; i++) {
+                cycle.forEach((type, j) => {
+                    const node = document.createElement('div');
+                    node.className = `sync-node type-${type.toLowerCase()}`;
+                    node.textContent = type;
+                    syncPattern.appendChild(node);
+                    
+                    if (j < 3) {
+                        const conn = document.createElement('div');
+                        conn.className = 'sync-connector';
+                        syncPattern.appendChild(conn);
+                    }
+                });
+                
+                const arrow = document.createElement('div');
+                arrow.className = 'sync-arrow';
+                arrow.textContent = '↻';
+                arrow.style.alignSelf = 'center';
+                arrow.style.margin = '0 5px';
+                syncPattern.appendChild(arrow);
+            }
+        }
+        
+        // Date selector
+        document.querySelectorAll('.date-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.date-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                loadDateData(btn.dataset.date);
+            });
+        });
+        
+        // Initial load
+        loadDateData('2026-05-22');
+    </script>
+</body>
+</html>

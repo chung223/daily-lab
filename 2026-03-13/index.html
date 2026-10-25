@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>System Pulse Monitor</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-deep: #030712;
+      --bg-surface: #0a0f1a;
+      --bg-elevated: #111827;
+      --bg-glass: rgba(17, 24, 39, 0.7);
+      
+      --primary: #06b6d4;
+      --primary-dim: #0891b2;
+      --primary-glow: rgba(6, 182, 212, 0.4);
+      --primary-subtle: rgba(6, 182, 212, 0.1);
+      
+      --accent: #a855f7;
+      --accent-dim: #7c3aed;
+      --accent-glow: rgba(168, 85, 247, 0.4);
+      
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --success: #10b981;
+      
+      --text-primary: #f1f5f9;
+      --text-secondary: #94a3b8;
+      --text-muted: #64748b;
+      
+      --border: rgba(6, 182, 212, 0.2);
+      --border-active: #06b6d4;
+      
+      --font-display: 'Orbitron', monospace;
+      --font-body: 'Noto Sans TC', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: var(--font-body);
+      background: var(--bg-deep);
+      min-height: 100vh;
+      color: var(--text-primary);
+      overflow-x: hidden;
+      position: relative;
+    }
+    
+    /* Animated grid background */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: 
+        linear-gradient(90deg, var(--border) 1px, transparent 1px),
+        linear-gradient(var(--border) 1px, transparent 1px);
+      background-size: 50px 50px;
+      opacity: 0.3;
+      pointer-events: none;
+      z-index: 0;
+    }
+    
+    /* Scanline effect */
+    body::after {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0, 0, 0, 0.1) 2px,
+        rgba(0, 0, 0, 0.1) 4px
+      );
+      pointer-events: none;
+      z-index: 1000;
+      opacity: 0.3;
+    }
+    
+    .container {
+      position: relative;
+      z-index: 1;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+      min-height: 100vh;
+    }
+    
+    /* Header */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 0;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 30px;
+    }
+    
+    .logo {
+      font-family: var(--font-display);
+      font-size: 24px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-shadow: 0 0 30px var(--primary-glow);
+    }
+    
+    .clock {
+      font-family: var(--font-mono);
+      font-size: 18px;
+      color: var(--primary);
+      text-shadow: 0 0 10px var(--primary-glow);
+    }
+    
+    /* Main Grid */
+    .dashboard {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+    
+    @media (max-width: 900px) {
+      .dashboard {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    
+    @media (max-width: 600px) {
+      .dashboard {
+        grid-template-columns: 1fr;
+      }
+    }
+    
+    /* Cards */
+    .card {
+      background: var(--bg-glass);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+    
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--primary), transparent);
+      opacity: 0.5;
+    }
+    
+    .card:hover {
+      border-color: var(--border-active);
+      box-shadow: 0 0 30px var(--primary-subtle);
+      transform: translateY(-2px);
+    }
+    
+    .card-title {
+      font-family: var(--font-display);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .card-title::before {
+      content: '';
+      width: 8px;
+      height: 8px;
+      background: var(--primary);
+      border-radius: 50%;
+      box-shadow: 0 0 10px var(--primary-glow);
+      animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.8); }
+    }
+    
+    /* Clock Card */
+    .clock-card {
+      grid-column: span 2;
+    }
+    
+    @media (max-width: 600px) {
+      .clock-card {
+        grid-column: span 1;
+      }
+    }
+    
+    .big-time {
+      font-family: var(--font-display);
+      font-size: 72px;
+      font-weight: 800;
+      letter-spacing: 4px;
+      text-align: center;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-shadow: 0 0 50px var(--primary-glow);
+      line-height: 1;
+    }
+    
+    .big-date {
+      font-family: var(--font-body);
+      font-size: 18px;
+      color: var(--text-secondary);
+      text-align: center;
+      margin-top: 10px;
+    }
+    
+    .time-seconds {
+      font-family: var(--font-mono);
+      font-size: 24px;
+      color: var(--accent);
+      text-align: center;
+      margin-top: 5px;
+      text-shadow: 0 0 15px var(--accent-glow);
+    }
+    
+    /* Disk Space */
+    .disk-visual {
+      margin-top: 20px;
+    }
+    
+    .disk-bar-container {
+      background: var(--bg-deep);
+      border-radius: 8px;
+      height: 24px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      position: relative;
+    }
+    
+    .disk-bar {
+      height: 100%;
+      border-radius: 8px;
+      transition: width 1s ease;
+      position: relative;
+    }
+    
+    .disk-bar::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.2) 50%, transparent 100%);
+      animation: shimmer 2s infinite;
+    }
+    
+    @keyframes shimmer {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
+    }
+    
+    .disk-bar.low { background: linear-gradient(90deg, var(--success), #34d399); }
+    .disk-bar.medium { background: linear-gradient(90deg, var(--warning), #fbbf24); }
+    .disk-bar.high { background: linear-gradient(90deg, var(--danger), #f87171); }
+    
+    .disk-info {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 10px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+    
+    /* Status Indicators */
+    .status-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-top: 16px;
+    }
+    
+    .status-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      background: var(--bg-deep);
+      border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+    
+    .status-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+    
+    .status-dot.online { 
+      background: var(--success); 
+      box-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
+    }
+    .status-dot.offline { 
+      background: var(--danger); 
+      box-shadow: 0 0 10px rgba(239, 68, 68, 0.5);
+    }
+    .status-dot.warning { 
+      background: var(--warning); 
+      box-shadow: 0 0 10px rgba(245, 158, 11, 0.5);
+    }
+    
+    .status-label {
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+    
+    /* Network Card */
+    .network-card {
+      grid-column: span 2;
+    }
+    
+    @media (max-width: 600px) {
+      .network-card {
+        grid-column: span 1;
+      }
+    }
+    
+    .network-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-top: 16px;
+    }
+    
+    .stat-box {
+      text-align: center;
+      padding: 16px;
+      background: var(--bg-deep);
+      border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+    
+    .stat-value {
+      font-family: var(--font-display);
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--primary);
+      text-shadow: 0 0 10px var(--primary-glow);
+    }
+    
+    .stat-label {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 4px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    
+    /* Quick Notes */
+    .notes-input {
+      width: 100%;
+      background: var(--bg-deep);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px;
+      color: var(--text-primary);
+      font-family: var(--font-body);
+      font-size: 14px;
+      resize: vertical;
+      min-height: 80px;
+      transition: border-color 0.3s;
+    }
+    
+    .notes-input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 10px var(--primary-subtle);
+    }
+    
+    .notes-input::placeholder {
+      color: var(--text-muted);
+    }
+    
+    .notes-saved {
+      font-size: 12px;
+      color: var(--success);
+      margin-top: 8px;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    
+    .notes-saved.show {
+      opacity: 1;
+    }
+    
+    /* Activity Log */
+    .activity-list {
+      max-height: 200px;
+      overflow-y: auto;
+      margin-top: 12px;
+    }
+    
+    .activity-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 13px;
+    }
+    
+    .activity-item:last-child {
+      border-bottom: none;
+    }
+    
+    .activity-time {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-muted);
+      white-space: nowrap;
+    }
+    
+    .activity-text {
+      color: var(--text-secondary);
+    }
+    
+    /* UpTime Card */
+    .uptime-display {
+      font-family: var(--font-mono);
+      font-size: 28px;
+      text-align: center;
+      color: var(--primary);
+      text-shadow: 0 0 20px var(--primary-glow);
+      margin: 20px 0;
+    }
+    
+    /* Footer */
+    footer {
+      margin-top: 40px;
+      padding: 20px 0;
+      border-top: 1px solid var(--border);
+      text-align: center;
+    }
+    
+    .footer-stats {
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+    
+    .footer-stat span {
+      color: var(--primary);
+    }
+    
+    /* Custom scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+    
+    ::-webkit-scrollbar-track {
+      background: var(--bg-deep);
+    }
+    
+    ::-webkit-scrollbar-thumb {
+      background: var(--border);
+      border-radius: 3px;
+    }
+    
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--primary-dim);
+    }
+    
+    /* Animations */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .card {
+      animation: fadeIn 0.5s ease forwards;
+    }
+    
+    .card:nth-child(1) { animation-delay: 0.1s; }
+    .card:nth-child(2) { animation-delay: 0.2s; }
+    .card:nth-child(3) { animation-delay: 0.3s; }
+    .card:nth-child(4) { animation-delay: 0.4s; }
+    .card:nth-child(5) { animation-delay: 0.5s; }
+    .card:nth-child(6) { animation-delay: 0.6s; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="logo">◈ SYSTEM PULSE</div>
+      <div class="clock" id="headerClock">--:--:--</div>
+    </header>
+    
+    <div class="dashboard">
+      <!-- Clock Card -->
+      <div class="card clock-card">
+        <div class="card-title">Local Time</div>
+        <div class="big-time" id="bigTime">00:00</div>
+        <div class="big-date" id="bigDate">Loading...</div>
+        <div class="time-seconds" id="timeSeconds">00</div>
+      </div>
+      
+      <!-- Disk Space Card -->
+      <div class="card">
+        <div class="card-title">Disk Storage</div>
+        <div class="disk-visual">
+          <div class="disk-bar-container">
+            <div class="disk-bar high" id="diskBar" style="width: 0%"></div>
+          </div>
+          <div class="disk-info">
+            <span id="diskUsed">--</span>
+            <span id="diskTotal">/ -- TB</span>
+          </div>
+        </div>
+        <div class="status-grid" style="margin-top: 16px;">
+          <div class="status-item">
+            <div class="status-dot online"></div>
+            <span class="status-label">System</span>
+          </div>
+          <div class="status-item">
+            <div class="status-dot warning"></div>
+            <span class="status-label">Storage</span>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Network Card -->
+      <div class="card network-card">
+        <div class="card-title">Network Status</div>
+        <div class="network-stats">
+          <div class="stat-box">
+            <div class="stat-value" id="networkLatency">--</div>
+            <div class="stat-label">Latency (ms)</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-value" id="networkStatus">●</div>
+            <div class="stat-label">Connection</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-value" id="uptime">--</div>
+            <div class="stat-label">Uptime</div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Quick Notes Card -->
+      <div class="card">
+        <div class="card-title">Quick Notes</div>
+        <textarea class="notes-input" id="notesInput" placeholder="Type your notes here..."></textarea>
+        <div class="notes-saved" id="notesSaved">✓ Saved</div>
+      </div>
+      
+      <!-- Activity Log Card -->
+      <div class="card">
+        <div class="card-title">Session Log</div>
+        <div class="activity-list" id="activityList">
+          <div class="activity-item">
+            <span class="activity-time">--:--</span>
+            <span class="activity-text">Session started</span>
+          </div>
+        </div>
+      </div>
+      
+      <!-- System Info Card -->
+      <div class="card">
+        <div class="card-title">System Info</div>
+        <div class="status-grid">
+          <div class="status-item">
+            <div class="status-dot online"></div>
+            <span class="status-label">Gateway</span>
+          </div>
+          <div class="status-item">
+            <div class="status-dot online"></div>
+            <span class="status-label">Memory</span>
+          </div>
+          <div class="status-item">
+            <div class="status-dot online"></div>
+            <span class="status-label">Browser</span>
+          </div>
+          <div class="status-item">
+            <div class="status-dot online"></div>
+            <span class="status-label">Node</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <footer>
+      <div class="footer-stats">
+        <div class="footer-stat">Sessions: <span id="sessionCount">1</span></div>
+        <div class="footer-stat">Views: <span id="viewCount">0</span></div>
+        <div class="footer-stat">Last Reset: <span id="lastReset">--</span></div>
+      </div>
+    </footer>
+  </div>
+  
+  <script>
+    // Initialize data
+    const STORAGE_KEY = 'systemPulseData';
+    
+    function loadData() {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        return JSON.parse(saved);
+      }
+      return {
+        sessionStart: Date.now(),
+        viewCount: 0,
+        notes: '',
+        activities: []
+      };
+    }
+    
+    function saveData(data) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    }
+    
+    let data = loadData();
+    data.viewCount++;
+    saveData(data);
+    
+    // Update view count
+    document.getElementById('viewCount').textContent = data.viewCount;
+    document.getElementById('sessionCount').textContent = '1';
+    document.getElementById('lastReset').textContent = new Date(data.sessionStart).toLocaleDateString('zh-TW');
+    
+    // Clock
+    function updateClock() {
+      const now = new Date();
+      const hours = String(now.getHours()).padStart(2, '0');
+      const minutes = String(now.getMinutes()).padStart(2, '0');
+      const seconds = String(now.getSeconds()).padStart(2, '0');
+      
+      document.getElementById('headerClock').textContent = `${hours}:${minutes}:${seconds}`;
+      document.getElementById('bigTime').textContent = `${hours}:${minutes}`;
+      document.getElementById('timeSeconds').textContent = seconds;
+      
+      const dateStr = now.toLocaleDateString('zh-TW', { 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric',
+        weekday: 'long'
+      });
+      document.getElementById('bigDate').textContent = dateStr;
+    }
+    
+    // Simulate disk space (since we can't get real system info in browser)
+    function updateDiskSpace() {
+      // Simulated disk usage - varies slightly
+      const baseUsage = 92;
+      const variation = Math.sin(Date.now() / 100000) * 2;
+      const usage = Math.round(baseUsage + variation);
+      
+      const diskBar = document.getElementById('diskBar');
+      diskBar.style.width = usage + '%';
+      diskBar.className = 'disk-bar ' + (usage >= 90 ? 'high' : usage >= 70 ? 'medium' : 'low');
+      
+      document.getElementById('diskUsed').textContent = usage + '% used';
+      document.getElementById('diskTotal').textContent = '/ 1TB';
+    }
+    
+    // Simulate network status
+    function updateNetwork() {
+      const latency = Math.floor(Math.random() * 30) + 10;
+      document.getElementById('networkLatency').textContent = latency;
+      document.getElementById('networkStatus').textContent = '●';
+      document.getElementById('networkStatus').style.color = '#10b981';
+      
+      // Calculate uptime (simulated since page load)
+      const uptimeMs = Date.now() - data.sessionStart;
+      const hours = Math.floor(uptimeMs / 3600000);
+      const minutes = Math.floor((uptimeMs % 3600000) / 60000);
+      document.getElementById('uptime').textContent = `${hours}h ${minutes}m`;
+    }
+    
+    // Notes handling
+    const notesInput = document.getElementById('notesInput');
+    const notesSaved = document.getElementById('notesSaved');
+    
+    notesInput.value = data.notes || '';
+    
+    notesInput.addEventListener('input', () => {
+      data.notes = notesInput.value;
+      saveData(data);
+      notesSaved.classList.add('show');
+      setTimeout(() => notesSaved.classList.remove('show'), 2000);
+    });
+    
+    // Activity log
+    function addActivity(text) {
+      const now = new Date();
+      const time = now.toLocaleTimeString('zh-TW', { hour: '2-digit', minute: '2-digit' });
+      
+      data.activities.unshift({ time, text, timestamp: Date.now() });
+      if (data.activities.length > 20) data.activities.pop();
+      saveData(data);
+      
+      renderActivities();
+    }
+    
+    function renderActivities() {
+      const list = document.getElementById('activityList');
+      list.innerHTML = data.activities.map(a => `
+        <div class="activity-item">
+          <span class="activity-time">${a.time}</span>
+          <span class="activity-text">${a.text}</span>
+        </div>
+      `).join('');
+    }
+    
+    // Initial activities
+    addActivity('System Pulse started');
+    addActivity('Dashboard initialized');
+    
+    // Periodic updates
+    setInterval(updateClock, 1000);
+    setInterval(updateDiskSpace, 5000);
+    setInterval(updateNetwork, 3000);
+    
+    // Initial calls
+    updateClock();
+    updateDiskSpace();
+    updateNetwork();
+    renderActivities();
+    
+    // Add some random activities over time
+    setTimeout(() => addActivity('Network check passed'), 5000);
+    setTimeout(() => addActivity('Memory check OK'), 10000);
+  </script>
+</body>
+</html>
