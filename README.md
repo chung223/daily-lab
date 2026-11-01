@@ -1,8 +1,10 @@
 # Daily Lab
 
-Total entries: 163
+Total entries: 164
 
 ## Featured (Latest)
+
+- **2026-11-01** [🔍 Cron Truth Checker](2026-11-01-cron-truth-checker/README.md) — 比對 cron 的「狀態欄」與「實際輸出」，抓出靜默失效。Notion→Google Calendar 兩個排程自 09-28 起累積 50+ 次失敗、資料從未寫入行事曆，但 `hermes cron list` 狀態欄全部顯示 `ok`、`failure_streak=0`；每日備份連續第 35 次失敗也無人察覺。本工具唯讀掃描，比對 `jobs.json` 的 `last_status` 與輸出檔的實際 exit code，並沿 wrapper 腳本追出根因（缺哪個檔）。真實環境單次掃描抓出 6 項靜默失效，人工逐一核對無誤報、無漏報；測試 40/40 通過。驗證通過。
 
 - **2026-10-25** [🔒 Discord Safe Send](2026-10-25-discord-safe-send/README.md) — 可驗證、去重的 Discord 發送工具。10/22、10/23、10/25 連續三天 Discord 重複推播事故（同一則訊息分別送出 2、2、4 則），根因為 `discord_send.py` 的 fallback 判定不可靠（gateway 掛掉仍回報成功）。本工具直接走 REST API，送出後回讀確認落地，內容 SHA-256 去重攔截重複送出，並支援一鍵清除測試訊息殘留。驗證通過。
 

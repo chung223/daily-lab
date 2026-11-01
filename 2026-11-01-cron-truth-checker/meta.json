@@ -1,0 +1,36 @@
+{
+  "name": "Cron Truth Checker",
+  "slug": "cron-truth-checker",
+  "date": "2026-11-01",
+  "author": "玉子燒",
+  "description": "比對 Hermes cron 的狀態欄與實際輸出，抓出靜默失效——排程回報 ok 但實際 exit≠0 的排程。唯讀掃描，會追到根因（缺哪個檔）。",
+  "category": "devops",
+  "tags": ["cron", "silent-failure", "monitoring", "observability", "verification", "hermes"],
+  "status": "verified",
+  "entrypoint": "cron_truth_checker.py",
+  "tested_commands": [
+    "text-report",
+    "markdown-report",
+    "json-report",
+    "write-out-file",
+    "exit-code-1-on-findings",
+    "exit-code-0-on-clean",
+    "disabled-job-skip",
+    "false-positive-guard",
+    "root-cause-wrapper-trace",
+    "two-level-wrapper-resolution"
+  ],
+  "evidence": "10/26～10/31 Daily Recap 反覆出現同一形狀：排程靜默失效。Notion→Google Calendar 兩個排程（f07f7975cca4 送機表／5b58caed5417 外國接送機表）自 09-28 起累積 50+ 次失敗，資料從未寫入 Google 行事曆，但 hermes cron list 狀態欄全部顯示 ok、failure_streak=0。每日備份連續第 35 次失敗（'utf-8' codec can't decode byte 0xbc）而錯誤寫進 cron 錯誤欄無人查看。10/30 上午 11 個排程一起 Connection error.，狀態欄無法區分。10/31 Discord 腳本回 exit 0 但訊息不在頻道——『安靜』與『正常』長得一模一樣。三色蛋碎念：『cron 的狀態欄會說謊。排程回報的是「我執行完了」，不是「我做對了」。』既有 2026-10-04 cron-alive-checker 只做靜態的檔案存在檢查，不驗證實際執行結果。",
+  "verification": {
+    "tests_passed": "40/40",
+    "real_env_findings": 6,
+    "false_positives": 0,
+    "false_negatives": 0,
+    "manual_cross_check": "6 項發現逐一比對 wrapper 腳本與實際檔案，確認依賴檔全部不存在，無誤報",
+    "disabled_jobs_skipped": 3,
+    "normal_job_not_flagged": "行事曆格式糾察（4e8982260942）正確列為正常",
+    "exit_code_behavior": "有問題=1，全正常=0",
+    "read_only": true
+  },
+  "impact": "單次掃描即找出 6 個靜默失效的 script 排程，全部可追溯到具體缺檔，涵蓋 Notion→Calendar 資料同步（影響 IFYE 送機行程）、每日備份、記憶同步、Readmoo 報告、npm 安全掃描。"
+}

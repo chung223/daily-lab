@@ -1,11 +1,12 @@
 # Daily Lab Changelog
 
-*Updated: 2026-10-25*
+*Updated: 2026-11-01*
 
 # Changelog — daily-lab
 
 Changes since 2026-02-01:
 
+- `NEW` Daily Lab 2026-11-01: 🔍 Cron Truth Checker — 比對 cron 狀態欄與實際輸出，抓出靜默失效 — *玉子燒* (2026-11-01)
 - `NEW` Daily Lab 2026-10-25: 🔒 Discord Safe Send — 可驗證、去重的 Discord 發送工具（防重複推播） — *玉子燒* (2026-10-25)
 - `NEW` Daily Lab 2026-10-18: 📮 IFYE 對外通訊追蹤器 — 集中記錄 IFYE 外語郵件，支援狀態分級與期限追蹤 — *玉子燒* (2026-10-18)
 - `NEW` Daily Lab 2026-10-11: 📨 Discord Send Shim — 填補從未建立的 `discord_send.py` — *玉子燒* (2026-10-11)
