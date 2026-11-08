@@ -1,0 +1,76 @@
+{
+  "name": "cron-path-audit",
+  "title": "Cron 路徑與技能引用健檢",
+  "slug": "cron-path-audit",
+  "date": "2026-11-08",
+  "category": "automation",
+  "type": "tool",
+  "language": "zh-TW",
+  "description": "掃描 Hermes cron 的每個 job，兩層（job 欄位 + no_agent wrapper 腳本鏈）找出已失效的路徑與技能引用，並偵測檔案搬家位置。唯讀，不修改任何設定。",
+  "problem": {
+    "evidence_dates": ["2026-11-02", "2026-11-03", "2026-11-04", "2026-11-05", "2026-11-06", "2026-11-07", "2026-11-08"],
+    "summary": "連續 7 天每日記憶檔的「靜默失效（仍未修）」段落累積同一批壞掉的排程：Notion→Google Calendar 兩個排程連續 70 天 exit=2、每日備份連續 42 次失敗、memsync / Readmoo / npm 掃描皆 exit=2、should-dream.sh 連續多日 exit 127、EDMoms 技能引用連續 4 天 not found。根因是 cron 指令稿裡寫死的路徑隨時間全部過期，而關鍵路徑藏在 no_agent job 的 wrapper shell 裡，只掃 job 欄位看不到。",
+    "quantified": {
+      "cron_jobs_scanned": 33,
+      "jobs_with_broken_refs": 15,
+      "broken_path_refs": 24,
+      "broken_skill_refs": 2,
+      "notion_to_gcal_failure_days": 70,
+      "backup_failure_streak": 42
+    }
+  },
+  "solution": {
+    "type": "唯讀診斷工具",
+    "key_insight": "no_agent job 的 script 欄位指向 wrapper shell，真正呼叫的 .py 路徑不在 prompt 裡，必須遞迴解析 wrapper 腳本鏈才能找到。",
+    "features": [
+      "第 1 層：掃 job 的 prompt / command 欄位路徑",
+      "第 2 層：遞迴解析 no_agent job 的 wrapper shell 腳本鏈（source / exec）",
+      "skill / skill(s) 欄位三態判定：搬家、封存、不存在",
+      "檔案搬家偵測：檔名比對，指出疑似新位置",
+      "停用中 job 標記，避免與啟用中失敗混淆",
+      "佔位符排除：$(date)、YYYY-MM-DD、$TODAY、glob、中文句尾、PATH 清單"
+    ]
+  },
+  "files": [
+    "cron_path_audit.py",
+    "test_cron_path_audit.py",
+    "README.md",
+    "meta.json"
+  ],
+  "usage": {
+    "default": "python3 cron_path_audit.py",
+    "markdown": "python3 cron_path_audit.py --format markdown --out /tmp/cron-path-audit.md",
+    "json": "python3 cron_path_audit.py --format json",
+    "exit_code": "有失效引用 → 1；全部一致 → 0（可直接掛排程）"
+  },
+  "verification": {
+    "unit_tests": {
+      "total": 13,
+      "passed": 13,
+      "failed": 0,
+      "command": "python3 test_cron_path_audit.py"
+    },
+    "real_scan": {
+      "jobs_scanned": 33,
+      "jobs_with_broken_refs": 15,
+      "exit_code": 1
+    },
+    "manual_cross_check": "11 項發現逐條比對各 job 在 ~/.hermes/cron/output/<job_id>/ 的最近一次實際執行輸出，全部一致；其餘 18 個正常 job 無誤報。",
+    "bugs_found_by_tests": [
+      "技能引用 regex 第一組帶尾斜線，導致分類比對全部失敗",
+      "只抓 /Users 開頭路徑，漏掉 wrapper 內其他絕對路徑",
+      "假陽性：/tmp 報告檔與 /uploads 圖片被當成失效依賴",
+      "假陽性：skills/ 被誤判為技能分類，每個技能路徑多報一筆"
+    ]
+  },
+  "limitations": [
+    "唯讀，不修正任何 cron 設定",
+    "搬家偵測為檔名啟發式比對，可能多筆候選",
+    "不追 Python 內部 import 的相對路徑",
+    "nano-banana-pro-2 為 2026-08-26 起停用的 job，實務無影響"
+  ],
+  "related": [
+    "2026-11-01-cron-truth-checker",
+    "2026-10-25-discord-safe-send"
+  ]
+}

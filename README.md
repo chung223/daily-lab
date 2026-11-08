@@ -1,8 +1,10 @@
 # Daily Lab
 
-Total entries: 164
+Total entries: 165
 
 ## Featured (Latest)
+
+- **2026-11-08** [🔎 Cron Path Audit](2026-11-08-cron-path-audit/README.md) — Cron 路徑與技能引用健檢。11/02～11/08 連續七天每日記憶檔的「靜默失效（仍未修）」累積同一批壞掉的排程：Notion→Google Calendar 兩個排程連續 **70 天** exit=2、每日備份連續 **42** 次失敗、memsync / Readmoo / npm 掃描皆 exit=2、should-dream.sh 連續多日 exit 127、EDMoms 技能引用連續 4 天 not found。根因是 cron 指令稿寫死的路徑隨時間全部過期——且關鍵路徑藏在 no_agent job 的 **wrapper shell** 裡（`oc-notion-sync.sh` 才呼叫真正缺檔的 `sync_notion_sendoff_to_gcal.py`），只掃 job 欄位看不到。本工具兩層都掃：job 欄位 + 遞迴解析 wrapper 腳本鏈，另附技能三態判定（搬家／封存／不存在）、檔案搬家偵測（直接指出搬到哪）、停用中 job 標記。唯讀，不改任何設定。真實環境掃描 33 個 job 抓出 15 個有問題、24 條失效路徑、2 條失效技能；11 項發現逐條比對各 job 在 `~/.hermes/cron/output/<job_id>/` 的實際執行輸出全部一致，其餘 18 個正常 job 無誤報；測試 13/13 通過。驗證通過。
 
 - **2026-11-01** [🔍 Cron Truth Checker](2026-11-01-cron-truth-checker/README.md) — 比對 cron 的「狀態欄」與「實際輸出」，抓出靜默失效。Notion→Google Calendar 兩個排程自 09-28 起累積 50+ 次失敗、資料從未寫入行事曆，但 `hermes cron list` 狀態欄全部顯示 `ok`、`failure_streak=0`；每日備份連續第 35 次失敗也無人察覺。本工具唯讀掃描，比對 `jobs.json` 的 `last_status` 與輸出檔的實際 exit code，並沿 wrapper 腳本追出根因（缺哪個檔）。真實環境單次掃描抓出 6 項靜默失效，人工逐一核對無誤報、無漏報；測試 40/40 通過。驗證通過。
 
@@ -154,6 +156,7 @@ Total entries: 164
 
 ### tool
 
+- 2026-11-08 — [🔎 Cron Path Audit](2026-11-08-cron-path-audit/README.md)
 - 2026-07-23 — [🍜 Wiki 豆漿店 (Wiki Soy Shop)](2026-07-23/README.md)
 - 2026-07-22 — [🚂 週間時刻表 | Weekly Departure Board](2026-07-22/README.md)
 - 2026-07-20 — [💓 Wiki Cycle 生命體徵監視器](2026-07-20/README.md)
